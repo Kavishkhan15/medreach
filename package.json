@@ -1,0 +1,34 @@
+{
+  "name": "medreach",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Controlled testbed for empirically evaluating responsive web design frameworks (Almeida & Sousa 2026 extension).",
+  "workspaces": [
+    "backend",
+    "crawler",
+    "packages/core",
+    "variants/bootstrap",
+    "variants/tailwind",
+    "variants/skeleton"
+  ],
+  "scripts": {
+    "backend:dev": "npm --workspace @medreach/backend run dev",
+    "backend:seed": "npm --workspace @medreach/backend run seed",
+    "backend:test": "npm --workspace @medreach/backend test",
+    "build:variants": "npm --workspace @medreach/variant-bootstrap run build && npm --workspace @medreach/variant-tailwind run build && npm --workspace @medreach/variant-skeleton run build",
+    "score": "node evaluation/scoring/risk-score.js",
+    "bundles": "node evaluation/measure/bundles.mjs",
+    "audit:deps": "node evaluation/security/audit.mjs",
+    "probe:react": "node probe-react/probe.mjs",
+    "test": "npm run backend:test && npm run crawler:test",
+    "crawler:test": "npm --workspace @medreach/crawler test",
+    "eval:performance": "node evaluation/performance/measure.mjs",
+    "eval:results": "node evaluation/results/aggregate.mjs",
+    "eval:all": "npm run bundles && npm run audit:deps || true; npm run eval:performance && npm run eval:results"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

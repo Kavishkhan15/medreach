@@ -1,0 +1,52 @@
+"use client";
+import Link from "next/link";
+import { useHospitals } from "@medreach/core";
+import HospitalList from "../components/HospitalList";
+
+export default function HomePage() {
+  const { data, loading } = useHospitals({}, { sort: "updated" });
+
+  return (
+    <>
+      <section className="rounded-[var(--radius-lg)] p-[clamp(1.5rem,4vw,3rem)] text-white shadow-[var(--shadow-lg)] relative overflow-hidden mb-4 bg-[linear-gradient(135deg,var(--color-critical),var(--color-emergency)_70%)]">
+        <p className="uppercase font-bold mb-2" style={{ letterSpacing: ".1em", opacity: .9 }}>MedReach</p>
+        <h1 className="text-white text-[clamp(1.75rem,5vw,2.75rem)] mb-2">Emergency care. When every second matters.</h1>
+        <p className="text-[rgba(255,255,255,.92)] text-lg mb-4" style={{ maxWidth: "48ch" }}>
+          Find the most relevant emergency hospitals near you in Mumbai, with transparent,
+          rule-based ranking — no guesswork, no fabricated availability.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/emergency" className="inline-flex items-center justify-center bg-white text-[var(--color-critical)] font-extrabold rounded-[var(--radius)] px-[1.4rem] py-[.9rem] text-lg shadow-[var(--shadow-md)] hover:bg-[#fff5f5] no-underline">🚨 Find emergency hospital</Link>
+          <Link href="/hospitals" className="inline-flex items-center justify-center border border-white text-white font-semibold rounded-[var(--radius)] px-[1.4rem] py-[.9rem] text-lg hover:bg-white/10 no-underline">View all hospitals</Link>
+          <Link href="/map" className="inline-flex items-center justify-center border border-white text-white font-semibold rounded-[var(--radius)] px-[1.4rem] py-[.9rem] text-lg hover:bg-white/10 no-underline">Open map</Link>
+        </div>
+      </section>
+
+      <section className="mb-4">
+        <div className="flex flex-wrap -mx-1.5">
+          {[
+            { t: "Transparent ranking", d: "Every result explains why it ranked where it did — specialty match, ER status, distance, data confidence.", i: "🔎" },
+            { t: "Honest freshness", d: "We show when each availability was last updated, and say “unknown” rather than guess.", i: "🕒" },
+            { t: "Verified sources", d: "Data carries provenance and a verification state. No AI, no fabricated numbers.", i: "✅" },
+          ].map((c) => (
+            <div className="w-full md:w-1/3 px-1.5 mb-3" key={c.t}>
+              <div className="h-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] shadow-[var(--shadow-sm)] p-5">
+                <div className="text-[1.5rem]" aria-hidden="true">{c.i}</div>
+                <h2 className="text-base mt-2">{c.t}</h2>
+                <p className="text-[.78rem] text-[var(--color-muted)] mb-0">{c.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <div className="flex items-baseline justify-between mb-3">
+          <h2 className="text-lg mb-0">Recently updated hospitals</h2>
+          <Link href="/hospitals" className="text-sm text-[var(--color-emergency-dark)]">View all →</Link>
+        </div>
+        <HospitalList hospitals={data.slice(0, 6)} loading={loading} />
+      </section>
+    </>
+  );
+}

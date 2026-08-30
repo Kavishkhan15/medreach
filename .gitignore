@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Env / secrets  (never commit Mongo URIs, JWT secrets)
+.env
+.env.*
+!.env.example
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Evaluation raw outputs (can be large / regenerated)
+data/raw/
+evaluation/**/results/
+*.zap.json
+lighthouse-*.json
+
+# Human-subjects data — NEVER commit (contains participant info)
+user-study/data/
+user-study/**/recordings/
+user-study/**/*.raw.csv
+
+# Misc
+.DS_Store
+*.log
+coverage/

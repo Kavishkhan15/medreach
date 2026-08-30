@@ -1,0 +1,58 @@
+/* ============================================================================
+   MedReach · Tailwind v4 variant — Emergency design system.
+   Shared SEMANTIC tokens (names identical across variants); only the Tailwind
+   mapping/implementation lives here. Palette: emergency red used STRATEGICALLY,
+   white/neutral surfaces, green=verified/available, amber=limited, grey=unknown.
+   The ONLY intended difference from the Bootstrap variant is the CSS framework.
+   ============================================================================ */
+
+@import "tailwindcss";
+
+/* Semantic tokens (names shared across all three variants), exposed to Tailwind
+   v4 via @theme so utilities like bg-emergency / text-success resolve. */
+@theme {
+  --color-emergency: #d32029;
+  --color-emergency-dark: #a51620;
+  --color-critical: #b3001b;
+  --color-success: #1a7f45;
+  --color-success-bg: #e7f6ed;
+  --color-warning: #b26a00;
+  --color-warning-bg: #fdf3e2;
+  --color-danger: #c0303a;
+  --color-danger-bg: #fdecee;
+  --color-info: #1f5f8b;
+  --color-info-bg: #e8f1f8;
+  --color-background: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-text: #1c2024;
+  --color-muted: #5b6570;
+  --color-border: #e3e6ea;
+
+  --radius: 0.625rem;
+  --radius-lg: 1rem;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 10px -2px rgba(16, 24, 40, 0.12);
+  --shadow-lg: 0 14px 30px -8px rgba(16, 24, 40, 0.18);
+
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+}
+main { min-height: 68vh; }
+h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; font-weight: 700; color: #10151a; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid rgba(211, 32, 41, 0.45);
+  outline-offset: 2px;
+}

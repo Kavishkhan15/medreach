@@ -1,0 +1,119 @@
+/* ============================================================================
+   MedReach · Bootstrap variant — Emergency design system.
+   Shared SEMANTIC tokens (names identical across variants); only the Bootstrap
+   mapping/implementation lives here. Palette: emergency red used STRATEGICALLY,
+   white/neutral surfaces, green=verified/available, amber=limited, grey=unknown.
+   ============================================================================ */
+
+:root {
+  /* Semantic tokens (names shared across all three variants) */
+  --color-emergency: #d32029;
+  --color-emergency-dark: #a51620;
+  --color-critical: #b3001b;
+  --color-success: #1a7f45;
+  --color-success-bg: #e7f6ed;
+  --color-warning: #b26a00;
+  --color-warning-bg: #fdf3e2;
+  --color-danger: #c0303a;
+  --color-danger-bg: #fdecee;
+  --color-info: #1f5f8b;
+  --color-info-bg: #e8f1f8;
+  --color-background: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-text: #1c2024;
+  --color-muted: #5b6570;
+  --color-border: #e3e6ea;
+
+  --radius: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-pill: 9999px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 10px -2px rgba(16, 24, 40, 0.12);
+  --shadow-lg: 0 14px 30px -8px rgba(16, 24, 40, 0.18);
+
+  /* Map onto Bootstrap */
+  --bs-primary: var(--color-emergency);
+  --bs-primary-rgb: 211, 32, 41;
+  --bs-body-color: var(--color-text);
+  --bs-body-bg: var(--color-background);
+  --bs-border-color: var(--color-border);
+  --bs-border-radius: var(--radius);
+  --bs-link-color: var(--color-emergency-dark);
+  --bs-link-hover-color: var(--color-critical);
+  --bs-font-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* { scroll-behavior: smooth; }
+body {
+  font-family: var(--bs-font-sans-serif);
+  color: var(--color-text);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+}
+main { min-height: 68vh; }
+h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; font-weight: 700; color: #10151a; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid rgba(211, 32, 41, 0.45);
+  outline-offset: 2px;
+}
+
+.app-navbar { background: var(--color-surface); border-bottom: 1px solid var(--color-border); box-shadow: var(--shadow-sm); }
+.app-navbar .navbar-brand { font-weight: 800; letter-spacing: -0.03em; color: var(--color-emergency); }
+.app-navbar .nav-link { color: var(--color-text); font-weight: 600; border-radius: var(--radius-pill); padding-inline: .8rem; }
+.app-navbar .nav-link:hover, .app-navbar .nav-link.active { color: var(--color-emergency); background: #fdecee; }
+
+.system-banner { font-size: .85rem; font-weight: 600; padding: .4rem 0; text-align: center; }
+.system-banner.demo { background: var(--color-warning-bg); color: var(--color-warning); border-bottom: 1px solid #f0d9a8; }
+.system-banner.live { background: var(--color-success-bg); color: var(--color-success); border-bottom: 1px solid #b9e6c9; }
+
+.emergency-hero { border-radius: var(--radius-lg); padding: clamp(1.5rem, 4vw, 3rem); background: linear-gradient(135deg, var(--color-critical), var(--color-emergency) 70%); color: #fff; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+.emergency-hero h1 { color: #fff; font-size: clamp(1.75rem, 5vw, 2.75rem); }
+.emergency-hero .lead { color: rgba(255,255,255,.92); }
+
+.btn-emergency { background: #fff; color: var(--color-critical); font-weight: 800; border: none; border-radius: var(--radius); padding: .9rem 1.4rem; box-shadow: var(--shadow-md); }
+.btn-emergency:hover { background: #fff5f5; color: var(--color-critical); }
+.btn-primary { --bs-btn-bg: var(--color-emergency); --bs-btn-border-color: var(--color-emergency); --bs-btn-hover-bg: var(--color-emergency-dark); --bs-btn-hover-border-color: var(--color-emergency-dark); font-weight: 700; }
+
+.card, .surface { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.surface { padding: 1.25rem; }
+.hospital-card { transition: transform .15s ease, box-shadow .15s ease; }
+.hospital-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+.status-pill { display: inline-flex; align-items: center; gap: .35rem; font-weight: 700; font-size: .8rem; padding: .2rem .6rem; border-radius: var(--radius-pill); }
+.tone-success { background: var(--color-success-bg); color: var(--color-success); }
+.tone-warning { background: var(--color-warning-bg); color: var(--color-warning); }
+.tone-danger  { background: var(--color-danger-bg);  color: var(--color-danger); }
+.tone-info    { background: var(--color-info-bg);    color: var(--color-info); }
+.tone-neutral { background: #eef0f2; color: var(--color-muted); }
+.status-symbol { font-weight: 800; }
+
+.chip { display: inline-block; font-size: .78rem; font-weight: 600; color: var(--color-muted); background: #eef0f2; border-radius: var(--radius-pill); padding: .15rem .6rem; }
+
+.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+@media (min-width: 576px) { .cat-grid { grid-template-columns: repeat(4, 1fr); } }
+.cat-tile { display: flex; flex-direction: column; align-items: center; gap: .35rem; text-align: center; padding: 1rem .5rem; background: var(--color-surface); border: 2px solid var(--color-border); border-radius: var(--radius); cursor: pointer; width: 100%; color: var(--color-text); font-weight: 700; }
+.cat-tile .cat-icon { font-size: 1.6rem; }
+.cat-tile:hover { border-color: var(--color-emergency); }
+.cat-tile.active { border-color: var(--color-emergency); background: #fdecee; color: var(--color-critical); }
+
+.reasons { list-style: none; padding-left: 0; margin: 0; }
+.reasons li { font-size: .85rem; color: var(--color-muted); display: flex; gap: .4rem; }
+.reasons li::before { content: "✓"; color: var(--color-success); font-weight: 800; }
+
+.action-bar { display: flex; gap: .5rem; }
+.action-bar .btn { flex: 1; font-weight: 700; }
+
+.app-footer { border-top: 1px solid var(--color-border); color: var(--color-muted); font-size: .85rem; background: var(--color-surface); }
+
+.sos-fab { position: fixed; right: 1rem; bottom: 1rem; z-index: 1040; background: var(--color-critical); color: #fff; border: none; border-radius: var(--radius-pill); font-weight: 800; padding: .8rem 1.15rem; box-shadow: var(--shadow-lg); }
+.sos-fab:hover { background: #8f0015; color: #fff; }
+
+.map-canvas { background: linear-gradient(0deg, rgba(211,32,41,.03), rgba(211,32,41,.03)), repeating-linear-gradient(0deg, #eef0f2, #eef0f2 1px, transparent 1px, transparent 28px), repeating-linear-gradient(90deg, #eef0f2, #eef0f2 1px, transparent 1px, transparent 28px), var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); min-height: 300px; display: flex; align-items: center; justify-content: center; color: var(--color-muted); }
+
+.disclaimer { font-size: .78rem; color: var(--color-muted); }

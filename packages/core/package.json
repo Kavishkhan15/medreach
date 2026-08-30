@@ -1,0 +1,14 @@
+{
+  "name": "@medreach/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Framework-agnostic shared layer: API client, headless React hooks, formatting, fixtures. This is the LOGIC held constant across variants — only styling differs per variant.",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}
