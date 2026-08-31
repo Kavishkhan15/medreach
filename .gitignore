@@ -29,3 +29,4 @@ user-study/**/*.raw.csv
 .DS_Store
 *.log
 coverage/
+PRIVATE.md

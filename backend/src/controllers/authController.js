@@ -6,7 +6,7 @@ import { env } from "../config/env.js";
 function setAuthCookie(res, token) {
   res.cookie("token", token, {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: env.nodeEnv === "production" ? "none" : "lax",
     secure: env.nodeEnv === "production",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
