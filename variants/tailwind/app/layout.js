@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Image from "next/image";
 import Navbar from "../components/Navbar";
 import SystemBanner from "../components/SystemBanner";
 import SosButton from "../components/SosButton";
@@ -24,7 +25,7 @@ export default function RootLayout({ children }) {
         <SosButton />
         <footer className="border-t border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-muted)] text-[.85rem] py-4 mt-12">
           <div className="mx-auto w-full max-w-[1140px] px-3 flex flex-wrap justify-between gap-2">
-            <span className="font-semibold">🏥 MedReach</span>
+            <span><Image src="/logo.png" alt="MedReach" width={109} height={29} /></span>
             <span>Emergency hospital discovery · Mumbai · Tailwind variant</span>
             <span className="text-[.78rem] text-[var(--color-muted)]">Not an official emergency service. In danger, call 112.</span>
           </div>

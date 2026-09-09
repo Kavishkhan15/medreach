@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useAuth } from "@medreach/core";
 
@@ -12,7 +13,9 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-30 bg-[var(--color-surface)] border-b border-[var(--color-border)] shadow-[var(--shadow-sm)]" aria-label="Primary">
       <div className="mx-auto w-full max-w-[1140px] px-3 flex flex-wrap items-center py-2">
-        <Link className="font-extrabold tracking-tight text-[var(--color-emergency)] text-lg mr-auto" href="/">🏥 MedReach</Link>
+        <Link className="mr-auto" href="/">
+          <Image src="/logo.png" alt="MedReach" width={145} height={39} priority />
+        </Link>
         <button
           className="md:hidden inline-flex items-center rounded border border-[var(--color-border)] p-2"
           type="button"

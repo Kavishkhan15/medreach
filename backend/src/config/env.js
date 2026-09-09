@@ -25,4 +25,11 @@ export const env = {
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean),
+
+  // AI assistant provider — defaults to the zero-config, deterministic rule-based
+  // provider so the assistant works with no external service configured at all.
+  // Swapping AI_PROVIDER (+ AI_API_KEY/AI_MODEL) never requires touching the UI.
+  aiProvider: process.env.AI_PROVIDER ?? "rule_based",
+  aiApiKey: process.env.AI_API_KEY ?? "",
+  aiModel: process.env.AI_MODEL ?? "",
 };

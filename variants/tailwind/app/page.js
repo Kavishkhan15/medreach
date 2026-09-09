@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useHospitals } from "@medreach/core";
 import HospitalList from "../components/HospitalList";
+import LiveFeatureIcon from "../components/LiveFeatureIcon";
 
 export default function HomePage() {
   const { data, loading } = useHospitals({}, { sort: "updated" });
@@ -25,13 +26,13 @@ export default function HomePage() {
       <section className="mb-4">
         <div className="flex flex-wrap -mx-1.5">
           {[
-            { t: "Transparent ranking", d: "Every result explains why it ranked where it did — specialty match, ER status, distance, data confidence.", i: "🔎" },
-            { t: "Honest freshness", d: "We show when each availability was last updated, and say “unknown” rather than guess.", i: "🕒" },
-            { t: "Verified sources", d: "Data carries provenance and a verification state. No AI, no fabricated numbers.", i: "✅" },
+            { t: "Transparent ranking", d: "Every result explains why it ranked where it did — specialty match, ER status, distance, data confidence.", icon: "radar" },
+            { t: "Honest freshness", d: "We show when each availability was last updated, and say “unknown” rather than guess.", icon: "clock" },
+            { t: "Verified sources", d: "Data carries provenance and a verification state. No AI, no fabricated numbers.", icon: "verified" },
           ].map((c) => (
             <div className="w-full md:w-1/3 px-1.5 mb-3" key={c.t}>
               <div className="h-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] shadow-[var(--shadow-sm)] p-5">
-                <div className="text-[1.5rem]" aria-hidden="true">{c.i}</div>
+                <LiveFeatureIcon name={c.icon} label={c.t} />
                 <h2 className="text-base mt-2">{c.t}</h2>
                 <p className="text-[.78rem] text-[var(--color-muted)] mb-0">{c.d}</p>
               </div>

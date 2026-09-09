@@ -22,8 +22,12 @@ export function confidenceLevel({
 } = {}) {
   if (!timestamp) return "UNKNOWN";
   const reliability = SOURCE_RELIABILITY[sourceType] ?? 0.3;
-  const recency = FRESH_SCORE[freshnessLabel(timestamp, now)] ?? 0;
+  const label = freshnessLabel(timestamp, now);
+  const recency = FRESH_SCORE[label] ?? 0;
   if (recency === 0) return "UNKNOWN";
+  // Honesty cap: data older than the STALE window is "old" and can never be
+  // reported above LOW, however reliable the source. Mirrors crawler/confidence.
+  if (label === "OUTDATED") return "LOW";
   // Weighted, deterministic composite in [0,1].
   const score =
     0.4 * reliability + 0.3 * recency + 0.2 * (verified ? 1 : 0) + 0.1 * parseQuality;

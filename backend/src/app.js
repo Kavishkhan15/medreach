@@ -16,6 +16,7 @@ import crawlerRoutes from "./routes/crawler.js";
 import adminRoutes from "./routes/admin.js";
 import alertRoutes from "./routes/alertRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import assistantRoutes from "./routes/assistantRoutes.js";
 
 export function createApp() {
   const app = express();
@@ -39,6 +40,7 @@ export function createApp() {
   app.use("/api/admin", adminRoutes);
   app.use("/api/alerts", alertRoutes);
   app.use("/api/users", userRoutes);
+  app.use("/api/assistant", assistantRoutes);
 
   app.use(notFound);
   app.use(errorHandler);

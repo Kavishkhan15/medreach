@@ -117,3 +117,74 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .map-canvas { background: linear-gradient(0deg, rgba(211,32,41,.03), rgba(211,32,41,.03)), repeating-linear-gradient(0deg, #eef0f2, #eef0f2 1px, transparent 1px, transparent 28px), repeating-linear-gradient(90deg, #eef0f2, #eef0f2 1px, transparent 1px, transparent 28px), var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); min-height: 300px; display: flex; align-items: center; justify-content: center; color: var(--color-muted); }
 
 .disclaimer { font-size: .78rem; color: var(--color-muted); }
+
+/* Live feature icons (homepage) — pure CSS animation, no GIFs/external assets.
+   Disabled automatically by the prefers-reduced-motion rule above. */
+.live-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgba(211, 32, 41, 0.08);
+  color: var(--color-emergency, #d32029);
+}
+.live-icon-radar-sweep { animation: live-radar-sweep 3s linear infinite; }
+@keyframes live-radar-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.live-icon-clock-second { animation: live-clock-second 6s steps(6, end) infinite; }
+@keyframes live-clock-second {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.live-icon-clock-minute { animation: live-clock-minute 24s linear infinite; }
+@keyframes live-clock-minute {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.live-icon-verified-ring { animation: live-verified-pulse 2.4s ease-in-out infinite; }
+@keyframes live-verified-pulse {
+  0%, 100% { stroke-opacity: 0.3; transform: scale(1); }
+  50% { stroke-opacity: 0.7; transform: scale(1.04); }
+}
+.live-icon-verified-check { animation: live-verified-draw 2.4s ease-in-out infinite; stroke-dasharray: 20; stroke-dashoffset: 0; }
+@keyframes live-verified-draw {
+  0%, 60% { stroke-dashoffset: 0; }
+  70% { stroke-dashoffset: 6; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* AI Assistant entry (Emergency Help modal, 4th action) — deliberately same
+   visual weight as "Find nearest emergency hospital" (outline-secondary), NOT
+   as prominent as Call 112/102. Badge is affordance only, not emphasis. */
+.ai-assistant-entry { white-space: normal; }
+.ai-assistant-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.4rem; height: 1.4rem; border-radius: 50%;
+  background: rgba(211, 32, 41, 0.08); font-size: .85rem; margin-right: .25rem;
+}
+.ai-assistant-dialog { max-width: 480px; }
+@media (max-width: 480px) {
+  .ai-assistant-dialog { margin: 0; height: 100%; max-width: 100%; }
+  .ai-assistant-dialog .modal-content { height: 100%; border-radius: 0; }
+  /* WCAG 2.5.5 — ensure touch targets in the assistant reach 44px on mobile,
+     scoped to this component so we don't alter global .btn-sm elsewhere. */
+  .ai-assistant-messages .btn-sm,
+  .ai-assistant-form .btn,
+  .ai-assistant-dialog .modal-body button {
+    min-height: 44px;
+  }
+}
+
+.ai-assistant-messages {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  max-height: 50vh;
+  min-height: 220px;
+}
+@media (max-width: 576px) {
+  .ai-assistant-messages { max-height: none; flex: 1 1 auto; }
+}

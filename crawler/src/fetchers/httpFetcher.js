@@ -42,17 +42,28 @@ export async function httpFetch(rawUrl, opts = {}) {
         return httpFetch(next, { ...opts, retries: 0 });
       }
 
-      if (res.status === 429 || res.status === 503) {
-        lastErr = new Error(`rate_limited_${res.status}`);
-        if (attempt < cfg.retries) { await sleep(cfg.backoffMs * 2 ** attempt); continue; }
-        return { ok: false, status: res.status, reason: "rate_limited", body: null };
+      // Retryable server/rate-limit statuses: 429 + 5xx. 4xx (401/403/404) are
+      // NOT retried (permanent). Backoff is exponential with jitter.
+      if (res.status === 429 || (res.status >= 500 && res.status <= 599)) {
+        lastErr = new Error(`retryable_${res.status}`);
+        if (attempt < cfg.retries) {
+          const jitter = Math.floor(Math.random() * cfg.backoffMs);
+          await sleep(cfg.backoffMs * 2 ** attempt + jitter);
+          continue;
+        }
+        return { ok: false, status: res.status, reason: res.status === 429 ? "rate_limited" : "server_error", body: null };
+      }
+
+      const contentType = (res.headers.get?.("content-type") || "").toLowerCase();
+      // Only accept textual/structured content — reject binaries (pdf, images…).
+      if (contentType && !/(text\/|application\/(json|ld\+json|xml|xhtml))/i.test(contentType)) {
+        return { ok: false, status: res.status, reason: "unsupported_content_type", body: null, contentType };
       }
 
       const body = await res.text();
       if (body.length > cfg.maxBytes) return { ok: false, status: res.status, reason: "too_large", body: null };
       const ok = res.status >= 200 && res.status < 300;
-      return { ok, status: res.status, reason: ok ? null : "http_error", body,
-        contentType: res.headers.get?.("content-type") || "" };
+      return { ok, status: res.status, reason: ok ? null : "http_error", body, contentType };
     } catch (err) {
       clearTimeout(timer);
       lastErr = err;

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@medreach/core";
 
 export default function Navbar() {
@@ -7,7 +8,9 @@ export default function Navbar() {
   return (
     <nav className="app-navbar" aria-label="Primary">
       <div className="container navbar-inner">
-        <Link className="navbar-brand" href="/">🏥 MedReach</Link>
+        <Link className="navbar-brand" href="/">
+          <Image src="/logo.png" alt="MedReach" width={145} height={39} priority />
+        </Link>
         <ul className="nav-list">
           <li className="nav-item"><Link className="nav-link" href="/emergency">Emergency</Link></li>
           <li className="nav-item"><Link className="nav-link" href="/hospitals">Hospitals</Link></li>

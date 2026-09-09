@@ -297,3 +297,85 @@ select.w-auto { width: auto; display: inline-block; }
 
 .disclaimer { font-size: 1.2rem; color: var(--color-muted); }
 .text-secondary { color: var(--color-muted); }
+
+/* Live feature icons (homepage) — pure CSS animation, no GIFs/external assets.
+   Disabled automatically by the prefers-reduced-motion rule above. */
+.live-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgba(211, 32, 41, 0.08);
+  color: var(--color-emergency, #d32029);
+}
+.live-icon-radar-sweep { animation: live-radar-sweep 3s linear infinite; }
+@keyframes live-radar-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.live-icon-clock-second { animation: live-clock-second 6s steps(6, end) infinite; }
+@keyframes live-clock-second {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.live-icon-clock-minute { animation: live-clock-minute 24s linear infinite; }
+@keyframes live-clock-minute {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.live-icon-verified-ring { animation: live-verified-pulse 2.4s ease-in-out infinite; }
+@keyframes live-verified-pulse {
+  0%, 100% { stroke-opacity: 0.3; transform: scale(1); }
+  50% { stroke-opacity: 0.7; transform: scale(1.04); }
+}
+.live-icon-verified-check { animation: live-verified-draw 2.4s ease-in-out infinite; stroke-dasharray: 20; stroke-dashoffset: 0; }
+@keyframes live-verified-draw {
+  0%, 60% { stroke-dashoffset: 0; }
+  70% { stroke-dashoffset: 6; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* AI Assistant entry (Emergency Help modal, 4th action) — deliberately same
+   visual weight as "Find nearest emergency hospital" (outline-secondary), NOT
+   as prominent as Call 112/102. Badge is affordance only, not emphasis. */
+.ai-assistant-entry { white-space: normal; }
+.ai-assistant-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.4rem; height: 1.4rem; border-radius: 50%;
+  background: rgba(211, 32, 41, 0.08); font-size: .85rem; margin-right: .25rem;
+}
+.ai-assistant-dialog { max-width: 480px; width: 100%; }
+@media (max-width: 480px) {
+  .ai-assistant-overlay { align-items: flex-end; }
+  .ai-assistant-dialog { max-width: 100%; height: 100%; border-radius: 0; }
+  /* WCAG 2.5.5 — ensure touch targets in the assistant reach 44px on mobile. */
+  .ai-assistant-messages .btn-sm,
+  .ai-assistant-form button {
+    min-height: 44px;
+  }
+}
+.ai-assistant-messages {
+  flex-grow: 1; overflow: auto; min-height: 260px; max-height: 50vh;
+}
+.ai-assistant-form { border-top: 1px solid var(--color-border); }
+.btn-link-plain {
+  background: none; border: none; padding: 0; color: var(--color-emergency);
+  font-weight: 600; font-size: .85rem; text-decoration: underline; cursor: pointer;
+}
+
+/* Chat bubbles */
+.chat-bubble-row { display: flex; margin-bottom: .5rem; }
+.chat-bubble-row-user { justify-content: flex-end; }
+.chat-bubble-row-assistant { justify-content: flex-start; }
+.chat-bubble {
+  max-width: 85%; padding: .5rem .8rem; border-radius: .9rem; white-space: pre-wrap;
+}
+.chat-bubble-user { background: var(--color-emergency); color: #fff; }
+.chat-bubble-assistant { background: #f4f5f6; color: var(--color-text); }
+
+.hospital-result-card {
+  border: 1px solid var(--color-border); border-radius: var(--radius); padding: .6rem;
+  margin-bottom: .5rem; font-size: .85rem;
+}

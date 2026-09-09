@@ -2,6 +2,7 @@ import "skeleton-css/css/normalize.css";
 import "skeleton-css/css/skeleton.css";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Image from "next/image";
 import Navbar from "../components/Navbar";
 import SystemBanner from "../components/SystemBanner";
 import SosButton from "../components/SosButton";
@@ -26,7 +27,7 @@ export default function RootLayout({ children }) {
         <SosButton />
         <footer className="app-footer py-4 mt-5">
           <div className="container footer-inner">
-            <span className="fw-semibold">🏥 MedReach</span>
+            <span className="fw-semibold"><Image src="/logo.png" alt="MedReach" width={109} height={29} /></span>
             <span>Emergency hospital discovery · Mumbai · Skeleton variant</span>
             <span className="disclaimer">Not an official emergency service. In danger, call 112.</span>
           </div>

@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "description": "Modular, SSRF-safe crawler for MedReach. Fetches only from an approved DataSource registry (APIs and authorized feeds preferred), normalizes and validates, and scores freshness + confidence. NO AI/ML.",
-  "main": "src/runner.js",
+  "main": "src/cli.js",
   "scripts": {
     "test": "node --test",
-    "crawl": "node src/runner.js"
+    "test:live": "MEDREACH_LIVE=1 node --test tests/live.test.js",
+    "crawl": "node src/cli.js",
+    "crawl:list": "node src/cli.js --list"
   }
 }

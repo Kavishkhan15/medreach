@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@medreach/core";
 
 export default function Navbar() {
@@ -7,7 +8,9 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-md app-navbar sticky-top" aria-label="Primary">
       <div className="container">
-        <Link className="navbar-brand" href="/">🏥 MedReach</Link>
+        <Link className="navbar-brand" href="/">
+          <Image src="/logo.png" alt="MedReach" width={145} height={39} priority />
+        </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
           aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon" />

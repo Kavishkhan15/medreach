@@ -116,3 +116,44 @@ export function useAuth() {
   const isAdmin = ["admin", "system_admin", "hospital_admin"].includes(user?.role);
   return { user, ready, login, register, logout, isAdmin };
 }
+
+// AI Assistant chat state. Headless — owns the message list, sending state,
+// and the unavailable/fallback flag; every variant renders this identically.
+// `locality`/`origin` are passed through as-is to the API (origin only ever
+// comes from useLocation, which never persists precise coordinates).
+export function useAssistant() {
+  const [messages, setMessages] = useState([]); // { role: "user"|"assistant", text, hospitals? }
+  const [sending, setSending] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
+
+  const send = useCallback(async (text, { locality, origin } = {}) => {
+    const trimmed = (text || "").trim();
+    if (!trimmed || sending) return;
+
+    setMessages((prev) => [...prev, { role: "user", text: trimmed }]);
+    setSending(true);
+    try {
+      const r = await api.sendAssistantMessage(trimmed, { locality, origin });
+      setUnavailable(Boolean(r.unavailable));
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", text: r.reply, intent: r.intent, hospitals: r.hospitals || [] },
+      ]);
+    } catch {
+      setUnavailable(true);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", text: "AI assistant is temporarily unavailable.", intent: "unavailable", hospitals: [] },
+      ]);
+    } finally {
+      setSending(false);
+    }
+  }, [sending]);
+
+  const reset = useCallback(() => {
+    setMessages([]);
+    setUnavailable(false);
+  }, []);
+
+  return { messages, sending, unavailable, send, reset };
+}

@@ -6,6 +6,9 @@ import { SOURCE_TYPES, ACCESS_METHODS, SOURCE_RELIABILITY } from "../config/cons
 const dataSourceSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 160 },
+    // Stable string id matching crawler/src/registry/sources.js sourceId
+    // (e.g. "lilavati"). Optional — only hospital-site crawler sources set it.
+    sourceKey: { type: String, trim: true, index: true, sparse: true, unique: true },
     type: { type: String, enum: SOURCE_TYPES, required: true },
     url: { type: String, trim: true },
     accessMethod: { type: String, enum: ACCESS_METHODS, default: "http_html" },

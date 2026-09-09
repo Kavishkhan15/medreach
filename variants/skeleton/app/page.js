@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useHospitals } from "@medreach/core";
 import HospitalList from "../components/HospitalList";
+import LiveFeatureIcon from "../components/LiveFeatureIcon";
 
 export default function HomePage() {
   const { data, loading } = useHospitals({}, { sort: "updated" });
@@ -25,13 +26,13 @@ export default function HomePage() {
       <section className="mb-4">
         <div className="grid-3">
           {[
-            { t: "Transparent ranking", d: "Every result explains why it ranked where it did — specialty match, ER status, distance, data confidence.", i: "🔎" },
-            { t: "Honest freshness", d: "We show when each availability was last updated, and say “unknown” rather than guess.", i: "🕒" },
-            { t: "Verified sources", d: "Data carries provenance and a verification state. No AI, no fabricated numbers.", i: "✅" },
+            { t: "Transparent ranking", d: "Every result explains why it ranked where it did — specialty match, ER status, distance, data confidence.", icon: "radar" },
+            { t: "Honest freshness", d: "We show when each availability was last updated, and say “unknown” rather than guess.", icon: "clock" },
+            { t: "Verified sources", d: "Data carries provenance and a verification state. No AI, no fabricated numbers.", icon: "verified" },
           ].map((c) => (
             <div key={c.t}>
               <div className="surface h-100">
-                <div style={{ fontSize: "1.5rem" }} aria-hidden="true">{c.i}</div>
+                <LiveFeatureIcon name={c.icon} label={c.t} />
                 <h2 className="h6 mt-2">{c.t}</h2>
                 <p className="disclaimer mb-0">{c.d}</p>
               </div>

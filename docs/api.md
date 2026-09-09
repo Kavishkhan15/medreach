@@ -46,6 +46,23 @@ rate limited.
 - `GET /api/crawler/results`
 - `POST /api/crawler/run?sourceId=` (admin) — only runs an approved source
 
+## AI Assistant
+- `POST /api/assistant/message` — public, rate limited (20 req / 5 min per IP,
+  separate from the auth limiter). Body: `{message, locality?, origin?}`
+  (`origin` is `{lat, lng}`, only ever sourced from on-demand browser geolocation
+  — never persisted). Response: `{reply, intent, hospitals, source, unavailable?}`.
+  - `intent` is one of `emergency | hospital_search | general | unavailable`,
+    decided deterministically (keyword-based, no ML) before any hospital lookup.
+  - `hospitals` is real data assembled from `Hospital`/`HospitalFacility`/
+    `AvailabilityObservation` via the same ranking used by `GET /api/hospitals`
+    — never a second, parallel search implementation, and never fabricated.
+  - `source` is `rule_based` (default, zero-config) or `ai` (only when
+    `AI_PROVIDER=openai` and `AI_API_KEY` are configured); a failing provider
+    transparently falls back to `rule_based` — the endpoint never 500s on a
+    provider error, and hospital discovery keeps working with the AI off.
+  - See [`docs/ai-assistant.md`](ai-assistant.md) for the full design,
+    provider-swap instructions, and the data/safety guarantees.
+
 ## Admin
 - `GET /api/admin/overview`
 - `POST /api/admin/hospitals/:id/verify` (audited) — body

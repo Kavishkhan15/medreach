@@ -1,3 +1,7 @@
+.agents/
+.github/
+.kiro
+assets/
 # Dependencies
 node_modules/
 .pnp

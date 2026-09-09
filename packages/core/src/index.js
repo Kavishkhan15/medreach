@@ -10,6 +10,7 @@ export * from "./search.js";
 export * from "./validation.js";
 export * from "./fixtures.js";
 export * from "./adminFixtures.js";
+export * from "./assistant.js";
 
 // format.js — semantic tone metadata
 export {

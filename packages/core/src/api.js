@@ -53,3 +53,11 @@ export const listSources = () => req(`/api/sources`);
 export const createSource = (body) => req(`/api/sources`, { method: "POST", body: JSON.stringify(body) });
 export const listCrawlerJobs = () => req(`/api/crawler/jobs`);
 export const runCrawl = (sourceId) => req(`/api/crawler/run?sourceId=${sourceId}`, { method: "POST" });
+
+// AI Assistant — public, rate-limited. Never sends precise location unless the
+// caller explicitly passes origin (from useLocation, which never persists it).
+export const sendAssistantMessage = (message, { locality, origin } = {}) =>
+  req(`/api/assistant/message`, {
+    method: "POST",
+    body: JSON.stringify(clean({ message, locality, origin })),
+  });

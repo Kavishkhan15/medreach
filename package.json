@@ -25,7 +25,10 @@
     "crawler:test": "npm --workspace @medreach/crawler test",
     "eval:performance": "node evaluation/performance/measure.mjs",
     "eval:results": "node evaluation/results/aggregate.mjs",
-    "eval:all": "npm run bundles && npm run audit:deps || true; npm run eval:performance && npm run eval:results"
+    "eval:all": "npm run bundles && npm run audit:deps || true; npm run eval:performance && npm run eval:results",
+    "crawl": "npm --workspace @medreach/crawler run crawl --",
+    "crawl:list": "npm --workspace @medreach/crawler run crawl:list",
+    "crawler:test:live": "npm --workspace @medreach/crawler run test:live"
   },
   "engines": {
     "node": ">=20"

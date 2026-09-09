@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Image from "next/image";
 import Navbar from "../components/Navbar";
 import SystemBanner from "../components/SystemBanner";
 import SosButton from "../components/SosButton";
@@ -25,7 +26,7 @@ export default function RootLayout({ children }) {
         <SosButton />
         <footer className="app-footer py-4 mt-5">
           <div className="container d-flex flex-wrap justify-content-between gap-2">
-            <span className="fw-semibold">🏥 MedReach</span>
+            <span className="fw-semibold"><Image src="/logo.png" alt="MedReach" width={109} height={29} /></span>
             <span>Emergency hospital discovery · Mumbai · Bootstrap variant</span>
             <span className="disclaimer">Not an official emergency service. In danger, call 112.</span>
           </div>

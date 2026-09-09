@@ -1,13 +1,22 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { ASSISTANT_ENTRY_LABEL, ASSISTANT_ENTRY_SUBTITLE } from "@medreach/core";
 import { btnPrimary, btnOutlineSecondary } from "../lib/tone";
+import AiAssistantModal from "./AiAssistantModal";
 
 // Prominent SOS control. Does NOT claim to dispatch emergency services (no such
 // integration exists) — it surfaces the real emergency actions and requires a
 // confirmation tap to avoid accidental activation.
 export default function SosButton() {
   const [open, setOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
+
+  const openAssistant = () => {
+    setOpen(false);
+    setAiOpen(true);
+  };
+
   return (
     <>
       <button
@@ -43,11 +52,25 @@ export default function SosButton() {
                 <Link className={btnOutlineSecondary} href="/emergency" onClick={() => setOpen(false)}>
                   🏥 Find nearest emergency hospital
                 </Link>
+                <button
+                  type="button"
+                  className={`${btnOutlineSecondary} ai-assistant-entry flex items-center justify-between text-left`}
+                  onClick={openAssistant}
+                >
+                  <span>
+                    <span className="ai-assistant-badge" aria-hidden="true">🤖</span>{" "}
+                    {ASSISTANT_ENTRY_LABEL}
+                    <span className="block text-[.78rem] text-[var(--color-muted)] mb-0 font-normal">{ASSISTANT_ENTRY_SUBTITLE}</span>
+                  </span>
+                  <span aria-hidden="true">›</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      <AiAssistantModal open={aiOpen} onClose={() => setAiOpen(false)} />
     </>
   );
 }
