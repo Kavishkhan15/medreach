@@ -1,6 +1,6 @@
 .agents/
 .github/
-.kiro
+.kiro/
 assets/
 # Dependencies
 node_modules/
