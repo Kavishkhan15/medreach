@@ -19,6 +19,17 @@ import { env } from "../config/env.js";
 // :3000 and blocking the tailwind (:3001) and skeleton (:3002) variants.
 const ALLOWED_ORIGINS = env.corsOrigins;
 
+function csrfOriginGuard(req, res, next) {
+  if (["GET", "HEAD", "OPTIONS"].includes(req.method) || !req.headers.cookie) return next();
+  const origin = req.get("origin");
+  if (!origin || ALLOWED_ORIGINS.includes(origin)) return next();
+  return res.status(403).json({ error: "Request origin not allowed" });
+}
+
+const limiter = (max, windowMs = 15 * 60 * 1000) => rateLimit({ windowMs, max,
+  standardHeaders: true, legacyHeaders: false, skipSuccessfulRequests: false,
+  message: { error: "Too many requests. Please try again later." } });
+
 export function applySecurity(app) {
   app.use(cookieParser());
 
@@ -44,12 +55,12 @@ export function applySecurity(app) {
   );
 
   app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
+  app.use(csrfOriginGuard);
 
   // Brute-force protection on auth endpoints (attach to /api/auth router).
-  app.locals.authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 20,
-    standardHeaders: true,
-    legacyHeaders: false,
-  });
+  app.locals.authLimiter = limiter(20);
+  app.locals.loginLimiter = limiter(10);
+  app.locals.registerLimiter = limiter(8, 60 * 60 * 1000);
+  app.locals.recoveryLimiter = limiter(6, 60 * 60 * 1000);
+  app.locals.oauthLimiter = limiter(20);
 }

@@ -15,7 +15,14 @@ MedReach deploys as **four independent pieces**:
 ### Backend
 - `MONGO_URI` / `DATABASE_URL`
 - `JWT_SECRET` — **required in production**
-- `JWT_EXPIRES`
+- `ACCESS_TOKEN_EXPIRES` (recommended `15m`; `JWT_EXPIRES` is a compatibility alias)
+- `REFRESH_TOKEN_EXPIRES_DAYS`
+- `OAUTH_STATE_EXPIRES_MINUTES`
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
+- `PUBLIC_APP_URL`
+- `EMAIL_ENABLED`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`,
+  `SMTP_PASSWORD`, `SMTP_FROM`, `SMTP_FROM_NAME`, `SMTP_CONNECTION_TIMEOUT_MS`,
+  `COOKIE_SAME_SITE` (`none` for a cross-site HTTPS frontend/API, otherwise `lax`)
 - `CORS_ORIGINS`
 - `PORT`
 - `NODE_ENV`
@@ -26,6 +33,7 @@ No secrets are committed. Copy `.env` from `.env.example`.
 ```bash
 npm install                 # root; installs all workspaces
 npm run backend:seed        # demo data (needs a running mongod)
+npm --workspace @medreach/backend run migrate:auth-security # once per existing database
 npm run backend:dev         # API on :4000
 
 # per-variant dev servers

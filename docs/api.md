@@ -6,7 +6,9 @@ Express + Mongoose service. All frontends reach it via `NEXT_PUBLIC_API_URL`
 
 ## Auth roles
 `user`, `hospital_admin`, `system_admin` (plus a legacy `admin` role).
-Auth is via a JWT **httpOnly cookie** or a `Bearer` token. Auth endpoints are
+Auth uses a short-lived access JWT in an **httpOnly cookie** (or `Bearer` for API clients)
+plus a long-lived opaque, hashed, rotating refresh-session cookie. Access tokens are
+bound to an active server-side session, so logout/revocation invalidates copied JWTs. Auth endpoints are
 rate limited.
 
 ## Health
@@ -16,7 +18,15 @@ rate limited.
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 - `POST /api/auth/logout`
+- `POST /api/auth/refresh` — one-time rotation; replay revokes the session family
 - `GET /api/auth/me` — current user (cookie or Bearer)
+- `GET /api/auth/google` and `GET /api/auth/google/callback` — Google OIDC
+- `GET /api/auth/google?flow=link&confirm=link-google` — authenticated provider link
+- `DELETE /api/auth/providers/google` — body `{confirm:"UNLINK"}`; denied if Google is the only method
+- `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`
+- `POST /api/auth/request-verification`, `POST /api/auth/verify-email`
+- `PUT /api/auth/profile`, `PUT /api/auth/password`
+- `GET /api/auth/sessions`, `DELETE /api/auth/sessions/:id`
 
 ## Hospitals
 - `GET /api/hospitals` — search; query params:
@@ -68,6 +78,11 @@ rate limited.
 - `POST /api/admin/hospitals/:id/verify` (audited) — body
   `{decision: approve | reject | override | mark_stale}`
 - `GET /api/admin/audit` — `system_admin` only
+- `GET /api/admin/users`, `GET /api/admin/users/:id` — safe user/provider metadata, system admin only
+- `PATCH /api/admin/users/:id/status`, `PATCH /api/admin/users/:id/role`
+- `POST /api/admin/users/:id/revoke-sessions`
+- `POST /api/admin/users/:id/trigger-reset`, `POST /api/admin/users/:id/resend-verification`
+- `DELETE /api/admin/users/:id/providers/google` — safe only when a password remains
 
 ## Alerts
 - `GET /api/alerts`

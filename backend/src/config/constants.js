@@ -113,6 +113,23 @@ export const AUDIT_ACTIONS = [
   "mark_stale",
   "login",
   "logout",
+  "login_failed",
+  "register",
+  "refresh",
+  "revoke",
+  "password_reset_requested",
+  "password_reset",
+  "password_change",
+  "email_verification_requested",
+  "email_verified",
+  "oauth_started",
+  "oauth_failed",
+  "oauth_login",
+  "provider_linked",
+  "provider_unlinked",
+  "account_enabled",
+  "account_disabled",
+  "role_changed",
 ];
 
 // ---- Freshness thresholds (ms). Configurable via env in freshnessService. ----

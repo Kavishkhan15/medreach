@@ -20,6 +20,7 @@ import { backfillFacilityClaims } from "../src/services/backfillFacilityClaims.j
 import { HospitalFieldClaim } from "../src/models/HospitalFieldClaim.js";
 import { HospitalFieldConflict } from "../src/models/HospitalFieldConflict.js";
 import { backfillHospitalFieldClaims } from "../src/services/backfillHospitalFieldClaims.js";
+import { User } from "../src/models/User.js";
 
 const uri = process.env.MEDREACH_TEST_MONGO_URI;
 const isolated = uri === "mongodb://127.0.0.1:27019/medreach_fusion_integration";
@@ -56,7 +57,8 @@ test("MongoDB/API: claims remain distinct; only assigned staff can make availabi
     assert.equal(beforeAvailable.body.total, 0, "legacy default must not pass a live-availability filter");
 
     const yesClaim = await FacilitySourceClaim.findOne({ hospital: hospital._id, source: site._id });
-    const token = signToken({ _id: new mongoose.Types.ObjectId(), role: "system_admin", email: "admin@example.org", name: "Test Admin" });
+    const admin = await User.create({ email: "admin@example.org", name: "Test Admin", role: "system_admin" });
+    const token = signToken(admin);
     const conflictList = await request(createApp()).get("/api/admin/data-conflicts")
       .set("Authorization", `Bearer ${token}`);
     assert.equal(conflictList.status, 200);
@@ -98,6 +100,7 @@ test("MongoDB/API: claims remain distinct; only assigned staff can make availabi
     assert.equal(after.body.hospital.bedsAvailable, null);
 
     const staffId = new mongoose.Types.ObjectId();
+    await User.create({ _id: staffId, role: "hospital_admin", email: "staff@example.org", name: "Staff" });
     const staffToken = signToken({ _id: staffId, role: "hospital_admin", email: "staff@example.org", name: "Staff" });
     const globalSources = await request(createApp()).get("/api/sources")
       .set("Authorization", `Bearer ${staffToken}`);
@@ -319,7 +322,8 @@ test("MongoDB/API: conflicting contact and specialty claims retain both sources 
     const publicBefore = await request(createApp()).get(`/api/hospitals/${snapshot.slug}`);
     assert.equal(publicBefore.status, 200);
     assert.ok(publicBefore.body.hospital.fieldConflicts.some((c) => c.field === "phone" && c.status === "open"));
-    const token = signToken({ _id: new mongoose.Types.ObjectId(), role: "system_admin", email: "admin@example.org", name: "Test Admin" });
+    const admin = await User.create({ email: "admin@example.org", name: "Test Admin", role: "system_admin" });
+    const token = signToken(admin);
     const evidence = await request(createApp()).get("/api/admin/hospital-field-claims")
       .set("Authorization", `Bearer ${token}`);
     assert.equal(evidence.status, 200);
@@ -328,7 +332,8 @@ test("MongoDB/API: conflicting contact and specialty claims retain both sources 
       && c.observedAt && c.parserVersion && c.confidence && c.verificationStatus));
     assert.ok(evidence.body.data.filter((c) => c.field === "phone")
       .every((c) => c.evidenceKind === "source_excerpt" && c.sourcePageUrl.endsWith("/contact")));
-    const staffToken = signToken({ _id: new mongoose.Types.ObjectId(), role: "hospital_admin", email: "staff@example.org", name: "Staff" });
+    const staff = await User.create({ role: "hospital_admin", email: "staff@example.org", name: "Staff" });
+    const staffToken = signToken(staff);
     const staffReview = await request(createApp()).post(`/api/admin/hospital-field-claims/${evidence.body.data[0]._id}/review`)
       .set("Authorization", `Bearer ${staffToken}`).send({ decision: "approve" });
     assert.equal(staffReview.status, 403);

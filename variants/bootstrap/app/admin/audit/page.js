@@ -10,7 +10,7 @@ export default function AdminAuditPage() {
     adminListAudit().then((r) => { setEntries(r.data); setDemo(false); }).catch(() => { setEntries(demoAudit); setDemo(true); });
   }, []);
   return (
-    <AdminGuard title="Audit log" subtitle="Provenance for critical administrative actions. IP addresses are hashed, never stored raw.">
+    <AdminGuard systemOnly title="Audit log" subtitle="Provenance for critical administrative actions. IP addresses are hashed, never stored raw.">
       {demo && <div className="alert alert-warning py-2">Demo dataset — not live audit records.</div>}
       <div className="surface">
         <div className="table-responsive">

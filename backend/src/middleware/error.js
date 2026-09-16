@@ -15,7 +15,7 @@ export function errorHandler(err, req, res, _next) {
     });
   }
   if (err.name === "CastError") {
-    return res.status(400).json({ error: `Invalid ${err.path}: ${err.value}` });
+    return res.status(400).json({ error: `Invalid ${err.path}` });
   }
   if (err.code === 11000) {
     return res.status(409).json({
@@ -23,6 +23,7 @@ export function errorHandler(err, req, res, _next) {
       fields: Object.keys(err.keyValue ?? {}),
     });
   }
-  console.error("[medreach] Unhandled error:", err);
-  res.status(err.status ?? 500).json({ error: err.message ?? "Internal server error" });
+  console.error("[medreach] Unhandled error:", { name: err.name, code: err.code, requestId: req.id });
+  const status = Number(err.status) >= 400 && Number(err.status) < 500 ? Number(err.status) : 500;
+  res.status(status).json({ error: status === 500 ? "Internal server error" : "Request could not be completed" });
 }

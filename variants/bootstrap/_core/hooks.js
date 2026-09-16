@@ -125,7 +125,7 @@ export function useAuth() {
 export function useAdminAccess(systemOnly = false) {
   const { user, ready, isAdmin } = useAuth();
   return { ready, allowed: systemOnly
-    ? ["admin", "system_admin"].includes(user?.role)
+    ? user?.role === "system_admin"
     : isAdmin };
 }
 

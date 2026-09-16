@@ -16,7 +16,9 @@ export function validateRegister({ name, email, password }) {
   const errors = {};
   if (!nonEmpty(name)) errors.name = "Name is required";
   if (!isEmail(email)) errors.email = "Enter a valid email address";
-  if (!minLen(password, 8)) errors.password = "Password must be at least 8 characters";
+  if (!minLen(password, 12) || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+    errors.password = "Use 12+ characters with upper, lower, and numeric characters";
+  }
   return { valid: Object.keys(errors).length === 0, errors };
 }
 

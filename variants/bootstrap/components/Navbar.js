@@ -28,6 +28,7 @@ export default function Navbar() {
             <li className="nav-item"><Link className="nav-link" href="/map" onClick={() => setOpen(false)}>Map</Link></li>
             <li className="nav-item"><Link className="nav-link" href="/about" onClick={() => setOpen(false)}>About</Link></li>
             {user && <li className="nav-item"><Link className="nav-link" href="/dashboard" onClick={() => setOpen(false)}>Dashboard</Link></li>}
+            {user && <li className="nav-item"><Link className="nav-link" href="/profile" onClick={() => setOpen(false)}>Profile</Link></li>}
             {user?.role === "hospital_admin" && <li className="nav-item"><Link className="nav-link" href="/hospital" onClick={() => setOpen(false)}>Hospital</Link></li>}
             {isAdmin && user?.role !== "hospital_admin" && <li className="nav-item"><Link className="nav-link" href="/admin" onClick={() => setOpen(false)}>Admin</Link></li>}
             {user ? (

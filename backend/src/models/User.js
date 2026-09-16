@@ -13,12 +13,15 @@ const userSchema = new mongoose.Schema(
       match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email"],
     },
     // select:false → never returned unless explicitly requested (login only).
-    passwordHash: { type: String, required: true, select: false },
+    passwordHash: { type: String, select: false },
+    googleSubject: { type: String, unique: true, sparse: true, select: false },
     name: { type: String, required: true, trim: true, maxlength: 120 },
     role: { type: String, enum: ROLE_VALUES, default: ROLES.USER },
     accountStatus: { type: String, enum: ACCOUNT_STATUS, default: "active" },
     lastLogin: { type: Date },
     emailVerifiedAt: { type: Date },
+    authVersion: { type: Number, default: 0, min: 0, select: false },
+    disabledAt: { type: Date },
     // Minimal profile only — NO medical data stored (privacy-by-design, scope §3.2).
     emergencyContact: { type: String, trim: true, maxlength: 120 },
     region: { type: String, trim: true, index: true },
@@ -28,10 +31,11 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.setPassword = async function (plain) {
-  this.passwordHash = await bcrypt.hash(plain, 10);
+  this.passwordHash = await bcrypt.hash(plain, 12);
 };
 
 userSchema.methods.comparePassword = function (plain) {
+  if (!this.passwordHash) return Promise.resolve(false);
   return bcrypt.compare(plain, this.passwordHash);
 };
 
@@ -45,6 +49,8 @@ userSchema.set("toJSON", {
   virtuals: true,
   transform: (_doc, ret) => {
     delete ret.passwordHash;
+    delete ret.googleSubject;
+    delete ret.authVersion;
     delete ret.__v;
     return ret;
   },

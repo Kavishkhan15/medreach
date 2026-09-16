@@ -11,12 +11,13 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "", name: "" });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
-  const [verificationLink, setVerificationLink] = useState("");
+  const [notice, setNotice] = useState("");
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   const submit = async (e) => {
     e.preventDefault();
     setServerError("");
+    setNotice("");
     const check = mode === "login" ? validateLogin(form) : validateRegister(form);
     setErrors(check.errors);
     if (!check.valid) return;
@@ -24,8 +25,8 @@ export default function LoginPage() {
       if (mode === "login") { await login(form.email, form.password); router.push("/"); }
       else {
         const result = await register({ email: form.email, password: form.password, name: form.name });
-        if (result.verificationLink) setVerificationLink(result.verificationLink);
-        else router.push("/");
+        if (result.accepted && !result.user) setNotice(result.message);
+        else router.push("/dashboard");
       }
     } catch (err) {
       setServerError(err.message);
@@ -39,7 +40,7 @@ export default function LoginPage() {
           <h1 className="h3 mb-1">{mode === "login" ? "Welcome back" : "Create account"}</h1>
           <p className="disclaimer mb-3">Sign in to save hospitals for quick access.</p>
           {serverError && <div className="alert alert-danger py-2">{serverError}</div>}
-          {verificationLink && <div className="alert alert-info" role="status">Account created. Email sending is disabled in this environment. <a href={verificationLink}>Verify your email with the local development link</a>, or <Link href="/dashboard">continue to your dashboard</Link>.</div>}
+          {notice && <div className="alert alert-success py-2" role="status">{notice}</div>}
           <form onSubmit={submit} noValidate className="vstack gap-3">
             {mode === "register" && (
               <div>
@@ -60,11 +61,17 @@ export default function LoginPage() {
             </div>
             <button className="btn btn-primary btn-lg" type="submit">{mode === "login" ? "Sign in" : "Create account"}</button>
           </form>
+          <div className="d-flex align-items-center gap-2 my-3" aria-hidden="true"><hr className="flex-grow-1" /><span className="small text-secondary">or</span><hr className="flex-grow-1" /></div>
+          <a className="btn btn-outline-dark w-100" href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/auth/google`}>
+            Continue with Google
+          </a>
+          <p className="disclaimer mt-2 mb-0">Google never shares your password with MedReach. Existing password accounts are never linked automatically.</p>
           <div className="text-center mt-3">
             <button className="btn btn-link p-0" onClick={() => { setMode(mode === "login" ? "register" : "login"); setErrors({}); }}>
-              {mode === "login" ? "Need an account? Register" : "Have an account? Sign in"}
+              {mode === "login" ? "Need an account? Register here" : "Have an account? Sign in"}
             </button>
           </div>
+          {mode === "login" && <p className="text-center mt-2 mb-0"><Link href="/register">Open the registration page</Link></p>}
           {mode === "login" && <p className="text-center mt-2 mb-0"><Link href="/forgot-password">Forgot password?</Link></p>}
           <p className="disclaimer text-center mt-2 mb-0">Demo: admin@medreach.test / Admin1234</p>
         </div>

@@ -93,6 +93,13 @@ export const applyToJob = asyncHandler(async (req, res) => {
     message: job.demo ? `Your simulation application for ${job.title} was recorded; it was not delivered as a real job application.` : `Your application for ${job.title} was submitted.`,
     relatedType: "JobApplication", relatedId: application._id,
     emailTemplate: "job_applied", emailData: { title: job.title, demo: job.demo } });
+  const hospital = await Hospital.findById(job.hospital).select("admins").lean();
+  for (const recipient of hospital?.admins || []) {
+    await notifyUser({ recipient, eventKey: `application:${application._id}:received:${recipient}`,
+      type: "job_application", title: "New job application", message: `${job.title} has a new application.`,
+      relatedType: "JobApplication", relatedId: application._id,
+      emailTemplate: "job_application_received", emailData: { title: job.title } });
+  }
   res.status(201).json({ application, demo: job.demo });
 });
 export const myApplications = asyncHandler(async (req, res) => {

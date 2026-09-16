@@ -12,7 +12,9 @@
     "seed:crawler-sources": "node scripts/seedCrawlerSources.js",
     "seed:product-demo": "node scripts/seedProductDemo.js --demo",
     "sync:hospital-resources": "node scripts/syncHospitalResources.js",
-    "test": "node --test"
+    "migrate:auth-security": "node scripts/migrateAuthSecurity.js",
+    "test": "node --test",
+    "smoke:auth": "node scripts/smokeAuthSecurity.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

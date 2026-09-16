@@ -19,6 +19,8 @@ import { runOne } from "../src/controllers/crawlerController.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
 import { expireEmergencyRequests } from "../src/services/emergencyRequestExpiry.js";
 import { signToken } from "../src/utils/token.js";
+import { AuthToken } from "../src/models/AuthToken.js";
+import { digestToken } from "../src/services/authTokenService.js";
 
 const uri = "mongodb://127.0.0.1:27017/medreach_product_integration";
 test("product workflow: register, ownership, request response, notifications, jobs, resources, analytics", {
@@ -30,21 +32,24 @@ test("product workflow: register, ownership, request response, notifications, jo
   const app = createApp();
   try {
     const register = await request(app).post("/api/auth/register").send({ name: "Test Patient", email: "patient@medreach.test", password: "SafePassword123" });
-    assert.equal(register.status, 201);
-    assert.match(register.body.verificationLink, /verify-email/);
-    const patientToken = register.body.token;
+    assert.equal(register.status, 202);
+    assert.equal("verificationLink" in register.body, false);
+    assert.equal("token" in register.body, false);
     const user = await User.findOne({ email: "patient@medreach.test" });
     assert.equal(await EmailDelivery.countDocuments({ status: "disabled" }) > 0, true);
-    const verifyToken = new URL(register.body.verificationLink).searchParams.get("token");
+    const verifyToken = "v".repeat(43);
+    await AuthToken.updateOne({ purpose: "verify_email", user: user._id }, { $set: { tokenHash: digestToken(verifyToken) } });
     const verified = await request(app).post("/api/auth/verify-email").send({ token: verifyToken });
     assert.equal(verified.status, 200);
     const forgot = await request(app).post("/api/auth/forgot-password").send({ email: "patient@medreach.test" });
     assert.equal(forgot.status, 200);
-    const resetToken = new URL(forgot.body.resetLink).searchParams.get("token");
+    const resetToken = "r".repeat(43);
+    await AuthToken.updateOne({ purpose: "reset_password", user: user._id }, { $set: { tokenHash: digestToken(resetToken) } });
     const reset = await request(app).post("/api/auth/reset-password").send({ token: resetToken, password: "NewPassword123" });
     assert.equal(reset.status, 200);
     const login = await request(app).post("/api/auth/login").send({ email: "patient@medreach.test", password: "NewPassword123" });
     assert.equal(login.status, 200);
+    const patientToken = signToken(await User.findById(user._id).select("+authVersion"));
     const staff = new User({ name: "Hospital Staff", email: "staff@medreach.test", role: "user" });
     await staff.setPassword("SafePassword123"); await staff.save();
     const admin = new User({ name: "System Admin", email: "admin@medreach.test", role: "system_admin" });
@@ -116,7 +121,7 @@ test("product workflow: register, ownership, request response, notifications, jo
     const staffList = await request(app).get("/api/emergency-requests").set("Authorization", `Bearer ${staffRoleToken}`);
     assert.equal(staffList.status, 200); assert.equal(staffList.body.data.length, 1);
     const noOtherStaffAccess = await request(app).get(`/api/emergency-requests/${reqId}`).set("Authorization", `Bearer ${signToken({ _id: new mongoose.Types.ObjectId(), role: "hospital_admin", email: "other@test.io", name: "Other" })}`);
-    assert.equal(noOtherStaffAccess.status, 403);
+    assert.equal(noOtherStaffAccess.status, 401);
     const review = await request(app).patch(`/api/emergency-requests/${reqId}`).set("Authorization", `Bearer ${staffRoleToken}`).send({ status: "UNDER_REVIEW" });
     assert.equal(review.status, 200);
     const accepted = await request(app).patch(`/api/emergency-requests/${reqId}`).set("Authorization", `Bearer ${staffRoleToken}`).send({ status: "ACCEPTED" });

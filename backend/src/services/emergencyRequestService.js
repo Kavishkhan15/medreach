@@ -47,7 +47,8 @@ export async function createEmergencyRequest(data, actor) {
   for (const { _id: adminId } of connectedStaff) {
     await notifyUser({ recipient: adminId, eventKey: `emergency:${request._id}:hospital:${adminId}`,
       type: "emergency_request", title: "New emergency request", message: `${request.requestId} needs review.`,
-      relatedType: "EmergencyRequest", relatedId: request._id });
+      relatedType: "EmergencyRequest", relatedId: request._id,
+      emailTemplate: "emergency_staff", emailData: { reference: request.requestId, hospital: hospital.name } });
   }
   return { request };
 }

@@ -120,6 +120,13 @@ npm run eval:results               # combined security + performance summary.jso
 npm run score                      # RWD Security Risk Score
 ```
 
+Authentication uses a short-lived access JWT plus an opaque, hashed, rotating
+refresh session in httpOnly cookies. Password, recovery, verification, session,
+Google OIDC, local/production callback, and Gmail App Password setup are documented
+in the [Bootstrap product guide](docs/Bootstrap_Product_Guide.md#google-console-setup).
+All backend variable names are in `backend/.env.example`; Google and SMTP secrets
+must never be placed in `NEXT_PUBLIC_*` variables.
+
 **AI Assistant is optional and off by default.** No extra setup is required to try it — it works immediately after `backend:dev` using the zero-config rule-based provider. To connect a real LLM instead, add to `backend/.env`:
 
 ```bash
@@ -137,7 +144,7 @@ The app works **without a backend**: `useSystemStatus` probes `/health`; if unre
 
 | Piece | State |
 |-------|-------|
-| `backend/` | ✅ 9 models, services, RBAC, availability time-series, verification+audit, crawler API, AI Assistant API — 43/43 tests |
+| `backend/` | ✅ models, rotating-session auth, Google OIDC, recovery/email, RBAC, availability time-series, verification+audit, crawler API, AI Assistant API |
 | `crawler/` | ✅ SSRF-safe modular pipeline — 76 tests (71 pass, 5 skipped live-network) |
 | `packages/core/` | ✅ deterministic brain (ranking/search/freshness/confidence/emergency/location/assistant), zero framework classes |
 | `variants/{bootstrap,tailwind,skeleton}/` | ✅ all build; identical routes/components; strict parity (only CSS differs) |

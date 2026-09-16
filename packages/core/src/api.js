@@ -8,13 +8,18 @@ const BASE =
 const clean = (obj = {}) =>
   Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined && v !== "" && v !== null));
 
-async function req(path, opts = {}) {
+async function req(path, opts = {}, retried = false) {
   const res = await fetch(`${BASE}${path}`, {
     credentials: "include",
     headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
     ...opts,
   });
   const json = await res.json().catch(() => ({}));
+  if (res.status === 401 && !retried && path !== "/api/auth/refresh") {
+    const refreshed = await fetch(`${BASE}/api/auth/refresh`, { method: "POST", credentials: "include",
+      headers: { "Content-Type": "application/json" } });
+    if (refreshed.ok) return req(path, opts, true);
+  }
   if (!res.ok) throw new Error(json.error || `Request failed (${res.status})`);
   return json;
 }
@@ -34,6 +39,12 @@ export const login = (email, password) =>
   req(`/api/auth/login`, { method: "POST", body: JSON.stringify({ email, password }) });
 export const logout = () => req(`/api/auth/logout`, { method: "POST" });
 export const me = () => req(`/api/auth/me`);
+export const authStatus = () => req(`/api/auth/sessions`);
+export const requestVerification = () => req(`/api/auth/request-verification`, { method: "POST" });
+export const updateProfile = (body) => req(`/api/auth/profile`, { method: "PUT", body: JSON.stringify(body) });
+export const changePassword = (body) => req(`/api/auth/password`, { method: "PUT", body: JSON.stringify(body) });
+export const revokeSession = (id) => req(`/api/auth/sessions/${id}`, { method: "DELETE" });
+export const unlinkGoogle = () => req(`/api/auth/providers/google`, { method: "DELETE", body: JSON.stringify({ confirm: "UNLINK" }) });
 
 // Registered-user features
 export const getSaved = () => req(`/api/users/me/saved`);
@@ -49,6 +60,13 @@ export const adminOverview = () => req(`/api/admin/overview`);
 export const adminVerifyHospital = (id, decision) =>
   req(`/api/admin/hospitals/${id}/verify`, { method: "POST", body: JSON.stringify({ decision }) });
 export const adminListAudit = () => req(`/api/admin/audit`);
+export const adminListUsers = () => req(`/api/admin/users`);
+export const adminSetUserStatus = (id, status) => req(`/api/admin/users/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) });
+export const adminSetUserRole = (id, role) => req(`/api/admin/users/${id}/role`, { method: "PATCH", body: JSON.stringify({ role }) });
+export const adminRevokeUserSessions = (id) => req(`/api/admin/users/${id}/revoke-sessions`, { method: "POST" });
+export const adminTriggerUserReset = (id) => req(`/api/admin/users/${id}/trigger-reset`, { method: "POST" });
+export const adminResendUserVerification = (id) => req(`/api/admin/users/${id}/resend-verification`, { method: "POST" });
+export const adminUnlinkUserGoogle = (id) => req(`/api/admin/users/${id}/providers/google`, { method: "DELETE", body: JSON.stringify({ confirm: "UNLINK" }) });
 export const listSources = () => req(`/api/sources`);
 export const createSource = (body) => req(`/api/sources`, { method: "POST", body: JSON.stringify(body) });
 export const listCrawlerJobs = (params = {}) =>
