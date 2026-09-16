@@ -60,6 +60,26 @@ export function firstMatch(html, re) {
   return m ? m[1].trim() : null;
 }
 
+// Minimal, safe decoder for the handful of named entities real hospital pages
+// actually use in titles/descriptions (&amp; &nbsp; &quot; etc.) plus numeric
+// entities. NOT a full HTML parser — deliberately narrow so it can't be used
+// to smuggle markup; output is always plain text.
+const NAMED_ENTITIES = {
+  amp: "&", nbsp: " ", quot: '"', apos: "'", lt: "<", gt: ">", "#39": "'",
+};
+export function decodeHtmlEntities(s) {
+  if (typeof s !== "string") return s;
+  return s.replace(/&(#\d+|#x[0-9a-f]+|[a-z]+);/gi, (whole, code) => {
+    const key = code.toLowerCase();
+    if (NAMED_ENTITIES[key] !== undefined) return NAMED_ENTITIES[key];
+    if (key[0] === "#") {
+      const codePoint = key[1] === "x" ? parseInt(key.slice(2), 16) : parseInt(key.slice(1), 10);
+      if (Number.isFinite(codePoint)) { try { return String.fromCodePoint(codePoint); } catch { return whole; } }
+    }
+    return whole; // unknown entity — leave as-is rather than guess
+  });
+}
+
 // ---- contact parser (phones/email/address) --------------------------------
 // Phones: capture tel: links first (most reliable), else Indian phone patterns.
 export function parseContacts(html) {
@@ -76,7 +96,8 @@ export function parseContacts(html) {
 // CAPABILITY only. Detects mention of emergency/casualty/24-hour ER. Never infers
 // live availability. Returns { hasEmergencyDept: 'yes'|'unknown', emergencyPhone }.
 export function parseEmergency(html) {
-  const text = stripTags(html).toLowerCase();
+  const plainText = stripTags(html);
+  const text = plainText.toLowerCase();
   const mentionsER =
     /\b(emergency|casualty|accident\s*(?:and|&)?\s*emergency|24[-\s]?hour(?:s)?\s+(?:emergency|care)|trauma)\b/.test(text);
   // An "emergency number" near the word emergency, from tel: links.
@@ -84,6 +105,7 @@ export function parseEmergency(html) {
   return {
     hasEmergencyDept: mentionsER ? "yes" : "unknown",
     emergencyPhone: emNear ? emNear.trim() : null,
+    evidenceText: mentionsER ? evidenceAround(plainText, /\b(emergency|casualty|trauma)\b/i) : null,
   };
 }
 
@@ -91,7 +113,11 @@ export function parseEmergency(html) {
 // Detects CAPABILITY (facility exists) by keyword presence in page text.
 // Returns list of { facility(raw), capability:'yes' }. Availability stays unknown.
 const FACILITY_KEYWORDS = {
-  ICU: [/\bicu\b/, /intensive care/, /critical care unit/],
+  ICU: [/\bicu\b/, /intensive care/, /critical care unit/, /\bmicu\b/, /\bsicu\b/, /\baicu\b/],
+  NICU: [/\bnicu\b/, /neonatal (?:icu|intensive care)/],
+  PICU: [/\bpicu\b/, /pa?ediatric (?:icu|intensive care)/],
+  CCU: [/\bccu\b/, /\biccu\b/, /cardiac icu/, /coronary care/],
+  "Trauma ICU": [/trauma icu/, /trauma intensive care/],
   "Emergency Department": [/emergency department/, /accident (?:and|&) emergency/, /casualty/],
   "Trauma Center": [/trauma (?:center|centre|care)/],
   Cardiology: [/cardiac (?:care|sciences)/, /cardiology/, /\bcath ?lab\b/],
@@ -100,6 +126,7 @@ const FACILITY_KEYWORDS = {
   Maternity: [/maternity|obstetric|gynaec|mother\s*(?:and|&)?\s*child/],
   "Burns Unit": [/burns? (?:unit|ward|care)/],
   "Blood Bank": [/blood bank/],
+  Dialysis: [/dialysis|haemodialysis|hemodialysis/],
   CT: [/\bct scan\b|\bct\b|computed tomography/],
   MRI: [/\bmri\b|magnetic resonance/],
   Ventilator: [/ventilator/],
@@ -109,12 +136,28 @@ const FACILITY_KEYWORDS = {
 };
 
 export function parseFacilities(html) {
-  const text = stripTags(html).toLowerCase();
+  const text = stripTags(html);
+  const lower = text.toLowerCase();
   const found = [];
   for (const [facility, patterns] of Object.entries(FACILITY_KEYWORDS)) {
-    if (patterns.some((re) => re.test(text))) found.push({ facility, capability: "yes" });
+    const matchingPattern = patterns.find((re) => re.test(lower));
+    if (matchingPattern) found.push({
+      facility,
+      capability: "yes",
+      evidenceText: evidenceAround(text, new RegExp(matchingPattern.source, "i")),
+    });
   }
   return found;
+}
+
+// A bounded excerpt of the actual fetched page, retained for human review.
+// This is evidence of a keyword match, not independent proof of capability.
+function evidenceAround(text, pattern) {
+  const match = pattern.exec(text);
+  if (!match) return null;
+  const start = Math.max(0, match.index - 75);
+  const end = Math.min(text.length, match.index + match[0].length + 75);
+  return text.slice(start, end).trim().slice(0, 200);
 }
 
 // ---- specialty parser ------------------------------------------------------
@@ -161,8 +204,8 @@ export function parseHospital(html, jsonldNode = null) {
   const website = looksLikeUrl(rawWebsite) ? rawWebsite : null;
 
   return {
-    name: name ? name.trim() : null,
-    description: description ? description.trim() : null,
+    name: name ? decodeHtmlEntities(name.trim()) : null,
+    description: description ? decodeHtmlEntities(description.trim()) : null,
     website,
     address: typeof addr === "string" ? addr : addr.streetAddress || null,
     locality: addr.addressLocality || null,

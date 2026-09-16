@@ -5,7 +5,7 @@
 <h1 align="center">MedReach</h1>
 
 <p align="center">
-  <strong>A research-grade emergency hospital discovery platform for Mumbai — and a controlled testbed for empirically comparing three CSS frameworks.</strong>
+  <strong>A source-aware healthcare discovery and emergency-request coordination platform for Mumbai.</strong>
 </p>
 
 <p align="center">
@@ -14,7 +14,9 @@
 
 ---
 
-MedReach helps a person answer, with minimum friction: *I need emergency care → where am I? → what kind of emergency? → here are the most relevant hospitals → here's what is known about their current capability → CALL or NAVIGATE.*
+MedReach helps a person find hospitals and other healthcare resources, inspect the evidence behind a listing, send an emergency bed request to connected hospital staff, and track the response. A request is not a reservation; static capability is not live availability.
+
+The [Bootstrap product guide](docs/Bootstrap_Product_Guide.md) describes the working product, local setup, APIs, external configuration, and limitations. Earlier [target architecture](docs/MedReach_Target_Architecture.md) and [implementation inventory](docs/MedReach_Implementation_Inventory.md) remain planning snapshots.
 
 It is deliberately **deterministic and transparent**: rule-based ranking with inspectable reasons, honest data freshness and confidence, verified sources with provenance. The core discovery/ranking engine is **NO AI/ML, no LLM, no diagnosis, no prediction** — it never implies it is an official emergency service. The one place a large-language-model provider *may* optionally sit is the AI Assistant chat, and even there it defaults to a fully deterministic rule-based provider with zero external calls and is contractually forbidden from fabricating hospital data or diagnosing anyone. → [AI Assistant docs](docs/ai-assistant.md)
 
@@ -22,9 +24,9 @@ It is also an empirical extension of **Almeida & Sousa (2026)**, *"Security Risk
 
 ## Core research constraint
 
-The backend, database, API, authentication, shared business logic, HTML information architecture, accessibility semantics, and security headers/CSP are **shared and identical** across all three frontend variants. **The CSS framework is the only deliberately-varied factor.**
+The **current implementation phase uses Bootstrap as the sole active product frontend**. Tailwind and Skeleton remain in the repository for the later controlled CSS-framework study. Do not use the present expanded application for a three-way comparison until frontend parity is restored and reverified.
 
-No business logic, hospital search, ranking, freshness/confidence computation, or AI Assistant logic is ever written inside `variants/*`. That logic lives once, in `packages/core` (framework-agnostic, zero CSS classes) and `backend/` (shared API). Each variant only supplies `className` values and its own CSS bundle around identical components, routes, and behavior.
+Hospital search, ranking, freshness/confidence, data fusion, and workflow rules live in `packages/core` and `backend/`. Bootstrap currently contains presentation and API-connected forms for the new product modules; the other variants have not yet received those screens.
 
 ## Built with
 
@@ -56,11 +58,11 @@ medreach/
 │   └── skeleton/    Next.js + Skeleton CSS
 ├── evaluation/      4-axis pipeline + RWD Security Risk Score
 ├── user-study/      IRB protocol, consent, SUS + NASA-TLX
-├── run.sh           launches backend + all 3 variants together, one Ctrl+C stops all
+├── run.sh           launches backend + Bootstrap only for this product phase
 └── .github/workflows/  CI: build + evaluation
 ```
 
-Each variant has the **same routes** (`/`, `/hospitals`, `/hospitals/[slug]`, `/emergency`, `/map`, `/login`, `/admin` + 6 admin sub-routes) and the **same components** (SystemBanner, Navbar, SOS, AiAssistantModal, StatusPill, DataFreshness, FacilityStatus, EmergencyCategorySelector, HospitalCard, HospitalList, AdminNav, AdminGuard). Only CSS differs.
+Bootstrap includes the expanded routes for requests, hospital operations, resources, careers, notifications, analytics and account recovery. Tailwind and Skeleton still reflect the earlier research baseline.
 
 ## What's inside
 
@@ -70,10 +72,13 @@ Each piece below is intentionally kept short here — click through for the full
 |---|---|---|
 | 🏥 **Emergency discovery** | Pick an emergency category, get hospitals ranked by a transparent weighted score, call or navigate in one tap. GPS is opt-in and never stored. | [`docs/data-model.md`](docs/data-model.md) (ranking formula) |
 | 🤖 **AI Assistant** | A 4th action in the Emergency Help modal opens a chat that finds hospitals and explains capability — never fabricates data, never diagnoses, always keeps Call 112/102 one tap away, provider is swappable via env var. | [`docs/ai-assistant.md`](docs/ai-assistant.md) |
-| 🕷️ **Crawler** | Standalone, SSRF-safe pipeline that ingests publicly available capability data from 4 approved Mumbai hospital sites. Never runs inside a frontend process. | [`docs/crawler.md`](docs/crawler.md) |
+| 🕷️ **Crawler** | Registry-bound pipeline with nine approved sources, including government directories. A server worker checks source-specific schedules; blocked sources stay blocked. | [`docs/crawler.md`](docs/crawler.md) |
+| 🚑 **Emergency requests** | Users submit a request; connected hospital staff can review and respond; the timeline and in-app notifications track changes. No bed is booked automatically. | [`docs/Bootstrap_Product_Guide.md`](docs/Bootstrap_Product_Guide.md) |
+| 🩸 **Care resources** | Source-backed blood-bank, diagnostic and ambulance listings, plus optional clearly labeled demo fixtures. | [`docs/Bootstrap_Product_Guide.md`](docs/Bootstrap_Product_Guide.md) |
+| 💼 **Careers** | Hospital job drafts, admin moderation, applications and status tracking. | [`docs/Bootstrap_Product_Guide.md`](docs/Bootstrap_Product_Guide.md) |
 | 🛠️ **Admin** | Role-gated dashboards for hospital verification, data sources, crawler job history, alerts, and an audited log with hashed IPs. | [`docs/api.md`](docs/api.md#admin) |
 | 🧩 **Shared API** | Every REST endpoint the frontends and admin dashboards call. | [`docs/api.md`](docs/api.md) |
-| 🗄️ **Data model** | 9 Mongoose models, plus the deterministic freshness/confidence/ranking engines. | [`docs/data-model.md`](docs/data-model.md) |
+| 🗄️ **Data model** | Provenance and conflict claims plus request, ownership, provider, job, notification, email and refinement records. | [`docs/data-model.md`](docs/data-model.md) |
 | 🔒 **Security** | Helmet CSP, rate limiting, RBAC, input validation, secret handling — identical across all 3 variants. | [`docs/security.md`](docs/security.md) |
 | 🕵️ **Privacy** | What's stored, what's never stored, and why. | [`docs/privacy.md`](docs/privacy.md) |
 | 🚀 **Deployment** | Env vars, per-piece deploy steps, and the Bootstrap variant's standalone-build vendoring. | [`docs/deployment.md`](docs/deployment.md) |
@@ -88,11 +93,12 @@ npm install                        # from repo root (installs all workspaces)
 
 # Backend (needs MongoDB, e.g. mongod --dbpath /tmp/medreach-mongo --fork --logpath /tmp/medreach-mongo/m.log)
 cp backend/.env.example backend/.env   # then edit; never commit the real .env
-npm run backend:seed               # demo data: admin@medreach.test / Admin1234
+npm --workspace @medreach/backend run seed:product-demo   # additive, clearly labeled product fixtures
+npm --workspace @medreach/backend run sync:hospital-resources # derive listings from real hospital claims
 npm run backend:dev                # API on :4000
 
 # Crawler (runs standalone, never inside the frontend)
-npm run crawler:test               # 76 tests (71 pass, 5 skipped — live-network, opt-in)
+npm run crawler:test               # offline crawler suite; live-network cases are opt-in
 npm run crawl:list                 # list approved sources
 npm run crawl -- --source lilavati --dry-run   # dry-run a single source, no writes
 
@@ -100,12 +106,10 @@ npm run crawl -- --source lilavati --dry-run   # dry-run a single source, no wri
 npm --workspace @medreach/backend run seed:crawler-sources
 
 # Tests
-npm test                           # backend (43) + crawler (76)
+npm test                           # backend + crawler suites
 
-# Variants (each reads NEXT_PUBLIC_API_URL, default http://localhost:4000)
+# Active Bootstrap product frontend (reads NEXT_PUBLIC_API_URL, default http://localhost:4000)
 npm --workspace @medreach/variant-bootstrap run dev   # :3000
-npm --workspace @medreach/variant-tailwind  run dev   # :3001
-npm --workspace @medreach/variant-skeleton  run dev   # :3002
 # ...or launch backend + all three variants together (one Ctrl+C stops all):
 ./run.sh
 

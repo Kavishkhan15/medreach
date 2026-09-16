@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://medreach.example/contracts/hospital-facility-view.schema.json",
+  "title": "MedReach public facility view",
+  "description": "An additive public API contract. Capability is a sourced static property; status is verified current availability. Unknown is never converted to zero.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["facility", "capability", "capabilityConflict", "status", "count", "confidence", "capabilitySource", "availabilitySource", "availabilityMethod", "observedAt", "lastObservedAt"],
+  "properties": {
+    "facility": { "type": "string", "minLength": 1 },
+    "capability": { "enum": ["yes", "no", "unknown"] },
+    "capabilityConflict": { "type": "boolean" },
+    "status": { "enum": ["available", "limited", "unavailable", "unknown"] },
+    "count": { "type": ["integer", "null"], "minimum": 0 },
+    "confidence": { "enum": ["HIGH", "MEDIUM", "LOW", "UNKNOWN"] },
+    "capabilitySource": { "type": ["string", "null"] },
+    "availabilitySource": { "type": ["string", "null"] },
+    "availabilityMethod": { "enum": ["hospital_staff", "data_source", null] },
+    "observedAt": { "type": ["string", "null"], "format": "date-time" },
+    "lastObservedAt": { "type": ["string", "null"], "format": "date-time" }
+  }
+}

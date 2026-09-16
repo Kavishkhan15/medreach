@@ -4,8 +4,9 @@
 export const HOSPITAL_TYPES = ["Government", "Private", "Trust", "Municipal", "Teaching", "Specialty"];
 
 export const FACILITY_TYPES = [
-  "ICU", "Emergency Department", "Trauma Center", "Cardiology", "Neurology",
-  "Pediatrics", "Maternity", "Burns Unit", "Blood Bank", "CT", "MRI",
+  "ICU", "NICU", "PICU", "CCU", "Trauma ICU",
+  "Emergency Department", "Trauma Center", "Cardiology", "Neurology",
+  "Pediatrics", "Maternity", "Burns Unit", "Blood Bank", "Dialysis", "CT", "MRI",
   "Ventilator", "Operating Theatre", "Pharmacy", "Ambulance",
 ];
 
@@ -14,7 +15,6 @@ export const AVAILABILITY_STATUS = ["available", "limited", "unavailable", "unkn
 export const SORT_OPTIONS = [
   { value: "recommended", label: "Recommended" },
   { value: "nearest", label: "Nearest" },
-  { value: "fastest", label: "Fastest travel" },
   { value: "suitable", label: "Most suitable" },
   { value: "updated", label: "Recently updated" },
 ];

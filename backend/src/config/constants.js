@@ -33,6 +33,10 @@ export const VERIFICATION_STATUS = ["unverified", "pending", "verified", "reject
 // ---- Facilities ----
 export const FACILITY_TYPES = [
   "ICU",
+  "NICU",
+  "PICU",
+  "CCU",
+  "Trauma ICU",
   "Emergency Department",
   "Trauma Center",
   "Cardiology",
@@ -41,6 +45,7 @@ export const FACILITY_TYPES = [
   "Maternity",
   "Burns Unit",
   "Blood Bank",
+  "Dialysis",
   "CT",
   "MRI",
   "Ventilator",
@@ -58,11 +63,17 @@ export const AVAILABILITY_STATUS = ["available", "limited", "unavailable", "unkn
 export const EMERGENCY_STATUS = ["available", "limited", "full", "closed"];
 
 // ---- Data sources ----
+// Exact 5-type list per the ingestion-system spec. "government" and "manual"
+// are kept as legacy aliases (existing seeded DataSource docs / tests use
+// them) so this rename never breaks previously-seeded data.
 export const SOURCE_TYPES = [
-  "official_api",
   "hospital_site",
-  "government",
+  "government_directory",
+  "official_api",
   "authorized_feed",
+  "manual_verification",
+  // legacy aliases, still accepted:
+  "government",
   "manual",
   "other",
 ];
@@ -118,9 +129,11 @@ export const CONFIDENCE_LEVELS = ["HIGH", "MEDIUM", "LOW", "UNKNOWN"];
 // ---- Source reliability weighting (0..1) used by the confidence engine ----
 export const SOURCE_RELIABILITY = {
   official_api: 1.0,
-  government: 0.9,
+  government_directory: 0.85,
+  government: 0.85, // legacy alias
   authorized_feed: 0.8,
   hospital_site: 0.6,
-  manual: 0.7,
+  manual_verification: 0.75,
+  manual: 0.75, // legacy alias
   other: 0.3,
 };

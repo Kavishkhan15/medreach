@@ -4,7 +4,7 @@
 // to be a medical recommendation — wording is "best match based on selected filters".
 
 import { emergencyCategory } from "./emergency.js";
-import { distanceKm, estimateEtaMinutes } from "./location.js";
+import { distanceKm } from "./location.js";
 
 // Weights sum to 1. Documented in docs/architecture.md / data-model.md.
 export const RANK_WEIGHTS = {
@@ -25,6 +25,7 @@ function facilityStatus(hospital, facility) {
 
 // Score one hospital for an (optional) emergency category and origin coordinates.
 // Returns { score (0..1), reasons: string[], distanceKm, etaMinutes }.
+// etaMinutes remains null until an actual routing integration supplies it.
 export function scoreHospital(hospital, { categoryId = null, origin = null } = {}) {
   const reasons = [];
   const category = categoryId ? emergencyCategory(categoryId) : null;
@@ -54,17 +55,15 @@ export function scoreHospital(hospital, { categoryId = null, origin = null } = {
     if (openOnes.length) reasons.push(`${openOnes.join(", ")} available`);
   }
 
-  // 4. Travel efficiency (closer/faster = better). Only when origin is known.
+  // 4. Proximity by straight-line distance. It is not a route or travel time.
   let travelEfficiency = 0.5;
   let dkm = null;
-  let eta = null;
   const coords = hospital.location?.coordinates;
   if (origin && coords && (coords[0] || coords[1])) {
     dkm = distanceKm([origin.lng, origin.lat], coords);
-    eta = estimateEtaMinutes(dkm);
     // 0 km → 1.0, decays; ~20km → ~0.
     travelEfficiency = Math.max(0, 1 - dkm / 20);
-    if (eta != null) reasons.push(`Estimated ${eta} min away (~${dkm.toFixed(1)} km)`);
+    reasons.push(`${dkm.toFixed(1)} km straight-line distance; travel time unavailable`);
   }
 
   // 5. Data confidence (best facility confidence, else hospital verification).
@@ -85,7 +84,7 @@ export function scoreHospital(hospital, { categoryId = null, origin = null } = {
     score: +score.toFixed(4),
     reasons,
     distanceKm: dkm,
-    etaMinutes: eta,
+    etaMinutes: null,
     components: { emergencySuitability, specialtyMatch, facilityAvailability, travelEfficiency, dataConfidence },
   };
 }

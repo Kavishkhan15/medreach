@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, validateLogin, validateRegister } from "@medreach/core";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "", name: "" });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
+  const [verificationLink, setVerificationLink] = useState("");
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   const submit = async (e) => {
@@ -19,9 +21,12 @@ export default function LoginPage() {
     setErrors(check.errors);
     if (!check.valid) return;
     try {
-      if (mode === "login") await login(form.email, form.password);
-      else await register({ email: form.email, password: form.password, name: form.name });
-      router.push("/");
+      if (mode === "login") { await login(form.email, form.password); router.push("/"); }
+      else {
+        const result = await register({ email: form.email, password: form.password, name: form.name });
+        if (result.verificationLink) setVerificationLink(result.verificationLink);
+        else router.push("/");
+      }
     } catch (err) {
       setServerError(err.message);
     }
@@ -34,6 +39,7 @@ export default function LoginPage() {
           <h1 className="h3 mb-1">{mode === "login" ? "Welcome back" : "Create account"}</h1>
           <p className="disclaimer mb-3">Sign in to save hospitals for quick access.</p>
           {serverError && <div className="alert alert-danger py-2">{serverError}</div>}
+          {verificationLink && <div className="alert alert-info" role="status">Account created. Email sending is disabled in this environment. <a href={verificationLink}>Verify your email with the local development link</a>, or <Link href="/dashboard">continue to your dashboard</Link>.</div>}
           <form onSubmit={submit} noValidate className="vstack gap-3">
             {mode === "register" && (
               <div>
@@ -59,6 +65,7 @@ export default function LoginPage() {
               {mode === "login" ? "Need an account? Register" : "Have an account? Sign in"}
             </button>
           </div>
+          {mode === "login" && <p className="text-center mt-2 mb-0"><Link href="/forgot-password">Forgot password?</Link></p>}
           <p className="disclaimer text-center mt-2 mb-0">Demo: admin@medreach.test / Admin1234</p>
         </div>
       </div>

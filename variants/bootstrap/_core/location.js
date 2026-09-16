@@ -27,14 +27,6 @@ export function distanceKm([lng1, lat1], [lng2, lat2]) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// Deterministic, clearly-labelled ETA ESTIMATE from distance (no live traffic).
-// Assumes ~22 km/h average urban speed. Callers must present this as an estimate,
-// and show "Travel time unavailable" when origin is unknown.
-export function estimateEtaMinutes(distanceKmValue, avgSpeedKmh = 22) {
-  if (distanceKmValue == null || !isFinite(distanceKmValue)) return null;
-  return Math.max(1, Math.round((distanceKmValue / avgSpeedKmh) * 60));
-}
-
 // Promise wrapper around the browser Geolocation API with graceful handling.
 // Returns { lat, lng } or throws an Error with a human-readable message.
 export function getBrowserLocation({ timeout = 8000 } = {}) {

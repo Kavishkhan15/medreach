@@ -1,8 +1,11 @@
 # Data Model
 
-Mongoose models in `backend/src/models`. All scoring is **deterministic and
-rule-based** — there is **no AI/ML/LLM** anywhere. Every derived value
-(confidence, freshness, ranking) can be explained by inspectable inputs.
+Mongoose models in `backend/src/models`. Hospital matching, confidence,
+freshness, and ranking remain **deterministic and rule-based**. The existing
+optional assistant is separate, and the proposed Gemini refinement pipeline
+may only create cited claims for review; neither is an authority for current
+availability. Every published derived value must be explainable from
+inspectable inputs.
 
 ## Models
 
@@ -28,16 +31,38 @@ rule-based** — there is **no AI/ML/LLM** anywhere. Every derived value
 - Indexes: text + `2dsphere`
 
 ### HospitalFacility
-- `hospital`, `facility` enum, `status` availability enum
-- `count` — nullable; `null` means quantity is not exposed unless the source
-  supports it
+- `hospital`, `facility` enum, `capability` (`yes | no | unknown`)
+- `capabilityConflict` records whether non-rejected sources disagree, even when
+  a verified claim selects a value.
+- Legacy `status` remains in storage for compatibility but crawler writes keep it
+  `unknown`. It is **not** used as current availability by the public API.
+- `count` is legacy storage; the public API only publishes a quantity from a
+  recent, verified `AvailabilityObservation`.
 - `lastUpdated`, `source`, `confidence`
 - Unique index on `hospital + facility`
+
+### FacilitySourceClaim
+- One current capability assertion per `hospital + facility + DataSource`, with
+  source page URL, observed timestamp, confidence, and review status.
+- The resolver keeps unreviewed disagreements as `unknown`. A verified claim
+  can select a value while the dispute flag remains; opposed verified claims
+  remain `unknown`. `CrawlResult` retains earlier crawl payloads for history.
+- System administrators review source claims at `/api/admin/facility-claims`;
+  the action is audited and recalculates the materialized `HospitalFacility`.
 
 ### AvailabilityObservation (append-only time-series)
 - `hospital`, `facility`, `status`, `quantity`
 - `source`, `observedAt`, `retrievedAt`, `confidence`, `verificationStatus`
+- `verifiedBy` identifies an assigned hospital staff or system administrator
+  when the observation was entered through the protected API.
 - Index: `hospital + facility + retrievedAt` (descending)
+
+The public hospital and facility endpoints compose these two collections using
+[`hospital-facility-view.schema.json`](contracts/hospital-facility-view.schema.json).
+Current availability requires a verified observation no older than 30 minutes;
+otherwise status and quantity are `unknown` and `null`. A static source may
+confirm capability but cannot imply current beds. The old hospital-level
+`bedsAvailable: 0` default is suppressed as `null` in public read views.
 
 ### DataSource
 - `name`, `type` enum: `official_api | hospital_site | government |

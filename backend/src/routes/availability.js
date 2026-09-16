@@ -19,6 +19,7 @@ router.post(
   body("facility").isIn(FACILITY_TYPES),
   body("status").isIn(AVAILABILITY_STATUS),
   body("quantity").optional().isInt({ min: 0 }),
+  body("observedAt").optional().isISO8601(),
   validate,
   recordObservation
 );

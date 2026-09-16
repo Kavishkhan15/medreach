@@ -9,6 +9,7 @@ const DEFAULTS = {
   retries: 2,
   backoffMs: 500,
   maxBytes: 2 * 1024 * 1024, // 2 MB cap
+  maxRedirects: 5,
   userAgent: "MedReachBot/0.1 (+https://medreach.example/bot)",
 };
 
@@ -37,9 +38,22 @@ export async function httpFetch(rawUrl, opts = {}) {
       if (res.status >= 300 && res.status < 400) {
         const loc = res.headers.get?.("location");
         if (!loc) return { ok: false, status: res.status, reason: "redirect_no_location", body: null };
-        const next = new URL(loc, safe.url).href;
+        let next;
+        try { next = new URL(loc, safe.url).href; }
+        catch { return { ok: false, status: res.status, reason: "invalid_redirect", body: null }; }
         if (!assertSafeUrl(next).ok) return { ok: false, status: res.status, reason: "unsafe_redirect", body: null };
-        return httpFetch(next, { ...opts, retries: 0 });
+        if ((opts.redirectCount || 0) >= cfg.maxRedirects) {
+          return { ok: false, status: res.status, reason: "too_many_redirects", body: null };
+        }
+        // A caller with a source registry can enforce its own host/path/robots
+        // policy on every hop before any network request is made.
+        if (opts.validateRedirect) {
+          const decision = await opts.validateRedirect(next);
+          if (!decision.ok) {
+            return { ok: false, status: res.status, reason: decision.reason || "redirect_not_allowed", body: null };
+          }
+        }
+        return httpFetch(next, { ...opts, retries: 0, redirectCount: (opts.redirectCount || 0) + 1 });
       }
 
       // Retryable server/rate-limit statuses: 429 + 5xx. 4xx (401/403/404) are
@@ -63,7 +77,8 @@ export async function httpFetch(rawUrl, opts = {}) {
       const body = await res.text();
       if (body.length > cfg.maxBytes) return { ok: false, status: res.status, reason: "too_large", body: null };
       const ok = res.status >= 200 && res.status < 300;
-      return { ok, status: res.status, reason: ok ? null : "http_error", body, contentType };
+      return { ok, status: res.status, reason: ok ? null : "http_error", body, contentType,
+        finalUrl: safe.url.href };
     } catch (err) {
       clearTimeout(timer);
       lastErr = err;

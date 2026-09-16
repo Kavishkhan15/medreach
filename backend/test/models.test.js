@@ -66,6 +66,10 @@ test("HospitalFacility: enum-gated status + facility", () => {
   assert.ok(FACILITY_TYPES.includes("ICU") && AVAILABILITY_STATUS.includes("available"));
   const bad = new HospitalFacility({ hospital: "507f1f77bcf86cd799439011", facility: "Teleporter" });
   assert.ok(bad.validateSync()?.errors?.facility);
+  const capability = new HospitalFacility({ hospital: "507f1f77bcf86cd799439011", facility: "ICU", capability: "yes" });
+  assert.equal(capability.validateSync(), undefined);
+  const invalidCapability = new HospitalFacility({ hospital: "507f1f77bcf86cd799439011", facility: "ICU", capability: "available" });
+  assert.ok(invalidCapability.validateSync()?.errors?.capability);
 });
 
 test("AvailabilityObservation: defaults retrievedAt, gates status", () => {

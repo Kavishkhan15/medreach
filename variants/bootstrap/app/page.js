@@ -11,15 +11,18 @@ export default function HomePage() {
     <>
       <section className="emergency-hero mb-4">
         <p className="text-uppercase fw-bold mb-2" style={{ letterSpacing: ".1em", opacity: .9 }}>MedReach</p>
-        <h1 className="mb-2">Emergency care. When every second matters.</h1>
+        <h1 className="mb-2">Find the right healthcare resource when it matters.</h1>
         <p className="lead mb-4" style={{ maxWidth: "48ch" }}>
-          Find the most relevant emergency hospitals near you in Mumbai, with transparent,
-          rule-based ranking — no guesswork, no fabricated availability.
+          Discover Mumbai hospitals and emergency resources with source-backed facts,
+          clear freshness, and honest availability. Coordinate a request with hospital staff.
         </p>
         <div className="d-flex flex-wrap gap-2">
           <Link href="/emergency" className="btn btn-emergency btn-lg">🚨 Find emergency hospital</Link>
           <Link href="/hospitals" className="btn btn-outline-light btn-lg">View all hospitals</Link>
           <Link href="/map" className="btn btn-outline-light btn-lg">Open map</Link>
+          <Link href="/blood-banks" className="btn btn-outline-light btn-lg">Blood banks</Link>
+          <Link href="/diagnostics" className="btn btn-outline-light btn-lg">Diagnostics</Link>
+          <Link href="/ambulances" className="btn btn-outline-light btn-lg">Ambulances</Link>
         </div>
       </section>
 
@@ -28,7 +31,7 @@ export default function HomePage() {
           {[
             { t: "Transparent ranking", d: "Every result explains why it ranked where it did — specialty match, ER status, distance, data confidence.", icon: "radar" },
             { t: "Honest freshness", d: "We show when each availability was last updated, and say “unknown” rather than guess.", icon: "clock" },
-            { t: "Verified sources", d: "Data carries provenance and a verification state. No AI, no fabricated numbers.", icon: "verified" },
+            { t: "Verified sources", d: "Data carries provenance and a verification state. We never infer live capacity from static pages.", icon: "verified" },
           ].map((c) => (
             <div className="col-12 col-md-4" key={c.t}>
               <div className="surface h-100">

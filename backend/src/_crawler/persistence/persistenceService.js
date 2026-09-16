@@ -9,7 +9,7 @@
 //
 // repo contract (all async):
 //   findHospitalBySourceId(sourceId) -> hospital|null
-//   getPreviousRecord(hospitalId)    -> normalizedRecord|null
+//   getPreviousRecord(hospitalId, sourceId) -> normalizedRecord|null
 //   upsertHospital(record)           -> hospital (has _id)
 //   saveFacilityCapability(hospitalId, facility, {capability, source, confidence, at})
 //   addObservation(observation)      -> observation
@@ -44,7 +44,7 @@ export class PersistenceService {
     }
 
     const existing = await this.repo.findHospitalBySourceId(result.sourceId);
-    const previous = existing ? await this.repo.getPreviousRecord(existing._id) : null;
+    const previous = existing ? await this.repo.getPreviousRecord(existing._id, result.sourceId) : null;
     const { classification, changedFields, anomaly } = detectChange(previous, record);
     result.classification = anomaly ? "PARSING_ANOMALY" : classification;
     result.anomaly = anomaly;
@@ -67,21 +67,24 @@ export class PersistenceService {
       return result;
     }
 
-    // Persist hospital identity (capability-level, mutable).
-    const hospital = await this.repo.upsertHospital(record);
-    if (existing) result.recordsUpdated = 1; else result.recordsCreated = 1;
-
     const conf = confidenceLevel({
       sourceType: source?.sourceType || "hospital_site",
       timestamp: record.retrievedAt,
       verified: false,
       parseQuality: record.facilities.length ? 1 : 0.5,
     });
+    // Give the identity/contact field claims the same deterministic confidence
+    // as this source's facility claims, without changing the normalized record.
+    const hospital = await this.repo.upsertHospital({ ...record, confidence: conf });
+    if (existing) result.recordsUpdated = 1; else result.recordsCreated = 1;
 
     // Facility CAPABILITY (latest known) + append-only AVAILABILITY observation.
     for (const f of record.facilities) {
       await this.repo.saveFacilityCapability(hospital._id, f.facility, {
         capability: f.capability, source: result.sourceId, confidence: conf, at: record.retrievedAt,
+        sourcePageUrl: f.sourcePageUrl || record.provenance.sourcePageUrl,
+        evidenceText: f.evidenceText || null,
+        parserVersion: record.provenance.parserVersion,
       });
       await this.repo.addObservation({
         hospitalId: hospital._id,

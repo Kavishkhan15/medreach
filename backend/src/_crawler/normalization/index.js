@@ -2,8 +2,9 @@
 // Sanitizes strings and coerces status vocabularies to the 4 canonical states.
 
 const FACILITY_TYPES = new Set([
-  "ICU", "Emergency Department", "Trauma Center", "Cardiology", "Neurology",
-  "Pediatrics", "Maternity", "Burns Unit", "Blood Bank", "CT", "MRI",
+  "ICU", "NICU", "PICU", "CCU", "Trauma ICU",
+  "Emergency Department", "Trauma Center", "Cardiology", "Neurology",
+  "Pediatrics", "Maternity", "Burns Unit", "Blood Bank", "Dialysis", "CT", "MRI",
   "Ventilator", "Operating Theatre", "Pharmacy", "Ambulance",
 ]);
 
@@ -15,7 +16,13 @@ const STATUS_MAP = {
 
 const FACILITY_ALIASES = {
   "emergency": "Emergency Department", "er": "Emergency Department", "ed": "Emergency Department",
-  "icu": "ICU", "trauma": "Trauma Center", "cardiac": "Cardiology", "cardiology": "Cardiology",
+  "icu": "ICU", "micu": "ICU", "sicu": "ICU", "aicu": "ICU",
+  "nicu": "NICU", "neonatal icu": "NICU",
+  "picu": "PICU", "paediatric icu": "PICU", "pediatric icu": "PICU",
+  "ccu": "CCU", "iccu": "CCU", "cardiac icu": "CCU", "coronary care": "CCU",
+  "trauma icu": "Trauma ICU",
+  "dialysis": "Dialysis", "hemodialysis": "Dialysis", "haemodialysis": "Dialysis",
+  "trauma": "Trauma Center", "cardiac": "Cardiology", "cardiology": "Cardiology",
   "neuro": "Neurology", "neurology": "Neurology", "peds": "Pediatrics", "pediatrics": "Pediatrics",
   "maternity": "Maternity", "burns": "Burns Unit", "blood bank": "Blood Bank",
   "ct": "CT", "mri": "MRI", "ventilator": "Ventilator", "ot": "Operating Theatre",

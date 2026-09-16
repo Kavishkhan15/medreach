@@ -21,11 +21,13 @@
 // never requires a UI change or a different API contract.
 import { generateReply as ruleBasedReply } from "./ruleBasedProvider.js";
 import { generateReply as openAiReply } from "./openAiProvider.js";
+import { generateReply as geminiReply } from "./geminiProvider.js";
 import { env } from "../../config/env.js";
 
 const PROVIDERS = {
   rule_based: { generateReply: ruleBasedReply },
   openai: { generateReply: openAiReply },
+  gemini: { generateReply: geminiReply },
 };
 
 // Resolves the active provider each call so tests can override env cheaply,

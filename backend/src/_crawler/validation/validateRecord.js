@@ -3,8 +3,9 @@
 // Pure + deterministic. Treats all values as untrusted input.
 
 const CANONICAL_FACILITIES = new Set([
-  "ICU", "Emergency Department", "Trauma Center", "Cardiology", "Neurology", "Pediatrics",
-  "Maternity", "Burns Unit", "Blood Bank", "CT", "MRI", "Ventilator", "Operating Theatre",
+  "ICU", "NICU", "PICU", "CCU", "Trauma ICU",
+  "Emergency Department", "Trauma Center", "Cardiology", "Neurology", "Pediatrics",
+  "Maternity", "Burns Unit", "Blood Bank", "Dialysis", "CT", "MRI", "Ventilator", "Operating Theatre",
   "Pharmacy", "Ambulance",
 ]);
 const CAPABILITY_VALUES = new Set(["yes", "no", "unknown"]);
@@ -78,4 +79,20 @@ export function validateNormalizedRecord(record) {
   const parseQuality = signals.filter(Boolean).length / signals.length;
 
   return { valid: errors.length === 0, errors, parseQuality };
+}
+
+// Validates ONE directory listing (government_directory sources produce many
+// of these per crawl — see DirectoryAdapter/crawlDirectorySource). Much
+// lighter than validateNormalizedRecord since a listing carries only identity
+// fields, never facility/availability data.
+export function validateDirectoryListing(listing) {
+  const errors = [];
+  if (!listing || typeof listing !== "object") return { valid: false, errors: ["listing_missing"] };
+  if (!listing.name || String(listing.name).trim().length < 3) errors.push("invalid_name");
+  if (!isValidPincode(listing.pincode)) errors.push("invalid_pincode");
+  if (!isValidPhone(listing.phone)) errors.push("invalid_phone");
+  if (listing.officialWebsite != null && !isValidUrl(listing.officialWebsite)) errors.push("invalid_website_url");
+  if (listing.latitude != null && (typeof listing.latitude !== "number" || listing.latitude < -90 || listing.latitude > 90)) errors.push("invalid_latitude");
+  if (listing.longitude != null && (typeof listing.longitude !== "number" || listing.longitude < -180 || listing.longitude > 180)) errors.push("invalid_longitude");
+  return { valid: errors.length === 0, errors };
 }

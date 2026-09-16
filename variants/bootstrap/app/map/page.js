@@ -1,79 +1,29 @@
 "use client";
-import { useState } from "react";
-import { useHospitals, availabilityMeta } from "@medreach/core";
-import { toneClass } from "../../lib/tone";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { productApi } from "../../lib/productApi";
 
-// Map experience. A real tile provider (Leaflet/Mapbox) can be dropped in behind
-// this abstraction later; for now we render an accessible marker list + panel so
-// the experience is never blank and works without a heavy map dependency.
-function edStatus(h) {
-  return (h.facilities || []).find((f) => f.facility === "Emergency Department")?.status ?? "unknown";
+const bounds = { west: 72.75, east: 73.05, south: 18.87, north: 19.30 };
+const categories = { hospitals: "Hospitals", "blood-banks": "Blood banks", diagnostics: "Diagnostics", ambulances: "Ambulances" };
+function point(item) {
+  const [lng, lat] = item.location?.coordinates || [];
+  return Number.isFinite(lng) && Number.isFinite(lat) && lng >= bounds.west && lng <= bounds.east && lat >= bounds.south && lat <= bounds.north
+    ? { x: 12 + ((lng - bounds.west) / (bounds.east - bounds.west)) * 76,
+      y: 8 + ((bounds.north - lat) / (bounds.north - bounds.south)) * 84 } : null;
 }
-
 export default function MapPage() {
-  const { data, loading } = useHospitals({}, { sort: "recommended" });
-  const [selected, setSelected] = useState(null);
-  const sel = selected ? data.find((h) => (h._id || h.slug) === selected) : null;
-
-  return (
-    <>
-      <header className="mb-3">
-        <h1 className="h3 mb-1">Hospital map</h1>
-        <p className="disclaimer mb-0">Map + list stay in sync. Select a hospital to see details.</p>
-      </header>
-
-      <div className="row g-3">
-        <div className="col-12 col-lg-7">
-          <div className="map-canvas" role="img" aria-label="Map of Mumbai hospitals (interactive list provided alongside)">
-            <div className="text-center p-4">
-              <div style={{ fontSize: "2rem" }} aria-hidden="true">🗺️</div>
-              <p className="mb-1 fw-semibold">Map view</p>
-              <p className="disclaimer mb-0">
-                {sel ? `Selected: ${sel.name} (${sel.location?.coordinates?.[1]?.toFixed(3)}, ${sel.location?.coordinates?.[0]?.toFixed(3)})`
-                     : "A tile-map provider plugs in here. Use the list to select a hospital."}
-              </p>
-            </div>
-          </div>
-          {sel && (
-            <div className="surface mt-3">
-              <div className="d-flex justify-content-between align-items-start">
-                <h2 className="h5 mb-1">{sel.name}</h2>
-                <span className={`status-pill ${toneClass[availabilityMeta(edStatus(sel)).tone]}`}>
-                  ER {availabilityMeta(edStatus(sel)).label}
-                </span>
-              </div>
-              <p className="disclaimer">{sel.locality || sel.city} · {sel.hospitalType}</p>
-              <div className="action-bar">
-                <a className="btn btn-sm btn-primary" href={`tel:${sel.emergencyPhone || "112"}`}>📞 Call</a>
-                <a className="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener noreferrer"
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${sel.location?.coordinates?.[1]},${sel.location?.coordinates?.[0]}`}>🧭 Navigate</a>
-                <Link className="btn btn-sm btn-outline-secondary" href={`/hospitals/${sel.slug}`}>Details</Link>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="col-12 col-lg-5">
-          <ul className="list-group" aria-label="Hospital markers">
-            {loading ? <li className="list-group-item">Loading…</li> : data.map((h) => {
-              const m = availabilityMeta(edStatus(h));
-              const id = h._id || h.slug;
-              return (
-                <li key={id} className="list-group-item d-flex justify-content-between align-items-center">
-                  <button className="btn btn-link text-start p-0 text-decoration-none" onClick={() => setSelected(id)}
-                    aria-pressed={selected === id}>
-                    <span aria-hidden="true">📍</span> {h.name}
-                  </button>
-                  <span className={`status-pill ${toneClass[m.tone]}`} title="ER status">
-                    <span aria-hidden="true">{m.symbol}</span> {m.label}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
-    </>
-  );
+  const [category, setCategory] = useState("hospitals"); const [query, setQuery] = useState("");
+  const [items, setItems] = useState([]); const [status, setStatus] = useState("loading"); const [selected, setSelected] = useState("");
+  useEffect(() => { let live = true; setStatus("loading"); productApi(`/api/${category}${category === "hospitals" ? "?limit=50" : ""}`).then((r) => { if (live) { setItems(r.data || []); setStatus("ready"); } }).catch((e) => { if (live) setStatus(e.message); }); return () => { live = false; }; }, [category]);
+  const visible = useMemo(() => items.filter((item) => `${item.name} ${item.locality || ""} ${(item.services || []).join(" ")}`.toLowerCase().includes(query.toLowerCase())), [items, query]);
+  const selectedItem = visible.find((item) => String(item._id) === selected);
+  return <><div className="page-head mb-4"><span className="eyebrow">Mumbai care network</span><h1>Explore nearby care</h1><p>Filter hospitals and listed resources together with their map positions. This is a schematic coordinate view; travel time is shown only with a configured routing provider.</p></div>
+    <div className="d-flex flex-wrap gap-2 mb-3" role="group" aria-label="Resource category">{Object.entries(categories).map(([kind, label]) => <button key={kind} className={`btn ${category === kind ? "btn-primary" : "btn-outline-secondary"}`} aria-pressed={category === kind} onClick={() => { setCategory(kind); setSelected(""); }}>{label}</button>)}</div>
+    <label className="form-label fw-semibold" htmlFor="map-search">Search {categories[category].toLowerCase()}</label><input id="map-search" className="form-control mb-3" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Name, locality, or service" />
+    {status === "loading" && <p role="status">Loading map data…</p>}{status !== "ready" && status !== "loading" && <div className="alert alert-danger">{status}</div>}
+    <div className="row g-3"><div className="col-lg-7"><div className="map-shell"><svg className="resource-map" viewBox="0 0 100 100" role="img" aria-label={`${visible.length} ${categories[category].toLowerCase()} plotted in a schematic Mumbai coordinate view`}>
+      <rect x="0" y="0" width="100" height="100" fill="#e9f2f4" /><path d="M7 0 Q18 25 13 45 Q18 75 22 100 L100 100 L100 0Z" fill="#f2eee3" /><path d="M19 0 Q30 45 24 100 M37 0 Q41 50 36 100 M10 32 L86 38 M16 60 L92 64 M20 78 L90 83" fill="none" stroke="#c9d2cf" strokeWidth=".4" />
+      {visible.map((item) => { const p = point(item); if (!p) return null; return <g key={item._id} onClick={() => setSelected(String(item._id))} className="map-marker" role="button" tabIndex="0" onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setSelected(String(item._id)); }} aria-label={`Select ${item.name}`}><circle cx={p.x} cy={p.y} r={selected === String(item._id) ? 2 : 1.35} fill={category === "hospitals" ? "#c72a34" : "#176b78"} stroke="white" strokeWidth=".5" /></g>; })}<text x="5" y="6" fontSize="3.5" fill="#37515a">MUMBAI · SCHEMATIC</text></svg></div><p className="disclaimer mt-2">Markers use stored coordinates. Providers without coordinates remain in the list.</p>{selectedItem && <div className="surface"><h2 className="h5">{selectedItem.name}</h2><p className="small">{selectedItem.locality || selectedItem.address || "Location details unavailable"}</p><Link className="btn btn-outline-primary btn-sm" href={category === "hospitals" ? `/hospitals/${selectedItem.slug}` : `/${category}`}>View details</Link></div>}</div>
+    <div className="col-lg-5"><div className="surface map-results"><h2 className="h5">{categories[category]} <span className="small text-secondary">({visible.length})</span></h2>{status === "ready" && !visible.length && <p>No matching resources.</p>}{visible.map((item) => <button key={item._id} className={`map-result ${selected === String(item._id) ? "selected" : ""}`} onClick={() => setSelected(String(item._id))}><strong>{item.name}</strong><span>{item.locality || "Mumbai"}{item.demo ? " · DEMO" : ""}</span></button>)}</div></div></div>
+  </>;
 }

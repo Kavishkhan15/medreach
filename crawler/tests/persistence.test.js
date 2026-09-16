@@ -3,6 +3,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { detectChange, fieldCount } from "../src/changeDetection/compare.js";
 import { PersistenceService } from "../src/persistence/persistenceService.js";
+import { DirectoryPersistenceService } from "../src/persistence/directoryPersistenceService.js";
+import { createMemoryRepo } from "../src/persistence/memoryRepo.js";
 import { getSource } from "../src/registry/sources.js";
 
 function rec(overrides = {}) {
@@ -110,4 +112,20 @@ test("persistence: INVALID record rejected", async () => {
   const out = await svc.apply({ hospital: {} }, { source: getSource("lilavati") });
   assert.equal(out.classification, "INVALID");
   assert.equal(out.recordsRejected, 1);
+});
+
+test("directory persistence links exact identity, never a similar name, and is idempotent", async () => {
+  const repo = createMemoryRepo({ hospitals: [["site", { _id: "site-h", name: "Lilavati Hospital & Research Centre", pincode: "400050", address: "Bandra West" }]] });
+  const svc = new DirectoryPersistenceService(repo);
+  const source = { sourceId: "government_directory" };
+  const listing = { name: "Lilavati Hospital and Research Centre", pincode: "400050", address: "Bandra West" };
+  const similar = { name: "Lilavati Hospital North", pincode: "400050", address: "Bandra West" };
+  const first = await svc.apply([listing, similar], { source });
+  assert.equal(first.hospitalsLinked, 1);
+  assert.equal(first.hospitalsCreated, 1);
+  const second = await svc.apply([listing, similar], { source });
+  assert.equal(second.hospitalsLinked, 2);
+  assert.equal(second.hospitalsCreated, 0);
+  assert.equal(repo.store.directoryListings[0].hospitalId, "site-h");
+  assert.notEqual(repo.store.directoryListings[1].hospitalId, "site-h");
 });

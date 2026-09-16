@@ -7,6 +7,7 @@ export function freshnessLabel(timestamp, now = Date.now(), t = FRESHNESS_THRESH
   const ts = new Date(timestamp).getTime();
   if (!isFinite(ts)) return "UNKNOWN";
   const age = now - ts;
+  if (age < 0) return "UNKNOWN";
   if (age < t.RECENT) return "RECENT";
   if (age < t.UPDATED_RECENTLY) return "UPDATED_RECENTLY";
   if (age < t.STALE) return "STALE";

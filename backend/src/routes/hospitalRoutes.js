@@ -21,7 +21,7 @@ router.get("/:slug", getHospital);
 router.post(
   "/",
   requireAuth,
-  requireRole("admin", "system_admin", "hospital_admin"),
+  requireRole("admin", "system_admin"),
   body("name").trim().notEmpty(),
   validate,
   createHospital
@@ -36,6 +36,6 @@ router.patch(
   validate,
   updateBeds
 );
-router.delete("/:id", requireAuth, requireRole("admin", "system_admin", "hospital_admin"), deleteHospital);
+router.delete("/:id", requireAuth, requireRole("admin", "system_admin"), deleteHospital);
 
 export default router;

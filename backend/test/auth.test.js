@@ -28,9 +28,56 @@ test("RBAC: non-admin creating a hospital → 403", async () => {
   assert.equal(res.status, 403);
 });
 
+test("hospital staff cannot create a hospital and assign themselves ownership", async () => {
+  const token = signToken({ _id: "507f1f77bcf86cd799439011", role: "hospital_admin", email: "h@x.io", name: "H" });
+  const res = await request(app).post("/api/hospitals")
+    .set("Authorization", `Bearer ${token}`).send({ name: "Unverified Hospital" });
+  assert.equal(res.status, 403);
+});
+
 test("token sign/verify roundtrip", () => {
   const t = signToken({ _id: "abc123", role: "admin", email: "a@x.io", name: "A" });
   const p = verifyToken(t);
   assert.equal(p.sub, "abc123");
   assert.equal(p.role, "admin");
+});
+
+test("facility claim review is restricted to system admins", async () => {
+  const token = signToken({ _id: "507f1f77bcf86cd799439011", role: "hospital_admin", email: "h@x.io", name: "H" });
+  const res = await request(app)
+    .post("/api/admin/facility-claims/507f1f77bcf86cd799439012/review")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ decision: "approve" });
+  assert.equal(res.status, 403);
+});
+
+test("conflict evidence is restricted to system admins", async () => {
+  const token = signToken({ _id: "507f1f77bcf86cd799439011", role: "hospital_admin", email: "h@x.io", name: "H" });
+  const res = await request(app).get("/api/admin/data-conflicts")
+    .set("Authorization", `Bearer ${token}`);
+  assert.equal(res.status, 403);
+});
+
+test("hospital staff cannot run the global crawler", async () => {
+  const token = signToken({ _id: "507f1f77bcf86cd799439011", role: "hospital_admin", email: "h@x.io", name: "H" });
+  const res = await request(app).post("/api/crawler/run-all")
+    .set("Authorization", `Bearer ${token}`);
+  assert.equal(res.status, 403);
+});
+
+test("facility claim review validates decisions before touching MongoDB", async () => {
+  const token = signToken({ _id: "507f1f77bcf86cd799439011", role: "system_admin", email: "a@x.io", name: "A" });
+  const res = await request(app)
+    .post("/api/admin/facility-claims/507f1f77bcf86cd799439012/review")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ decision: "publish_without_review" });
+  assert.equal(res.status, 400);
+});
+
+test("scheduler control requires runtime configuration before accepting pause", async () => {
+  const token = signToken({ _id: "507f1f77bcf86cd799439011", role: "system_admin", email: "a@x.io", name: "A" });
+  const res = await request(app).post("/api/crawler/scheduler")
+    .set("Authorization", `Bearer ${token}`).send({ paused: true });
+  assert.equal(res.status, 409);
+  assert.match(res.body.error, /CRAWLER_SCHEDULER_ENABLED/);
 });

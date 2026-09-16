@@ -4,6 +4,12 @@
 
 const FACILITY_ALIASES = {
   "critical care": "ICU", "critical care unit": "ICU", "intensive care": "ICU", icu: "ICU",
+  micu: "ICU", sicu: "ICU", aicu: "ICU",
+  "neonatal icu": "NICU", "neonatal intensive care": "NICU", nicu: "NICU",
+  "paediatric icu": "PICU", "pediatric icu": "PICU", picu: "PICU",
+  "cardiac icu": "CCU", "coronary care": "CCU", "coronary care unit": "CCU",
+  "icccu": "CCU", iccu: "CCU", ccu: "CCU",
+  "trauma icu": "Trauma ICU", "trauma intensive care": "Trauma ICU",
   "accident and emergency": "Emergency Department", "accident & emergency": "Emergency Department",
   casualty: "Emergency Department", "emergency department": "Emergency Department", emergency: "Emergency Department",
   "trauma centre": "Trauma Center", "trauma center": "Trauma Center", "trauma care": "Trauma Center",
@@ -12,14 +18,16 @@ const FACILITY_ALIASES = {
   paediatrics: "Pediatrics", pediatrics: "Pediatrics",
   maternity: "Maternity", "mother and child": "Maternity",
   "burns unit": "Burns Unit", "blood bank": "Blood Bank",
+  dialysis: "Dialysis", "renal dialysis": "Dialysis", "haemodialysis": "Dialysis", hemodialysis: "Dialysis",
   ct: "CT", mri: "MRI", ventilator: "Ventilator",
   "operation theatre": "Operating Theatre", "operating theatre": "Operating Theatre",
   pharmacy: "Pharmacy", ambulance: "Ambulance",
 };
 
 const CANONICAL_FACILITIES = new Set([
-  "ICU", "Emergency Department", "Trauma Center", "Cardiology", "Neurology", "Pediatrics",
-  "Maternity", "Burns Unit", "Blood Bank", "CT", "MRI", "Ventilator", "Operating Theatre",
+  "ICU", "NICU", "PICU", "CCU", "Trauma ICU",
+  "Emergency Department", "Trauma Center", "Cardiology", "Neurology", "Pediatrics",
+  "Maternity", "Burns Unit", "Blood Bank", "Dialysis", "CT", "MRI", "Ventilator", "Operating Theatre",
   "Pharmacy", "Ambulance",
 ]);
 
@@ -59,7 +67,7 @@ export function normalizeHospitalType(raw) {
 }
 
 // Build the full normalized record (the crawler data contract).
-export function normalizeRecord({ hospital = {}, facilities = [], specialties = [], emergency = {}, contacts = {}, source, sourceUrl, parserVersion, retrievedAt }) {
+export function normalizeRecord({ hospital = {}, facilities = [], specialties = [], emergency = {}, contacts = {}, fieldEvidence = {}, source, sourceUrl, parserVersion, retrievedAt }) {
   const canonFacilities = [];
   const seen = new Set();
   for (const f of facilities) {
@@ -70,13 +78,19 @@ export function normalizeRecord({ hospital = {}, facilities = [], specialties = 
       facility: name,
       capability: "yes", // present on the page → capability yes
       availability: "unknown", // NEVER inferred from static pages
+      evidenceText: typeof f.evidenceText === "string" ? f.evidenceText.slice(0, 200) : null,
+      sourcePageUrl: f.sourcePageUrl || sourceUrl || null,
     });
   }
   // If the page establishes an emergency department capability but the facility
   // keyword didn't surface it explicitly, record the ED capability consistently.
   if (emergency.hasEmergencyDept === "yes" && !seen.has("Emergency Department")) {
     seen.add("Emergency Department");
-    canonFacilities.push({ facility: "Emergency Department", capability: "yes", availability: "unknown" });
+    canonFacilities.push({
+      facility: "Emergency Department", capability: "yes", availability: "unknown",
+      evidenceText: emergency.evidenceText || null,
+      sourcePageUrl: emergency.sourcePageUrl || sourceUrl || null,
+    });
   }
 
   const specs = [...new Set(specialties.map(normalizeSpecialty).filter(Boolean))];
@@ -109,6 +123,7 @@ export function normalizeRecord({ hospital = {}, facilities = [], specialties = 
       ambulance: canonFacilities.some((f) => f.facility === "Ambulance") ? "yes" : "unknown",
     },
     contacts: { phones: [...new Set(phones)], emails: contacts.emails || [] },
+    fieldEvidence,
     source: { sourceId: source?.sourceId ?? null, sourceUrl: sourceUrl || source?.baseUrl || null },
     provenance: {
       sourceId: source?.sourceId ?? null,

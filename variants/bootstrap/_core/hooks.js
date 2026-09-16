@@ -102,19 +102,31 @@ export function useAuth() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    api.me().then((r) => setUser(r.user)).catch(() => setUser(null)).finally(() => setReady(true));
+    let active = true;
+    const refresh = () => api.me().then((r) => { if (active) setUser(r.user); })
+      .catch(() => { if (active) setUser(null); }).finally(() => { if (active) setReady(true); });
+    refresh();
+    window.addEventListener("medreach:auth-changed", refresh);
+    return () => { active = false; window.removeEventListener("medreach:auth-changed", refresh); };
   }, []);
 
   const login = useCallback(async (email, password) => {
-    const r = await api.login(email, password); setUser(r.user); return r.user;
+    const r = await api.login(email, password); setUser(r.user); window.dispatchEvent(new Event("medreach:auth-changed")); return r.user;
   }, []);
   const register = useCallback(async (payload) => {
-    const r = await api.register(payload); setUser(r.user); return r.user;
+    const r = await api.register(payload); setUser(r.user); window.dispatchEvent(new Event("medreach:auth-changed")); return r;
   }, []);
-  const logout = useCallback(async () => { await api.logout(); setUser(null); }, []);
+  const logout = useCallback(async () => { await api.logout(); setUser(null); window.dispatchEvent(new Event("medreach:auth-changed")); }, []);
 
   const isAdmin = ["admin", "system_admin", "hospital_admin"].includes(user?.role);
   return { user, ready, login, register, logout, isAdmin };
+}
+
+export function useAdminAccess(systemOnly = false) {
+  const { user, ready, isAdmin } = useAuth();
+  return { ready, allowed: systemOnly
+    ? ["admin", "system_admin"].includes(user?.role)
+    : isAdmin };
 }
 
 // AI Assistant chat state. Headless — owns the message list, sending state,
@@ -156,4 +168,90 @@ export function useAssistant() {
   }, []);
 
   return { messages, sending, unavailable, send, reset };
+}
+
+// Crawler admin dashboard state — headless. Owns overview cards, source list,
+// jobs, data-quality, verification queue, the scheduler flag, and every control
+// action (run/run-all/enable/disable/frequency/rate/reset/retry/verify). Every
+// variant uses this identical hook and only supplies its own markup + CSS, so
+// the admin behavior is held constant across the three frameworks under test.
+export function useCrawlerAdmin() {
+  const [overview, setOverview] = useState(null);
+  const [sources, setSources] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [quality, setQuality] = useState(null);
+  const [queue, setQueue] = useState([]);
+  const [claims, setClaims] = useState([]);
+  const [claimsAvailable, setClaimsAvailable] = useState(false);
+  const [conflicts, setConflicts] = useState([]);
+  const [conflictsAvailable, setConflictsAvailable] = useState(false);
+  const [fieldClaims, setFieldClaims] = useState([]);
+  const [fieldConflicts, setFieldConflicts] = useState([]);
+  const [fieldsAvailable, setFieldsAvailable] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [live, setLive] = useState(true);
+  const [busy, setBusy] = useState("");
+  const [message, setMessage] = useState("");
+
+  const refresh = useCallback(async () => {
+    try {
+      const [ov, sr, jb, dq, vq, fc, dc, hc, hd] = await Promise.all([
+        api.crawlerOverview(), api.crawlerSources(), api.listCrawlerJobs({ limit: 40 }),
+        api.crawlerDataQuality(), api.crawlerVerificationQueue(),
+        api.facilityClaims().catch(() => ({ data: null })),
+        api.dataConflicts("all").catch(() => ({ data: null })),
+        api.hospitalFieldClaims().catch(() => ({ data: null })),
+        api.hospitalFieldConflicts().catch(() => ({ data: null })),
+      ]);
+      setOverview(ov); setSources(sr.data || []); setPaused(Boolean(sr.schedulerPaused));
+      setJobs(jb.data || []); setQuality(dq); setQueue(vq.data || []); setLive(true);
+      setClaims(fc.data || []); setClaimsAvailable(Array.isArray(fc.data));
+      setConflicts(dc.data || []); setConflictsAvailable(Array.isArray(dc.data));
+      setFieldClaims(hc.data || []); setFieldConflicts(hd.data || []);
+      setFieldsAvailable(Array.isArray(hc.data) && Array.isArray(hd.data));
+    } catch {
+      setLive(false);
+    }
+  }, []);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  // Wrap any control action with busy/message state + auto-refresh. Errors are
+  // surfaced to the UI, never silently swallowed.
+  const act = useCallback(async (label, fn) => {
+    setBusy(label); setMessage("");
+    try {
+      const r = await fn();
+      setMessage(`✓ ${label} done`);
+      await refresh();
+      return r;
+    } catch (e) {
+      setMessage(`✗ ${label}: ${e.message}`);
+    } finally {
+      setBusy("");
+    }
+  }, [refresh]);
+
+  const actions = useMemo(() => ({
+    runAll: () => act("Run all", () => api.crawlerRunAll()),
+    dryRunAll: () => act("Dry-run all", () => api.crawlerRunAll({ dryRun: true })),
+    setScheduler: (nextPaused) =>
+      act(nextPaused ? "Pause scheduler" : "Resume scheduler", () => api.crawlerSetScheduler(nextPaused)),
+    runSource: (sourceId, key) => act(`Run ${key}`, () => api.runCrawl(sourceId)),
+    dryRunSource: (sourceId, key) => act(`Dry-run ${key}`, () => api.runCrawl(sourceId, { dryRun: true })),
+    toggleSource: (key, enabled) =>
+      act(`${enabled ? "Disable" : "Enable"} ${key}`, () => api.crawlerUpdateSource(key, { enabled: !enabled })),
+    setFrequency: (key, minutes) =>
+      act(`Set frequency ${key}`, () => api.crawlerUpdateSource(key, { crawlFrequencyMs: Number(minutes) * 60000 })),
+    resetSource: (key) => act(`Reset ${key}`, () => api.crawlerResetSource(key)),
+    retryJob: (id) => act("Retry job", () => api.crawlerRetryJob(id)),
+    approve: (id) => act("Approve", () => api.adminVerifyHospital(id, "approve")),
+    reject: (id) => act("Reject", () => api.adminVerifyHospital(id, "reject")),
+    reviewClaim: (id, decision) => act(`${decision} facility claim`, () => api.reviewFacilityClaim(id, decision)),
+    reviewFieldClaim: (id, decision) => act(`${decision} hospital field claim`, () => api.reviewHospitalFieldClaim(id, decision)),
+  }), [act]);
+
+  return { overview, sources, jobs, quality, queue, claims, claimsAvailable,
+    conflicts, conflictsAvailable, fieldClaims, fieldConflicts, fieldsAvailable,
+    paused, live, busy, message, refresh, actions };
 }

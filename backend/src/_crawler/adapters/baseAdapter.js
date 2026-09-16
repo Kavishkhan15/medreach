@@ -6,6 +6,7 @@
 
 import { httpFetch } from "../fetchers/httpFetcher.js";
 import { validateResult } from "../validation/validateResult.js";
+import { isPathAllowed } from "../registry/sources.js";
 
 export class BaseAdapter {
   constructor(source, deps = {}) {
@@ -15,7 +16,22 @@ export class BaseAdapter {
 
   // Override in subclasses.
   async fetchRaw() {
-    return httpFetch(this.source.url, { fetchImpl: this.fetchImpl });
+    let initial;
+    try { initial = new URL(this.source.url); }
+    catch { return { ok: false, status: 0, reason: "invalid_url", body: null }; }
+    return httpFetch(initial.href, {
+      fetchImpl: this.fetchImpl,
+      validateRedirect: (next) => {
+        const target = new URL(next);
+        if (target.origin !== initial.origin) return { ok: false, reason: "offsite_blocked" };
+        // Config-driven feeds have one explicitly approved URL. Registry-backed
+        // sources may permit more paths, but never arbitrary same-host paths.
+        const pathAllowed = this.source.allowedPaths?.length
+          ? isPathAllowed(this.source, target.pathname)
+          : target.pathname === initial.pathname && target.search === initial.search;
+        return pathAllowed ? { ok: true } : { ok: false, reason: "path_not_allowed" };
+      },
+    });
   }
   parse(/* raw */) { throw new Error("parse() not implemented"); }
   normalize(/* parsed */) { throw new Error("normalize() not implemented"); }

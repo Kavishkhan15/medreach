@@ -11,10 +11,13 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { env } from "../config/env.js";
 
-const ALLOWED_ORIGINS = (process.env.CORS_ORIGINS ?? "http://localhost:3000")
-  .split(",")
-  .map((s) => s.trim());
+// Single source of truth: config/env.js runs dotenv.config() and parses
+// CORS_ORIGINS. Re-reading process.env here (with a separate default) caused a
+// bug where this module loaded before dotenv ran, silently allowing only
+// :3000 and blocking the tailwind (:3001) and skeleton (:3002) variants.
+const ALLOWED_ORIGINS = env.corsOrigins;
 
 export function applySecurity(app) {
   app.use(cookieParser());

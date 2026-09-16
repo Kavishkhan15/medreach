@@ -15,6 +15,25 @@ const dataSourceSchema = new mongoose.Schema(
     // 0..1; defaults from SOURCE_RELIABILITY by type but can be overridden per source.
     reliability: { type: Number, min: 0, max: 1 },
     enabled: { type: Boolean, default: true },
+    // Admin-controllable operational config (overrides registry defaults).
+    // The registry stays the source of truth for URL/paths/adapter (security:
+    // never crawl arbitrary URLs); only these operational knobs are editable.
+    crawlFrequencyMs: { type: Number, min: 60000 }, // >= 1 min; never seconds
+    rateLimitMs: { type: Number, min: 1000 }, // min interval between requests
+    // Health/standing of the source, surfaced in the admin dashboard.
+    healthStatus: {
+      type: String,
+      enum: ["healthy", "warning", "stale", "blocked", "error", "disabled", "unknown"],
+      default: "unknown",
+    },
+    robotsStatus: {
+      type: String,
+      enum: ["unknown", "no_robots", "robots_allow", "robots_disallow"],
+      default: "unknown",
+    },
+    lastFailureReason: { type: String, trim: true },
+    failureCount: { type: Number, default: 0, min: 0 },
+    adminNotes: { type: String, trim: true, maxlength: 500 },
     // Optional: which hospital this source describes (many sources are per-hospital).
     hospital: { type: mongoose.Schema.Types.ObjectId, ref: "Hospital" },
     lastSuccessfulFetch: { type: Date },

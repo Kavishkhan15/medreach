@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ROLE_VALUES, default: ROLES.USER },
     accountStatus: { type: String, enum: ACCOUNT_STATUS, default: "active" },
     lastLogin: { type: Date },
+    emailVerifiedAt: { type: Date },
     // Minimal profile only — NO medical data stored (privacy-by-design, scope §3.2).
     emergencyContact: { type: String, trim: true, maxlength: 120 },
     region: { type: String, trim: true, index: true },

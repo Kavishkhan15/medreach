@@ -28,9 +28,9 @@ const CASES = [
 ];
 
 for (const c of CASES) {
-  test(`${c.id}: adapter registered + crawlable`, () => {
+  test(`${c.id}: adapter registered and standing respected`, () => {
     assert.ok(ADAPTERS[c.id], `${c.id} adapter registered`);
-    assert.equal(isCrawlable(getSource(c.id)).ok, true);
+    assert.equal(isCrawlable(getSource(c.id)).ok, c.id !== "fortis");
   });
 
   test(`${c.id}: runs offline -> valid capability record (availability unknown)`, async () => {

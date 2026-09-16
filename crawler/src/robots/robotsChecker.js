@@ -67,10 +67,22 @@ export async function loadRobots(baseUrl, deps = {}) {
   const cached = cache.get(host);
   if (cached && Date.now() - cached.fetchedAt < TTL_MS) return cached;
   const robotsUrl = new URL("/robots.txt", baseUrl).href;
-  const res = await httpFetch(robotsUrl, { fetchImpl: deps.fetchImpl, timeoutMs: 8000, retries: 1 });
-  // Missing/unreadable robots.txt → allow all (standard convention).
+  const approvedOrigin = new URL(baseUrl).origin;
+  const res = await httpFetch(robotsUrl, {
+    fetchImpl: deps.fetchImpl,
+    timeoutMs: 8000,
+    retries: 1,
+    validateRedirect: (next) => {
+      const target = new URL(next);
+      return target.origin === approvedOrigin && target.pathname === "/robots.txt"
+        ? { ok: true }
+        : { ok: false, reason: "robots_redirect_not_allowed" };
+    },
+  });
+  // A robots 401/403 is an explicit access refusal, not a missing file.
   const rules = res.ok && res.body ? parseRobots(res.body) : [];
-  const entry = { rules, fetchedAt: Date.now(), missing: !res.ok };
+  const entry = { rules, fetchedAt: Date.now(), missing: !res.ok,
+    denied: res.status === 401 || res.status === 403 || res.reason === "robots_redirect_not_allowed" };
   cache.set(host, entry);
   return entry;
 }
@@ -80,6 +92,7 @@ export async function isAllowedByRobots(url, deps = {}) {
   let u;
   try { u = new URL(url); } catch { return { allowed: false, reason: "invalid_url" }; }
   const entry = await loadRobots(`${u.protocol}//${u.host}`, deps);
+  if (entry.denied) return { allowed: false, reason: "robots_disallow" };
   if (entry.missing) return { allowed: true, reason: "no_robots" };
   const allowed = evaluate(entry.rules, u.pathname + (u.search || ""));
   return { allowed, reason: allowed ? "robots_allow" : "robots_disallow" };

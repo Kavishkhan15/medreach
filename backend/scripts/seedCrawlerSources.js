@@ -11,20 +11,21 @@ async function run() {
 
   let created = 0, updated = 0;
   for (const s of SOURCES) {
-    const res = await DataSource.findOneAndUpdate(
+    const existed = await DataSource.exists({ sourceKey: s.sourceId });
+    await DataSource.findOneAndUpdate(
       { sourceKey: s.sourceId },
       {
-        sourceKey: s.sourceId,
-        name: s.name,
-        type: s.sourceType, // "hospital_site"
-        url: s.baseUrl,
-        accessMethod: "http_html",
-        reliability: s.reliability,
-        enabled: s.enabled,
+        $set: {
+          sourceKey: s.sourceId, name: s.name, type: s.sourceType,
+          url: s.baseUrl, accessMethod: "http_html", reliability: s.reliability,
+          ...(s.status === "blocked" || s.sourceState === "blocked"
+            ? { enabled: false, healthStatus: "blocked", lastFailureReason: s.lastFailure?.reason || "registry_blocked" } : {}),
+        },
+        $setOnInsert: s.status === "blocked" || s.sourceState === "blocked" ? {} : { enabled: s.enabled },
       },
-      { upsert: true, new: true, setDefaultsOnInsert: true, rawResult: true }
+      { upsert: true, new: true, setDefaultsOnInsert: true }
     );
-    if (res.lastErrorObject?.updatedExisting) updated++; else created++;
+    if (existed) updated++; else created++;
   }
 
   console.log(`Crawler sources: ${created} created, ${updated} updated (total ${SOURCES.length}).`);

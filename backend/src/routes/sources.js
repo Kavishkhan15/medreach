@@ -6,7 +6,8 @@ import { listSources, createSource, updateSource } from "../controllers/sourceCo
 import { SOURCE_TYPES } from "../config/constants.js";
 
 const router = Router();
-const admin = [requireAuth, requireRole("admin", "system_admin", "hospital_admin")];
+// Source registration and global source configuration are system-wide actions.
+const admin = [requireAuth, requireRole("admin", "system_admin")];
 
 router.get("/", ...admin, listSources);
 router.post(

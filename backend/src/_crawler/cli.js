@@ -10,9 +10,18 @@
 // without writing to MongoDB. Default (no --source/--all) prints usage.
 
 import { SOURCES, getSource, enabledSources } from "./registry/sources.js";
-import { crawlHospitalSource, CRAWL_STATUS } from "./orchestrator.js";
+import { crawlHospitalSource, crawlDirectorySource, CRAWL_STATUS } from "./orchestrator.js";
 import { createMemoryRepo } from "./persistence/memoryRepo.js";
 import { log } from "./logger.js";
+
+// Dispatches to the right orchestrator by source category — a
+// government_directory source describes N hospitals from one page and needs
+// the directory pipeline; every other sourceType is the existing 1:1 pipeline.
+function crawlOneSource(source, opts) {
+  return source.sourceType === "government_directory"
+    ? crawlDirectorySource(source, opts)
+    : crawlHospitalSource(source, opts);
+}
 
 function parseArgs(argv) {
   const args = { sources: [], all: false, dryRun: false, list: false, verbose: false, help: false };
@@ -64,14 +73,20 @@ function printJob(job, source) {
   log.plain(`${mark} ${source.name}`);
   if (ok || partial) {
     log.plain(`  Pages: ${job.pagesVisited}`);
-    log.plain(`  Records: ${job.recordsFound}`);
-    log.plain(`  Changed: ${job.changedFields.length}`);
-    log.plain(`  Confidence: ${job.confidence}`);
-    if (job.classification) log.plain(`  Change: ${job.classification}`);
-    if (job.anomaly) log.plain(`  ⚠ PARSING ANOMALY — previous data kept, manual review required`);
-    if (job.dryRun && job.changedFields.length) {
-      log.plain(`  Would change: ${job.changedFields.slice(0, 8).join(", ")}${job.changedFields.length > 8 ? "…" : ""}`);
+    if (source.sourceType === "government_directory") {
+      log.plain(`  Listings found: ${job.recordsFound}`);
+      log.plain(`  Hospitals created: ${job.recordsCreated}  |  Linked to existing: ${job.recordsUpdated}`);
+      if (job.usedFallbackParser) log.plain(`  ⚠ SOURCE_CHANGED — exact selectors found nothing, used loose fallback`);
+    } else {
+      log.plain(`  Records: ${job.recordsFound}`);
+      log.plain(`  Changed: ${job.changedFields.length}`);
+      if (job.classification) log.plain(`  Change: ${job.classification}`);
+      if (job.anomaly) log.plain(`  ⚠ PARSING ANOMALY — previous data kept, manual review required`);
+      if (job.dryRun && job.changedFields.length) {
+        log.plain(`  Would change: ${job.changedFields.slice(0, 8).join(", ")}${job.changedFields.length > 8 ? "…" : ""}`);
+      }
     }
+    log.plain(`  Confidence: ${job.confidence}`);
   } else {
     log.plain(`  Reason: ${job.errorMessages[0] || job.status}`);
     log.plain(`  Source state: ${job.sourceState}`);
@@ -111,7 +126,7 @@ export async function main(argv = process.argv.slice(2), opts = {}) {
     // Resilience: one source failing must not stop the others (spec §39).
     let job;
     try {
-      job = await crawlHospitalSource(source, { deps: opts.deps || {}, repo, dryRun: args.dryRun, verbose: args.verbose });
+      job = await crawlOneSource(source, { deps: opts.deps || {}, repo, dryRun: args.dryRun, verbose: args.verbose });
     } catch (e) {
       job = { sourceId: source.sourceId, status: CRAWL_STATUS.FAILED, pagesVisited: 0, recordsFound: 0,
         changedFields: [], errorMessages: [`unexpected:${e.message}`], sourceState: "temporarily_unavailable", confidence: "UNKNOWN" };

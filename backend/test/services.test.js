@@ -22,6 +22,7 @@ test("freshnessLabel thresholds", () => {
   assert.equal(freshnessLabel(new Date(now - 60000), now), "RECENT");
   assert.equal(freshnessLabel(new Date(now - 2 * 3600000), now), "STALE");
   assert.equal(freshnessLabel(null), "UNKNOWN");
+  assert.equal(freshnessLabel(new Date(now + 60000), now), "UNKNOWN");
 });
 
 test("scoreHospital deterministic + reasons; ranking sorts", () => {

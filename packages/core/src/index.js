@@ -18,10 +18,10 @@ export {
   SEVERITY, severityMeta, SPECIALTIES,
 } from "./format.js";
 
-// location.js — geo + ETA (owns distanceKm)
+// location.js — geolocation and straight-line distance (owns distanceKm)
 export {
   LOCALITY_COORDS, MUMBAI_LOCALITIES, distanceKm,
-  estimateEtaMinutes, getBrowserLocation, localityToCoords,
+  getBrowserLocation, localityToCoords,
 } from "./location.js";
 
 // freshness.js

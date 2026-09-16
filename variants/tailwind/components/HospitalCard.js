@@ -38,7 +38,7 @@ export default function HospitalCard({ hospital, rank }) {
         {r && (r.distanceKm != null) && (
           <p className="mb-2 text-sm">
             <strong>{r.distanceKm.toFixed(1)} km</strong>
-            {r.etaMinutes != null ? <> · ~{r.etaMinutes} min away</> : <> · Travel time unavailable</>}
+            <> · straight-line · Travel time unavailable</>
           </p>
         )}
 

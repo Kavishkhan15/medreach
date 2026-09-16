@@ -21,7 +21,11 @@ export const env = {
       ? required("JWT_SECRET")
       : "dev-only-insecure-secret"),
   jwtExpires: process.env.JWT_EXPIRES ?? "7d",
-  corsOrigins: (process.env.CORS_ORIGINS ?? "http://localhost:3000")
+  // Default allows all three variant dev ports so the shared backend serves
+  // every framework variant identically out of the box (bootstrap :3000,
+  // tailwind :3001, skeleton :3002). Override with CORS_ORIGINS in production.
+  corsOrigins: (process.env.CORS_ORIGINS ??
+    "http://localhost:3000,http://localhost:3001,http://localhost:3002")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean),
@@ -32,4 +36,21 @@ export const env = {
   aiProvider: process.env.AI_PROVIDER ?? "rule_based",
   aiApiKey: process.env.AI_API_KEY ?? "",
   aiModel: process.env.AI_MODEL ?? "",
+  emailEnabled: process.env.EMAIL_ENABLED === "true",
+  smtpHost: process.env.SMTP_HOST ?? "",
+  smtpPort: Number(process.env.SMTP_PORT ?? 587),
+  smtpSecure: process.env.SMTP_SECURE === "true",
+  smtpUser: process.env.SMTP_USER ?? "",
+  smtpPassword: process.env.SMTP_PASSWORD ?? "",
+  smtpFrom: process.env.SMTP_FROM ?? "",
+  smtpFromName: process.env.SMTP_FROM_NAME ?? "MedReach",
+  publicAppUrl: process.env.PUBLIC_APP_URL ?? "http://localhost:3000",
+  routingProvider: process.env.ROUTING_PROVIDER ?? "none",
+  routingBaseUrl: process.env.ROUTING_BASE_URL ?? "",
+  routingApiKey: process.env.ROUTING_API_KEY ?? "",
+  schedulerEnabled: process.env.CRAWLER_SCHEDULER_ENABLED === "true",
+  schedulerTickMs: Number(process.env.CRAWLER_SCHEDULER_TICK_MS ?? 180000),
+  geminiRefinementEnabled: process.env.GEMINI_ENABLED === "true",
+  geminiRefinementModel: process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
+  geminiRefinementApiKey: process.env.GEMINI_API_KEY ?? "",
 };

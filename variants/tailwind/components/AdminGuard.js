@@ -1,12 +1,12 @@
 "use client";
-import { useAuth } from "@medreach/core";
+import { useAdminAccess } from "@medreach/core";
 import AdminNav from "./AdminNav";
 
 // Wraps every admin page: gates on admin role and renders the sub-nav.
-export default function AdminGuard({ title, subtitle, children }) {
-  const { ready, isAdmin } = useAuth();
+export default function AdminGuard({ title, subtitle, children, systemOnly = false }) {
+  const { ready, allowed } = useAdminAccess(systemOnly);
   if (!ready) return <p className="text-[var(--color-muted)]">Loading…</p>;
-  if (!isAdmin) return <div className="rounded bg-[var(--color-warning-bg)] text-[var(--color-warning)] px-3 py-2">Admin access required. Please sign in as an administrator.</div>;
+  if (!allowed) return <div className="rounded bg-[var(--color-warning-bg)] text-[var(--color-warning)] px-3 py-2">Admin access required. Please sign in as an administrator.</div>;
   return (
     <>
       <header className="mb-3">

@@ -13,6 +13,7 @@ export default function HospitalsPage() {
   const { origin, label, status, useGps, useLocality, error } = useLocation();
 
   const filters = useMemo(() => ({
+    limit: 50,
     q: q || undefined, specialty: specialty || undefined,
     hospitalType: hospitalType || undefined,
     facilities: facility ? [facility] : [],

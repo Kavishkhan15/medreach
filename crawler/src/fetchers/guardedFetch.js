@@ -13,19 +13,20 @@ export async function guardedFetch(source, url, deps = {}) {
   let u;
   try { u = new URL(url, source.baseUrl); } catch { return { ok: false, status: 0, reason: "invalid_url", body: null }; }
 
-  // 1. Same host as the approved source only.
-  if (u.host !== new URL(source.baseUrl).host) {
-    return { ok: false, status: 0, reason: "offsite_blocked", body: null };
-  }
-  // 2. Registry path allow-list.
-  if (!isPathAllowed(source, u.pathname)) {
-    return { ok: false, status: 0, reason: "path_not_allowed", body: null };
-  }
-  // 3. robots.txt.
-  const robots = await isAllowedByRobots(u.href, deps);
-  if (!robots.allowed) {
-    return { ok: false, status: 0, reason: "robots_disallowed", body: null };
-  }
+  const checkSourceBoundary = async (candidate) => {
+    const target = new URL(candidate);
+    // Restrict both the first URL and every redirect to the registered origin.
+    if (target.origin !== new URL(source.baseUrl).origin) return { ok: false, reason: "offsite_blocked" };
+    if (!isPathAllowed(source, target.pathname)) return { ok: false, reason: "path_not_allowed" };
+    const robots = await isAllowedByRobots(target.href, deps);
+    return robots.allowed ? { ok: true } : { ok: false, reason: "robots_disallowed" };
+  };
+  const initial = await checkSourceBoundary(u.href);
+  if (!initial.ok) return { ok: false, status: 0, reason: initial.reason, body: null };
   // 4. SSRF-safe fetch with the source's own timeout.
-  return httpFetch(u.href, { fetchImpl: deps.fetchImpl, timeoutMs: source.timeoutMs || 10000 });
+  return httpFetch(u.href, {
+    fetchImpl: deps.fetchImpl,
+    timeoutMs: source.timeoutMs || 10000,
+    validateRedirect: checkSourceBoundary,
+  });
 }

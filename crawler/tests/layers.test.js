@@ -4,12 +4,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { httpFetch } from "../src/fetchers/httpFetcher.js";
+import { BaseAdapter } from "../src/adapters/baseAdapter.js";
 import { guardedFetch } from "../src/fetchers/guardedFetch.js";
 import { freshnessLabel, THRESHOLDS_MS } from "../src/freshness/freshness.js";
 import { confidenceLevel, SOURCE_RELIABILITY } from "../src/confidence/confidence.js";
 import { runSchedule } from "../src/scheduler.js";
 import { getSource } from "../src/registry/sources.js";
-import { _clearCache } from "../src/robots/robotsChecker.js";
+import { _clearCache, loadRobots } from "../src/robots/robotsChecker.js";
 
 const res = (status, body = "", ct = "text/html") => ({
   status, text: async () => body, headers: { get: (h) => (h.toLowerCase() === "content-type" ? ct : null) },
@@ -82,6 +83,159 @@ test("guardedFetch: offsite host blocked", async () => {
 test("guardedFetch: path outside registry allowlist blocked", async () => {
   const out = await guardedFetch(getSource("lilavati"), "/admin/secret", { fetchImpl: async () => res(200) });
   assert.equal(out.reason, "path_not_allowed");
+});
+
+test("guardedFetch: redirect cannot leave the approved source", async () => {
+  _clearCache();
+  const visits = [];
+  const mock = async (url) => {
+    visits.push(url);
+    if (url.endsWith("/robots.txt")) return res(200, "User-agent: *\nAllow: /", "text/plain");
+    return {
+      status: 302,
+      headers: { get: (key) => key === "location" ? "https://example.org/unapproved" : null },
+      text: async () => "",
+    };
+  };
+  const out = await guardedFetch(getSource("lilavati"), "/", { fetchImpl: mock });
+  assert.equal(out.ok, false);
+  assert.equal(out.reason, "offsite_blocked");
+  assert.equal(visits.includes("https://example.org/unapproved"), false);
+});
+
+test("guardedFetch: redirect cannot reach an unapproved path on the same source", async () => {
+  _clearCache();
+  const visits = [];
+  const mock = async (url) => {
+    visits.push(url);
+    if (url.endsWith("/robots.txt")) return res(200, "User-agent: *\nAllow: /", "text/plain");
+    return {
+      status: 302,
+      headers: { get: (key) => key === "location" ? "/admin/secret" : null },
+      text: async () => "",
+    };
+  };
+  const out = await guardedFetch(getSource("lilavati"), "/", { fetchImpl: mock });
+  assert.equal(out.reason, "path_not_allowed");
+  assert.equal(visits.includes("https://www.lilavatihospital.com/admin/secret"), false);
+});
+
+for (const destination of ["http://localhost/private", "http://127.0.0.1/private", "http://169.254.169.254/private"]) {
+  test(`guardedFetch: redirect to ${destination} is blocked before fetch`, async () => {
+    _clearCache();
+    const visits = [];
+    const mock = async (url) => {
+      visits.push(url);
+      if (url.endsWith("/robots.txt")) return res(200, "User-agent: *\nAllow: /", "text/plain");
+      return {
+        status: 302,
+        headers: { get: (key) => key === "location" ? destination : null },
+        text: async () => "",
+      };
+    };
+    const out = await guardedFetch(getSource("lilavati"), "/", { fetchImpl: mock });
+    assert.equal(out.ok, false);
+    assert.equal(out.reason, "unsafe_redirect");
+    assert.equal(visits.includes(destination), false);
+  });
+}
+
+test("guardedFetch: approved same-origin, allowlisted redirect succeeds", async () => {
+  _clearCache();
+  const visits = [];
+  const mock = async (url) => {
+    visits.push(url);
+    if (url.endsWith("/robots.txt")) return res(200, "User-agent: *\nAllow: /", "text/plain");
+    if (url.endsWith("/contact-us")) return res(200, "<h1>Contact</h1>");
+    return {
+      status: 302,
+      headers: { get: (key) => key === "location" ? "/contact-us" : null },
+      text: async () => "",
+    };
+  };
+  const out = await guardedFetch(getSource("lilavati"), "/", { fetchImpl: mock });
+  assert.equal(out.ok, true);
+  assert.equal(out.body, "<h1>Contact</h1>");
+  assert.equal(out.finalUrl, "https://www.lilavatihospital.com/contact-us");
+  assert.deepEqual(visits, [
+    "https://www.lilavatihospital.com/robots.txt",
+    "https://www.lilavatihospital.com/",
+    "https://www.lilavatihospital.com/contact-us",
+  ]);
+});
+
+test("legacy adapter blocks redirect to another host before requesting it", async () => {
+  const visits = [];
+  const adapter = new BaseAdapter({ url: "https://approved.example/feed" }, {
+    fetchImpl: async (url) => {
+      visits.push(url);
+      return { status: 302, headers: { get: (key) => key === "location" ? "https://other.example/feed" : null } };
+    },
+  });
+  const result = await adapter.fetchRaw();
+  assert.equal(result.reason, "offsite_blocked");
+  assert.deepEqual(visits, ["https://approved.example/feed"]);
+});
+
+test("legacy adapter blocks unapproved same-host path before requesting it", async () => {
+  const visits = [];
+  const adapter = new BaseAdapter({ url: "https://approved.example/feed" }, {
+    fetchImpl: async (url) => {
+      visits.push(url);
+      return { status: 302, headers: { get: (key) => key === "location" ? "/private" : null } };
+    },
+  });
+  const result = await adapter.fetchRaw();
+  assert.equal(result.reason, "path_not_allowed");
+  assert.deepEqual(visits, ["https://approved.example/feed"]);
+});
+
+test("legacy adapter follows a registered same-host path", async () => {
+  const visits = [];
+  const adapter = new BaseAdapter({
+    url: "https://approved.example/", allowedPaths: ["/", "/contact-us"],
+  }, {
+    fetchImpl: async (url) => {
+      visits.push(url);
+      return url.endsWith("/contact-us") ? res(200, "Contact")
+        : { status: 302, headers: { get: (key) => key === "location" ? "/contact-us" : null } };
+    },
+  });
+  const result = await adapter.fetchRaw();
+  assert.equal(result.ok, true);
+  assert.equal(result.finalUrl, "https://approved.example/contact-us");
+  assert.deepEqual(visits, ["https://approved.example/", "https://approved.example/contact-us"]);
+});
+
+test("httpFetch: caps redirect chains", async () => {
+  let calls = 0;
+  const mock = async () => {
+    calls++;
+    return {
+      status: 302,
+      headers: { get: (key) => key === "location" ? "/again" : null },
+      text: async () => "",
+    };
+  };
+  const out = await httpFetch("https://example.org/again", { fetchImpl: mock, maxRedirects: 2 });
+  assert.equal(out.reason, "too_many_redirects");
+  assert.equal(calls, 3, "the destination after the second redirect must not be requested");
+});
+
+test("robots loader: redirect cannot fetch another host", async () => {
+  _clearCache();
+  const visits = [];
+  const mock = async (url) => {
+    visits.push(url);
+    return {
+      status: 302,
+      headers: { get: (key) => key === "location" ? "https://example.org/robots.txt" : null },
+      text: async () => "",
+    };
+  };
+  const result = await loadRobots("https://www.lilavatihospital.com", { fetchImpl: mock });
+  assert.equal(result.missing, true);
+  assert.deepEqual(visits, ["https://www.lilavatihospital.com/robots.txt"]);
 });
 
 // ---- FRESHNESS ----

@@ -22,6 +22,7 @@ const availabilityObservationSchema = new mongoose.Schema(
     retrievedAt: { type: Date, default: Date.now },
     confidence: { type: String, enum: CONFIDENCE_LEVELS, default: "UNKNOWN" },
     verificationStatus: { type: String, enum: VERIFICATION_STATUS, default: "unverified" },
+    verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );

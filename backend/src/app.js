@@ -17,6 +17,15 @@ import adminRoutes from "./routes/admin.js";
 import alertRoutes from "./routes/alertRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import assistantRoutes from "./routes/assistantRoutes.js";
+import notificationRoutes from "./routes/notifications.js";
+import hospitalAdminRoutes from "./routes/hospitalAdmin.js";
+import emergencyRequestRoutes from "./routes/emergencyRequests.js";
+import { resourceRouter, resourceAdminRouter } from "./routes/resources.js";
+import { jobsRouter, applicationsRouter } from "./routes/careers.js";
+import routingRouter from "./routes/routing.js";
+import analyticsRouter from "./routes/analytics.js";
+import emailRouter from "./routes/email.js";
+import refinementRouter from "./routes/refinement.js";
 
 export function createApp() {
   const app = express();
@@ -41,6 +50,19 @@ export function createApp() {
   app.use("/api/alerts", alertRoutes);
   app.use("/api/users", userRoutes);
   app.use("/api/assistant", assistantRoutes);
+  app.use("/api/notifications", notificationRoutes);
+  app.use("/api/hospital-admin", hospitalAdminRoutes);
+  app.use("/api/emergency-requests", emergencyRequestRoutes);
+  app.use("/api/blood-banks", resourceRouter("blood_bank"));
+  app.use("/api/diagnostics", resourceRouter("diagnostic"));
+  app.use("/api/ambulances", resourceRouter("ambulance"));
+  app.use("/api/admin/resources", resourceAdminRouter);
+  app.use("/api/jobs", jobsRouter);
+  app.use("/api/applications", applicationsRouter);
+  app.use("/api/routing", routingRouter);
+  app.use("/api/analytics", analyticsRouter);
+  app.use("/api/email", emailRouter);
+  app.use("/api/admin/refinement", refinementRouter);
 
   app.use(notFound);
   app.use(errorHandler);

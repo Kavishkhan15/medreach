@@ -40,15 +40,13 @@ export function searchHospitals(list, filters = {}, options = {}) {
     return true;
   });
 
-  // Ranking annotates each with _rank (score, distance, eta, reasons).
+  // Ranking annotates each with _rank (score, straight-line distance, reasons).
   out = rankHospitals(out, { categoryId, origin });
 
   switch (sort) {
     case "nearest":
+    case "fastest": // legacy sort value: nearest is the honest fallback without routing
       out.sort((a, b) => (a._rank.distanceKm ?? Infinity) - (b._rank.distanceKm ?? Infinity));
-      break;
-    case "fastest":
-      out.sort((a, b) => (a._rank.etaMinutes ?? Infinity) - (b._rank.etaMinutes ?? Infinity));
       break;
     case "updated":
       out.sort((a, b) => new Date(b.lastUpdated || 0) - new Date(a.lastUpdated || 0));
