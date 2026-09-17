@@ -18,8 +18,16 @@ test("disabled routing returns no invented ETA", async () => {
   assert.equal(route.routeDistanceKm, null);
 });
 
+import { env } from "../src/config/env.js";
+
 test("optional integrations disclose disabled state without exposing keys", () => {
-  assert.equal(emailConfiguration().enabled, false);
-  assert.equal(refinementStatus().configured, false);
-  assert.equal(JSON.stringify(refinementStatus()).includes("API_KEY"), false);
+  const orig = env.emailEnabled;
+  env.emailEnabled = false;
+  try {
+    assert.equal(emailConfiguration().enabled, false);
+    assert.equal(refinementStatus().configured, false);
+    assert.equal(JSON.stringify(refinementStatus()).includes("API_KEY"), false);
+  } finally {
+    env.emailEnabled = orig;
+  }
 });

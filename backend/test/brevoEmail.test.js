@@ -17,6 +17,7 @@ test("Brevo (Bravo) email authentication and delivery test suite", async (t) => 
   const originalEnv = {
     emailEnabled: env.emailEnabled,
     emailProvider: env.emailProvider,
+    resendApiKey: env.resendApiKey,
     brevoApiKey: env.brevoApiKey,
     smtpHost: env.smtpHost,
     smtpPort: env.smtpPort,
@@ -27,6 +28,7 @@ test("Brevo (Bravo) email authentication and delivery test suite", async (t) => 
   };
 
   t.before(async () => {
+    env.resendApiKey = "";
     await connectDB(testDbUri);
     await mongoose.connection.dropDatabase();
   });

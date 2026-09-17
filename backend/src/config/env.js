@@ -1,6 +1,11 @@
 // Central environment config. Reads .env once, validates, exports typed-ish object.
 import dotenv from "dotenv";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const required = (key, fallback) => {
   const v = process.env[key] ?? fallback;
@@ -78,7 +83,9 @@ export const env = {
     process.env.RESEND_FROM ||
     process.env.BREVO_FROM ||
     process.env.BRAVO_FROM ||
-    "",
+    (((process.env.EMAIL_PROVIDER || "").toLowerCase() === "resend" || Boolean(process.env.RESEND_API_KEY))
+      ? "onboarding@resend.dev"
+      : ""),
   smtpFromName:
     process.env.SMTP_FROM_NAME ||
     process.env.RESEND_FROM_NAME ||
