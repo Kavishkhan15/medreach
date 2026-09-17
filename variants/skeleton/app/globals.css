@@ -287,6 +287,9 @@ select.w-auto { width: auto; display: inline-block; }
 /* Map canvas --------------------------------------------------------------- */
 .map-canvas { background: linear-gradient(0deg, rgba(211,32,41,.03), rgba(211,32,41,.03)), repeating-linear-gradient(0deg, #eef0f2, #eef0f2 1px, transparent 1px, transparent 28px), repeating-linear-gradient(90deg, #eef0f2, #eef0f2 1px, transparent 1px, transparent 28px), var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); min-height: 300px; display: flex; align-items: center; justify-content: center; color: var(--color-muted); }
 
+.gmap-container { width: 100%; height: min(65vh, 570px); min-height: 420px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface); }
+.map-fallback { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.5rem 1.5rem; background: var(--color-surface); border: 1px dashed var(--color-border); border-radius: var(--radius); }
+
 /* Skeleton loading placeholders -------------------------------------------- */
 .placeholder-glow .placeholder { display: block; height: 1rem; margin-bottom: .5rem; border-radius: 4px; background: #e3e6ea; animation: placeholder-glow 1.4s ease-in-out infinite; }
 .placeholder.col-12 { width: 100%; }

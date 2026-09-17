@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useHospitals, availabilityMeta } from "@medreach/core";
 import { toneClass, statusPill } from "../../lib/tone";
 import Link from "next/link";
+import GoogleMapView from "../../components/GoogleMapView";
 
 // Map experience. A real tile provider (Leaflet/Mapbox) can be dropped in behind
 // this abstraction later; for now we render an accessible marker list + panel so
@@ -11,9 +12,6 @@ function edStatus(h) {
   return (h.facilities || []).find((f) => f.facility === "Emergency Department")?.status ?? "unknown";
 }
 
-const mapCanvas =
-  "min-h-[300px] flex items-center justify-center text-[var(--color-muted)] rounded-[var(--radius)] border border-[var(--color-border)] " +
-  "bg-[linear-gradient(0deg,rgba(211,32,41,.03),rgba(211,32,41,.03)),repeating-linear-gradient(0deg,#eef0f2,#eef0f2_1px,transparent_1px,transparent_28px),repeating-linear-gradient(90deg,#eef0f2,#eef0f2_1px,transparent_1px,transparent_28px),var(--color-surface)]";
 
 export default function MapPage() {
   const { data, loading } = useHospitals({}, { sort: "recommended" });
@@ -29,16 +27,7 @@ export default function MapPage() {
 
       <div className="flex flex-wrap -mx-1.5">
         <div className="w-full lg:w-7/12 px-1.5 mb-3">
-          <div className={mapCanvas} role="img" aria-label="Map of Mumbai hospitals (interactive list provided alongside)">
-            <div className="text-center p-4">
-              <div className="text-[2rem]" aria-hidden="true">🗺️</div>
-              <p className="mb-1 font-semibold">Map view</p>
-              <p className="text-[.78rem] text-[var(--color-muted)] mb-0">
-                {sel ? `Selected: ${sel.name} (${sel.location?.coordinates?.[1]?.toFixed(3)}, ${sel.location?.coordinates?.[0]?.toFixed(3)})`
-                     : "A tile-map provider plugs in here. Use the list to select a hospital."}
-              </p>
-            </div>
-          </div>
+          <GoogleMapView items={data} selected={selected} onSelect={setSelected} />
           {sel && (
             <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] shadow-[var(--shadow-sm)] p-5 mt-3">
               <div className="flex justify-between items-start">

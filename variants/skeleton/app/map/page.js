@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useHospitals, availabilityMeta } from "@medreach/core";
 import { toneClass } from "../../lib/tone";
 import Link from "next/link";
-
+import GoogleMapView from "../../components/GoogleMapView";
 // Map experience. A real tile provider (Leaflet/Mapbox) can be dropped in behind
 // this abstraction later; for now we render an accessible marker list + panel so
 // the experience is never blank and works without a heavy map dependency.
@@ -25,16 +25,7 @@ export default function MapPage() {
 
       <div className="grid-map">
         <div>
-          <div className="map-canvas" role="img" aria-label="Map of Mumbai hospitals (interactive list provided alongside)">
-            <div className="text-center p-4">
-              <div style={{ fontSize: "2rem" }} aria-hidden="true">🗺️</div>
-              <p className="mb-1 fw-semibold">Map view</p>
-              <p className="disclaimer mb-0">
-                {sel ? `Selected: ${sel.name} (${sel.location?.coordinates?.[1]?.toFixed(3)}, ${sel.location?.coordinates?.[0]?.toFixed(3)})`
-                     : "A tile-map provider plugs in here. Use the list to select a hospital."}
-              </p>
-            </div>
-          </div>
+          <GoogleMapView items={data} selected={selected} onSelect={setSelected} />
           {sel && (
             <div className="surface mt-3">
               <div className="flex justify-between items-start">
