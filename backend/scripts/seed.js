@@ -4,11 +4,12 @@ import { connectDB, disconnectDB } from "../src/config/db.js";
 import { Hospital } from "../src/models/Hospital.js";
 import { User } from "../src/models/User.js";
 import { Alert } from "../src/models/Alert.js";
-import { hospitals, adminSeed, userSeed } from "../src/data/seedData.js";
+import { BloodCampaign } from "../src/models/BloodCampaign.js";
+import { hospitals, adminSeed, userSeed, bloodCampaignsSeed } from "../src/data/seedData.js";
 
 async function run() {
   await connectDB();
-  await Promise.all([Hospital.deleteMany({}), User.deleteMany({}), Alert.deleteMany({})]);
+  await Promise.all([Hospital.deleteMany({}), User.deleteMany({}), Alert.deleteMany({}), BloodCampaign.deleteMany({})]);
 
   const admin = new User({ email: adminSeed.email, name: adminSeed.name, region: adminSeed.region, role: "admin" });
   await admin.setPassword(adminSeed.password);
@@ -33,7 +34,9 @@ async function run() {
     createdBy: admin._id,
   });
 
-  console.log(`Seeded ${created.length} hospitals, 2 users (admin@medreach.test / user@medreach.test), 1 alert.`);
+  await BloodCampaign.insertMany(bloodCampaignsSeed.map((c) => ({ ...c, createdBy: admin._id })));
+
+  console.log(`Seeded ${created.length} hospitals, 2 users, 1 alert, ${bloodCampaignsSeed.length} blood campaigns.`);
   await disconnectDB();
 }
 
