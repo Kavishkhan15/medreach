@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { useHospitals, useLocation, emergencyCategory, MUMBAI_LOCALITIES } from "@medreach/core";
 import EmergencyCategorySelector from "../../components/EmergencyCategorySelector";
 import HospitalList from "../../components/HospitalList";
-
+import EmergencyHospitalCard from "../../components/EmergencyHospitalCard";
 export default function EmergencyPage() {
   const [categoryId, setCategoryId] = useState(null);
   const { origin, label, status, useGps, useLocality, error } = useLocation();
@@ -59,8 +59,36 @@ export default function EmergencyPage() {
               Looking for: {cat.specialties.join(", ")} · facilities: {cat.facilities.join(", ")}
             </p>
           )}
-          <HospitalList hospitals={data} loading={loading}
-            emptyMessage="No hospitals currently match — try a different locality or category." />
+          {loading ? (
+            <div className="row g-3" aria-busy="true">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div className="col-12 col-md-6 col-lg-4" key={i}>
+                  <div className="card h-100 border-danger border-2 shadow-sm" aria-hidden="true">
+                    <div className="card-body p-4">
+                      <div className="placeholder-glow">
+                        <span className="placeholder col-8 mb-2" />
+                        <span className="placeholder col-5" />
+                        <span className="placeholder col-12 mt-3" />
+                        <span className="placeholder col-6" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : data.length === 0 ? (
+            <div className="surface text-center">
+              <p className="mb-0 text-secondary">No hospitals currently match — try a different locality or category.</p>
+            </div>
+          ) : (
+            <div className="row g-3">
+              {data.map((h) => (
+                <div className="col-12 col-md-6 col-lg-4" key={h._id || h.slug}>
+                  <EmergencyHospitalCard hospital={h} category={cat} />
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       )}
     </>
