@@ -44,28 +44,47 @@ export const env = {
   aiProvider: process.env.AI_PROVIDER ?? "rule_based",
   aiApiKey: process.env.AI_API_KEY ?? "",
   aiModel: process.env.AI_MODEL ?? "",
-  emailProvider: (process.env.EMAIL_PROVIDER || "").toLowerCase(),
+  emailProvider: (process.env.EMAIL_PROVIDER || (process.env.RESEND_API_KEY ? "resend" : "")).toLowerCase(),
   emailEnabled: process.env.EMAIL_ENABLED === "true",
+  resendApiKey: process.env.RESEND_API_KEY || "",
   brevoApiKey: process.env.BREVO_API_KEY || process.env.BRAVO_API_KEY || "",
   smtpHost:
     process.env.SMTP_HOST ||
-    (["brevo", "bravo"].includes((process.env.EMAIL_PROVIDER || "").toLowerCase()) ||
-    Boolean(process.env.BREVO_USER || process.env.BRAVO_USER)
-      ? "smtp-relay.brevo.com"
-      : ""),
+    (((process.env.EMAIL_PROVIDER || "").toLowerCase() === "resend" || Boolean(process.env.RESEND_API_KEY))
+      ? "smtp.resend.com"
+      : (["brevo", "bravo"].includes((process.env.EMAIL_PROVIDER || "").toLowerCase()) ||
+        Boolean(process.env.BREVO_USER || process.env.BRAVO_USER)
+          ? "smtp-relay.brevo.com"
+          : "")),
   smtpPort: Number(process.env.SMTP_PORT ?? 587),
   smtpSecure: process.env.SMTP_SECURE === "true",
-  smtpUser: process.env.SMTP_USER || process.env.BREVO_USER || process.env.BRAVO_USER || "",
+  smtpUser:
+    process.env.SMTP_USER ||
+    (((process.env.EMAIL_PROVIDER || "").toLowerCase() === "resend" || Boolean(process.env.RESEND_API_KEY))
+      ? "resend"
+      : (process.env.BREVO_USER || process.env.BRAVO_USER || "")),
   smtpPassword:
     process.env.SMTP_PASSWORD ||
-    process.env.BREVO_PASSWORD ||
-    process.env.BREVO_KEY ||
-    process.env.BRAVO_KEY ||
-    process.env.BREVO_SMTP_KEY ||
-    process.env.BRAVO_SMTP_KEY ||
+    (((process.env.EMAIL_PROVIDER || "").toLowerCase() === "resend" || Boolean(process.env.RESEND_API_KEY))
+      ? (process.env.RESEND_API_KEY || "")
+      : (process.env.BREVO_PASSWORD ||
+        process.env.BREVO_KEY ||
+        process.env.BRAVO_KEY ||
+        process.env.BREVO_SMTP_KEY ||
+        process.env.BRAVO_SMTP_KEY ||
+        "")),
+  smtpFrom:
+    process.env.SMTP_FROM ||
+    process.env.RESEND_FROM ||
+    process.env.BREVO_FROM ||
+    process.env.BRAVO_FROM ||
     "",
-  smtpFrom: process.env.SMTP_FROM || process.env.BREVO_FROM || process.env.BRAVO_FROM || "",
-  smtpFromName: process.env.SMTP_FROM_NAME || process.env.BREVO_FROM_NAME || process.env.BRAVO_FROM_NAME || "MedReach",
+  smtpFromName:
+    process.env.SMTP_FROM_NAME ||
+    process.env.RESEND_FROM_NAME ||
+    process.env.BREVO_FROM_NAME ||
+    process.env.BRAVO_FROM_NAME ||
+    "MedReach",
   smtpConnectionTimeoutMs: Math.max(1000, Number(process.env.SMTP_CONNECTION_TIMEOUT_MS ?? 8000)),
   publicAppUrl: process.env.PUBLIC_APP_URL ?? "http://localhost:3000",
   routingProvider: process.env.ROUTING_PROVIDER ?? "none",

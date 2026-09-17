@@ -31,6 +31,45 @@ const templates = {
 
 let transporter;
 let transportFactory = (options) => nodemailer.createTransport(options);
+
+let resendApiSender = async ({ to, subject, text, fromName, fromEmail }) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), env.smtpConnectionTimeoutMs || 8000);
+
+  try {
+    const formattedFrom = fromName ? `${fromName} <${fromEmail}>` : fromEmail;
+    const res = await undiciFetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.resendApiKey}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      signal: controller.signal,
+      dispatcher: ipv4Agent,
+      body: JSON.stringify({
+        from: formattedFrom,
+        to: [to],
+        subject,
+        text,
+      }),
+    });
+
+    clearTimeout(timeout);
+
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      const err = new Error(errBody.message || "Resend API delivery failed");
+      err.code = res.status === 401 || res.status === 403 ? "EAUTH" : "RESEND_API_ERROR";
+      throw err;
+    }
+
+    return await res.json().catch(() => ({}));
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
 let brevoApiSender = async ({ to, subject, text, fromName, fromEmail }) => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), env.smtpConnectionTimeoutMs || 8000);
@@ -69,19 +108,33 @@ let brevoApiSender = async ({ to, subject, text, fromName, fromEmail }) => {
 };
 
 export function emailConfiguration() {
+  const isResendApi = Boolean(env.resendApiKey && env.smtpFrom);
   const isBrevoApi = Boolean(env.brevoApiKey && env.smtpFrom);
   const isSmtp = Boolean(env.smtpHost && env.smtpFrom);
-  const configured = Boolean(isBrevoApi || isSmtp);
-  const isBrevo =
+  const configured = Boolean(isResendApi || isBrevoApi || isSmtp);
+
+  let provider = "none";
+  if (
+    isResendApi ||
+    (env.smtpHost && env.smtpHost.includes("resend")) ||
+    env.emailProvider === "resend"
+  ) {
+    provider = "resend";
+  } else if (
     isBrevoApi ||
     (env.smtpHost && env.smtpHost.includes("brevo")) ||
-    ["brevo", "bravo"].includes(env.emailProvider);
+    ["brevo", "bravo"].includes(env.emailProvider)
+  ) {
+    provider = "brevo";
+  } else if (isSmtp) {
+    provider = "smtp";
+  }
 
   return {
     enabled: env.emailEnabled,
     configured,
-    provider: isBrevo ? "brevo" : (isSmtp ? "smtp" : "none"),
-    mode: env.emailEnabled ? (isBrevo ? "brevo" : "smtp") : "disabled",
+    provider,
+    mode: env.emailEnabled ? (provider !== "none" ? provider : "smtp") : "disabled",
   };
 }
 
@@ -95,21 +148,30 @@ export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
       status: env.emailEnabled ? "pending" : "disabled" });
     if (!env.emailEnabled) return delivery;
 
+    const isResendApi = Boolean(env.resendApiKey && env.smtpFrom);
     const isBrevoApi = Boolean(env.brevoApiKey && env.smtpFrom);
     const isSmtp = Boolean(env.smtpHost && env.smtpFrom);
 
-    if (!isBrevoApi && !isSmtp) {
+    if (!isResendApi && !isBrevoApi && !isSmtp) {
       delivery.status = "failed";
       delivery.errorCode = "SMTP_CONFIG_INCOMPLETE";
-      delivery.lastError = "Email configuration incomplete (SMTP or Brevo API required)";
+      delivery.lastError = "Email configuration incomplete (SMTP or Resend API required)";
       await delivery.save();
       return delivery;
     }
 
     delivery.attempts += 1;
 
-    // Prefer Brevo REST API if configured, otherwise use SMTP (Brevo or standard)
-    if (isBrevoApi) {
+    // Prefer Resend REST API, then Brevo REST API, otherwise use SMTP
+    if (isResendApi) {
+      await resendApiSender({
+        to,
+        subject,
+        text,
+        fromName: env.smtpFromName,
+        fromEmail: env.smtpFrom,
+      });
+    } else if (isBrevoApi) {
       await brevoApiSender({
         to,
         subject,
@@ -164,6 +226,10 @@ export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
 export function setEmailTransportFactoryForTests(factory) {
   transportFactory = factory || ((options) => nodemailer.createTransport(options));
   transporter = undefined;
+}
+
+export function setResendClientForTests(client) {
+  resendApiSender = client || (async () => ({}));
 }
 
 export function setBrevoClientForTests(client) {
