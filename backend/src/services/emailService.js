@@ -1,6 +1,9 @@
 import nodemailer from "nodemailer";
+import { Agent, fetch as undiciFetch } from "undici";
 import { env } from "../config/env.js";
 import { EmailDelivery } from "../models/EmailDelivery.js";
+
+const ipv4Agent = new Agent({ connect: { family: 4 } });
 
 const templates = {
   welcome: (d) => ["Welcome to MedReach", `Hello ${d.name || "there"}, your MedReach account is ready.`],
@@ -28,9 +31,58 @@ const templates = {
 
 let transporter;
 let transportFactory = (options) => nodemailer.createTransport(options);
+let brevoApiSender = async ({ to, subject, text, fromName, fromEmail }) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), env.smtpConnectionTimeoutMs || 8000);
+
+  try {
+    const res = await undiciFetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": env.brevoApiKey,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      signal: controller.signal,
+      dispatcher: ipv4Agent,
+      body: JSON.stringify({
+        sender: { name: fromName, email: fromEmail },
+        to: [{ email: to }],
+        subject,
+        textContent: text,
+      }),
+    });
+
+    clearTimeout(timeout);
+
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      const err = new Error(errBody.message || "Brevo API delivery failed");
+      err.code = res.status === 401 ? "EAUTH" : "BREVO_API_ERROR";
+      throw err;
+    }
+
+    return await res.json().catch(() => ({}));
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
 export function emailConfiguration() {
-  return { enabled: env.emailEnabled, configured: Boolean(env.smtpHost && env.smtpFrom),
-    mode: env.emailEnabled ? "smtp" : "disabled" };
+  const isBrevoApi = Boolean(env.brevoApiKey && env.smtpFrom);
+  const isSmtp = Boolean(env.smtpHost && env.smtpFrom);
+  const configured = Boolean(isBrevoApi || isSmtp);
+  const isBrevo =
+    isBrevoApi ||
+    (env.smtpHost && env.smtpHost.includes("brevo")) ||
+    ["brevo", "bravo"].includes(env.emailProvider);
+
+  return {
+    enabled: env.emailEnabled,
+    configured,
+    provider: isBrevo ? "brevo" : (isSmtp ? "smtp" : "none"),
+    mode: env.emailEnabled ? (isBrevo ? "brevo" : "smtp") : "disabled",
+  };
 }
 
 export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
@@ -42,19 +94,48 @@ export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
     if (!delivery) delivery = await EmailDelivery.create({ eventKey, recipient: to, template, subject,
       status: env.emailEnabled ? "pending" : "disabled" });
     if (!env.emailEnabled) return delivery;
-    if (!env.smtpHost || !env.smtpFrom) {
+
+    const isBrevoApi = Boolean(env.brevoApiKey && env.smtpFrom);
+    const isSmtp = Boolean(env.smtpHost && env.smtpFrom);
+
+    if (!isBrevoApi && !isSmtp) {
       delivery.status = "failed";
       delivery.errorCode = "SMTP_CONFIG_INCOMPLETE";
-      delivery.lastError = "SMTP configuration incomplete";
+      delivery.lastError = "Email configuration incomplete (SMTP or Brevo API required)";
       await delivery.save();
       return delivery;
     }
-    transporter ||= transportFactory({ host: env.smtpHost, port: env.smtpPort, secure: env.smtpSecure,
-      connectionTimeout: env.smtpConnectionTimeoutMs, greetingTimeout: env.smtpConnectionTimeoutMs,
-      socketTimeout: env.smtpConnectionTimeoutMs,
-      auth: env.smtpUser ? { user: env.smtpUser, pass: env.smtpPassword } : undefined });
+
     delivery.attempts += 1;
-    await transporter.sendMail({ from: { name: env.smtpFromName, address: env.smtpFrom }, to, subject, text });
+
+    // Prefer Brevo REST API if configured, otherwise use SMTP (Brevo or standard)
+    if (isBrevoApi) {
+      await brevoApiSender({
+        to,
+        subject,
+        text,
+        fromName: env.smtpFromName,
+        fromEmail: env.smtpFrom,
+      });
+    } else {
+      transporter ||= transportFactory({
+        host: env.smtpHost,
+        port: env.smtpPort,
+        secure: env.smtpSecure,
+        connectionTimeout: env.smtpConnectionTimeoutMs,
+        greetingTimeout: env.smtpConnectionTimeoutMs,
+        socketTimeout: env.smtpConnectionTimeoutMs,
+        auth: env.smtpUser ? { user: env.smtpUser, pass: env.smtpPassword } : undefined,
+      });
+
+      await transporter.sendMail({
+        from: { name: env.smtpFromName, address: env.smtpFrom },
+        to,
+        subject,
+        text,
+      });
+    }
+
     delivery.status = "sent";
     delivery.sentAt = new Date();
     delivery.lastError = undefined;
@@ -63,15 +144,15 @@ export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
     return delivery;
   } catch (error) {
     // Persist only a bounded category. Provider messages can echo usernames or hosts.
-    const code = String(error?.code || "SMTP_DELIVERY_FAILED").replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
+    const code = String(error?.code || "EMAIL_DELIVERY_FAILED").replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
     try {
       const delivery = await EmailDelivery.findOne({ eventKey });
       if (delivery) {
         delivery.status = "failed";
         delivery.attempts += delivery.attempts ? 0 : 1;
         delivery.errorCode = code;
-        delivery.lastError = code === "EAUTH" ? "SMTP authentication failed" :
-          code.includes("TIME") ? "SMTP connection timed out" : "SMTP delivery failed";
+        delivery.lastError = code === "EAUTH" ? "Email authentication failed" :
+          code.includes("TIME") ? "Email connection timed out" : "Email delivery failed";
         await delivery.save();
         return delivery;
       }
@@ -83,4 +164,8 @@ export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
 export function setEmailTransportFactoryForTests(factory) {
   transportFactory = factory || ((options) => nodemailer.createTransport(options));
   transporter = undefined;
+}
+
+export function setBrevoClientForTests(client) {
+  brevoApiSender = client || (async () => ({}));
 }
