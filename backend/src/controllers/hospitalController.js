@@ -5,6 +5,7 @@ import { DataSource } from "../models/DataSource.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { HOSPITAL_CLAIM_FIELDS } from "../models/HospitalFieldClaim.js";
 import { recordHospitalFieldClaims, normalizeFieldValue } from "../services/hospitalFieldFusion.js";
+import { enrichHospitalData } from "../services/hospitalEnrichmentService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 // GET /api/hospitals — public search + filter + pagination + optional geo "nearest".
@@ -55,6 +56,12 @@ export const getHospital = asyncHandler(async (req, res) => {
   if (!hospital) return res.status(404).json({ error: "Hospital not found" });
   const [view] = await withHospitalData([hospital]);
   res.json({ hospital: view });
+});
+
+export const getEnrichedHospital = asyncHandler(async (req, res) => {
+  const enriched = await enrichHospitalData(req.params.idOrSlug);
+  if (!enriched) return res.status(404).json({ error: "Hospital not found" });
+  res.json({ enriched });
 });
 
 export const createHospital = asyncHandler(async (req, res) => {

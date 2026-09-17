@@ -5,6 +5,7 @@ import { requireAuth, requireRole } from "../middleware/auth.js";
 import {
   listHospitals,
   getHospital,
+  getEnrichedHospital,
   createHospital,
   updateHospital,
   updateBeds,
@@ -15,6 +16,7 @@ const router = Router();
 
 // Public
 router.get("/", listHospitals);
+router.get("/:idOrSlug/enriched", getEnrichedHospital);
 router.get("/:slug", getHospital);
 
 // Admin-only
