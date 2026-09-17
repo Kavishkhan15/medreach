@@ -8,16 +8,19 @@ node_modules/
 .pnp
 .pnp.js
 
-# Env / secrets  (never commit Mongo URIs, JWT secrets)
+# Env / secrets (never commit Mongo URIs, JWT secrets, or API keys)
 .env
 .env.*
+.env*.local
 !.env.example
+!**/.env.example
 
-# Next.js
+# Next.js & Deployment
 .next/
 out/
 build/
 dist/
+.vercel/
 
 # Evaluation raw outputs (can be large / regenerated)
 data/raw/
@@ -30,8 +33,17 @@ user-study/data/
 user-study/**/recordings/
 user-study/**/*.raw.csv
 
-# Misc
+# Misc, logs & IDE
 .DS_Store
+Thumbs.db
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 coverage/
 PRIVATE.md
+.vscode/
+.idea/
+*.swp
+*.swo

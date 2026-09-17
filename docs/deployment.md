@@ -11,6 +11,8 @@ MedReach deploys as **four independent pieces**:
 
 ### Frontend
 - `NEXT_PUBLIC_API_URL`
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` — Google Maps JavaScript API key (optional; `/map` displays a setup fallback if unset). In Google Cloud Console, enable only the **Maps JavaScript API** and restrict key to your app's domain.
+- `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` — (optional) Map ID for custom cloud map styling; defaults to `DEMO_MAP_ID`.
 
 ### Backend
 - `MONGO_URI` / `DATABASE_URL`

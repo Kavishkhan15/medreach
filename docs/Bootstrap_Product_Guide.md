@@ -12,11 +12,20 @@ Users can register, sign in with a password or Google, verify email, reset and c
 
 Hospital staff see only assigned hospitals. They can update permitted contact fields, submit source-specific facility capability statements with a supporting statement for review, submit timestamped availability observations, review requests, and manage jobs. Staff capability statements are audited and remain unverified until system-admin review; they cannot set current availability or bed counts. Prospective staff submit an ownership claim; a system administrator must manually approve it before hospital access is assigned. After approval, the user should sign in again to refresh their role token. System administrators review ownership, jobs, source claims, conflicts, crawler state, resources, analytics, audit logs, safe authentication events, and user accounts. They can enable or disable accounts, revoke sessions, trigger reset/verification email, and perform guarded role changes. Hospital administrators never receive system user/security access. Public hospital data retains source-level claims and never treats static capability as live availability.
 
-The public resource endpoints are `/api/blood-banks`, `/api/diagnostics`, and `/api/ambulances`. Their cards show source, freshness, and demo status. A listed blood bank does not imply current inventory; an ambulance listing does not imply live dispatch. The `/map` route offers location-aware list filtering and a schematic position view; it is not a street-map or dispatch interface.
+The public resource endpoints are `/api/blood-banks`, `/api/diagnostics`, and `/api/ambulances`. Their cards show source, freshness, and demo status. A listed blood bank does not imply current inventory; an ambulance listing does not imply live dispatch. The `/map` route offers location-aware list filtering and an interactive Google Maps view with real facility markers and Google Maps navigation links; when `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is unset, it displays an informative setup fallback while preserving full list search and filtering.
 
 ## Optional services
 
 `EMAIL_ENABLED=false` is the default. Registration verification, password reset/change, Google link/security, emergency request/response, job/application, hospital ownership, and admin security events create delivery intent records without attempting SMTP. Raw verification/reset tokens are never returned by the API or stored in delivery records. SMTP failures are categorized without storing provider messages that may echo credentials and never abort the related product flow.
+
+### Google Maps JavaScript API setup
+
+1. In Google Cloud Console, navigate to **APIs & Services → Library**.
+2. Enable **Maps JavaScript API** (only this single API is required; directions open directly via Google Maps navigation URLs without requiring billing for server-side routing APIs).
+3. Under **APIs & Services → Credentials**, create an API key. Restrict it to HTTP referrers (e.g., `http://localhost:3000/*` and your production origin).
+4. Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `variants/bootstrap/.env.local`.
+5. If the key is missing or empty, the map page gracefully displays a setup notice without crashing, keeping the resource search list fully accessible.
+
 
 ### Google Console setup
 

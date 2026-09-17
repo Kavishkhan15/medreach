@@ -127,9 +127,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .timeline-list li::before { content: ""; position: absolute; left: -1.78rem; top: .35rem; width: .7rem; height: .7rem; border-radius: 50%; background: var(--color-emergency); }
 .pre-line { white-space: pre-line; }
 .map-shell { border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: #e9f2f4; }
-.resource-map { display: block; width: 100%; height: min(65vh, 570px); }
-.map-marker { cursor: pointer; outline: none; }
-.map-marker:focus-visible circle { stroke: #111; stroke-width: 1; }
+.gmap-container { width: 100%; height: min(65vh, 570px); min-height: 420px; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface); position: relative; }
+.map-fallback { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.5rem 1.5rem; background: var(--color-surface); border: 1px dashed var(--color-border); border-radius: var(--radius-lg); }
 .map-results { max-height: 570px; overflow: auto; }
 .map-result { display: flex; width: 100%; flex-direction: column; text-align: left; border: 0; border-top: 1px solid var(--color-border); padding: .85rem .25rem; background: transparent; }
 .map-result:hover, .map-result.selected { background: var(--color-info-bg); }
