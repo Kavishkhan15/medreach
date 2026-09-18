@@ -1,9 +1,6 @@
 import nodemailer from "nodemailer";
-import { Agent, fetch as undiciFetch } from "undici";
 import { env } from "../config/env.js";
 import { EmailDelivery } from "../models/EmailDelivery.js";
-
-const ipv4Agent = new Agent({ connect: { family: 4 } });
 
 const templates = {
   welcome: (d) => ["Welcome to MedReach", `Hello ${d.name || "there"}, your MedReach account is ready.`],
@@ -32,109 +29,15 @@ const templates = {
 let transporter;
 let transportFactory = (options) => nodemailer.createTransport(options);
 
-let resendApiSender = async ({ to, subject, text, fromName, fromEmail }) => {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), env.smtpConnectionTimeoutMs || 8000);
-
-  try {
-    const formattedFrom = fromName ? `${fromName} <${fromEmail}>` : fromEmail;
-    const res = await undiciFetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${env.resendApiKey}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      signal: controller.signal,
-      dispatcher: ipv4Agent,
-      body: JSON.stringify({
-        from: formattedFrom,
-        to: [to],
-        subject,
-        text,
-      }),
-    });
-
-    clearTimeout(timeout);
-
-    if (!res.ok) {
-      const errBody = await res.json().catch(() => ({}));
-      const err = new Error(errBody.message || "Resend API delivery failed");
-      err.code = res.status === 401 || res.status === 403 ? "EAUTH" : "RESEND_API_ERROR";
-      throw err;
-    }
-
-    return await res.json().catch(() => ({}));
-  } finally {
-    clearTimeout(timeout);
-  }
-};
-
-let brevoApiSender = async ({ to, subject, text, fromName, fromEmail }) => {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), env.smtpConnectionTimeoutMs || 8000);
-
-  try {
-    const res = await undiciFetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "api-key": env.brevoApiKey,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      signal: controller.signal,
-      dispatcher: ipv4Agent,
-      body: JSON.stringify({
-        sender: { name: fromName, email: fromEmail },
-        to: [{ email: to }],
-        subject,
-        textContent: text,
-      }),
-    });
-
-    clearTimeout(timeout);
-
-    if (!res.ok) {
-      const errBody = await res.json().catch(() => ({}));
-      const err = new Error(errBody.message || "Brevo API delivery failed");
-      err.code = res.status === 401 ? "EAUTH" : "BREVO_API_ERROR";
-      throw err;
-    }
-
-    return await res.json().catch(() => ({}));
-  } finally {
-    clearTimeout(timeout);
-  }
-};
-
 export function emailConfiguration() {
-  const isResendApi = Boolean(env.resendApiKey && env.smtpFrom);
-  const isBrevoApi = Boolean(env.brevoApiKey && env.smtpFrom);
-  const isSmtp = Boolean(env.smtpHost && env.smtpFrom);
-  const configured = Boolean(isResendApi || isBrevoApi || isSmtp);
-
-  let provider = "none";
-  if (
-    isResendApi ||
-    (env.smtpHost && env.smtpHost.includes("resend")) ||
-    env.emailProvider === "resend"
-  ) {
-    provider = "resend";
-  } else if (
-    isBrevoApi ||
-    (env.smtpHost && env.smtpHost.includes("brevo")) ||
-    ["brevo", "bravo"].includes(env.emailProvider)
-  ) {
-    provider = "brevo";
-  } else if (isSmtp) {
-    provider = "smtp";
-  }
-
+  const isGoogle =
+    (env.smtpHost && env.smtpHost.includes("gmail")) ||
+    ["google", "gmail"].includes((env.emailProvider || "").toLowerCase());
   return {
     enabled: env.emailEnabled,
-    configured,
-    provider,
-    mode: env.emailEnabled ? (provider !== "none" ? provider : "smtp") : "disabled",
+    configured: Boolean(env.smtpHost && env.smtpFrom),
+    provider: isGoogle ? "google" : (Boolean(env.smtpHost && env.smtpFrom) ? "smtp" : "none"),
+    mode: env.emailEnabled ? (isGoogle ? "google" : "smtp") : "disabled",
   };
 }
 
@@ -147,57 +50,19 @@ export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
     if (!delivery) delivery = await EmailDelivery.create({ eventKey, recipient: to, template, subject,
       status: env.emailEnabled ? "pending" : "disabled" });
     if (!env.emailEnabled) return delivery;
-
-    const isResendApi = Boolean(env.resendApiKey && env.smtpFrom);
-    const isBrevoApi = Boolean(env.brevoApiKey && env.smtpFrom);
-    const isSmtp = Boolean(env.smtpHost && env.smtpFrom);
-
-    if (!isResendApi && !isBrevoApi && !isSmtp) {
+    if (!env.smtpHost || !env.smtpFrom) {
       delivery.status = "failed";
       delivery.errorCode = "SMTP_CONFIG_INCOMPLETE";
-      delivery.lastError = "Email configuration incomplete (SMTP or Resend API required)";
+      delivery.lastError = "SMTP configuration incomplete";
       await delivery.save();
       return delivery;
     }
-
+    transporter ||= transportFactory({ host: env.smtpHost, port: env.smtpPort, secure: env.smtpSecure,
+      connectionTimeout: env.smtpConnectionTimeoutMs, greetingTimeout: env.smtpConnectionTimeoutMs,
+      socketTimeout: env.smtpConnectionTimeoutMs,
+      auth: env.smtpUser ? { user: env.smtpUser, pass: env.smtpPassword } : undefined });
     delivery.attempts += 1;
-
-    // Prefer Resend REST API, then Brevo REST API, otherwise use SMTP
-    if (isResendApi) {
-      await resendApiSender({
-        to,
-        subject,
-        text,
-        fromName: env.smtpFromName,
-        fromEmail: env.smtpFrom,
-      });
-    } else if (isBrevoApi) {
-      await brevoApiSender({
-        to,
-        subject,
-        text,
-        fromName: env.smtpFromName,
-        fromEmail: env.smtpFrom,
-      });
-    } else {
-      transporter ||= transportFactory({
-        host: env.smtpHost,
-        port: env.smtpPort,
-        secure: env.smtpSecure,
-        connectionTimeout: env.smtpConnectionTimeoutMs,
-        greetingTimeout: env.smtpConnectionTimeoutMs,
-        socketTimeout: env.smtpConnectionTimeoutMs,
-        auth: env.smtpUser ? { user: env.smtpUser, pass: env.smtpPassword } : undefined,
-      });
-
-      await transporter.sendMail({
-        from: { name: env.smtpFromName, address: env.smtpFrom },
-        to,
-        subject,
-        text,
-      });
-    }
-
+    await transporter.sendMail({ from: { name: env.smtpFromName, address: env.smtpFrom }, to, subject, text });
     delivery.status = "sent";
     delivery.sentAt = new Date();
     delivery.lastError = undefined;
@@ -206,15 +71,15 @@ export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
     return delivery;
   } catch (error) {
     // Persist only a bounded category. Provider messages can echo usernames or hosts.
-    const code = String(error?.code || "EMAIL_DELIVERY_FAILED").replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
+    const code = String(error?.code || "SMTP_DELIVERY_FAILED").replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
     try {
       const delivery = await EmailDelivery.findOne({ eventKey });
       if (delivery) {
         delivery.status = "failed";
         delivery.attempts += delivery.attempts ? 0 : 1;
         delivery.errorCode = code;
-        delivery.lastError = code === "EAUTH" ? "Email authentication failed" :
-          code.includes("TIME") ? "Email connection timed out" : "Email delivery failed";
+        delivery.lastError = code === "EAUTH" ? "SMTP authentication failed" :
+          code.includes("TIME") ? "SMTP connection timed out" : "SMTP delivery failed";
         await delivery.save();
         return delivery;
       }
@@ -226,12 +91,4 @@ export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
 export function setEmailTransportFactoryForTests(factory) {
   transportFactory = factory || ((options) => nodemailer.createTransport(options));
   transporter = undefined;
-}
-
-export function setResendClientForTests(client) {
-  resendApiSender = client || (async () => ({}));
-}
-
-export function setBrevoClientForTests(client) {
-  brevoApiSender = client || (async () => ({}));
 }
