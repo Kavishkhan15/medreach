@@ -33,7 +33,7 @@ export function createApp() {
   app.set("trust proxy", 1); // correct req.ip behind a proxy (for ipHash only)
   app.use(requestId);
   app.use(requestLogger);
-  app.use(express.json({ limit: "100kb" }));
+  app.use(express.json({ limit: "5mb" }));
 
   // Shared, identical security posture for every variant (plan §4, §6).
   applySecurity(app);

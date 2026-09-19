@@ -13,7 +13,15 @@ jobsRouter.post("/", requireAuth, requireRole("hospital_admin", "admin", "system
 jobsRouter.get("/:id", param("id").isMongoId(), validate, getJob);
 jobsRouter.patch("/:id", requireAuth, param("id").isMongoId(), validate, updateJob);
 jobsRouter.post("/:id/status", requireAuth, param("id").isMongoId(), body("status").isIn(["published", "closed", "rejected"]), validate, setJobStatus);
-jobsRouter.post("/:id/apply", requireAuth, param("id").isMongoId(), body("statement").trim().isLength({ min: 10, max: 1500 }), validate, applyToJob);
+jobsRouter.post("/:id/apply", requireAuth, param("id").isMongoId(),
+  body().custom((_value, { req }) => {
+    const text = (req.body.sop || req.body.statement || "").trim();
+    if (!text || text.length < 10 || text.length > 4000) {
+      throw new Error("Statement of Purpose or statement is required (10-4000 characters)");
+    }
+    return true;
+  }),
+  validate, applyToJob);
 jobsRouter.get("/:id/applications", requireAuth, param("id").isMongoId(), validate, jobApplications);
 export const applicationsRouter = Router();
 applicationsRouter.get("/mine", requireAuth, myApplications);

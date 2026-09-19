@@ -84,8 +84,34 @@ export const applyToJob = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
   const exists = await JobApplication.exists({ job: job._id, applicant: req.user.id });
   if (exists) return res.status(409).json({ error: "Already applied" });
-  const application = await JobApplication.create({ job: job._id, applicant: req.user.id,
-    statement: req.body.statement, contactEmail: user.email });
+
+  const sop = (req.body.sop || req.body.statement || "").trim();
+  const statement = (req.body.statement || req.body.sop || "").trim();
+
+  let resume = {};
+  if (req.body.resume && typeof req.body.resume === "object") {
+    resume = {
+      fileName: req.body.resume.fileName || req.body.resume.name || "",
+      fileType: req.body.resume.fileType || req.body.resume.type || "",
+      fileUrl: req.body.resume.fileUrl || req.body.resume.url || req.body.resume.dataUrl || req.body.resume.data || "",
+      fileSize: Number(req.body.resume.fileSize || req.body.resume.size || 0),
+    };
+  } else if (typeof req.body.resume === "string" && req.body.resume.trim()) {
+    resume = {
+      fileName: req.body.resumeName || "Resume",
+      fileUrl: req.body.resume.trim(),
+      fileType: "application/octet-stream",
+    };
+  }
+
+  const application = await JobApplication.create({
+    job: job._id,
+    applicant: req.user.id,
+    statement,
+    sop,
+    resume,
+    contactEmail: user.email,
+  });
   await AuditLog.create({ user: req.user.id, action: "create", entityType: "JobApplication", entityId: application._id,
     after: { job: job._id, status: application.status }, requestId: req.id });
   await notifyUser({ recipient: req.user.id, eventKey: `application:${application._id}:submitted`, type: "job_application",
