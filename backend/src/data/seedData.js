@@ -1,118 +1,25 @@
-// Deterministic seed fixtures. Also usable as a frontend fallback fixture.
-// Coordinates are [longitude, latitude]. Slugs are explicit so insertMany is stable.
+// Deterministic seed fixtures for Mumbai metropolitan healthcare network.
+// Coordinates are strict GeoJSON [longitude, latitude]. Slugs are explicit and stable.
 
-export const hospitals = [
-  {
-    name: "Central Emergency Hospital",
-    slug: "central-emergency-hospital",
-    address: "1 Civic Plaza",
-    city: "Metro City",
-    region: "Central",
-    location: { type: "Point", coordinates: [-9.139, 38.722] },
-    phone: "+1-555-0100",
-    emergencyPhone: "112",
-    departments: ["Emergency", "Cardiology", "Trauma", "Radiology"],
-    services: ["24/7 ER", "Ambulance", "ICU"],
-    emergencyStatus: "available",
-    bedsTotal: 240,
-    bedsAvailable: 37,
-    hours: "24/7",
-  },
-  {
-    name: "Riverside Community Clinic",
-    slug: "riverside-community-clinic",
-    address: "44 River Road",
-    city: "Metro City",
-    region: "Central",
-    location: { type: "Point", coordinates: [-9.15, 38.73] },
-    phone: "+1-555-0110",
-    emergencyPhone: "112",
-    departments: ["General Medicine", "Pediatrics", "Emergency"],
-    services: ["Walk-in", "Vaccination"],
-    emergencyStatus: "limited",
-    bedsTotal: 60,
-    bedsAvailable: 4,
-    hours: "07:00–23:00",
-  },
-  {
-    name: "Northgate Children's Hospital",
-    slug: "northgate-childrens-hospital",
-    address: "9 Northgate Ave",
-    city: "Northgate",
-    region: "North",
-    location: { type: "Point", coordinates: [-9.10, 38.80] },
-    phone: "+1-555-0120",
-    emergencyPhone: "112",
-    departments: ["Pediatrics", "Neonatology", "Emergency"],
-    services: ["Pediatric ER", "NICU"],
-    emergencyStatus: "available",
-    bedsTotal: 120,
-    bedsAvailable: 22,
-    hours: "24/7",
-  },
-  {
-    name: "Southbay Trauma Center",
-    slug: "southbay-trauma-center",
-    address: "200 Harbor Blvd",
-    city: "Southbay",
-    region: "South",
-    location: { type: "Point", coordinates: [-9.20, 38.65] },
-    phone: "+1-555-0130",
-    emergencyPhone: "112",
-    departments: ["Trauma", "Surgery", "Emergency", "Orthopedics"],
-    services: ["Level I Trauma", "Helipad", "Blood Bank"],
-    emergencyStatus: "full",
-    bedsTotal: 300,
-    bedsAvailable: 0,
-    hours: "24/7",
-  },
-  {
-    name: "Eastview Family Health",
-    slug: "eastview-family-health",
-    address: "77 Sunrise St",
-    city: "Eastview",
-    region: "East",
-    location: { type: "Point", coordinates: [-9.05, 38.71] },
-    phone: "+1-555-0140",
-    emergencyPhone: "112",
-    departments: ["General Medicine", "Dermatology", "Cardiology"],
-    services: ["Outpatient", "Lab"],
-    emergencyStatus: "available",
-    bedsTotal: 90,
-    bedsAvailable: 51,
-    hours: "08:00–20:00",
-  },
-  {
-    name: "Westhill General Hospital",
-    slug: "westhill-general-hospital",
-    address: "310 Hill Crescent",
-    city: "Westhill",
-    region: "West",
-    location: { type: "Point", coordinates: [-9.25, 38.74] },
-    phone: "+1-555-0150",
-    emergencyPhone: "112",
-    departments: ["Emergency", "Oncology", "Neurology", "Radiology"],
-    services: ["24/7 ER", "MRI", "Chemotherapy"],
-    emergencyStatus: "limited",
-    bedsTotal: 210,
-    bedsAvailable: 12,
-    hours: "24/7",
-  },
-];
+import { mumbaiHospitals } from "./mumbaiHospitalsSeed.js";
+import { mumbaiDiagnosticsAndBloodBanks } from "./mumbaiDiagnosticsSeed.js";
+
+export { mumbaiHospitals, mumbaiDiagnosticsAndBloodBanks };
+export const hospitals = mumbaiHospitals;
 
 export const adminSeed = {
   email: "admin@medreach.test",
   name: "Ada Admin",
   password: "Admin1234",
-  region: "Central",
+  region: "South Mumbai",
 };
 
 export const userSeed = {
   email: "user@medreach.test",
   name: "Uma User",
   password: "User1234",
-  region: "Central",
-  emergencyContact: "+1-555-0199",
+  region: "Central Suburbs",
+  emergencyContact: "+91-98200-12345",
 };
 
 export const bloodCampaignsSeed = [
