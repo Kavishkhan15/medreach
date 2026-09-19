@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useHospital, saveHospital, useAuth } from "@medreach/core";
 import { productApi } from "../../../lib/productApi";
+import { EmergencyIcon } from "../../../components/EmergencyIcons";
 
 export default function HospitalPage({ params }) {
   const { slug } = params;
@@ -152,28 +153,28 @@ export default function HospitalPage({ params }) {
 
             <div className="vstack gap-2">
               <a
-                className="btn btn-primary w-100"
+                className="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2"
                 href={`tel:${hospital.emergencyPhone || baseHospital?.emergencyPhone || phone || "112"}`}
               >
-                📞 Call Emergency
+                <EmergencyIcon name="phone" size={16} /> Call Emergency
               </a>
 
               {hasCoords && (
                 <a
-                  className="btn btn-outline-secondary w-100"
+                  className="btn btn-outline-secondary w-100 d-inline-flex align-items-center justify-content-center gap-2"
                   target="_blank"
                   rel="noopener noreferrer"
                   href={`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`}
                 >
-                  🧭 Navigate
+                  <EmergencyIcon name="navigate" size={16} /> Navigate
                 </a>
               )}
 
               <Link
-                href={`/requests/new?hospital=${hospital.hospitalId || baseHospital?._id}`}
-                className="btn btn-outline-danger w-100"
+                href={`/requests/new?hospital=${hospital.hospitalId || baseHospital?._id}&isEmergency=false`}
+                className="btn btn-outline-danger w-100 d-inline-flex align-items-center justify-content-center gap-2"
               >
-                Request Bed
+                <EmergencyIcon name="bed" size={16} /> Request Bed (Login required)
               </Link>
 
               {user && (
@@ -190,8 +191,8 @@ export default function HospitalPage({ params }) {
 
             <hr className="my-3" />
             <p className="text-muted small mb-0">
-              For emergency triage and urgent critical care discovery, use the{" "}
-              <Link href="/emergency">Emergency Response</Link> portal.
+              For acute triage with <strong>no login required</strong>, use the{" "}
+              <Link href="/emergency" className="fw-semibold text-danger">Emergency Response</Link> portal.
             </p>
           </div>
         </div>

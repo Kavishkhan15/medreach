@@ -12,8 +12,8 @@ const bloodCampaignSchema = new mongoose.Schema(
     email: { type: String, trim: true, lowercase: true },
     status: {
       type: String,
-      enum: ["active", "upcoming", "completed", "cancelled"],
-      default: "active",
+      enum: ["pending", "active", "upcoming", "completed", "cancelled", "rejected"],
+      default: "pending",
       index: true,
     },
     description: { type: String, trim: true, maxlength: 1000 },

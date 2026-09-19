@@ -24,6 +24,12 @@ const templates = {
   job_updated: (d) => ["Application status updated", `Your application for ${d.title} is now ${d.status}.`],
   ownership_requested: (d) => ["Hospital access request", `A hospital access request for ${d.hospital} awaits administrator review.`],
   ownership_updated: (d) => ["Hospital access request updated", `Your access request for ${d.hospital} is now ${d.status}.`],
+  blood_request_confirmation: (d) => [
+    d.type === "DONATION" ? "MedReach Blood Donation Pledge Confirmed" : "MedReach Blood Request Received",
+    d.type === "DONATION"
+      ? `Dear ${d.name || "Donor"},\n\nThank you for pledging to donate blood (${d.bloodGroup}) at ${d.bloodBankName}.\nYour Reference ID: ${d.reference}\nPreferred Date: ${d.preferredDate || "As scheduled"}\n\nThe blood bank team will review your pledge and reach out to you at ${d.contactPhone}.\n\nWarm regards,\nMedReach Health Network`
+      : `Dear ${d.name || "Requester"},\n\nYour blood request for ${d.units || 1} unit(s) of ${d.bloodGroup} at ${d.bloodBankName} has been received.\nYour Reference ID: ${d.reference}\nUrgency: ${d.urgency || "URGENT"}\nHospital: ${d.hospitalName || "Not specified"}\n\nOur team and partner blood banks have been notified. Please keep this reference ID handy when communicating with the blood bank.\n\nWarm regards,\nMedReach Emergency Response`,
+  ],
 };
 
 let transporter;

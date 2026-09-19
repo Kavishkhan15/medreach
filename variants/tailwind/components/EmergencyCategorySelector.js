@@ -1,5 +1,6 @@
 "use client";
 import { EMERGENCY_CATEGORIES } from "@medreach/core";
+import { EmergencyIcon } from "./EmergencyIcons";
 
 // Grid of emergency categories. Purely a discovery filter — NOT diagnosis.
 export default function EmergencyCategorySelector({ value, onChange }) {
@@ -20,7 +21,9 @@ export default function EmergencyCategorySelector({ value, onChange }) {
             onClick={() => onChange(c.id)}
             title={c.description}
           >
-            <span className="text-[1.6rem]" aria-hidden="true">{c.icon}</span>
+            <span className="text-[1.6rem] text-red-600 flex items-center justify-center" aria-hidden="true">
+              <EmergencyIcon name={c.id} size={28} />
+            </span>
             <span>{c.label}</span>
           </button>
         );

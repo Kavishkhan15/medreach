@@ -27,6 +27,7 @@ const uri = "mongodb://127.0.0.1:27017/medreach_workflow_verification";
 test("MedReach Workflows Verification Suite", async (t) => {
   await connectDB(uri);
   await mongoose.connection.dropDatabase();
+  await Hospital.syncIndexes();
   const app = createApp();
 
   t.after(async () => {
@@ -477,11 +478,26 @@ test("MedReach Workflows Verification Suite", async (t) => {
   let emergencyRequestId = null;
 
   await t.test("Emergency requests lifecycle (/api/emergency-requests)", async () => {
-    // Unauthenticated request rejected (401)
+    // Unauthenticated standard hospital bed request rejected (401)
     const unauth = await request(app)
       .post("/api/emergency-requests")
-      .send({ hospitalId: mainHospital._id, emergencyType: "cardiac", requiredFacility: "ICU", contactPhone: "9876543210" });
+      .send({ hospitalId: mainHospital._id, emergencyType: "Routine Bed", requiredFacility: "ICU", contactPhone: "9876543210", isEmergency: false });
     assert.equal(unauth.status, 401);
+
+    // Unauthenticated emergency bed request accepted (201) without login
+    const guestEmergency = await request(app)
+      .post("/api/emergency-requests")
+      .send({
+        hospitalId: mainHospital._id,
+        emergencyType: "Cardiac Emergency",
+        requiredFacility: "ICU",
+        contactPhone: "9876543210",
+        contactEmail: "guest@example.com",
+        isEmergency: true,
+      });
+    assert.equal(guestEmergency.status, 201);
+    assert.equal(guestEmergency.body.request.contactEmail, "guest@example.com");
+    assert.equal(guestEmergency.body.request.user, null);
 
     // Patient submits emergency request
     const createRes = await request(app)

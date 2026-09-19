@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EmergencyIcon } from "./EmergencyIcons";
 
 // Distinct emergency card for acute care discovery.
 // Features prominent emergency actions, distinct high-contrast styling,
@@ -8,19 +9,19 @@ export default function EmergencyHospitalCard({ hospital, category }) {
   const hasCoords = coords.length === 2 && Number.isFinite(coords[0]) && Number.isFinite(coords[1]);
   const emergencyPhone = hospital.emergencyPhone || hospital.phone || "112";
 
-  const requestUrl = `/requests/new?hospital=${hospital._id || hospital.slug}&emergencyType=${encodeURIComponent(
-    category?.label || "Emergency"
+  const requestUrl = `/requests/new?hospital=${hospital._id || hospital.slug}&isEmergency=true&emergency=true&emergencyType=${encodeURIComponent(
+    category?.label || "General emergency"
   )}&facility=Emergency%20Department`;
 
   return (
     <div className="card h-100 border-danger border-2 shadow-sm emergency-hospital-card">
       <div className="card-header bg-danger-subtle text-danger-emphasis d-flex justify-content-between align-items-center py-2 px-3">
-        <span className="fw-bold small d-flex align-items-center gap-1">
-          <span aria-hidden="true">🚨</span> Emergency Facility
+        <span className="fw-bold small d-flex align-items-center gap-1 text-danger">
+          <EmergencyIcon name="siren" size={16} /> Emergency Facility
         </span>
         {category && (
-          <span className="badge bg-danger text-white">
-            {category.icon} {category.label} Match
+          <span className="badge bg-danger text-white d-inline-flex align-items-center gap-1">
+            <EmergencyIcon name={category.id} size={14} /> {category.label} Match
           </span>
         )}
       </div>
@@ -32,9 +33,12 @@ export default function EmergencyHospitalCard({ hospital, category }) {
           </Link>
         </h3>
 
-        <p className="text-muted small mb-2">
-          📍 {hospital.address || hospital.locality || hospital.city || "Mumbai"}
-          {hospital.hospitalType ? ` · ${hospital.hospitalType}` : ""}
+        <p className="text-muted small mb-2 d-flex align-items-center gap-1">
+          <EmergencyIcon name="pin" size={14} className="text-secondary flex-shrink-0" />
+          <span>
+            {hospital.address || hospital.locality || hospital.city || "Mumbai"}
+            {hospital.hospitalType ? ` · ${hospital.hospitalType}` : ""}
+          </span>
         </p>
 
         {hospital.specialties?.length > 0 && (
@@ -51,29 +55,29 @@ export default function EmergencyHospitalCard({ hospital, category }) {
           <div className="vstack gap-2">
             <div className="d-flex gap-2">
               <a
-                className="btn btn-danger flex-fill fw-bold"
+                className="btn btn-danger flex-fill fw-bold d-inline-flex align-items-center justify-content-center gap-1"
                 href={`tel:${emergencyPhone}`}
               >
-                📞 Call {emergencyPhone}
+                <EmergencyIcon name="phone" size={16} /> Call {emergencyPhone}
               </a>
 
               {hasCoords && (
                 <a
-                  className="btn btn-outline-dark flex-fill"
+                  className="btn btn-outline-dark flex-fill d-inline-flex align-items-center justify-content-center gap-1"
                   href={`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  🧭 Navigate
+                  <EmergencyIcon name="navigate" size={16} /> Navigate
                 </a>
               )}
             </div>
 
             <Link
-              className="btn btn-warning text-dark fw-bold w-100 text-center"
+              className="btn btn-warning text-dark fw-bold w-100 text-center d-inline-flex align-items-center justify-content-center gap-2"
               href={requestUrl}
             >
-              🚨 Request Emergency Care / Bed
+              <EmergencyIcon name="bed" size={18} /> Request Emergency Bed (No Login)
             </Link>
 
             <div className="text-end">

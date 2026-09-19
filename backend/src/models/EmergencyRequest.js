@@ -12,7 +12,7 @@ const timeline = new mongoose.Schema({
 
 const schema = new mongoose.Schema({
   requestId: { type: String, required: true, unique: true, index: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false, index: true },
   hospital: { type: mongoose.Schema.Types.ObjectId, ref: "Hospital", required: true, index: true },
   emergencyType: { type: String, trim: true, required: true, maxlength: 80 },
   requiredFacility: { type: String, enum: FACILITY_TYPES, required: true },
@@ -20,6 +20,8 @@ const schema = new mongoose.Schema({
   patientReference: { type: String, trim: true, maxlength: 80 },
   patientSummary: { type: String, trim: true, maxlength: 500 },
   contactPhone: { type: String, required: true, trim: true, maxlength: 25 },
+  contactEmail: { type: String, trim: true, lowercase: true, maxlength: 120 },
+  isEmergency: { type: Boolean, default: true },
   locality: { type: String, trim: true, maxlength: 120 },
   status: { type: String, enum: REQUEST_STATES, default: "REQUESTED", index: true },
   hospitalResponse: { type: String, trim: true, maxlength: 500 },

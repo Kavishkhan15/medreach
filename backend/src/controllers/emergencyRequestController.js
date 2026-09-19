@@ -12,7 +12,11 @@ export const listRequests = asyncHandler(async (req, res) => res.json({ data: aw
 export const getRequest = asyncHandler(async (req, res) => {
   const request = await EmergencyRequest.findById(req.params.id).populate("hospital", "name slug admins").lean();
   if (!request) return res.status(404).json({ error: "Request not found" });
-  if (String(request.user) !== req.user.id && !canManageHospital(req.user, request.hospital)) return res.status(403).json({ error: "Access denied" });
+  if (request.user) {
+    if (!req.user || (String(request.user) !== req.user.id && !canManageHospital(req.user, request.hospital) && !["admin", "system_admin"].includes(req.user.role))) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+  }
   res.json({ request });
 });
 export const updateRequest = asyncHandler(async (req, res) => {

@@ -4,6 +4,7 @@ import { useHospitals, useLocation, emergencyCategory, MUMBAI_LOCALITIES } from 
 import EmergencyCategorySelector from "../../components/EmergencyCategorySelector";
 import HospitalList from "../../components/HospitalList";
 import { toneClass, statusPill } from "../../lib/tone";
+import { EmergencyIcon } from "../../components/EmergencyIcons";
 
 export default function EmergencyPage() {
   const [categoryId, setCategoryId] = useState(null);
@@ -18,7 +19,9 @@ export default function EmergencyPage() {
   return (
     <>
       <header className="mb-3">
-        <h1 className="text-2xl mb-1">Emergency mode</h1>
+        <h1 className="text-2xl mb-1 flex items-center gap-2">
+          <EmergencyIcon name="siren" size={26} className="text-red-600" /> Emergency mode
+        </h1>
         <p className="text-[.78rem] text-[var(--color-muted)] mb-0">
           This assists with hospital discovery only. It is not medical advice and does not
           assess severity. In a life-threatening emergency, call 112.
@@ -34,14 +37,18 @@ export default function EmergencyPage() {
         <h2 className="text-base mb-2">2 · Where are you?</h2>
         <div className="flex flex-wrap items-center gap-2">
           <button type="button" className="inline-flex items-center gap-1 text-sm font-semibold rounded-[var(--radius)] border border-[var(--color-border)] bg-white px-3 py-1 hover:bg-[#f1f3f5]" onClick={() => useGps().catch(() => {})}>
-            📍 Use my location
+            <EmergencyIcon name="pin" size={15} /> Use my location
           </button>
           <select aria-label="Select locality" className="rounded-[var(--radius)] border border-[var(--color-border)] bg-white text-sm px-2 py-1" style={{ width: "auto" }}
             onChange={(e) => e.target.value && useLocality(e.target.value)} defaultValue="">
             <option value="">Or pick a locality…</option>
             {MUMBAI_LOCALITIES.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
-          {status === "ready" && <span className={`${statusPill} ${toneClass.success}`}>📍 {label}</span>}
+          {status === "ready" && (
+            <span className={`${statusPill} ${toneClass.success} inline-flex items-center gap-1`}>
+              <EmergencyIcon name="pin" size={13} /> {label}
+            </span>
+          )}
           {status === "error" && <span className={`${statusPill} ${toneClass.warning}`}>{error}</span>}
           {!origin && <span className="text-[.78rem] text-[var(--color-muted)]">Location optional — results still rank by suitability.</span>}
         </div>
@@ -50,8 +57,15 @@ export default function EmergencyPage() {
       {started && (
         <section>
           <div className="flex items-baseline justify-between mb-2">
-            <h2 className="text-lg mb-0">
-              {cat ? `${cat.icon} ${cat.label}` : "Results"} — highest available match
+            <h2 className="text-lg mb-0 flex items-center gap-2">
+              {cat ? (
+                <>
+                  <EmergencyIcon name={cat.id} size={22} className="text-red-600" />
+                  <span>{cat.label}</span>
+                </>
+              ) : (
+                "Results"
+              )} — highest available match
             </h2>
             <span className="text-[.78rem] text-[var(--color-muted)]">Best match based on your selection</span>
           </div>
