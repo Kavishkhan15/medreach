@@ -7,7 +7,7 @@ import { fuseFacilityClaims } from "./facilityClaimFusion.js";
 
 const groups = [
   { kind: "blood_bank", label: "Blood Bank", facilities: ["Blood Bank"] },
-  { kind: "diagnostic", label: "Diagnostics", facilities: ["CT", "MRI"] },
+  { kind: "diagnostic", label: "Diagnostics", facilities: ["CT", "MRI", "Dialysis"] },
   { kind: "ambulance", label: "Ambulance", facilities: ["Ambulance"] },
 ];
 
@@ -16,8 +16,8 @@ export async function syncHospitalResources(hospitalId = null) {
   let updated = 0;
   for (const hospital of hospitals) {
     const [facilities, claims] = await Promise.all([
-      HospitalFacility.find({ hospital: hospital._id, facility: { $in: ["Blood Bank", "CT", "MRI", "Ambulance"] } }).lean(),
-      FacilitySourceClaim.find({ hospital: hospital._id, facility: { $in: ["Blood Bank", "CT", "MRI", "Ambulance"] } })
+      HospitalFacility.find({ hospital: hospital._id, facility: { $in: ["Blood Bank", "CT", "MRI", "Dialysis", "Ambulance"] } }).lean(),
+      FacilitySourceClaim.find({ hospital: hospital._id, facility: { $in: ["Blood Bank", "CT", "MRI", "Dialysis", "Ambulance"] } })
         .populate({ path: "source", model: DataSource, select: "name url" }).lean(),
     ]);
     for (const group of groups) {
