@@ -9,6 +9,7 @@
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "seed": "node scripts/seed.js",
+    "seed:mumbai": "node scripts/seed.js && node scripts/seedCrawlerSources.js && node scripts/syncHospitalResources.js",
     "seed:crawler-sources": "node scripts/seedCrawlerSources.js",
     "seed:product-demo": "node scripts/seedProductDemo.js --demo",
     "sync:hospital-resources": "node scripts/syncHospitalResources.js",
