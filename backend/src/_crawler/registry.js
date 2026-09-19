@@ -6,16 +6,23 @@
 //   - legacy config-driven adapters (generic/enveloped_json) used by the original
 //     runner.js pipeline + its tests.
 
-import { LilavatiAdapter } from "./adapters/LilavatiAdapter.js";
-import { KokilabenAdapter } from "./adapters/KokilabenAdapter.js";
-import { FortisAdapter } from "./adapters/FortisAdapter.js";
-import { JaslokAdapter } from "./adapters/JaslokAdapter.js";
-import { CooperAdapter } from "./adapters/CooperAdapter.js";
-import { BombayAdapter } from "./adapters/BombayAdapter.js";
-import { MumbaiSuburbanDirectoryAdapter } from "./adapters/MumbaiSuburbanDirectoryAdapter.js";
-import { MumbaiCityDirectoryAdapter } from "./adapters/MumbaiCityDirectoryAdapter.js";
-import { GenericHospitalAdapter } from "./adapters/genericHospitalAdapter.js";
-import { EnvelopedJsonAdapter } from "./adapters/source-specific/envelopedJsonAdapter.js";
+import {
+  LilavatiAdapter,
+  KokilabenAdapter,
+  FortisAdapter,
+  JaslokAdapter,
+  CooperAdapter,
+  BombayAdapter,
+  KemAdapter,
+  SionAdapter,
+  TataMemorialAdapter,
+  NanavatiAdapter,
+  MumbaiSuburbanDirectoryAdapter,
+  MumbaiCityDirectoryAdapter,
+  DiagnosticDirectoryAdapter,
+  GenericHospitalAdapter,
+  EnvelopedJsonAdapter,
+} from "./adapters/index.js";
 import { assertSafeUrl } from "./ssrf.js";
 
 export const ADAPTERS = {
@@ -25,8 +32,20 @@ export const ADAPTERS = {
   jaslok: JaslokAdapter,
   cooper: CooperAdapter,
   bombay: BombayAdapter,
+  kem: KemAdapter,
+  kem_mumbai: KemAdapter,
+  sion: SionAdapter,
+  sion_hospital: SionAdapter,
+  tata_memorial: TataMemorialAdapter,
+  nanavati: NanavatiAdapter,
+  nanavati_max: NanavatiAdapter,
   mumbai_suburban_directory: MumbaiSuburbanDirectoryAdapter,
   mumbai_city_directory: MumbaiCityDirectoryAdapter,
+  diagnostic_directory: DiagnosticDirectoryAdapter,
+  suburban_diagnostics: DiagnosticDirectoryAdapter,
+  metropolis: DiagnosticDirectoryAdapter,
+  metropolis_labs: DiagnosticDirectoryAdapter,
+  nm_medical: DiagnosticDirectoryAdapter,
   generic: GenericHospitalAdapter,
   enveloped_json: EnvelopedJsonAdapter,
 };
