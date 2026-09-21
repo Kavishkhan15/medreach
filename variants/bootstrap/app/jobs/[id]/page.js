@@ -69,7 +69,11 @@ export default function JobDetailPage({ params }) {
       })
       .catch((err) => {
         if (active) {
-          setStatus(err.message || "Failed to load job details.");
+          const msg =
+            err.message === "Authentication required" || err.message?.includes("Authentication required")
+              ? "Login required"
+              : (err.message || "Failed to load job details.");
+          setStatus(msg);
           setLoadingJob(false);
         }
       });
@@ -220,7 +224,11 @@ export default function JobDetailPage({ params }) {
 
       setStatus("");
     } catch (err) {
-      setStatus(err.message || "Failed to submit application. Please check all fields and try again.");
+      const msg =
+        err.message === "Authentication required" || err.message?.includes("Authentication required")
+          ? "Login required"
+          : (err.message || "Failed to submit application. Please check all fields and try again.");
+      setStatus(msg);
     } finally {
       setSubmitting(false);
     }
@@ -241,7 +249,10 @@ export default function JobDetailPage({ params }) {
 
       {!loadingJob && !job && (
         <div className="alert alert-warning mt-3" role="alert">
-          {status || "Job listing not found or is no longer active."}
+          {status === "Authentication required" ? "Login required" : (status || "Job listing not found or is no longer active.")}
+          {(status === "Login required" || status === "Authentication required") && (
+            <> · <Link href="/login" className="alert-link">Sign in</Link></>
+          )}
         </div>
       )}
 
@@ -643,7 +654,10 @@ export default function JobDetailPage({ params }) {
                     }`}
                     role="status"
                   >
-                    {status}
+                    {status === "Authentication required" ? "Login required" : status}
+                    {(status === "Login required" || status === "Authentication required") && (
+                      <> · <Link href="/login" className="alert-link">Sign in</Link></>
+                    )}
                   </div>
                 )}
               </form>

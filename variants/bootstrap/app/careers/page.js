@@ -107,7 +107,11 @@ export default function Careers() {
       })
       .catch((err) => {
         if (!live) return;
-        setError(err.message || "Failed to load jobs");
+        const msg =
+          err.message === "Authentication required" || err.message?.includes("Authentication required")
+            ? "Login required"
+            : (err.message || "Failed to load jobs");
+        setError(msg);
       })
       .finally(() => {
         if (live) setLoading(false);
@@ -343,9 +347,13 @@ export default function Careers() {
       setResumeFile(null);
       setResumeUrl("");
     } catch (err) {
+      const msg =
+        err.message === "Authentication required" || err.message?.includes("Authentication required")
+          ? "Login required"
+          : (err.message || "Failed to submit application. Please check your credentials or log in.");
       setModalFeedback({
         type: "danger",
-        message: err.message || "Failed to submit application. Please check your credentials or log in.",
+        message: msg,
       });
     } finally {
       setModalSubmitting(false);
@@ -550,7 +558,10 @@ export default function Careers() {
 
       {error && !loading && (
         <div className="alert alert-danger py-2 mb-4" role="alert">
-          {error}
+          {error === "Authentication required" ? "Login required" : error}
+          {(error === "Login required" || error === "Authentication required") && (
+            <> · <Link href="/login" className="alert-link">Sign in</Link></>
+          )}
         </div>
       )}
 
@@ -742,7 +753,10 @@ export default function Careers() {
                   {/* Feedback Message */}
                   {modalFeedback && (
                     <div className={`alert alert-${modalFeedback.type} mb-4 small`} role="alert">
-                      {modalFeedback.message}
+                      {modalFeedback.message === "Authentication required" ? "Login required" : modalFeedback.message}
+                      {(modalFeedback.message === "Login required" || modalFeedback.message === "Authentication required") && (
+                        <> · <Link href="/login" className="alert-link">Sign in</Link></>
+                      )}
                     </div>
                   )}
 
