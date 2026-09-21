@@ -45,10 +45,14 @@ async function run() {
 
   await BloodCampaign.insertMany(bloodCampaignsSeed.map((c) => ({ ...c, createdBy: admin._id })));
 
+  const { seedCareersFromProviders } = await import("../src/services/careerJobSeeder.js");
+  const seededJobs = await seedCareersFromProviders({ adminId: admin._id });
+
   console.log(`Successfully seeded Mumbai healthcare network:`);
   console.log(`  - ${createdHospitals.length} Hospitals across South Mumbai, Western, Central & Harbour corridors`);
   console.log(`  - ${createdResources.length} Diagnostic centres, pathology labs & blood banks`);
   console.log(`  - ${bloodCampaignsSeed.length} Blood campaigns`);
+  console.log(`  - ${seededJobs.length} Verified clinical and healthcare job openings`);
   console.log(`  - 2 Users (Admin & Registered User)`);
   console.log(`  - 1 Emergency Alert`);
   await disconnectDB();
