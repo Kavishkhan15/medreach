@@ -14,10 +14,10 @@ import {
 function EmergencyActions({ onFindHospital }) {
   return (
     <div className="stack gap-2 my-2" role="group" aria-label="Emergency actions">
-      <a className="btn btn-primary btn-lg" href="tel:112">📞 CALL 112</a>
-      <a className="btn btn-outline-secondary" href="tel:102">🚑 CALL 102</a>
+      <a className="btn btn-primary btn-lg" href="tel:112"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>CALL 112</a>
+      <a className="btn btn-outline-secondary" href="tel:102"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/><path d="M6 8h4"/><path d="M8 6v4"/></svg>CALL 102</a>
       <Link className="btn btn-outline-secondary" href="/emergency" onClick={onFindHospital}>
-        🏥 FIND NEAREST HOSPITAL
+        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>FIND NEAREST HOSPITAL
       </Link>
     </div>
   );
@@ -48,14 +48,14 @@ function HospitalResultCard({ hospital }) {
         </div>
       )}
       <div className="d-flex gap-2 mt-2">
-        <a className="btn btn-sm btn-primary" href={`tel:${hospital.phone || "112"}`}>📞 Call</a>
+        <a className="btn btn-sm btn-primary" href={`tel:${hospital.phone || "112"}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
         {coords && (
           <a
             className="btn btn-sm btn-outline-secondary"
             href={`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`}
             target="_blank" rel="noopener noreferrer"
           >
-            🧭 Navigate
+            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Navigate
           </a>
         )}
       </div>

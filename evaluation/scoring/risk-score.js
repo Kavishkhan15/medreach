@@ -80,7 +80,13 @@ const sampleInputs = {
   },
 };
 
+import fs from 'fs';
+import path from 'path';
+
 if (import.meta.url === `file://${process.argv[1]}`) {
+  // Ensure data/raw exists so the script never crashes when real data is integrated
+  fs.mkdirSync(path.join(process.cwd(), 'data', 'raw'), { recursive: true });
+
   for (const [variant, inputs] of Object.entries(sampleInputs)) {
     const r = riskScore(inputs);
     console.log(`${variant.padEnd(10)} risk=${r.risk}  safety=${r.safety}`);

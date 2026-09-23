@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useEffect } from "react";
 import Link from "next/link";
+import EmergencyIcon from "./EmergencyIcons";
 import {
   APIProvider,
   Map,
@@ -46,7 +47,7 @@ export function MapFallback({ itemCount = 0, categoryLabel = "resources" }) {
           style={{ width: "60px", height: "60px", fontSize: "1.6rem" }}
           aria-hidden="true"
         >
-          📍
+          <EmergencyIcon name="pin" size={16} className="text-danger" />
         </span>
       </div>
       <h2 className="h5 fw-bold mb-2">Google Maps JavaScript API key required</h2>
@@ -156,7 +157,7 @@ export default function GoogleMapView({
                           : "text-warning"
                       }`}
                     >
-                      ● {selectedItem.emergencyStatus}
+                      <span className="d-inline-block rounded-circle bg-success me-1" style={{ width: 8, height: 8 }} /> {selectedItem.emergencyStatus}
                     </span>
                   )}
                 </div>

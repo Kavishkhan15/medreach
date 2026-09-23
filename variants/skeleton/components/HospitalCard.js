@@ -30,7 +30,7 @@ export default function HospitalCard({ hospital, rank }) {
         </div>
 
         <div className="flex flex-wrap gap-1 mb-2">
-          {verified && <span className="status-pill tone-success">✓ Verified</span>}
+          {verified && <span className="status-pill tone-success"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polyline points="20 6 9 17 4 12"/></svg>Verified</span>}
           {hospital.hospitalType && <span className="chip">{hospital.hospitalType}</span>}
           <span className="chip">{hospital.locality || hospital.city}</span>
         </div>
@@ -57,13 +57,13 @@ export default function HospitalCard({ hospital, rank }) {
         <div className="mt-auto">
           <div className="mb-2"><DataFreshness timestamp={hospital.lastUpdated} showChip={false} /></div>
           <div className="action-bar">
-            <a className="btn btn-sm btn-primary" href={`tel:${hospital.emergencyPhone || "112"}`}>📞 Call</a>
+            <a className="btn btn-sm btn-primary" href={`tel:${hospital.emergencyPhone || "112"}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
             <a
               className="btn btn-sm btn-outline-secondary"
               href={`https://www.google.com/maps/dir/?api=1&destination=${hospital.location?.coordinates?.[1]},${hospital.location?.coordinates?.[0]}`}
               target="_blank" rel="noopener noreferrer"
             >
-              🧭 Navigate
+              <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Navigate
             </a>
             <Link className="btn btn-sm btn-outline-secondary" href={`/hospitals/${hospital.slug}`}>Details</Link>
           </div>

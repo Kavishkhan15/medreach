@@ -367,7 +367,7 @@ export default function BloodBanks() {
                 )}
                 {camp.targetDonors && (
                   <div className="small text-muted mt-auto pt-2 border-top">
-                    🎯 Target: {camp.targetDonors} lifesavers
+                    <EmergencyIcon name="target" size={15} className="text-danger me-1" /> Target: {camp.targetDonors} lifesavers
                   </div>
                 )}
               </article>

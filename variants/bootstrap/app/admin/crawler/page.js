@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useCrawlerAdmin, relativeTime } from "@medreach/core";
 import { toneClass } from "../../../lib/tone";
 import AdminGuard from "../../../components/AdminGuard";
+import EmergencyIcon from "../../../components/EmergencyIcons";
 
 const STATUS_TONE = {
   success: "success", partial: "warning", failed: "danger", blocked: "danger",
@@ -37,12 +38,12 @@ export default function AdminCrawlerPage() {
       {message && <div className="alert alert-info py-2">{message}</div>}
 
       <div className="d-flex flex-wrap gap-2 mb-3 align-items-center">
-        <button className="btn btn-sm btn-primary" disabled={busy} onClick={actions.runAll}>▶ Run all enabled</button>
+        <button className="btn btn-sm btn-primary" disabled={busy} onClick={actions.runAll}><EmergencyIcon name="play" size={14} className="me-1" /> Run all enabled</button>
         <button className="btn btn-sm btn-outline-secondary" disabled={busy} onClick={actions.dryRunAll}>Dry-run all</button>
         <button className="btn btn-sm btn-outline-secondary" disabled={busy || !overview?.system?.schedulerConfigured}
           title={overview?.system?.schedulerConfigured ? "Change the real scheduler state" : "Set CRAWLER_SCHEDULER_ENABLED=true and restart the API"}
           onClick={() => actions.setScheduler(!paused)}>{overview?.system?.schedulerConfigured ? (paused ? "Resume scheduler" : "Pause scheduler") : "Scheduler not configured"}</button>
-        <button className="btn btn-sm btn-outline-secondary" disabled={busy} onClick={refresh}>↻ Refresh</button>
+        <button className="btn btn-sm btn-outline-secondary" disabled={busy} onClick={refresh}>Refresh</button>
         {busy && <span className="small text-secondary">Working: {busy}…</span>}
       </div>
 

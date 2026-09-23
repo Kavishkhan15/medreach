@@ -47,7 +47,7 @@ export default function HospitalPage({ params }) {
       </div>
 
       <div className="flex flex-wrap gap-2 my-2">
-        {hospital.verificationStatus === "verified" && <span className={`${statusPill} ${toneClass.success}`}>✓ Verified</span>}
+        {hospital.verificationStatus === "verified" && <span className={`${statusPill} ${toneClass.success}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polyline points="20 6 9 17 4 12"/></svg>Verified</span>}
         <DataFreshness timestamp={hospital.lastUpdated} />
       </div>
 
@@ -71,12 +71,16 @@ export default function HospitalPage({ params }) {
             <p className="mb-1 text-sm">Phone: {hospital.phone || "—"}</p>
             <p className="mb-3 text-sm">Emergency: {hospital.emergencyPhone || "112"}</p>
             <div className="flex flex-col gap-2">
-              <a className="inline-flex items-center justify-center gap-1 font-bold rounded-[var(--radius)] bg-[var(--color-emergency)] text-white px-4 py-2 hover:bg-[var(--color-emergency-dark)] no-underline" href={`tel:${hospital.emergencyPhone || "112"}`}>📞 Call emergency</a>
+              <a className="inline-flex items-center justify-center gap-1 font-bold rounded-[var(--radius)] bg-[var(--color-emergency)] text-white px-4 py-2 hover:bg-[var(--color-emergency-dark)] no-underline" href={`tel:${hospital.emergencyPhone || "112"}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call emergency</a>
               <a className="inline-flex items-center justify-center gap-1 font-semibold rounded-[var(--radius)] border border-[var(--color-border)] bg-white text-[var(--color-text)] px-4 py-2 hover:bg-[#f1f3f5] no-underline" target="_blank" rel="noopener noreferrer"
-                href={`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`}>🧭 Navigate</a>
+                href={`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Navigate</a>
               {user && (
                 <button className="inline-flex items-center justify-center gap-1 font-semibold rounded-[var(--radius)] border border-[var(--color-border)] bg-white text-[var(--color-text)] px-4 py-2 hover:bg-[#f1f3f5] disabled:opacity-60" onClick={onSave} disabled={saved}>
-                  {saved ? "✓ Saved" : "Save to Quick Access"}
+                  {saved ? (
+                    <><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polyline points="20 6 9 17 4 12"/></svg>Saved</>
+                  ) : (
+                    "Save to Quick Access"
+                  )}
                 </button>
               )}
             </div>

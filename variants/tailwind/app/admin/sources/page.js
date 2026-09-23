@@ -25,7 +25,7 @@ export default function AdminSourcesPage() {
                   <th scope="row" className="py-2 pr-3 font-semibold">{s.name}</th>
                   <td className="py-2 pr-3 text-sm">{s.type}</td>
                   <td className="py-2 pr-3 text-sm">{Math.round((s.reliability ?? 0) * 100)}%</td>
-                  <td className="py-2 pr-3"><span className={`${statusPill} ${s.enabled ? toneClass.success : toneClass.neutral}`}>{s.enabled ? "✓ Enabled" : "Disabled"}</span></td>
+                  <td className="py-2 pr-3"><span className={`${statusPill} ${s.enabled ? toneClass.success : toneClass.neutral}`}>{s.enabled ? <><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polyline points="20 6 9 17 4 12"/></svg>Enabled</> : "Disabled"}</span></td>
                   <td className="py-2 pr-3 text-sm text-[var(--color-muted)]">{s.lastSuccessfulFetch ? relativeTime(s.lastSuccessfulFetch) : "—"}</td>
                   <td className="py-2 pr-3 text-sm text-[var(--color-muted)]">{s.lastFailedFetch ? relativeTime(s.lastFailedFetch) : "—"}</td>
                 </tr>

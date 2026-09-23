@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import EmergencyIcon from "./EmergencyIcons";
 import { ASSISTANT_ENTRY_LABEL, ASSISTANT_ENTRY_SUBTITLE } from "@medreach/core";
 import AiAssistantModal from "./AiAssistantModal";
 
@@ -19,7 +20,7 @@ export default function SosButton() {
   return (
     <>
       <button className="sos-fab" onClick={() => setOpen(true)} aria-haspopup="dialog">
-        🆘 SOS
+        <EmergencyIcon name="siren" size={18} className="me-1" /> SOS
       </button>
 
       {open && (
@@ -36,10 +37,10 @@ export default function SosButton() {
                   MedReach helps you find and contact hospitals. It does not dispatch
                   emergency services. In a life-threatening emergency, call the number below.
                 </p>
-                <a className="btn btn-primary btn-lg" href="tel:112">📞 Call 112 (Emergency)</a>
-                <a className="btn btn-outline-secondary" href="tel:102">🚑 Call 102 (Ambulance)</a>
+                <a className="btn btn-primary btn-lg" href="tel:112"><EmergencyIcon name="phone" size={16} className="me-1" /> Call 112 (Emergency)</a>
+                <a className="btn btn-outline-secondary" href="tel:102"><EmergencyIcon name="ambulance" size={16} className="me-1" /> Call 102 (Ambulance)</a>
                 <Link className="btn btn-outline-secondary" href="/emergency" onClick={() => setOpen(false)}>
-                  🏥 Find nearest emergency hospital
+                  <EmergencyIcon name="hospital" size={16} className="me-1" /> Find nearest emergency hospital
                 </Link>
                 <button
                   type="button"
@@ -47,7 +48,7 @@ export default function SosButton() {
                   onClick={openAssistant}
                 >
                   <span>
-                    <span className="ai-assistant-badge" aria-hidden="true">🤖</span>{" "}
+                    <span className="ai-assistant-badge" aria-hidden="true"><EmergencyIcon name="bot" size={16} className="me-1" /></span>{" "}
                     {ASSISTANT_ENTRY_LABEL}
                     <span className="d-block disclaimer mb-0">{ASSISTANT_ENTRY_SUBTITLE}</span>
                   </span>

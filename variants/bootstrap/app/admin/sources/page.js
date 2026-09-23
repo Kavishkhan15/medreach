@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { demoSources, listSources, relativeTime } from "@medreach/core";
 import { toneClass } from "../../../lib/tone";
 import AdminGuard from "../../../components/AdminGuard";
+import EmergencyIcon from "../../../components/EmergencyIcons";
 
 export default function AdminSourcesPage() {
   const [sources, setSources] = useState(demoSources);
@@ -25,7 +26,7 @@ export default function AdminSourcesPage() {
                   <th scope="row" className="fw-semibold">{s.name}</th>
                   <td className="small">{s.type}</td>
                   <td className="small">{Math.round((s.reliability ?? 0) * 100)}%</td>
-                  <td><span className={`status-pill ${s.enabled ? toneClass.success : toneClass.neutral}`}>{s.enabled ? "✓ Enabled" : "Disabled"}</span></td>
+                  <td><span className={`status-pill ${s.enabled ? toneClass.success : toneClass.neutral}`}>{s.enabled ? <><EmergencyIcon name="check" size={14} className="me-1" /> Enabled</> : "Disabled"}</span></td>
                   <td className="small text-secondary">{s.lastSuccessfulFetch ? relativeTime(s.lastSuccessfulFetch) : "—"}</td>
                   <td className="small text-secondary">{s.lastFailedFetch ? relativeTime(s.lastFailedFetch) : "—"}</td>
                 </tr>

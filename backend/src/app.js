@@ -22,6 +22,7 @@ import hospitalAdminRoutes from "./routes/hospitalAdmin.js";
 import emergencyRequestRoutes from "./routes/emergencyRequests.js";
 import { resourceRouter, resourceAdminRouter } from "./routes/resources.js";
 import { jobsRouter, applicationsRouter } from "./routes/careers.js";
+import { organizationCareersRouter, orgApplicationsRouter } from './routes/organizationCareers.js';
 import routingRouter from "./routes/routing.js";
 import analyticsRouter from "./routes/analytics.js";
 import emailRouter from "./routes/email.js";
@@ -64,6 +65,8 @@ export function createApp() {
   app.use("/api/admin/resources", resourceAdminRouter);
   app.use("/api/jobs", jobsRouter);
   app.use("/api/applications", applicationsRouter);
+  app.use('/api/organizations', organizationCareersRouter);
+  app.use('/api/organization-applications', orgApplicationsRouter);
   app.use("/api/routing", routingRouter);
   app.use("/api/analytics", analyticsRouter);
   app.use("/api/email", emailRouter);

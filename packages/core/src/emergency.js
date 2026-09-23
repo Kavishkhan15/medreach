@@ -6,7 +6,7 @@ export const EMERGENCY_CATEGORIES = [
   {
     id: "cardiac",
     label: "Cardiac",
-    icon: "❤️",
+    icon: "cardiac",
     description: "Chest pain, heart attack, cardiac arrest",
     specialties: ["Cardiology", "Emergency"],
     facilities: ["Emergency Department", "ICU", "Cardiology"],
@@ -14,7 +14,7 @@ export const EMERGENCY_CATEGORIES = [
   {
     id: "stroke",
     label: "Stroke",
-    icon: "🧠",
+    icon: "stroke",
     description: "Face drooping, arm weakness, speech difficulty",
     specialties: ["Neurology", "Emergency"],
     facilities: ["Emergency Department", "CT", "ICU", "Neurology"],
@@ -22,7 +22,7 @@ export const EMERGENCY_CATEGORIES = [
   {
     id: "trauma",
     label: "Trauma",
-    icon: "🚑",
+    icon: "trauma",
     description: "Serious injury, accident, major bleeding",
     specialties: ["Trauma", "Surgery", "Emergency"],
     facilities: ["Trauma Center", "Emergency Department", "Operating Theatre", "Blood Bank"],
@@ -30,7 +30,7 @@ export const EMERGENCY_CATEGORIES = [
   {
     id: "burns",
     label: "Burns",
-    icon: "🔥",
+    icon: "burns",
     description: "Severe or widespread burns",
     specialties: ["Emergency", "Surgery"],
     facilities: ["Burns Unit", "Emergency Department", "ICU"],
@@ -38,7 +38,7 @@ export const EMERGENCY_CATEGORIES = [
   {
     id: "respiratory",
     label: "Respiratory",
-    icon: "🫁",
+    icon: "respiratory",
     description: "Severe breathing difficulty",
     specialties: ["Emergency", "General Medicine"],
     facilities: ["Emergency Department", "ICU", "Ventilator"],
@@ -46,7 +46,7 @@ export const EMERGENCY_CATEGORIES = [
   {
     id: "pediatric",
     label: "Pediatric",
-    icon: "🧒",
+    icon: "pediatric",
     description: "Emergency involving an infant or child",
     specialties: ["Pediatrics", "Emergency"],
     facilities: ["Pediatrics", "Emergency Department"],
@@ -54,7 +54,7 @@ export const EMERGENCY_CATEGORIES = [
   {
     id: "maternity",
     label: "Maternity",
-    icon: "🤰",
+    icon: "maternity",
     description: "Labour, pregnancy emergency",
     specialties: ["Maternity", "Emergency"],
     facilities: ["Maternity", "Emergency Department", "Operating Theatre"],
@@ -62,7 +62,7 @@ export const EMERGENCY_CATEGORIES = [
   {
     id: "general",
     label: "General emergency",
-    icon: "➕",
+    icon: "general",
     description: "Any other urgent situation",
     specialties: ["Emergency", "General Medicine"],
     facilities: ["Emergency Department"],

@@ -25,7 +25,7 @@ export default function AdminSourcesPage() {
                   <th scope="row" className="fw-semibold">{s.name}</th>
                   <td className="small">{s.type}</td>
                   <td className="small">{Math.round((s.reliability ?? 0) * 100)}%</td>
-                  <td><span className={`status-pill ${s.enabled ? toneClass.success : toneClass.neutral}`}>{s.enabled ? "✓ Enabled" : "Disabled"}</span></td>
+                  <td><span className={`status-pill ${s.enabled ? toneClass.success : toneClass.neutral}`}>{s.enabled ? <><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polyline points="20 6 9 17 4 12"/></svg>Enabled</> : "Disabled"}</span></td>
                   <td className="small text-secondary">{s.lastSuccessfulFetch ? relativeTime(s.lastSuccessfulFetch) : "—"}</td>
                   <td className="small text-secondary">{s.lastFailedFetch ? relativeTime(s.lastFailedFetch) : "—"}</td>
                 </tr>

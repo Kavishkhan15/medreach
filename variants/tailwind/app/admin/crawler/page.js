@@ -42,10 +42,10 @@ export default function AdminCrawlerPage() {
       {message && <div className="rounded bg-[var(--color-info-bg)] text-[var(--color-info)] px-3 py-2 mb-3">{message}</div>}
 
       <div className="flex flex-wrap gap-2 mb-4 items-center">
-        <button className={bp} disabled={busy} onClick={actions.runAll}>▶ Run all enabled</button>
+        <button className={bp} disabled={busy} onClick={actions.runAll}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polygon points="5 3 19 12 5 21 5 3"/></svg>Run all enabled</button>
         <button className={bo} disabled={busy} onClick={actions.dryRunAll}>Dry-run all</button>
         <button className={bo} disabled title="Automatic scheduling is not configured">Automatic scheduler unavailable</button>
-        <button className={bo} disabled={busy} onClick={refresh}>↻ Refresh</button>
+        <button className={bo} disabled={busy} onClick={refresh}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Refresh</button>
         {busy && <span className="text-sm text-[var(--color-muted)]">Working: {busy}…</span>}
       </div>
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { productApi, post } from "../../../lib/productApi";
+import EmergencyIcon from "../../../components/EmergencyIcons";
 
 const initialForm = {
   hospital: "",
@@ -363,7 +364,7 @@ export default function HospitalJobs() {
                             {app.resume?.fileUrl && isSafeUrl(app.resume.fileUrl) ? (
                               <div className="mb-3 p-2 bg-light rounded border d-flex align-items-center justify-content-between">
                                 <div className="text-truncate me-2 small">
-                                  📄 <strong>Resume:</strong> {app.resume.fileName || "Candidate_CV"}
+                                  <EmergencyIcon name="file" size={15} className="me-1" /> <strong>Resume:</strong> {app.resume.fileName || "Candidate_CV"}
                                 </div>
                                 <a
                                   href={app.resume.fileUrl}

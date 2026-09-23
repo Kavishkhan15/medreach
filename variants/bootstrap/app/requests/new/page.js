@@ -375,7 +375,7 @@ export default function NewRequest() {
 
             {isEmergency && (
               <p className="text-center text-muted small mt-2 mb-0">
-                ✓ Public emergency triage · No account required · Immediate dispatch to hospital emergency desk
+                <EmergencyIcon name="check" size={15} className="text-success me-1" /> Public emergency triage · No account required · Immediate dispatch to hospital emergency desk
               </p>
             )}
           </div>

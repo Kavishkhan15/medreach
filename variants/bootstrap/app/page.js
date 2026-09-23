@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useHospitals } from "@medreach/core";
 import HospitalList from "../components/HospitalList";
 import LiveFeatureIcon from "../components/LiveFeatureIcon";
+import { EmergencyIcon } from "../components/EmergencyIcons";
 
 export default function HomePage() {
   const { data, loading } = useHospitals({}, { sort: "updated" });
@@ -17,7 +18,7 @@ export default function HomePage() {
           clear freshness, and honest availability. Coordinate a request with hospital staff.
         </p>
         <div className="d-flex flex-wrap gap-2">
-          <Link href="/emergency" className="btn btn-emergency btn-lg">🚨 Find emergency hospital</Link>
+          <Link href="/emergency" className="btn btn-emergency btn-lg"><EmergencyIcon name="siren" size={22} className="me-2" /> Find emergency hospital</Link>
           <Link href="/hospitals" className="btn btn-outline-light btn-lg">View all hospitals</Link>
           <Link href="/map" className="btn btn-outline-light btn-lg">Open map</Link>
           <Link href="/blood-banks" className="btn btn-outline-light btn-lg">Blood banks</Link>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@medreach/core";
 import { productApi, post } from "../../../lib/productApi";
+import EmergencyIcon from "../../../components/EmergencyIcons";
 
 const QUALIFICATIONS = [
   "MBBS",
@@ -311,7 +312,7 @@ export default function JobDetailPage({ params }) {
               <div className="surface border-success shadow-sm">
                 <div className="text-center pb-3 border-bottom mb-3">
                   <div className="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6 mb-2">
-                    ✓ Application Submitted Successfully
+                    <EmergencyIcon name="verified" size={20} className="text-success me-2" /> Application Submitted Successfully
                   </div>
                   <h2 className="h4 mb-1">{submissionRecap.jobTitle}</h2>
                   <p className="text-secondary small mb-0">{submissionRecap.hospitalName}</p>
@@ -350,7 +351,7 @@ export default function JobDetailPage({ params }) {
 
                   <dt className="col-sm-4 text-muted">Resume / CV</dt>
                   <dd className="col-sm-8 text-truncate">
-                    📄 {submissionRecap.resumeName}
+                    <EmergencyIcon name="file" size={16} className="me-2" /> {submissionRecap.resumeName}
                   </dd>
                 </dl>
 
@@ -372,7 +373,7 @@ export default function JobDetailPage({ params }) {
                     onClick={() => window.print()}
                     className="btn btn-outline-secondary flex-grow-1"
                   >
-                    🖨️ Print Application
+                    <EmergencyIcon name="printer" size={16} className="me-1" /> Print Application
                   </button>
                   <Link href="/dashboard" className="btn btn-primary flex-grow-1">
                     Go to Dashboard
@@ -555,7 +556,7 @@ export default function JobDetailPage({ params }) {
                       ) : (
                         <div className="d-flex justify-content-between align-items-center p-2 border rounded bg-light">
                           <div className="text-truncate me-2 small">
-                            📄 <strong>{resume.fileName}</strong>{" "}
+                            <EmergencyIcon name="file" size={16} className="me-1" /> <strong>{resume.fileName}</strong>{" "}
                             <span className="text-muted">({(resume.fileSize / 1024).toFixed(0)} KB)</span>
                           </div>
                           <button
@@ -628,7 +629,7 @@ export default function JobDetailPage({ params }) {
                       ) : wordCount < 150 ? (
                         <span className="text-muted">{150 - wordCount} more words recommended</span>
                       ) : wordCount <= 250 ? (
-                        <span className="text-success fw-bold">✓ Optimal length (~200 words)</span>
+                        <span className="text-success fw-bold"><EmergencyIcon name="check" size={14} className="me-1" /> Optimal length (~200 words)</span>
                       ) : (
                         <span className="text-muted">{wordCount - 200} words over target</span>
                       )}

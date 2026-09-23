@@ -2,6 +2,7 @@
 import { useState, useMemo } from "react";
 import { useHospitals, useLocation, MUMBAI_LOCALITIES } from "@medreach/core";
 import HospitalList from "../../components/HospitalList";
+import { EmergencyIcon } from "../../components/EmergencyIcons";
 
 export default function HospitalsPage() {
   const [q, setQ] = useState("");
@@ -64,11 +65,11 @@ export default function HospitalsPage() {
               className="btn btn-sm btn-outline-secondary"
               onClick={() => useGps().catch(() => {})}
             >
-              📍 Use my location
+              <EmergencyIcon name="pin" size={16} className="me-1" /> Use my location
             </button>
             {status === "ready" && (
               <span className="badge bg-success-subtle text-success border border-success-subtle">
-                📍 {label}
+                <EmergencyIcon name="pin" size={14} className="me-1" /> {label}
               </span>
             )}
             {status === "error" && (

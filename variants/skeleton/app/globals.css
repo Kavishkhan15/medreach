@@ -245,7 +245,7 @@ select.w-auto { width: auto; display: inline-block; }
 /* Reasons list ------------------------------------------------------------- */
 .reasons { list-style: none; padding-left: 0; margin: 0; }
 .reasons li { font-size: 1.25rem; color: var(--color-muted); display: flex; gap: .4rem; }
-.reasons li::before { content: "✓"; color: var(--color-success); font-weight: 800; }
+.reasons li::before { content: "-"; color: var(--color-success); font-weight: 800; }
 
 /* Action bar --------------------------------------------------------------- */
 .action-bar { display: flex; gap: .5rem; }

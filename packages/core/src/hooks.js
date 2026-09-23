@@ -222,11 +222,11 @@ export function useCrawlerAdmin() {
     setBusy(label); setMessage("");
     try {
       const r = await fn();
-      setMessage(`✓ ${label} done`);
+      setMessage(`${label} done`);
       await refresh();
       return r;
     } catch (e) {
-      setMessage(`✗ ${label}: ${e.message}`);
+      setMessage(`${label}: ${e.message}`);
     } finally {
       setBusy("");
     }

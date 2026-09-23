@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import EmergencyIcon from "./EmergencyIcons";
 import {
   useAssistant,
   useLocation,
@@ -17,10 +18,10 @@ import {
 function EmergencyActions({ onClose }) {
   return (
     <div className="d-flex flex-column gap-2 p-2 border rounded bg-light">
-      <a className="btn btn-primary btn-lg" href="tel:112">📞 Call 112</a>
-      <a className="btn btn-outline-secondary" href="tel:102">🚑 Call 102</a>
+      <a className="btn btn-primary btn-lg" href="tel:112"><EmergencyIcon name="phone" size={16} className="me-1" /> Call 112</a>
+      <a className="btn btn-outline-secondary" href="tel:102"><EmergencyIcon name="ambulance" size={16} className="me-1" /> Call 102</a>
       <a className="btn btn-outline-secondary" href="/emergency" onClick={onClose}>
-        🏥 Find nearest hospital
+        <EmergencyIcon name="hospital" size={16} className="me-1" /> Find nearest hospital
       </a>
     </div>
   );
@@ -47,14 +48,14 @@ function HospitalResultCard({ hospital }) {
         </div>
       )}
       <div className="d-flex gap-1 mt-1">
-        <a className="btn btn-sm btn-primary" href={`tel:${hospital.phone || "112"}`}>📞 Call</a>
+        <a className="btn btn-sm btn-primary" href={`tel:${hospital.phone || "112"}`}><EmergencyIcon name="phone" size={14} className="me-1" /> Call</a>
         {hasCoords && (
           <a
             className="btn btn-sm btn-outline-secondary"
             href={`https://www.google.com/maps/dir/?api=1&destination=${hospital.coordinates[1]},${hospital.coordinates[0]}`}
             target="_blank" rel="noopener noreferrer"
           >
-            🧭 Navigate
+            <EmergencyIcon name="navigate" size={14} className="me-1" /> Navigate
           </a>
         )}
       </div>
@@ -241,7 +242,7 @@ export default function AiAssistantModal({ open, onClose }) {
                 className="btn btn-link btn-sm p-0"
                 onClick={() => setShowLocalityPicker((v) => !v)}
               >
-                {label ? `📍 ${label}` : "📍 Set your area"}
+                {label ? <><EmergencyIcon name="pin" size={14} className="me-1" /> {label}</> : <><EmergencyIcon name="pin" size={14} className="me-1" /> Set your area</>}
               </button>
               {messages.length > 0 && (
                 <button type="button" className="btn btn-link btn-sm p-0 text-secondary" onClick={reset}>

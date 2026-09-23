@@ -184,7 +184,7 @@ export default function HospitalPage({ params }) {
                   onClick={onSave}
                   disabled={saved}
                 >
-                  {saved ? "✓ Saved to Quick Access" : "Save to Quick Access"}
+                  {saved ? <><EmergencyIcon name="check" size={15} className="me-1" /> Saved to Quick Access</> : "Save to Quick Access"}
                 </button>
               )}
             </div>

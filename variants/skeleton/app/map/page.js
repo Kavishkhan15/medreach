@@ -36,9 +36,9 @@ export default function MapPage() {
               </div>
               <p className="disclaimer">{sel.locality || sel.city} · {sel.hospitalType}</p>
               <div className="action-bar">
-                <a className="btn btn-sm btn-primary" href={`tel:${sel.emergencyPhone || "112"}`}>📞 Call</a>
+                <a className="btn btn-sm btn-primary" href={`tel:${sel.emergencyPhone || "112"}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
                 <a className="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener noreferrer"
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${sel.location?.coordinates?.[1]},${sel.location?.coordinates?.[0]}`}>🧭 Navigate</a>
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${sel.location?.coordinates?.[1]},${sel.location?.coordinates?.[0]}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Navigate</a>
                 <Link className="btn btn-sm btn-outline-secondary" href={`/hospitals/${sel.slug}`}>Details</Link>
               </div>
             </div>
@@ -54,7 +54,7 @@ export default function MapPage() {
                 <li key={id} className="list-group-item">
                   <button className="btn-link text-start p-0 text-decoration-none" onClick={() => setSelected(id)}
                     aria-pressed={selected === id}>
-                    <span aria-hidden="true">📍</span> {h.name}
+                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> {h.name}
                   </button>
                   <span className={`status-pill ${toneClass[m.tone]}`} title="ER status">
                     <span aria-hidden="true">{m.symbol}</span> {m.label}

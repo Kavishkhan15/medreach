@@ -17,7 +17,7 @@ export default function HomePage() {
           rule-based ranking — no guesswork, no fabricated availability.
         </p>
         <div className="flex flex-wrap gap-2">
-          <Link href="/emergency" className="inline-flex items-center justify-center bg-white text-[var(--color-critical)] font-extrabold rounded-[var(--radius)] px-[1.4rem] py-[.9rem] text-lg shadow-[var(--shadow-md)] hover:bg-[#fff5f5] no-underline">🚨 Find emergency hospital</Link>
+          <Link href="/emergency" className="inline-flex items-center justify-center bg-white text-[var(--color-critical)] font-extrabold rounded-[var(--radius)] px-[1.4rem] py-[.9rem] text-lg shadow-[var(--shadow-md)] hover:bg-[#fff5f5] no-underline"><svg width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Find emergency hospital</Link>
           <Link href="/hospitals" className="inline-flex items-center justify-center border border-white text-white font-semibold rounded-[var(--radius)] px-[1.4rem] py-[.9rem] text-lg hover:bg-white/10 no-underline">View all hospitals</Link>
           <Link href="/map" className="inline-flex items-center justify-center border border-white text-white font-semibold rounded-[var(--radius)] px-[1.4rem] py-[.9rem] text-lg hover:bg-white/10 no-underline">Open map</Link>
         </div>

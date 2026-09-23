@@ -1,4 +1,5 @@
 import Link from "next/link";
+import EmergencyIcon from "./EmergencyIcons";
 
 // Hospital directory card — focused information & discovery (per spec).
 // Shows hospital name and Call / Navigate / Details actions.
@@ -21,7 +22,7 @@ export default function HospitalCard({ hospital }) {
               className="btn btn-sm btn-primary flex-fill"
               href={`tel:${hospital.emergencyPhone || hospital.phone || "112"}`}
             >
-              📞 Call
+              <EmergencyIcon name="phone" size={14} className="me-1" /> Call
             </a>
             {hasCoords ? (
               <a
@@ -30,7 +31,7 @@ export default function HospitalCard({ hospital }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                🧭 Navigate
+                <EmergencyIcon name="navigate" size={14} className="me-1" /> Navigate
               </a>
             ) : null}
             <Link

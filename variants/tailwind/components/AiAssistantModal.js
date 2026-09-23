@@ -18,10 +18,10 @@ import { btnPrimary, btnOutlineSecondary } from "../lib/tone";
 function EmergencyActions({ onClose }) {
   return (
     <div className="flex flex-col gap-2 p-2 border border-[var(--color-border)] rounded-[var(--radius)] bg-[#f8f9fa]">
-      <a className={`${btnPrimary} text-lg`} href="tel:112">📞 Call 112</a>
-      <a className={btnOutlineSecondary} href="tel:102">🚑 Call 102</a>
+      <a className={`${btnPrimary} text-lg`} href="tel:112"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call 112</a>
+      <a className={btnOutlineSecondary} href="tel:102"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/><path d="M6 8h4"/><path d="M8 6v4"/></svg>Call 102</a>
       <a className={btnOutlineSecondary} href="/emergency" onClick={onClose}>
-        🏥 Find nearest hospital
+        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>Find nearest hospital
       </a>
     </div>
   );
@@ -48,14 +48,14 @@ function HospitalResultCard({ hospital }) {
         </div>
       )}
       <div className="flex gap-1 mt-1">
-        <a className={`${btnPrimary} text-sm px-3 py-1`} href={`tel:${hospital.phone || "112"}`}>📞 Call</a>
+        <a className={`${btnPrimary} text-sm px-3 py-1`} href={`tel:${hospital.phone || "112"}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
         {hasCoords && (
           <a
             className={`${btnOutlineSecondary} text-sm px-3 py-1`}
             href={`https://www.google.com/maps/dir/?api=1&destination=${hospital.coordinates[1]},${hospital.coordinates[0]}`}
             target="_blank" rel="noopener noreferrer"
           >
-            🧭 Navigate
+            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Navigate
           </a>
         )}
       </div>
@@ -237,7 +237,7 @@ export default function AiAssistantModal({ open, onClose }) {
               className="text-sm text-[var(--color-emergency)] underline"
               onClick={() => setShowLocalityPicker((v) => !v)}
             >
-              {label ? `📍 ${label}` : "📍 Set your area"}
+              {label ? <>{S.pin}{label}</> : <>{S.pin}Set your area</>}
             </button>
             {messages.length > 0 && (
               <button type="button" className="text-sm text-[var(--color-muted)] underline" onClick={reset}>

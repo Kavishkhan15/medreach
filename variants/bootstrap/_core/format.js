@@ -17,9 +17,9 @@ export function statusMeta(status) {
 // Availability status for facilities/observations (available/limited/unavailable/unknown).
 // Each carries an icon/symbol so status is never conveyed by color alone (a11y).
 export const AVAILABILITY = {
-  available: { label: "Available", tone: "success", symbol: "✓" },
+  available: { label: "Available", tone: "success", symbol: "check" },
   limited: { label: "Limited", tone: "warning", symbol: "!" },
-  unavailable: { label: "Unavailable", tone: "danger", symbol: "✕" },
+  unavailable: { label: "Unavailable", tone: "danger", symbol: "unavailable" },
   unknown: { label: "Unknown", tone: "neutral", symbol: "?" },
 };
 

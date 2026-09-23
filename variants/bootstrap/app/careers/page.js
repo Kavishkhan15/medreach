@@ -3,40 +3,18 @@
 import Link from "next/link";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { productApi, post } from "../../lib/productApi";
-
-// Normalizes or infers organization type
-function inferOrgType(job) {
-  if (job?.organizationType) {
-    const t = job.organizationType.toLowerCase();
-    if (t === "hospital") return "Hospital";
-    if (t === "diagnostic") return "Diagnostic Centre";
-    if (t === "blood_bank") return "Blood Bank";
-    if (t === "ambulance") return "Ambulance Service";
-  }
-  if (job?.provider?.kind) {
-    const k = job.provider.kind.toLowerCase();
-    if (k === "diagnostic") return "Diagnostic Centre";
-    if (k === "blood_bank") return "Blood Bank";
-    if (k === "ambulance") return "Ambulance Service";
-  }
-  const name = (job?.hospital?.name || job?.provider?.name || job?.organizationName || "").toLowerCase();
-  const dept = (job?.department || "").toLowerCase();
-  if (name.includes("blood") || dept.includes("blood") || dept.includes("apheresis") || dept.includes("transfusion")) return "Blood Bank";
-  if (name.includes("diagnostic") || name.includes("pathology") || name.includes("lab") || dept.includes("radiology") || dept.includes("imaging")) return "Diagnostic Centre";
-  if (name.includes("ambulance") || name.includes("ems") || name.includes("mems") || dept.includes("pre-hospital") || dept.includes("fleet")) return "Ambulance Service";
-  return "Hospital";
-}
+import EmergencyIcon from "../../components/EmergencyIcons";
 
 // Badge color tone resolver for Bootstrap
 function getOrgTypeBadgeTone(orgType) {
   switch (orgType) {
-    case "Hospital":
+    case "hospital":
       return "tone-info";
-    case "Diagnostic Centre":
+    case "diagnostic":
       return "tone-success";
-    case "Blood Bank":
+    case "blood_bank":
       return "tone-danger";
-    case "Ambulance Service":
+    case "ambulance":
       return "tone-warning";
     default:
       return "tone-neutral";
@@ -45,43 +23,53 @@ function getOrgTypeBadgeTone(orgType) {
 
 function getOrgTypeIcon(orgType) {
   switch (orgType) {
-    case "Hospital":
-      return "🏥";
-    case "Diagnostic Centre":
-      return "🔬";
-    case "Blood Bank":
-      return "🩸";
-    case "Ambulance Service":
-      return "🚑";
+    case "hospital":
+      return <EmergencyIcon name="hospital" size={18} className="me-2" />;
+    case "diagnostic":
+      return <EmergencyIcon name="diagnostic" size={18} className="me-2" />;
+    case "blood_bank":
+      return <EmergencyIcon name="blood" size={18} className="me-2" />;
+    case "ambulance":
+      return <EmergencyIcon name="ambulance" size={18} className="me-2" />;
     default:
-      return "🏢";
+      return <EmergencyIcon name="building" size={18} className="me-2" />;
   }
 }
 
-// Format employment types
-function formatEmploymentType(val) {
-  if (!val) return "Full Time";
-  const normalized = val.toLowerCase().replace("-", "_");
-  if (normalized === "full_time") return "Full Time";
-  if (normalized === "part_time") return "Part Time";
-  if (normalized === "contract") return "Contract";
-  if (normalized === "internship") return "Internship";
-  return val.replace(/_/g, " ");
+function getOrgTypeDisplay(orgType) {
+  switch (orgType) {
+    case "hospital":
+      return "Hospital";
+    case "diagnostic":
+      return "Diagnostic Centre";
+    case "blood_bank":
+      return "Blood Bank";
+    case "ambulance":
+      return "Ambulance Service";
+    default:
+      return "Organization";
+  }
 }
 
 export default function Careers() {
-  const [jobs, setJobs] = useState([]);
+  const [organizations, setOrganizations] = useState([]);
+  const [apiStats, setApiStats] = useState({
+    totalOrganizations: 0,
+    hospitalCount: 0,
+    bloodBankCount: 0,
+    diagnosticCount: 0,
+    ambulanceCount: 0
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Filters State
   const [searchQuery, setSearchQuery] = useState("");
   const [orgTypeFilter, setOrgTypeFilter] = useState("All");
-  const [categoryFilter, setCategoryFilter] = useState("All");
-  const [employmentTypeFilter, setEmploymentTypeFilter] = useState("All");
 
   // Application Modal State
-  const [selectedJobForApply, setSelectedJobForApply] = useState(null);
+  const [selectedOrg, setSelectedOrg] = useState(null);
+  const [roleInterested, setRoleInterested] = useState("");
   const [candidateName, setCandidateName] = useState("");
   const [candidateEmail, setCandidateEmail] = useState("");
   const [candidatePhone, setCandidatePhone] = useState("");
@@ -94,15 +82,26 @@ export default function Careers() {
   const [modalSubmitting, setModalSubmitting] = useState(false);
   const [modalFeedback, setModalFeedback] = useState(null);
 
-  // Fetch jobs dynamically from backend API
+  // Fetch organizations dynamically from backend API
   useEffect(() => {
     let live = true;
     setLoading(true);
 
-    productApi("/api/jobs")
+    productApi("/api/organizations/careers")
       .then((res) => {
         if (!live) return;
-        setJobs(res.data || []);
+        setOrganizations(res.data || []);
+        if (res.stats) {
+          setApiStats(res.stats);
+        } else if (res.totalOrganizations !== undefined) {
+          setApiStats({
+            totalOrganizations: res.totalOrganizations,
+            hospitalCount: res.hospitalCount || 0,
+            bloodBankCount: res.bloodBankCount || 0,
+            diagnosticCount: res.diagnosticCount || 0,
+            ambulanceCount: res.ambulanceCount || 0,
+          });
+        }
         setError("");
       })
       .catch((err) => {
@@ -110,7 +109,7 @@ export default function Careers() {
         const msg =
           err.message === "Authentication required" || err.message?.includes("Authentication required")
             ? "Login required"
-            : (err.message || "Failed to load jobs");
+            : (err.message || "Failed to load organizations");
         setError(msg);
       })
       .finally(() => {
@@ -122,106 +121,63 @@ export default function Careers() {
     };
   }, []);
 
-  // Filter jobs based on active search & selector criteria
-  const filteredJobs = useMemo(() => {
-    return jobs.filter((job) => {
-      const orgType = inferOrgType(job);
-
+  // Filter organizations based on active search & selector criteria
+  const filteredOrgs = useMemo(() => {
+    return organizations.filter((org) => {
       // 1. Organization Type filter
-      if (orgTypeFilter !== "All" && orgType !== orgTypeFilter) {
+      if (orgTypeFilter !== "All" && org.type !== orgTypeFilter) {
         return false;
       }
 
-      // 2. Category filter
-      if (categoryFilter !== "All" && job.category !== categoryFilter) {
-        return false;
-      }
-
-      // 3. Employment Type filter
-      if (employmentTypeFilter !== "All") {
-        const formattedType = formatEmploymentType(job.employmentType);
-        if (formattedType.toLowerCase() !== employmentTypeFilter.toLowerCase()) {
-          return false;
-        }
-      }
-
-      // 4. Keyword / search filter
+      // 2. Keyword / search filter
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
-        const orgName = (job.hospital?.name || job.provider?.name || job.organizationName || "").toLowerCase();
-        const matchTitle = job.title?.toLowerCase().includes(q);
-        const matchDept = job.department?.toLowerCase().includes(q);
-        const matchDesc = job.description?.toLowerCase().includes(q);
-        const matchReq = job.requirements?.toLowerCase().includes(q);
-        const matchOrg = orgName.includes(q);
-        const matchLoc = (job.location || job.hospital?.locality || job.provider?.locality || "").toLowerCase().includes(q);
-        const matchCategory = job.category?.toLowerCase().includes(q);
+        const orgName = (org.name || "").toLowerCase();
+        const matchLoc = (org.locality || org.city || "").toLowerCase().includes(q);
+        const matchName = orgName.includes(q);
 
-        if (!matchTitle && !matchDept && !matchDesc && !matchReq && !matchOrg && !matchLoc && !matchCategory) {
+        if (!matchName && !matchLoc) {
           return false;
         }
       }
 
       return true;
     });
-  }, [jobs, orgTypeFilter, categoryFilter, employmentTypeFilter, searchQuery]);
+  }, [organizations, orgTypeFilter, searchQuery]);
 
-  // Group filtered jobs by organization dynamically from crawled/verified provider data
-  const groupedByOrganization = useMemo(() => {
-    const groups = {};
+  // Group filtered orgs by type
+  const groupedOrganizations = useMemo(() => {
+    const groups = {
+      hospital: [],
+      blood_bank: [],
+      diagnostic: [],
+      ambulance: []
+    };
 
-    filteredJobs.forEach((job) => {
-      const orgName = job.hospital?.name || job.provider?.name || job.organizationName || "Healthcare Provider";
-      const orgKey = job.hospital?._id || job.provider?._id || orgName;
-
-      if (!groups[orgKey]) {
-        const orgType = inferOrgType(job);
-        const locality = job.hospital?.locality || job.provider?.locality || job.location || "Mumbai";
-        const city = job.hospital?.city || job.provider?.city || "Mumbai";
-        const verificationBadge = job.hospital?.verificationStatus === "verified" || job.provider?.verificationStatus === "verified" || job.verificationStatus === "verified"
-          ? "MedReach Verified"
-          : "Registered Provider";
-
-        groups[orgKey] = {
-          id: orgKey,
-          name: orgName,
-          type: orgType,
-          locality: `${locality}${city && city !== locality ? `, ${city}` : ""}`,
-          verificationBadge,
-          jobs: [],
-        };
+    filteredOrgs.forEach((org) => {
+      if (groups[org.type]) {
+        groups[org.type].push(org);
       }
-
-      groups[orgKey].jobs.push(job);
     });
 
-    return Object.values(groups);
-  }, [filteredJobs]);
-
-  // Metrics summary
-  const stats = useMemo(() => {
-    const totalJobs = jobs.length;
-    const orgNames = new Set(jobs.map((j) => j.hospital?.name || j.provider?.name || j.organizationName).filter(Boolean));
-    const emergencyCount = jobs.filter((j) =>
-      j.category === "Emergency Staff" ||
-      j.department?.toLowerCase().includes("trauma") ||
-      j.department?.toLowerCase().includes("emergency") ||
-      j.department?.toLowerCase().includes("icu")
-    ).length;
-    return { totalJobs, orgCount: orgNames.size, emergencyCount };
-  }, [jobs]);
+    return [
+      { type: "hospital", label: "Hospitals", orgs: groups.hospital },
+      { type: "blood_bank", label: "Blood Banks", orgs: groups.blood_bank },
+      { type: "diagnostic", label: "Diagnostic Centres", orgs: groups.diagnostic },
+      { type: "ambulance", label: "Ambulances", orgs: groups.ambulance },
+    ].filter(g => g.orgs.length > 0);
+  }, [filteredOrgs]);
 
   // Reset all search and filter criteria
   const resetFilters = useCallback(() => {
     setSearchQuery("");
     setOrgTypeFilter("All");
-    setCategoryFilter("All");
-    setEmploymentTypeFilter("All");
   }, []);
 
   // Modal open & close handlers
-  const openApplyModal = useCallback((job) => {
-    setSelectedJobForApply(job);
+  const openApplyModal = useCallback((org) => {
+    setSelectedOrg(org);
+    setRoleInterested("");
     setCandidateName("");
     setCandidateEmail("");
     setCandidatePhone("");
@@ -234,20 +190,20 @@ export default function Careers() {
   }, []);
 
   const closeApplyModal = useCallback(() => {
-    setSelectedJobForApply(null);
+    setSelectedOrg(null);
     setModalFeedback(null);
   }, []);
 
   // Keyboard escape listener for modal
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape" && selectedJobForApply) {
+      if (e.key === "Escape" && selectedOrg) {
         closeApplyModal();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedJobForApply, closeApplyModal]);
+  }, [selectedOrg, closeApplyModal]);
 
   // Handle file attachment
   const handleFileChange = (e) => {
@@ -276,8 +232,12 @@ export default function Careers() {
   // Submit application handler
   const handleApplicationSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedJobForApply) return;
+    if (!selectedOrg) return;
 
+    if (!roleInterested) {
+      setModalFeedback({ type: "warning", message: "Please select a role you are interested in." });
+      return;
+    }
     if (!candidateName.trim()) {
       setModalFeedback({ type: "warning", message: "Please provide candidate full name." });
       return;
@@ -323,6 +283,8 @@ export default function Careers() {
 
     try {
       const payload = {
+        organizationType: selectedOrg.type,
+        roleInterested: roleInterested,
         candidateName: candidateName.trim(),
         contactEmail: candidateEmail.trim().toLowerCase(),
         contactPhone: candidatePhone.trim(),
@@ -335,7 +297,7 @@ export default function Careers() {
         resume: finalResume,
       };
 
-      const response = await post(`/api/jobs/${selectedJobForApply._id}/apply`, payload);
+      const response = await post(`/api/organizations/${selectedOrg._id}/apply`, payload);
 
       setModalFeedback({
         type: "success",
@@ -346,6 +308,7 @@ export default function Careers() {
       setSop("");
       setResumeFile(null);
       setResumeUrl("");
+      setRoleInterested("");
     } catch (err) {
       const msg =
         err.message === "Authentication required" || err.message?.includes("Authentication required")
@@ -375,41 +338,47 @@ export default function Careers() {
           Mumbai Healthcare Careers Portal — Verified Opportunities Across Hospitals, Labs, Blood Banks & EMS
         </h1>
         <p className="lead text-secondary mb-3">
-          Explore and apply for verified clinical, diagnostic, and emergency services positions across discovered Mumbai healthcare organizations. Applications are tracked in real-time.
+          Explore and apply directly for clinical, diagnostic, and emergency services positions across discovered Mumbai healthcare organizations. Applications are tracked in real-time.
         </p>
 
         {/* Live Metrics Ribbon */}
         <div className="d-flex flex-wrap gap-3 align-items-center pt-2">
           <span className="badge bg-white text-dark border px-3 py-2 rounded-pill shadow-sm">
-            🏥 <strong>{stats.orgCount}</strong> Discovered Healthcare Organizations
+            <EmergencyIcon name="hospital" size={16} className="text-primary me-1" /> <strong>{apiStats.hospitalCount}</strong> Hospitals
           </span>
           <span className="badge bg-white text-dark border px-3 py-2 rounded-pill shadow-sm">
-            💼 <strong>{stats.totalJobs}</strong> Active Job Openings
+            <EmergencyIcon name="blood" size={16} className="text-danger me-1" /> <strong>{apiStats.bloodBankCount}</strong> Blood Banks
           </span>
           <span className="badge bg-white text-dark border px-3 py-2 rounded-pill shadow-sm">
-            🚨 <strong>{stats.emergencyCount}</strong> High-Priority Trauma & EMS Openings
+            <EmergencyIcon name="diagnostic" size={16} className="text-success me-1" /> <strong>{apiStats.diagnosticCount}</strong> Diagnostic Centres
+          </span>
+          <span className="badge bg-white text-dark border px-3 py-2 rounded-pill shadow-sm">
+            <EmergencyIcon name="ambulance" size={16} className="text-warning me-1" /> <strong>{apiStats.ambulanceCount}</strong> Ambulance Services
+          </span>
+          <span className="badge bg-white text-dark border px-3 py-2 rounded-pill shadow-sm">
+            <EmergencyIcon name="building" size={16} className="text-dark me-1" /> <strong>{apiStats.totalOrganizations}</strong> Total Organizations
           </span>
           <span className="badge bg-light text-success border border-success-subtle px-3 py-2 rounded-pill">
-            ✓ Populated from Crawled & Verified Healthcare Data
+            <EmergencyIcon name="check" size={14} className="text-success me-1" /> Populated from Crawled & Verified Healthcare Data
           </span>
         </div>
       </header>
 
       {/* Search & Filter Control Bar */}
-      <section className="surface mb-4 shadow-sm" aria-label="Search and Filter Roles">
+      <section className="surface mb-4 shadow-sm" aria-label="Search and Filter Organizations">
         <div className="row g-3">
           {/* Keyword Search */}
-          <div className="col-12 col-lg-5">
-            <label htmlFor="roleSearchInput" className="form-label fw-semibold small text-uppercase text-muted mb-1">
-              Search Role, Department or Facility
+          <div className="col-12 col-lg-7">
+            <label htmlFor="orgSearchInput" className="form-label fw-semibold small text-uppercase text-muted mb-1">
+              Search Facility Name or Locality
             </label>
             <div className="input-group">
-              <span className="input-group-text bg-light text-muted border-end-0">🔍</span>
+              <span className="input-group-text bg-light text-muted border-end-0"><EmergencyIcon name="search" size={16} /></span>
               <input
-                id="roleSearchInput"
+                id="orgSearchInput"
                 type="text"
                 className="form-control border-start-0 ps-0"
-                placeholder="Doctor, ICU nurse, radiographer, paramedic, Bandra..."
+                placeholder="Search facility name, Bandra, Andheri..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -420,14 +389,14 @@ export default function Careers() {
                   onClick={() => setSearchQuery("")}
                   aria-label="Clear search input"
                 >
-                  ✕
+                  <EmergencyIcon name="close" size={14} />
                 </button>
               )}
             </div>
           </div>
 
           {/* Organization Type Selector */}
-          <div className="col-6 col-md-4 col-lg-2">
+          <div className="col-12 col-lg-3">
             <label htmlFor="orgTypeSelect" className="form-label fw-semibold small text-uppercase text-muted mb-1">
               Organization Type
             </label>
@@ -438,57 +407,15 @@ export default function Careers() {
               onChange={(e) => setOrgTypeFilter(e.target.value)}
             >
               <option value="All">All Providers</option>
-              <option value="Hospital">Hospital</option>
-              <option value="Diagnostic Centre">Diagnostic Centre</option>
-              <option value="Blood Bank">Blood Bank</option>
-              <option value="Ambulance Service">Ambulance Service</option>
-            </select>
-          </div>
-
-          {/* Category Selector */}
-          <div className="col-6 col-md-4 col-lg-2">
-            <label htmlFor="categorySelect" className="form-label fw-semibold small text-uppercase text-muted mb-1">
-              Role Category
-            </label>
-            <select
-              id="categorySelect"
-              className="form-select"
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-            >
-              <option value="All">All Categories</option>
-              <option value="Doctor">Doctor</option>
-              <option value="Nurse">Nurse</option>
-              <option value="Technician">Technician</option>
-              <option value="Pharmacist">Pharmacist</option>
-              <option value="Emergency Staff">Emergency Staff</option>
-              <option value="Administrative">Administrative</option>
-              <option value="Internship">Internship</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          {/* Employment Type Selector */}
-          <div className="col-6 col-md-4 col-lg-2">
-            <label htmlFor="employmentTypeSelect" className="form-label fw-semibold small text-uppercase text-muted mb-1">
-              Engagement
-            </label>
-            <select
-              id="employmentTypeSelect"
-              className="form-select"
-              value={employmentTypeFilter}
-              onChange={(e) => setEmploymentTypeFilter(e.target.value)}
-            >
-              <option value="All">All Engagements</option>
-              <option value="Full Time">Full Time</option>
-              <option value="Part Time">Part Time</option>
-              <option value="Contract">Contract</option>
-              <option value="Internship">Internship</option>
+              <option value="hospital">Hospital</option>
+              <option value="diagnostic">Diagnostic Centre</option>
+              <option value="blood_bank">Blood Bank</option>
+              <option value="ambulance">Ambulance Service</option>
             </select>
           </div>
 
           {/* Reset Filters CTA */}
-          <div className="col-6 col-md-12 col-lg-1 d-flex align-items-end">
+          <div className="col-12 col-lg-2 d-flex align-items-end">
             <button
               type="button"
               className="btn btn-outline-secondary w-100 py-2"
@@ -503,25 +430,14 @@ export default function Careers() {
         {/* Quick-Pill Filter Shortcuts */}
         <div className="d-flex flex-wrap gap-2 mt-3 pt-2 border-top align-items-center">
           <span className="small text-muted fw-semibold me-1">Fast Filters:</span>
-          {["All", "Hospital", "Diagnostic Centre", "Blood Bank", "Ambulance Service"].map((type) => (
+          {[{val: "All", label: "All Providers", icon: "building"}, {val: "hospital", label: "Hospitals", icon: "hospital"}, {val: "diagnostic", label: "Diagnostic Labs", icon: "diagnostic"}, {val: "blood_bank", label: "Blood Banks", icon: "blood"}, {val: "ambulance", label: "EMS & Ambulances", icon: "ambulance"}].map((type) => (
             <button
-              key={type}
+              key={type.val}
               type="button"
-              className={`btn btn-sm ${orgTypeFilter === type ? "btn-dark fw-bold" : "btn-light text-secondary border"}`}
-              onClick={() => setOrgTypeFilter(type)}
+              className={`btn btn-sm ${orgTypeFilter === type.val ? "btn-dark fw-bold" : "btn-light text-secondary border"}`}
+              onClick={() => setOrgTypeFilter(type.val)}
             >
-              {type === "All" ? "🏢 All Providers" : type === "Hospital" ? "🏥 Hospitals" : type === "Diagnostic Centre" ? "🔬 Diagnostic Labs" : type === "Blood Bank" ? "🩸 Blood Banks" : "🚑 EMS & Ambulances"}
-            </button>
-          ))}
-          <div className="vr d-none d-md-inline-block mx-1" />
-          {["Doctor", "Nurse", "Emergency Staff", "Technician"].map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={`btn btn-sm ${categoryFilter === cat ? "btn-primary fw-bold" : "btn-light text-secondary border"}`}
-              onClick={() => setCategoryFilter(categoryFilter === cat ? "All" : cat)}
-            >
-              {cat}
+              <EmergencyIcon name={type.icon} size={14} className="me-1" /> {type.label}
             </button>
           ))}
         </div>
@@ -530,12 +446,10 @@ export default function Careers() {
       {/* Results Counter & Active Filter Indicators */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <span className="fw-bold text-dark">{filteredJobs.length}</span> verified{" "}
-          {filteredJobs.length === 1 ? "opening" : "openings"} across{" "}
-          <span className="fw-bold text-dark">{groupedByOrganization.length}</span> healthcare{" "}
-          {groupedByOrganization.length === 1 ? "organization" : "organizations"}
+          <span className="fw-bold text-dark">{filteredOrgs.length}</span> verified{" "}
+          {filteredOrgs.length === 1 ? "organization" : "organizations"} available
         </div>
-        {(searchQuery || orgTypeFilter !== "All" || categoryFilter !== "All" || employmentTypeFilter !== "All") && (
+        {(searchQuery || orgTypeFilter !== "All") && (
           <button
             type="button"
             className="btn btn-link btn-sm text-decoration-none text-danger p-0"
@@ -552,7 +466,7 @@ export default function Careers() {
           <div className="spinner-border text-danger me-2" role="status" style={{ width: "1.75rem", height: "1.75rem" }}>
             <span className="visually-hidden">Loading opportunities...</span>
           </div>
-          <span className="text-secondary fw-semibold">Loading verified healthcare opportunities across Mumbai...</span>
+          <span className="text-secondary fw-semibold">Loading verified healthcare organizations across Mumbai...</span>
         </div>
       )}
 
@@ -565,13 +479,13 @@ export default function Careers() {
         </div>
       )}
 
-      {/* Empty State when zero jobs match */}
-      {!loading && filteredJobs.length === 0 && (
+      {/* Empty State when zero orgs match */}
+      {!loading && filteredOrgs.length === 0 && (
         <div className="surface text-center py-5 px-3 my-4">
-          <div className="display-6 mb-3">🔎</div>
-          <h2 className="h4 fw-bold text-dark mb-2">No Verified Positions Found</h2>
+          <div className="mb-3 text-muted"><EmergencyIcon name="search" size={48} /></div>
+          <h2 className="h4 fw-bold text-dark mb-2">No Verified Organizations Found</h2>
           <p className="text-secondary mx-auto mb-4" style={{ maxWidth: "480px" }}>
-            No healthcare openings match your selected filters. Try broadening your keywords or resetting filters.
+            No healthcare organizations match your selected filters. Try broadening your keywords or resetting filters.
           </p>
           <button type="button" className="btn btn-primary px-4" onClick={resetFilters}>
             Reset All Filters
@@ -579,117 +493,81 @@ export default function Careers() {
         </div>
       )}
 
-      {/* Organization Sections with Open Jobs List */}
+      {/* Organization Sections */}
       <div className="d-flex flex-column gap-4">
-        {groupedByOrganization.map((org) => (
-          <section key={org.id} className="surface border rounded-3 p-4 shadow-sm" aria-labelledby={`org-${org.id}-title`}>
-            {/* Organization Header Card */}
-            <div className="d-flex flex-wrap justify-content-between align-items-start gap-3 pb-3 mb-3 border-bottom">
+        {groupedOrganizations.map((group) => (
+          <section key={group.type} className="surface border rounded-3 p-4 shadow-sm" aria-labelledby={`group-${group.type}-title`}>
+            {/* Group Header Card */}
+            <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-3 border-bottom">
               <div>
-                <div className="d-flex flex-wrap align-items-center gap-2 mb-1">
-                  <span className={`status-pill ${getOrgTypeBadgeTone(org.type)}`}>
-                    {getOrgTypeIcon(org.type)} {org.type}
-                  </span>
-                  <span className="badge bg-light text-success border border-success-subtle">
-                    ✓ {org.verificationBadge}
-                  </span>
-                </div>
-                <h2 id={`org-${org.id}-title`} className="h4 fw-bold text-dark mb-1">
-                  {org.name}
+                <h2 id={`group-${group.type}-title`} className="h4 fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                  <span>{getOrgTypeIcon(group.type)}</span> {group.label}
                 </h2>
-                <p className="text-muted small mb-0">
-                  📍 {org.locality} · Open Positions ({org.jobs.length})
-                </p>
               </div>
-
               <div className="text-end">
                 <span className="badge bg-dark px-3 py-2 rounded-pill">
-                  {org.jobs.length} {org.jobs.length === 1 ? "Open Role" : "Open Roles"}
+                  {group.orgs.length} {group.orgs.length === 1 ? "Organization" : "Organizations"}
                 </span>
               </div>
             </div>
 
-            {/* List of Open Jobs for this Organization */}
+            {/* List of Organizations for this Group */}
             <div className="row g-3">
-              {org.jobs.map((job) => (
-                <div key={job._id} className="col-12 col-xl-6">
+              {group.orgs.map((org) => (
+                <div key={org._id} className="col-12 col-xl-6">
                   <article className="card h-100 border p-3 d-flex flex-column justify-content-between bg-white hover-shadow">
                     <div>
-                      {/* Category & Employment Type Pill */}
-                      <div className="d-flex justify-content-between align-items-center gap-2 mb-2">
-                        <span className="eyebrow">{job.category}</span>
-                        <div className="d-flex gap-1">
-                          <span className="status-pill tone-info">
-                            {formatEmploymentType(job.employmentType)}
-                          </span>
-                          {job.demo && (
-                            <span className="badge bg-warning-subtle text-warning-emphasis border">
-                              Demo
-                            </span>
-                          )}
-                        </div>
+                      {/* Category & Status Pill */}
+                      <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
+                        <span className={`status-pill ${getOrgTypeBadgeTone(org.type)}`}>
+                          {getOrgTypeDisplay(org.type)}
+                        </span>
+                        <span className="badge bg-light text-success border border-success-subtle">
+                          <EmergencyIcon name="verified" size={14} className="text-success me-1" /> {org.verificationStatus === "verified" ? "MedReach Verified" : "Registered"}
+                        </span>
                       </div>
 
-                      {/* Job Title & Department */}
-                      <h3 className="h5 fw-bold mb-1 text-dark">
-                        <Link
-                          href={`/jobs/${job._id}`}
-                          className="text-decoration-none text-reset hover-primary"
-                        >
-                          {job.title}
-                        </Link>
+                      {/* Org Name */}
+                      <h3 className="h5 fw-bold mb-2 text-dark">
+                        {org.name}
                       </h3>
-                      <div className="text-secondary small fw-medium mb-2">
-                        🏢 {job.department || "General Medical Services"}
-                      </div>
 
-                      {/* Location & Compensation */}
+                      {/* Location & Contact */}
                       <div className="d-flex flex-wrap gap-2 text-muted small mb-3">
-                        <span>📍 {job.location || org.locality || "Mumbai"}</span>
-                        {job.salaryText && (
+                        {org.locality && <span><EmergencyIcon name="pin" size={14} className="text-muted me-1" /> {org.locality}{org.city && org.city !== org.locality ? `, ${org.city}` : ""}</span>}
+                        {org.phone && (
                           <>
                             <span>·</span>
-                            <span className="text-dark fw-semibold">💵 {job.salaryText}</span>
+                            <span><EmergencyIcon name="phone" size={14} className="text-muted me-1" /> {org.phone}</span>
                           </>
                         )}
                       </div>
 
-                      {/* Requirements Preview */}
-                      <div className="p-2 mb-3 bg-light rounded-2 small text-secondary border">
-                        <strong className="text-dark d-block mb-1">Requirements:</strong>
-                        <p className="mb-0 text-truncate-2">
-                          {job.requirements || job.description?.slice(0, 160) + "..."}
-                        </p>
-                      </div>
+                      {/* Services/Specialties Preview */}
+                      {((org.specialties && org.specialties.length > 0) || (org.services && org.services.length > 0)) && (
+                        <div className="d-flex flex-wrap gap-1 mb-3">
+                          {((org.specialties || []).concat(org.services || [])).slice(0, 4).map((item, idx) => (
+                            <span key={idx} className="badge bg-light text-secondary border fw-normal">
+                              {item}
+                            </span>
+                          ))}
+                          {((org.specialties || []).concat(org.services || [])).length > 4 && (
+                            <span className="badge bg-light text-secondary border fw-normal">...</span>
+                          )}
+                        </div>
+                      )}
                     </div>
 
-                    {/* Footer Actions: Deadline & Apply Button */}
-                    <div className="d-flex justify-content-between align-items-center pt-2 border-top mt-auto">
-                      <div className="small text-muted">
-                        {job.deadline ? (
-                          <span>⏳ Apply by {new Date(job.deadline).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
-                        ) : (
-                          <span className="text-success fw-medium">● Actively Reviewing</span>
-                        )}
-                      </div>
-
-                      <div className="btn-group">
-                        <Link
-                          href={`/jobs/${job._id}`}
-                          className="btn btn-sm btn-outline-secondary px-3"
-                          title="View full job details and requirements"
-                        >
-                          View Details
-                        </Link>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-primary px-3 fw-bold"
-                          onClick={() => openApplyModal(job)}
-                          aria-label={`Apply Now for ${job.title} at ${org.name}`}
-                        >
-                          Apply Now
-                        </button>
-                      </div>
+                    {/* Footer Actions: Apply Button */}
+                    <div className="d-flex justify-content-end align-items-center pt-3 border-top mt-auto">
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-primary px-3 fw-bold"
+                        onClick={() => openApplyModal(org)}
+                        aria-label={`Apply Now for roles at ${org.name}`}
+                      >
+                        Apply Now
+                      </button>
                     </div>
                   </article>
                 </div>
@@ -700,7 +578,7 @@ export default function Careers() {
       </div>
 
       {/* Application Modal */}
-      {selectedJobForApply && (
+      {selectedOrg && (
         <div
           className="modal show d-block"
           tabIndex="-1"
@@ -715,10 +593,10 @@ export default function Careers() {
                 <div>
                   <span className="eyebrow d-block mb-1">Direct Healthcare Application</span>
                   <h2 className="modal-title h5 fw-bold mb-0" id="applyModalLabel">
-                    {selectedJobForApply.title}
+                    {selectedOrg.name}
                   </h2>
                   <p className="text-muted small mb-0">
-                    {selectedJobForApply.hospital?.name || selectedJobForApply.provider?.name || selectedJobForApply.organizationName} · {selectedJobForApply.location || selectedJobForApply.hospital?.locality || "Mumbai"}
+                    {getOrgTypeDisplay(selectedOrg.type)} · {selectedOrg.locality || selectedOrg.city || "Mumbai"}
                   </p>
                 </div>
                 <button
@@ -734,20 +612,11 @@ export default function Careers() {
                   {/* Position Overview Banner */}
                   <div className="p-3 mb-4 rounded-2 bg-light border d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div>
-                      <span className="badge bg-secondary me-2">{selectedJobForApply.category}</span>
-                      <span className="badge bg-dark me-2">{formatEmploymentType(selectedJobForApply.employmentType)}</span>
-                      {selectedJobForApply.salaryText && (
-                        <span className="text-dark small fw-semibold">💵 {selectedJobForApply.salaryText}</span>
-                      )}
+                      <span className={`badge ${getOrgTypeBadgeTone(selectedOrg.type)} me-2`}>{getOrgTypeDisplay(selectedOrg.type)}</span>
+                      <span className="badge bg-success-subtle text-success-emphasis border border-success-subtle">
+                        {selectedOrg.verificationStatus === "verified" ? "Verified Partner" : "Registered"}
+                      </span>
                     </div>
-                    <Link
-                      href={`/jobs/${selectedJobForApply._id}`}
-                      className="small text-decoration-none fw-semibold"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Open Full Role Description ↗
-                    </Link>
                   </div>
 
                   {/* Feedback Message */}
@@ -762,6 +631,33 @@ export default function Careers() {
 
                   {/* Candidate Details Grid */}
                   <div className="row g-3 mb-3">
+                    <div className="col-md-12">
+                      <label htmlFor="modalRoleInterested" className="form-label fw-bold small mb-1">
+                        Role Interested In <span className="text-danger">*</span>
+                      </label>
+                      <select
+                        id="modalRoleInterested"
+                        required
+                        className="form-select form-select-sm"
+                        value={roleInterested}
+                        onChange={(e) => setRoleInterested(e.target.value)}
+                      >
+                        <option value="" disabled>Select a role...</option>
+                        <option value="Doctor / Physician">Doctor / Physician</option>
+                        <option value="Nurse / Nursing Staff">Nurse / Nursing Staff</option>
+                        <option value="Lab Technician">Lab Technician</option>
+                        <option value="Pharmacist">Pharmacist</option>
+                        <option value="Paramedic / EMT">Paramedic / EMT</option>
+                        <option value="Radiographer / Imaging Tech">Radiographer / Imaging Tech</option>
+                        <option value="Physiotherapist">Physiotherapist</option>
+                        <option value="Hospital Administrator">Hospital Administrator</option>
+                        <option value="Blood Bank Technician">Blood Bank Technician</option>
+                        <option value="Ambulance Driver / Pilot">Ambulance Driver / Pilot</option>
+                        <option value="Receptionist / Front Desk">Receptionist / Front Desk</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
                     <div className="col-md-6">
                       <label htmlFor="modalCandidateName" className="form-label fw-bold small mb-1">
                         Full Name <span className="text-danger">*</span>
@@ -887,7 +783,7 @@ export default function Careers() {
                         ) : (
                           <div className="d-flex justify-content-between align-items-center p-2 border rounded bg-light">
                             <div className="text-truncate small me-2">
-                              📄 <strong>{resumeFile.fileName}</strong>{" "}
+                              <EmergencyIcon name="file" size={15} className="me-1" /> <strong>{resumeFile.fileName}</strong>{" "}
                               <span className="text-muted">({(resumeFile.fileSize / 1024).toFixed(0)} KB)</span>
                             </div>
                             <button
@@ -955,7 +851,7 @@ export default function Careers() {
                         ) : sopWordCount < 100 ? (
                           <span className="text-muted">{100 - sopWordCount} more words recommended for optimal review.</span>
                         ) : sopWordCount <= 260 ? (
-                          <span className="text-success fw-bold">✓ Recommended length reached.</span>
+                          <span className="text-success fw-bold"><EmergencyIcon name="check" size={13} className="me-1" /> Recommended length reached.</span>
                         ) : (
                           <span className="text-muted">{sopWordCount - 200} words over concise target.</span>
                         )}
