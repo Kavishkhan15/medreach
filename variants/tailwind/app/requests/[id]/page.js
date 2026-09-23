@@ -112,6 +112,25 @@ export default function RequestDetail({ params }) {
               )}
             </div>
 
+            {request.ambulanceRequired ? (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded text-xs text-amber-900 flex items-start gap-2 mb-4">
+                <EmergencyIcon name="ambulance" size={18} className="text-red-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <strong className="font-bold">Hospital Ambulance Requested</strong>
+                  {request.ambulancePickupAddress && (
+                    <div className="mt-0.5 text-gray-800">
+                      Pickup Address: <em>{request.ambulancePickupAddress}</em>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="text-xs text-gray-500 mb-4 flex items-center gap-1">
+                <EmergencyIcon name="ambulance" size={14} className="text-gray-400" />
+                <span>Ambulance: Not required</span>
+              </div>
+            )}
+
             {request.contactEmail && (
               <div className="p-3 bg-gray-50 border border-gray-200 rounded text-xs text-gray-700 flex items-center gap-2 mb-4">
                 <EmergencyIcon name="mail" size={16} className="text-blue-600 flex-shrink-0" />
