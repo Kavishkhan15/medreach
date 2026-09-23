@@ -35,7 +35,7 @@ export default function HospitalPage({ params }) {
     };
   }, [slug]);
 
-  if (baseLoading && enriching) {
+  if (baseLoading) {
     return <p className="text-secondary p-4">Loading hospital details…</p>;
   }
 
@@ -59,7 +59,7 @@ export default function HospitalPage({ params }) {
       await saveHospital(hospital.hospitalId || hospital._id);
       setSaved(true);
     } catch {
-      alert("Login required to save hospital.");
+      alert("Please sign in to save hospital to Quick Access.");
     }
   };
 
@@ -72,6 +72,12 @@ export default function HospitalPage({ params }) {
     : (baseHospital?.specialties?.length ? baseHospital.specialties : (baseHospital?.departments?.length ? baseHospital.departments : ["Not available."]));
   const sourceName = hospital.sourceName || (baseHospital?.locality ? "Verified Hospital Profile" : "Official Directory");
   const sourceUrl = hospital.sourceUrl || baseHospital?.website;
+
+  const emergencyDial =
+    hospital.emergencyPhone ||
+    baseHospital?.emergencyPhone ||
+    (phone !== "Not available." ? phone : null) ||
+    "112";
 
   return (
     <article className="pb-5">
@@ -154,7 +160,7 @@ export default function HospitalPage({ params }) {
             <div className="vstack gap-2">
               <a
                 className="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center gap-2"
-                href={`tel:${hospital.emergencyPhone || baseHospital?.emergencyPhone || phone || "112"}`}
+                href={`tel:${emergencyDial}`}
               >
                 <EmergencyIcon name="phone" size={16} /> Call Emergency
               </a>
@@ -174,7 +180,7 @@ export default function HospitalPage({ params }) {
                 href={`/requests/new?hospital=${hospital.hospitalId || baseHospital?._id}&isEmergency=false`}
                 className="btn btn-outline-danger w-100 d-inline-flex align-items-center justify-content-center gap-2"
               >
-                <EmergencyIcon name="bed" size={16} /> Request Bed (Login required)
+                <EmergencyIcon name="bed" size={16} /> Request Bed
               </Link>
 
               {user && (
@@ -191,7 +197,7 @@ export default function HospitalPage({ params }) {
 
             <hr className="my-3" />
             <p className="text-muted small mb-0">
-              For acute triage with <strong>no login required</strong>, use the{" "}
+              For acute triage, use the{" "}
               <Link href="/emergency" className="fw-semibold text-danger">Emergency Response</Link> portal.
             </p>
           </div>

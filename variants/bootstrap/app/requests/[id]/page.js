@@ -33,8 +33,6 @@ export default function RequestDetail({ params }) {
     }
   };
 
-  const isGuest = request && !request.user;
-
   return (
     <>
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -46,9 +44,6 @@ export default function RequestDetail({ params }) {
           <Link href="/emergency" className="small text-decoration-none">
             ← Back to Emergency Response
           </Link>
-        )}
-        {isGuest && (
-          <span className="badge bg-secondary">Guest submission (No login)</span>
         )}
       </div>
 

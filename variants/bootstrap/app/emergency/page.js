@@ -2,7 +2,6 @@
 import { useState, useMemo } from "react";
 import { useHospitals, useLocation, emergencyCategory, MUMBAI_LOCALITIES } from "@medreach/core";
 import EmergencyCategorySelector from "../../components/EmergencyCategorySelector";
-import HospitalList from "../../components/HospitalList";
 import EmergencyHospitalCard from "../../components/EmergencyHospitalCard";
 import { EmergencyIcon } from "../../components/EmergencyIcons";
 

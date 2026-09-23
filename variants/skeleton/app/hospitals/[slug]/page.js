@@ -24,7 +24,7 @@ export default function HospitalPage({ params }) {
   const m = availabilityMeta(edStatus(hospital));
   const coords = hospital.location?.coordinates || [];
   const onSave = async () => {
-    try { await saveHospital(hospital._id); setSaved(true); } catch { alert("Login + live backend required to save."); }
+    try { await saveHospital(hospital._id); setSaved(true); } catch { alert("Please sign in to save."); }
   };
 
   return (

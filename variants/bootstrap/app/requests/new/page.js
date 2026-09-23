@@ -78,7 +78,7 @@ export default function NewRequest() {
   const submit = async (event) => {
     event.preventDefault();
     if (!isEmergency && !user) {
-      setError("Authentication required to submit standard hospital bed requests. Please sign in.");
+      setError("Please sign in to submit standard hospital bed requests.");
       return;
     }
     setBusy(true);
@@ -113,14 +113,14 @@ export default function NewRequest() {
               className={`btn ${isEmergency ? "btn-danger fw-bold" : "btn-outline-secondary"}`}
               onClick={() => { setIsEmergency(true); setError(""); }}
             >
-              <EmergencyIcon name="siren" size={14} className="me-1" /> Emergency (No Login)
+              <EmergencyIcon name="siren" size={14} className="me-1" /> Emergency Bed Request
             </button>
             <button
               type="button"
               className={`btn ${!isEmergency ? "btn-primary fw-bold" : "btn-outline-secondary"}`}
               onClick={() => { setIsEmergency(false); setError(""); }}
             >
-              <EmergencyIcon name="shield" size={14} className="me-1" /> Standard Hospital Bed (Login)
+              <EmergencyIcon name="shield" size={14} className="me-1" /> Standard Hospital Bed
             </button>
           </div>
         </div>
@@ -130,18 +130,18 @@ export default function NewRequest() {
           {isEmergency ? (
             <>
               <div className="d-inline-flex align-items-center gap-2 mb-1 text-danger fw-bold small">
-                <EmergencyIcon name="siren" size={18} /> EMERGENCY TRIAGE REQUEST · NO LOGIN REQUIRED
+                <EmergencyIcon name="siren" size={18} /> EMERGENCY TRIAGE REQUEST
               </div>
               <h1 className="h2 mb-1">Request emergency bed &amp; care</h1>
               <p className="lead fs-6 text-muted mb-0">
-                Life-critical triage bed request. Hospital staff are notified immediately. No account or login required.
+                Life-critical triage bed request. Hospital staff are notified immediately.
                 For immediate life-threatening danger, always call <a href="tel:112" className="fw-bold text-danger">112</a>.
               </p>
             </>
           ) : (
             <>
               <div className="d-inline-flex align-items-center gap-2 mb-1 text-primary fw-bold small">
-                <EmergencyIcon name="shield" size={18} /> ROUTINE HOSPITAL ADMISSION · LOGIN REQUIRED
+                <EmergencyIcon name="shield" size={18} /> ROUTINE HOSPITAL ADMISSION
               </div>
               <h1 className="h2 mb-1">Request hospital admission</h1>
               <p className="lead fs-6 text-muted mb-0">
@@ -155,7 +155,7 @@ export default function NewRequest() {
         {!isEmergency && !user && !authLoading && (
           <div className="alert alert-warning border-warning p-3 mb-4" role="alert">
             <h5 className="alert-heading h6 fw-bold d-flex align-items-center gap-2 mb-2">
-              <EmergencyIcon name="shield" size={18} /> Authentication required for standard hospital bed requests
+              <EmergencyIcon name="shield" size={18} /> Sign-in for standard hospital bed requests
             </h5>
             <p className="small mb-3">
               Standard hospital bed requests require a verified user account so the hospital can safely review patient records
@@ -174,7 +174,7 @@ export default function NewRequest() {
                 className="btn btn-sm btn-outline-danger"
                 onClick={() => { setIsEmergency(true); setError(""); }}
               >
-                Switch to Emergency Bed Request (No login needed)
+                Switch to Emergency Bed Request
               </button>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function NewRequest() {
           {error && (
             <div className="alert alert-danger d-flex align-items-center justify-content-between mb-0" role="alert">
               <span>{error}</span>
-              {error.includes("Authentication required") && (
+              {(error.includes("Authentication required") || error.includes("sign in")) && (
                 <Link href="/login" className="btn btn-sm btn-outline-danger ms-2">Sign in</Link>
               )}
             </div>
@@ -356,7 +356,7 @@ export default function NewRequest() {
           <div className="pt-2 border-top">
             {!isEmergency && !user ? (
               <button type="button" className="btn btn-secondary btn-lg w-100" disabled>
-                Sign in required to submit hospital admission request
+                Sign in to submit hospital admission request
               </button>
             ) : (
               <button
@@ -368,14 +368,14 @@ export default function NewRequest() {
                 {busy
                   ? "Submitting request…"
                   : isEmergency
-                  ? "Submit Emergency Bed Request (No Login Required)"
+                  ? "Submit Emergency Bed Request"
                   : "Submit Hospital Bed Request"}
               </button>
             )}
 
             {isEmergency && (
               <p className="text-center text-muted small mt-2 mb-0">
-                <EmergencyIcon name="check" size={15} className="text-success me-1" /> Public emergency triage · No account required · Immediate dispatch to hospital emergency desk
+                <EmergencyIcon name="check" size={15} className="text-success me-1" /> Public emergency triage · Immediate dispatch to hospital emergency desk
               </p>
             )}
           </div>

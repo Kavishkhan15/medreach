@@ -77,7 +77,7 @@ export default function EmergencyHospitalCard({ hospital, category }) {
               className="btn btn-warning text-dark fw-bold w-100 text-center d-inline-flex align-items-center justify-content-center gap-2"
               href={requestUrl}
             >
-              <EmergencyIcon name="bed" size={18} /> Request Emergency Bed (No Login)
+              <EmergencyIcon name="bed" size={18} /> Request Emergency Bed
             </Link>
 
             <div className="text-end">
