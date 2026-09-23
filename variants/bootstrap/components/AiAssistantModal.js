@@ -28,7 +28,11 @@ function EmergencyActions({ onClose }) {
 }
 
 function HospitalResultCard({ hospital }) {
-  const hasCoords = Array.isArray(hospital.coordinates);
+  const hasCoords =
+    Array.isArray(hospital.coordinates) &&
+    hospital.coordinates.length === 2 &&
+    Number.isFinite(hospital.coordinates[0]) &&
+    Number.isFinite(hospital.coordinates[1]);
   return (
     <div className="border rounded p-2 mb-2 bg-white">
       <div className="fw-semibold small">{hospital.name}</div>
@@ -48,7 +52,7 @@ function HospitalResultCard({ hospital }) {
         </div>
       )}
       <div className="d-flex gap-1 mt-1">
-        <a className="btn btn-sm btn-primary" href={`tel:${hospital.phone || "112"}`}><EmergencyIcon name="phone" size={14} className="me-1" /> Call</a>
+        <a className="btn btn-sm btn-primary" href={`tel:${hospital.emergencyPhone || hospital.phone || "112"}`}><EmergencyIcon name="phone" size={14} className="me-1" /> Call</a>
         {hasCoords && (
           <a
             className="btn btn-sm btn-outline-secondary"

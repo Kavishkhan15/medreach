@@ -340,15 +340,23 @@ export default function HospitalJobs() {
                             <div className="row g-2 small mb-3">
                               <div className="col-sm-6">
                                 <span className="text-muted d-block">Contact Email:</span>
-                                <a href={`mailto:${candEmail}`} className="text-decoration-none fw-semibold">
-                                  {candEmail}
-                                </a>
+                                {candEmail && candEmail !== "Not specified" ? (
+                                  <a href={`mailto:${candEmail}`} className="text-decoration-none fw-semibold">
+                                    {candEmail}
+                                  </a>
+                                ) : (
+                                  <span className="text-muted fst-italic">Not specified</span>
+                                )}
                               </div>
                               <div className="col-sm-6">
                                 <span className="text-muted d-block">Contact Phone:</span>
-                                <a href={`tel:${candPhone}`} className="text-decoration-none fw-semibold">
-                                  {candPhone}
-                                </a>
+                                {candPhone && candPhone !== "Not specified" ? (
+                                  <a href={`tel:${candPhone}`} className="text-decoration-none fw-semibold">
+                                    {candPhone}
+                                  </a>
+                                ) : (
+                                  <span className="text-muted fst-italic">Not specified</span>
+                                )}
                               </div>
                               <div className="col-sm-6">
                                 <span className="text-muted d-block">Highest Qualification:</span>

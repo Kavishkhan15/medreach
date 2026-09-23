@@ -127,7 +127,10 @@ export default function MapPage() {
                   >
                     View details
                   </Link>
-                  {selectedItem.location?.coordinates && (
+                  {Array.isArray(selectedItem.location?.coordinates) &&
+                    selectedItem.location.coordinates.length === 2 &&
+                    Number.isFinite(selectedItem.location.coordinates[0]) &&
+                    Number.isFinite(selectedItem.location.coordinates[1]) && (
                     <a
                       className="btn btn-primary btn-sm text-white"
                       href={`https://www.google.com/maps/dir/?api=1&destination=${selectedItem.location.coordinates[1]},${selectedItem.location.coordinates[0]}`}
