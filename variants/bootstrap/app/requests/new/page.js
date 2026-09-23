@@ -6,7 +6,7 @@ import { useAuth } from "@medreach/core";
 import { productApi, post } from "../../../lib/productApi";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
 
-const facilities = [
+const FACILITIES = [
   "Emergency Department",
   "ICU",
   "Trauma Center",
@@ -16,6 +16,25 @@ const facilities = [
   "Maternity",
   "Burns Unit",
   "Ventilator",
+];
+
+const EMERGENCY_TYPES = [
+  { value: "general", label: "General emergency" },
+  { value: "cardiac", label: "Cardiac" },
+  { value: "stroke", label: "Stroke" },
+  { value: "trauma", label: "Trauma" },
+  { value: "respiratory", label: "Respiratory" },
+  { value: "pediatric", label: "Pediatric" },
+  { value: "maternity", label: "Maternity" },
+  { value: "burns", label: "Burns" },
+];
+
+const AGE_GROUPS = [
+  { id: "unknown", label: "Unknown / Not specified" },
+  { id: "infant", label: "Infant (<1 year)" },
+  { id: "child", label: "Child (1-12 years)" },
+  { id: "adult", label: "Adult (13-64 years)" },
+  { id: "older_adult", label: "Senior (65+ years)" },
 ];
 
 export default function NewRequest() {
@@ -37,6 +56,7 @@ export default function NewRequest() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
+  // Ingest query parameters on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
@@ -46,7 +66,6 @@ export default function NewRequest() {
     const typeParam = params.get("emergencyType");
     const facilityParam = params.get("facility");
 
-    // If navigated from standard hospital profile with isEmergency=false (or without emergency params), default to standard
     if (isEmergencyParam === "false" || emergencyParam === "false") {
       setIsEmergency(false);
     } else if (isEmergencyParam === "true" || emergencyParam === "true" || typeParam) {
@@ -58,19 +77,25 @@ export default function NewRequest() {
       hospitalId: hospitalParam || old.hospitalId,
       emergencyType: typeParam ? typeParam.toLowerCase() : old.emergencyType,
       requiredFacility: facilityParam || old.requiredFacility,
-      contactEmail: user?.email || old.contactEmail,
     }));
+  }, []);
 
+  // Fetch hospital listings once on mount
+  useEffect(() => {
     productApi("/api/hospitals?limit=50")
       .then((r) => setHospitals(r.data || []))
       .catch((e) => setError(e.message));
-  }, [user]);
+  }, []);
 
-  // Keep contactEmail populated with user email if available and not yet touched
+  // Prefill contact details from active user session if fields are untouched
   useEffect(() => {
-    if (user?.email && !form.contactEmail) {
-      setForm((old) => ({ ...old, contactEmail: user.email }));
-    }
+    if (!user) return;
+    setForm((old) => ({
+      ...old,
+      contactEmail: old.contactEmail || user.email || "",
+      contactPhone: old.contactPhone || user.emergencyContact || user.phone || "",
+      locality: old.locality || user.region || "",
+    }));
   }, [user]);
 
   const change = (key) => (event) => setForm((old) => ({ ...old, [key]: event.target.value }));
@@ -228,9 +253,9 @@ export default function NewRequest() {
                 value={form.emergencyType}
                 onChange={change("emergencyType")}
               >
-                {["general", "cardiac", "stroke", "trauma", "respiratory", "pediatric", "maternity", "burns"].map((v) => (
-                  <option key={v} value={v}>
-                    {v.charAt(0).toUpperCase() + v.slice(1)} {v === "general" ? "emergency" : ""}
+                {EMERGENCY_TYPES.map((t) => (
+                  <option key={t.value} value={t.value}>
+                    {t.label}
                   </option>
                 ))}
               </select>
@@ -245,7 +270,7 @@ export default function NewRequest() {
                 value={form.requiredFacility}
                 onChange={change("requiredFacility")}
               >
-                {facilities.map((v) => (
+                {FACILITIES.map((v) => (
                   <option key={v} value={v}>
                     {v}
                   </option>
@@ -318,13 +343,7 @@ export default function NewRequest() {
                 value={form.patientAgeGroup}
                 onChange={change("patientAgeGroup")}
               >
-                {[
-                  { id: "unknown", label: "Unknown / Not specified" },
-                  { id: "infant", label: "Infant (<1 year)" },
-                  { id: "child", label: "Child (1-12 years)" },
-                  { id: "adult", label: "Adult (13-64 years)" },
-                  { id: "older_adult", label: "Senior (65+ years)" },
-                ].map((v) => (
+                {AGE_GROUPS.map((v) => (
                   <option key={v.id} value={v.id}>
                     {v.label}
                   </option>
