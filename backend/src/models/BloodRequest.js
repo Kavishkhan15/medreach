@@ -47,8 +47,14 @@ const bloodRequestSchema = new mongoose.Schema(
     },
     urgency: {
       type: String,
-      enum: ["EMERGENCY", "URGENT", "ROUTINE"],
-      default: "URGENT",
+      trim: true,
+      maxlength: 100,
+      default: "3 days",
+      index: true,
+    },
+    isUrgent: {
+      type: Boolean,
+      default: false,
       index: true,
     },
     hospitalName: {
