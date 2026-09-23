@@ -58,6 +58,8 @@ export default function NewRequest() {
     patientReference: "",
     patientSummary: "",
     locality: "",
+    ambulanceRequired: false,
+    ambulancePickupAddress: "",
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -134,6 +136,8 @@ export default function NewRequest() {
       const payload = {
         ...form,
         isEmergency,
+        ambulanceRequired: Boolean(form.ambulanceRequired),
+        ambulancePickupAddress: form.ambulanceRequired ? form.ambulancePickupAddress.trim() : undefined,
         contactEmail: form.contactEmail.trim() || undefined,
       };
       const res = await fetch(`${BASE_API}/api/emergency-requests`, {
@@ -384,6 +388,66 @@ export default function NewRequest() {
             value={form.patientSummary}
             onChange={change("patientSummary")}
           />
+        </div>
+
+        {/* Ambulance Assistance Section */}
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] p-4 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                <EmergencyIcon name="ambulance" size={18} className="text-red-600" /> Ambulance Required?
+              </h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                The hospital is responsible for arranging/providing the ambulance.
+              </p>
+            </div>
+            <div className="inline-flex rounded-[var(--radius)] border border-gray-300 p-0.5 bg-gray-50" role="group" aria-label="Ambulance requirement">
+              <button
+                type="button"
+                className={`px-3 py-1 text-xs font-bold rounded-[var(--radius)] transition-colors ${
+                  form.ambulanceRequired
+                    ? "bg-red-600 text-white"
+                    : "text-gray-700 hover:text-gray-900"
+                }`}
+                onClick={() => setForm((old) => ({ ...old, ambulanceRequired: true }))}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className={`px-3 py-1 text-xs font-bold rounded-[var(--radius)] transition-colors ${
+                  !form.ambulanceRequired
+                    ? "bg-gray-600 text-white"
+                    : "text-gray-700 hover:text-gray-900"
+                }`}
+                onClick={() => setForm((old) => ({ ...old, ambulanceRequired: false, ambulancePickupAddress: "" }))}
+              >
+                No
+              </button>
+            </div>
+          </div>
+
+          {form.ambulanceRequired && (
+            <div className="pt-3 border-t border-gray-200 space-y-1.5">
+              <label className="block text-xs font-semibold text-gray-700 flex items-center gap-1" htmlFor="ambulancePickupAddress">
+                <EmergencyIcon name="pin" size={14} /> Ambulance Pickup Address <span className="text-red-600">*</span>
+              </label>
+              <textarea
+                id="ambulancePickupAddress"
+                name="ambulancePickupAddress"
+                rows={2}
+                className={inputClass}
+                required={form.ambulanceRequired}
+                placeholder="Enter exact pickup address, landmarks, floor/flat number, etc."
+                maxLength={300}
+                value={form.ambulancePickupAddress}
+                onChange={change("ambulancePickupAddress")}
+              />
+              <p className="text-xs text-gray-500">
+                Provide the exact location where the hospital ambulance should pick up the patient.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Submit Action */}
