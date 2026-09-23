@@ -1,33 +1,35 @@
 "use client";
 import { useEffect, useState } from "react";
 import { productApi } from "../lib/productApi";
+import AmbulanceBookingModal from "./AmbulanceBookingModal";
 
 export default function ResourceDirectory({ kind, title, intro, label, onSelectResource }) {
   const [items, setItems] = useState([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showBooking, setShowBooking] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState(null);
 
   useEffect(() => {
     let live = true;
     setLoading(true);
     productApi(`/api/${kind}?q=${encodeURIComponent(query)}`)
-      .then((r) => {
+      .then(r => {
         if (live) {
           setItems(r.data || []);
           setError("");
         }
       })
-      .catch((e) => {
-        if (live) setError(e.message);
-      })
-      .finally(() => {
-        if (live) setLoading(false);
-      });
-    return () => {
-      live = false;
-    };
+      .catch(e => { if (live) setError(e.message); })
+      .finally(() => { if (live) setLoading(false); });
+    return () => { live = false; };
   }, [kind, query]);
+
+  const handleBook = (item) => {
+    setSelectedProvider(item);
+    setShowBooking(true);
+  };
 
   return (
     <div>
@@ -36,69 +38,47 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
         <h1>{title}</h1>
         <p>{intro}</p>
       </div>
-      <label className="form-label fw-semibold" htmlFor="resource-search">
-        Search {label}
-      </label>
+      <label className="form-label fw-semibold" htmlFor="resource-search">Search {label}</label>
       <input
         id="resource-search"
         className="form-control mb-4"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={e => setQuery(e.target.value)}
         placeholder="Search name, service or locality"
       />
       {loading && <p role="status">Loading providers…</p>}
       {error && (
-        <div className="alert alert-danger" role="alert">
-          {error}
-        </div>
+        <div className="alert alert-danger" role="alert">{error}</div>
       )}
       {!loading && !error && items.length === 0 && (
-        <div className="surface">
-          No listed providers match this search. Try another locality or service.
-        </div>
+        <div className="surface">No listed providers match this search. Try another locality or service.</div>
       )}
       <div className="row g-3">
-        {items.map((item) => (
+        {items.map(item => (
           <div className="col-md-6 col-xl-4" key={item._id}>
             <article className="surface h-100 d-flex flex-column">
               <div className="d-flex justify-content-between gap-2">
                 <h2 className="h5">{item.name}</h2>
-                <span
-                  className={`status-pill ${
-                    item.verificationStatus === "verified" ? "tone-success" : "tone-neutral"
-                  }`}
-                >
-                  {item.verificationStatus}
-                </span>
+                <span className={`status-pill ${item.verificationStatus === "verified" ? "tone-success" : "tone-neutral"}`}>{item.verificationStatus}</span>
               </div>
               <p className="small text-secondary mb-2">
                 {item.address || item.locality || "Address not supplied"}
               </p>
               <p className="small mb-2">
-                {item.services?.length
-                  ? item.services.join(" · ")
-                  : item.providerType || "Services not specified"}
+                {item.services?.length ? item.services.join(" · ") : item.providerType || "Services not specified"}
               </p>
               <p className="disclaimer mb-2">
-                Hours: {item.operatingHours || "Unknown"} · Source: {item.sourceName}
-                {item.demo ? " · DEMO" : ""}
+                Hours: {item.operatingHours || "Unknown"} · Source: {item.sourceName}{item.demo ? " · DEMO" : ""}
               </p>
               {item.serviceEvidence?.length > 0 && (
                 <details className="small mb-2">
                   <summary>Why this provider is listed</summary>
                   {item.serviceEvidence.map((entry, i) => (
                     <p className="disclaimer mb-1" key={i}>
-                      {entry.service}: {entry.sourceName} · {entry.verificationStatus} ·{" "}
-                      {entry.confidence}
+                      {entry.service}: {entry.sourceName} · {entry.verificationStatus} · {entry.confidence}
                       {entry.evidenceText && <> · “{entry.evidenceText}”</>}
                       {entry.sourcePageUrl?.startsWith("http") && (
-                        <>
-                          {" "}
-                          ·{" "}
-                          <a href={entry.sourcePageUrl} target="_blank" rel="noopener noreferrer">
-                            Source
-                          </a>
-                        </>
+                        <> · <a href={entry.sourcePageUrl} target="_blank" rel="noopener noreferrer">Source</a></>
                       )}
                     </p>
                   ))}
@@ -108,9 +88,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                 <p className="disclaimer">Current blood inventory: unknown</p>
               )}
               {kind === "ambulances" && (
-                <p className="disclaimer">
-                  Availability and dispatch: unknown. Contact provider directly.
-                </p>
+                <p className="disclaimer">Availability and dispatch: unknown. Contact provider directly.</p>
               )}
               <div className="mt-auto pt-3 border-top d-flex flex-wrap gap-2">
                 {onSelectResource && kind === "blood-banks" && (
@@ -123,9 +101,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                   </button>
                 )}
                 {item.phone ? (
-                  <a className="btn btn-primary btn-sm" href={`tel:${item.phone}`}>
-                    Call provider
-                  </a>
+                  <a className="btn btn-primary btn-sm" href={`tel:${item.phone}`}>Call provider</a>
                 ) : (
                   <span className="small text-secondary align-self-center">Phone unavailable</span>
                 )}
@@ -139,11 +115,26 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                     Navigate
                   </a>
                 )}
+                {kind === "ambulances" && (
+                  <button
+                    type="button"
+                    className="btn btn-success btn-sm fw-semibold"
+                    onClick={() => handleBook(item)}
+                  >
+                    Book Ambulance
+                  </button>
+                )}
               </div>
             </article>
           </div>
         ))}
       </div>
+      {showBooking && selectedProvider && (
+        <AmbulanceBookingModal
+          provider={selectedProvider}
+          onClose={() => { setShowBooking(false); setSelectedProvider(null); }}
+        />
+      )}
     </div>
   );
 }
