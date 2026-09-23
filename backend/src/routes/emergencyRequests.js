@@ -22,6 +22,8 @@ router.post(
   body("contactPhone").trim().isLength({ min: 7, max: 25 }),
   body("contactEmail").optional({ checkFalsy: true }).isEmail().normalizeEmail(),
   body("isEmergency").optional().isBoolean(),
+  body("ambulanceRequired").optional().isBoolean(),
+  body("ambulancePickupAddress").optional().isLength({ max: 300 }),
   body("patientAgeGroup").optional().isIn(["infant", "child", "adult", "older_adult", "unknown"]),
   body("patientReference").optional().isLength({ max: 80 }),
   body("patientSummary").optional().isLength({ max: 500 }),
