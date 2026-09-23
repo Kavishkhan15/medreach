@@ -178,7 +178,7 @@ export default function BloodBanks() {
         </div>
         <div className="d-flex gap-2">
           <Link
-            href="/requests/new?facility=Blood%20Bank&emergencyType=Blood%20Emergency"
+            href="/urgent-blood"
             className="btn btn-danger fw-semibold px-4 text-nowrap"
           >
             Request Emergency Blood
