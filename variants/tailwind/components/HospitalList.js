@@ -17,7 +17,7 @@ function CardSkeleton() {
   );
 }
 
-export default function HospitalList({ hospitals, loading, emptyMessage = "No hospitals match your search." }) {
+export default function HospitalList({ hospitals = [], loading, emptyMessage = "No hospitals match your search.", flow }) {
   if (loading) {
     return (
       <div className="flex flex-wrap -mx-1.5" aria-busy="true">
@@ -36,7 +36,7 @@ export default function HospitalList({ hospitals, loading, emptyMessage = "No ho
     <div className="flex flex-wrap -mx-1.5">
       {hospitals.map((h) => (
         <div className="w-full md:w-1/2 lg:w-1/3 px-1.5 mb-3" key={h._id || h.slug}>
-          <HospitalCard hospital={h} />
+          <HospitalCard hospital={h} flow={flow} />
         </div>
       ))}
     </div>

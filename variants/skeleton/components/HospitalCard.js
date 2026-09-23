@@ -8,18 +8,19 @@ function edStatus(h) {
 }
 
 // Scannable-in-seconds hospital card. Information hierarchy per spec §18.
-export default function HospitalCard({ hospital, rank }) {
+export default function HospitalCard({ hospital, rank, flow }) {
   const ed = edStatus(hospital);
   const edMeta = availabilityMeta(ed);
   const r = rank || hospital._rank;
   const verified = hospital.verificationStatus === "verified";
+  const detailsUrl = flow === "emergency" ? `/hospitals/${hospital.slug}?flow=emergency` : `/hospitals/${hospital.slug}`;
 
   return (
     <div className="card h-100 hospital-card">
       <div className="card-body">
         <div className="flex justify-between items-start gap-2">
           <h3 className="h6 mb-1">
-            <Link className="text-decoration-none stretched-link" href={`/hospitals/${hospital.slug}`}>
+            <Link className="text-decoration-none stretched-link" href={detailsUrl}>
               {hospital.name}
             </Link>
           </h3>
@@ -72,7 +73,7 @@ export default function HospitalCard({ hospital, rank }) {
                     <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Navigate
                   </a>
                 )}
-                <Link className="btn btn-sm btn-outline-secondary" href={`/hospitals/${hospital.slug}`}>Details</Link>
+                <Link className="btn btn-sm btn-outline-secondary" href={detailsUrl}>Details</Link>
               </div>
             );
           })()}

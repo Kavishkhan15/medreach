@@ -15,7 +15,7 @@ function CardSkeleton() {
   );
 }
 
-export default function HospitalList({ hospitals, loading, emptyMessage = "No hospitals match your search." }) {
+export default function HospitalList({ hospitals = [], loading, emptyMessage = "No hospitals match your search.", flow }) {
   if (loading) {
     return (
       <div className="grid-cards" aria-busy="true">
@@ -33,7 +33,7 @@ export default function HospitalList({ hospitals, loading, emptyMessage = "No ho
   return (
     <div className="grid-cards">
       {hospitals.map((h) => (
-        <HospitalCard hospital={h} key={h._id || h.slug} />
+        <HospitalCard hospital={h} key={h._id || h.slug} flow={flow} />
       ))}
     </div>
   );

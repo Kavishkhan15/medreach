@@ -73,7 +73,7 @@ export default function EmergencyPage() {
               Looking for: {cat.specialties.join(", ")} · facilities: {cat.facilities.join(", ")}
             </p>
           )}
-          <HospitalList hospitals={data} loading={loading}
+          <HospitalList hospitals={data} loading={loading} flow="emergency"
             emptyMessage="No hospitals currently match — try a different locality or category." />
         </section>
       )}

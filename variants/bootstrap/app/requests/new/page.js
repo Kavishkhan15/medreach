@@ -56,34 +56,50 @@ export default function NewRequest() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
+  const normalizeEmergencyType = (val) => {
+    if (!val) return "general";
+    const clean = val.trim().toLowerCase();
+    const match = EMERGENCY_TYPES.find((t) => t.value === clean || t.label.toLowerCase() === clean);
+    return match ? match.value : clean;
+  };
+
   // Ingest query parameters on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const hospitalParam = params.get("hospital") || "";
-    const emergencyParam = params.get("emergency");
-    const isEmergencyParam = params.get("isEmergency");
+    const flowParam = params.get("flow")?.toLowerCase();
+    const emergencyParam = params.get("emergency")?.toLowerCase();
+    const isEmergencyParam = params.get("isEmergency")?.toLowerCase();
     const typeParam = params.get("emergencyType");
     const facilityParam = params.get("facility");
 
-    if (isEmergencyParam === "false" || emergencyParam === "false") {
+    if (flowParam === "standard" || isEmergencyParam === "false" || emergencyParam === "false" || isEmergencyParam === "0") {
       setIsEmergency(false);
-    } else if (isEmergencyParam === "true" || emergencyParam === "true" || typeParam) {
+    } else if (flowParam === "emergency" || isEmergencyParam === "true" || emergencyParam === "true" || typeParam) {
       setIsEmergency(true);
     }
 
     setForm((old) => ({
       ...old,
       hospitalId: hospitalParam || old.hospitalId,
-      emergencyType: typeParam ? typeParam.toLowerCase() : old.emergencyType,
+      emergencyType: typeParam ? normalizeEmergencyType(typeParam) : old.emergencyType,
       requiredFacility: facilityParam || old.requiredFacility,
     }));
   }, []);
 
-  // Fetch hospital listings once on mount
+  // Fetch hospital listings once on mount and resolve any slug match to MongoDB _id
   useEffect(() => {
     productApi("/api/hospitals?limit=50")
-      .then((r) => setHospitals(r.data || []))
+      .then((r) => {
+        const list = r.data || [];
+        setHospitals(list);
+        setForm((old) => {
+          if (!old.hospitalId) return old;
+          const match = list.find((h) => h._id === old.hospitalId || h.slug === old.hospitalId);
+          return match && match._id !== old.hospitalId ? { ...old, hospitalId: match._id } : old;
+        });
+      })
       .catch((e) => setError(e.message));
   }, []);
 
@@ -127,27 +143,27 @@ export default function NewRequest() {
   return (
     <div className="row justify-content-center">
       <div className="col-lg-8">
-        {/* Request Type Toggle Banner */}
+        {/* Navigation Breadcrumb - Preserves flow context */}
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <Link href={isEmergency ? "/emergency" : "/hospitals"} className="small text-decoration-none">
-            ← Back to {isEmergency ? "Emergency response" : "Hospital directory"}
-          </Link>
-          <div className="btn-group btn-group-sm" role="group" aria-label="Request type">
-            <button
-              type="button"
-              className={`btn ${isEmergency ? "btn-danger fw-bold" : "btn-outline-secondary"}`}
-              onClick={() => { setIsEmergency(true); setError(""); }}
+          {isEmergency ? (
+            <Link
+              href={selectedHospital ? `/hospitals/${selectedHospital.slug}?flow=emergency` : "/emergency"}
+              className="small text-decoration-none"
             >
-              <EmergencyIcon name="siren" size={14} className="me-1" /> Emergency Bed Request
-            </button>
-            <button
-              type="button"
-              className={`btn ${!isEmergency ? "btn-primary fw-bold" : "btn-outline-secondary"}`}
-              onClick={() => { setIsEmergency(false); setError(""); }}
+              ← Back to {selectedHospital ? `${selectedHospital.name} (Emergency)` : "Emergency response"}
+            </Link>
+          ) : (
+            <Link
+              href={selectedHospital ? `/hospitals/${selectedHospital.slug}` : "/hospitals"}
+              className="small text-decoration-none"
             >
-              <EmergencyIcon name="shield" size={14} className="me-1" /> Standard Hospital Bed
-            </button>
-          </div>
+              ← Back to {selectedHospital ? selectedHospital.name : "Hospital directory"}
+            </Link>
+          )}
+          <span className={`badge ${isEmergency ? "bg-danger text-white" : "bg-primary text-white"} d-inline-flex align-items-center gap-1`}>
+            <EmergencyIcon name={isEmergency ? "siren" : "shield"} size={13} />
+            {isEmergency ? "Emergency Bed Request" : "Standard Hospital Bed"}
+          </span>
         </div>
 
         {/* Header */}
@@ -193,14 +209,6 @@ export default function NewRequest() {
               <Link href="/register" className="btn btn-sm btn-outline-secondary">
                 Register new account
               </Link>
-              <span className="small text-muted mx-2">or</span>
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-danger"
-                onClick={() => { setIsEmergency(true); setError(""); }}
-              >
-                Switch to Emergency Bed Request
-              </button>
             </div>
           </div>
         )}
