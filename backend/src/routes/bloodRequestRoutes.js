@@ -17,7 +17,14 @@ router.post(
   body("type")
     .isIn(["REQUEST", "DONATION"])
     .withMessage("Type must be either 'REQUEST' or 'DONATION'"),
-  body("bloodBankName").trim().notEmpty().withMessage("Blood bank name is required"),
+  body("bloodBankName")
+    .custom((val, { req }) => {
+      if (req.body.isUrgent) return true;
+      if (!val || !val.trim()) {
+        throw new Error("Blood bank name is required");
+      }
+      return true;
+    }),
   body("bloodGroup")
     .isIn(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
     .withMessage("Valid blood group is required"),
