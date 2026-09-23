@@ -55,6 +55,8 @@ export default function NewRequest() {
     patientReference: "",
     patientSummary: "",
     locality: "",
+    ambulanceRequired: false,
+    ambulancePickupAddress: "",
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -130,6 +132,8 @@ export default function NewRequest() {
       const payload = {
         ...form,
         isEmergency,
+        ambulanceRequired: Boolean(form.ambulanceRequired),
+        ambulancePickupAddress: form.ambulanceRequired ? form.ambulancePickupAddress.trim() : undefined,
         contactEmail: form.contactEmail.trim() || undefined,
       };
       const res = await fetch(`${BASE_API}/api/emergency-requests`, {
@@ -381,6 +385,58 @@ export default function NewRequest() {
             value={form.patientSummary}
             onChange={change("patientSummary")}
           />
+        </div>
+
+        {/* Ambulance Assistance Section */}
+        <div className="card p-3" style={{ backgroundColor: "#f8f9fa" }}>
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+            <div>
+              <h3 className="h6 fw-bold mb-0 d-flex align-items-center gap-2">
+                <EmergencyIcon name="ambulance" size={18} className="text-danger" /> Ambulance Required?
+              </h3>
+              <div className="small text-muted mt-0">
+                The hospital is responsible for arranging/providing the ambulance.
+              </div>
+            </div>
+            <div className="btn-group btn-group-sm" role="group" aria-label="Ambulance requirement">
+              <button
+                type="button"
+                className={`btn ${form.ambulanceRequired ? "btn-danger fw-bold" : "btn-outline-secondary"}`}
+                onClick={() => setForm((old) => ({ ...old, ambulanceRequired: true }))}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className={`btn ${!form.ambulanceRequired ? "btn-secondary fw-bold" : "btn-outline-secondary"}`}
+                onClick={() => setForm((old) => ({ ...old, ambulanceRequired: false, ambulancePickupAddress: "" }))}
+              >
+                No
+              </button>
+            </div>
+          </div>
+
+          {form.ambulanceRequired && (
+            <div className="pt-2 mt-2" style={{ borderTop: "1px solid #dee2e6" }}>
+              <label className="form-label fw-semibold d-flex align-items-center gap-1" htmlFor="ambulancePickupAddress">
+                <EmergencyIcon name="pin" size={14} /> Ambulance Pickup Address <span className="text-danger">*</span>
+              </label>
+              <textarea
+                id="ambulancePickupAddress"
+                name="ambulancePickupAddress"
+                rows={2}
+                className="form-control"
+                required={form.ambulanceRequired}
+                placeholder="Enter exact pickup address, landmarks, floor/flat number, etc."
+                maxLength={300}
+                value={form.ambulancePickupAddress}
+                onChange={change("ambulancePickupAddress")}
+              />
+              <div className="small text-muted mt-1">
+                Provide the exact location where the hospital ambulance should pick up the patient.
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Submit Action */}
