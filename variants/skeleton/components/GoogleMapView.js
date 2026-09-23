@@ -38,17 +38,31 @@ function MapRecenter({ selectedId, items }) {
   return null;
 }
 
-export default function GoogleMapView({ items = [], selected, onSelect }) {
+const CATEGORY_COLORS = {
+  hospitals: "#d32029",
+  "blood-banks": "#b31b25",
+  diagnostics: "#1f5f8b",
+  ambulances: "#b26a00",
+};
+
+export default function GoogleMapView({
+  items = [],
+  selected,
+  onSelect,
+  category = "hospitals",
+  categoryLabel = "Hospitals",
+}) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
     return (
-      <div className="map-canvas" role="img" aria-label="Map of Mumbai hospitals (interactive list provided alongside)">
+      <div className="map-canvas" role="img" aria-label={`Map of Mumbai ${categoryLabel || "care resources"}`}>
         <MapFallback />
       </div>
     );
   }
 
-  const selectedItem = selected ? items.find((h) => (h._id || h.slug) === selected) : null;
+  const selectedItem = selected ? items.find((h) => String(h._id || h.slug) === String(selected)) : null;
+  const primaryColor = CATEGORY_COLORS[category] || "#d32029";
 
   return (
     <div className="gmap-container">
@@ -59,10 +73,11 @@ export default function GoogleMapView({ items = [], selected, onSelect }) {
           mapId="DEMO_MAP_ID"
         >
           {items.map((h) => {
-            if (!h.location || !h.location.coordinates) return null;
+            if (!h.location || !h.location.coordinates || h.location.coordinates.length < 2) return null;
             const [lng, lat] = h.location.coordinates;
-            const id = h._id || h.slug;
-            const isSelected = selected === id;
+            if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null;
+            const id = String(h._id || h.slug);
+            const isSelected = String(selected) === id;
 
             return (
               <AdvancedMarker
@@ -72,10 +87,10 @@ export default function GoogleMapView({ items = [], selected, onSelect }) {
                 zIndex={isSelected ? 100 : 1}
               >
                 <Pin
-                  background={isSelected ? "#a51620" : "#d32029"}
-                  borderColor={isSelected ? "#a51620" : "#d32029"}
+                  background={isSelected ? "#10151a" : primaryColor}
+                  borderColor="#ffffff"
                   glyphColor="#ffffff"
-                  scale={isSelected ? 1.2 : 1}
+                  scale={isSelected ? 1.25 : 1.0}
                 />
               </AdvancedMarker>
             );
@@ -85,25 +100,110 @@ export default function GoogleMapView({ items = [], selected, onSelect }) {
             <InfoWindow
               position={{
                 lat: selectedItem.location.coordinates[1],
-                lng: selectedItem.location.coordinates[0]
+                lng: selectedItem.location.coordinates[0],
               }}
               onCloseClick={() => onSelect(null)}
-              pixelOffset={[0, -30]}
+              pixelOffset={[0, -32]}
             >
-              <div className="p-2" style={{ maxWidth: "250px", color: "#1c2024" }}>
-                <h3 className="h6 mb-1" style={{ fontSize: "1.2rem", fontWeight: "bold", margin: "0 0 0.5rem 0" }}>{selectedItem.name}</h3>
-                <p className="disclaimer mb-2" style={{ fontSize: "1rem", margin: "0 0 1rem 0" }}>{selectedItem.locality || selectedItem.city}</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <a href={`tel:${selectedItem.emergencyPhone || "112"}`} style={{ fontSize: "1rem", color: "#d32029", textDecoration: "none", fontWeight: "bold" }}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>{selectedItem.emergencyPhone || "112"}</a>
-                  <div style={{ display: "flex", gap: "1rem", marginTop: "0.5rem" }}>
-                    <Link href={`/hospitals/${selectedItem.slug}`} style={{ fontSize: "1rem", color: "#1f5f8b", textDecoration: "underline" }}>Details</Link>
+              <div className="p-2" style={{ maxWidth: "280px", color: "#1c2024" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                  <span
+                    style={{
+                      backgroundColor: primaryColor,
+                      color: "#fff",
+                      fontSize: "0.7rem",
+                      fontWeight: "bold",
+                      padding: "2px 6px",
+                      borderRadius: "3px",
+                    }}
+                  >
+                    {category === "blood-banks"
+                      ? "Blood Bank"
+                      : category === "diagnostics"
+                      ? "Diagnostic Centre"
+                      : category === "ambulances"
+                      ? "Ambulance Provider"
+                      : "Hospital"}
+                  </span>
+                  {selectedItem.emergencyStatus ? (
+                    <span style={{ fontSize: "0.75rem", fontWeight: "bold", color: selectedItem.emergencyStatus === "available" ? "#28a745" : "#e0a800" }}>
+                      ● {selectedItem.emergencyStatus}
+                    </span>
+                  ) : selectedItem.verificationStatus === "verified" ? (
+                    <span style={{ fontSize: "0.75rem", fontWeight: "bold", color: "#28a745" }}>
+                      ● Verified
+                    </span>
+                  ) : selectedItem.operatingHours ? (
+                    <span style={{ fontSize: "0.75rem", color: "#6c757d" }}>
+                      {selectedItem.operatingHours}
+                    </span>
+                  ) : null}
+                </div>
+
+                <h3 className="h6 mb-1" style={{ fontSize: "1.05rem", fontWeight: "bold", margin: "0.25rem 0" }}>
+                  {selectedItem.name}
+                </h3>
+                <p className="disclaimer mb-1" style={{ fontSize: "0.85rem", margin: "0 0 0.5rem 0", color: "#6c757d" }}>
+                  {selectedItem.address || selectedItem.locality || selectedItem.city || "Mumbai"}
+                </p>
+
+                {/* Category-adapted details summary */}
+                {category === "blood-banks" && Array.isArray(selectedItem.listedBloodGroups) && selectedItem.listedBloodGroups.length > 0 && (
+                  <div style={{ fontSize: "0.75rem", marginBottom: "0.4rem" }}>
+                    <span style={{ color: "#6c757d" }}>Groups: </span>
+                    <strong style={{ color: "#d32029" }}>
+                      {selectedItem.listedBloodGroups.slice(0, 5).join(" · ")}
+                    </strong>
+                  </div>
+                )}
+                {category === "diagnostics" && Array.isArray(selectedItem.services) && selectedItem.services.length > 0 && (
+                  <div style={{ fontSize: "0.75rem", marginBottom: "0.4rem" }}>
+                    <span style={{ color: "#6c757d" }}>Tests: </span>
+                    <strong style={{ color: "#1f5f8b" }}>
+                      {selectedItem.services.slice(0, 3).join(" · ")}
+                    </strong>
+                  </div>
+                )}
+                {category === "ambulances" && (selectedItem.providerType || selectedItem.coverageArea) && (
+                  <div style={{ fontSize: "0.75rem", marginBottom: "0.4rem" }}>
+                    <span style={{ color: "#6c757d" }}>Fleet: </span>
+                    <strong style={{ color: "#b26a00" }}>
+                      {selectedItem.providerType || selectedItem.coverageArea}
+                    </strong>
+                  </div>
+                )}
+                {category === "hospitals" && selectedItem.specialties?.length > 0 && (
+                  <div style={{ fontSize: "0.75rem", marginBottom: "0.4rem" }}>
+                    <span style={{ color: "#6c757d" }}>Specialties: </span>
+                    <strong style={{ color: "#495057" }}>
+                      {selectedItem.specialties.slice(0, 2).join(" · ")}
+                    </strong>
+                  </div>
+                )}
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                  {(selectedItem.emergencyPhone || selectedItem.phone) && (
+                    <a
+                      href={`tel:${selectedItem.emergencyPhone || selectedItem.phone}`}
+                      style={{ fontSize: "0.85rem", color: "#d32029", textDecoration: "none", fontWeight: "bold" }}
+                    >
+                      📞 {selectedItem.emergencyPhone || selectedItem.phone}
+                    </a>
+                  )}
+                  <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.25rem", borderTop: "1px solid #dee2e6", paddingTop: "0.4rem" }}>
+                    <a
+                      href={category === "hospitals" ? `/hospitals/${selectedItem.slug || selectedItem._id}` : `#selected-provider`}
+                      style={{ fontSize: "0.85rem", color: "#1f5f8b", textDecoration: "underline", fontWeight: "600" }}
+                    >
+                      View details
+                    </a>
                     <a
                       href={`https://www.google.com/maps/dir/?api=1&destination=${selectedItem.location.coordinates[1]},${selectedItem.location.coordinates[0]}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ fontSize: "1rem", color: "#1f5f8b", textDecoration: "underline" }}
+                      style={{ fontSize: "0.85rem", color: "#1f5f8b", textDecoration: "underline", fontWeight: "600" }}
                     >
-                      Directions
+                      Directions ↗
                     </a>
                   </div>
                 </div>
