@@ -20,6 +20,7 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
     patientOrDonorName,
     units,
     urgency,
+    isUrgent,
     hospitalName,
     doctorNotes,
     age,
@@ -34,7 +35,8 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "type must be either 'REQUEST' or 'DONATION'" });
   }
 
-  if (!bloodBankName || !bloodBankName.trim()) {
+  const effectiveBloodBankName = bloodBankName?.trim() || (isUrgent ? "All Mumbai Blood Banks (Urgent Dispatch)" : "");
+  if (!effectiveBloodBankName) {
     return res.status(400).json({ error: "bloodBankName is required" });
   }
 
@@ -62,11 +64,12 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
     reference,
     type,
     provider: providerId || undefined,
-    bloodBankName: bloodBankName.trim(),
+    bloodBankName: effectiveBloodBankName,
     bloodGroup,
     patientOrDonorName: patientOrDonorName.trim(),
     units: type === "REQUEST" ? (units ? Number(units) : 1) : undefined,
-    urgency: type === "REQUEST" ? (urgency || "URGENT") : undefined,
+    urgency: type === "REQUEST" ? (urgency || (isUrgent ? "within 6 hours" : "3 days")) : undefined,
+    isUrgent: Boolean(isUrgent),
     hospitalName: type === "REQUEST" && hospitalName ? hospitalName.trim() : undefined,
     doctorNotes: type === "REQUEST" && doctorNotes ? doctorNotes.trim() : undefined,
     age: type === "DONATION" && age ? Number(age) : undefined,
