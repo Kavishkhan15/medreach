@@ -22,6 +22,8 @@ const schema = new mongoose.Schema({
   contactPhone: { type: String, required: true, trim: true, maxlength: 25 },
   contactEmail: { type: String, trim: true, lowercase: true, maxlength: 120 },
   isEmergency: { type: Boolean, default: true },
+  ambulanceRequired: { type: Boolean, default: false },
+  ambulancePickupAddress: { type: String, trim: true, maxlength: 300 },
   locality: { type: String, trim: true, maxlength: 120 },
   status: { type: String, enum: REQUEST_STATES, default: "REQUESTED", index: true },
   hospitalResponse: { type: String, trim: true, maxlength: 500 },
