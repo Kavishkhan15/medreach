@@ -289,6 +289,11 @@ select.w-auto { width: auto; display: inline-block; }
 
 .gmap-container { width: 100%; height: min(65vh, 570px); min-height: 420px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface); }
 .map-fallback { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.5rem 1.5rem; background: var(--color-surface); border: 1px dashed var(--color-border); border-radius: var(--radius); }
+.map-results { max-height: 570px; overflow-y: auto; }
+.map-result { display: flex; width: 100%; flex-direction: column; text-align: left; border: 0; border-top: 1px solid var(--color-border); padding: .85rem .5rem; background: transparent; cursor: pointer; border-radius: 0; }
+.map-result:hover, .map-result.selected { background: var(--color-info-bg); }
+.map-result span { color: var(--color-muted); font-size: 1.3rem; }
+.badge { display: inline-flex; align-items: center; padding: .2rem .5rem; font-size: 1.2rem; font-weight: 700; border-radius: 4px; line-height: 1; }
 
 /* Skeleton loading placeholders -------------------------------------------- */
 .placeholder-glow .placeholder { display: block; height: 1rem; margin-bottom: .5rem; border-radius: 4px; background: #e3e6ea; animation: placeholder-glow 1.4s ease-in-out infinite; }
