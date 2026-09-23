@@ -205,6 +205,48 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
     assert.equal(res.body.bloodRequest.bloodGroup, "A+");
   });
 
+  // 8b. Urgent blood requirement with isUrgent and emergency urgency window
+  await t.test("8b. POST /api/blood-requests handles urgent blood requirements", async () => {
+    const res = await request(app)
+      .post("/api/blood-requests")
+      .send({
+        type: "REQUEST",
+        isUrgent: true,
+        bloodGroup: "B+",
+        patientOrDonorName: "Arjun Mehta",
+        units: 3,
+        urgency: "within 6 hours",
+        hospitalName: "Hinduja Hospital Mahim",
+        contactPhone: "+91-98700-11223",
+      });
+
+    assert.equal(res.status, 201);
+    assert.ok(res.body.bloodRequest);
+    assert.equal(res.body.bloodRequest.isUrgent, true);
+    assert.equal(res.body.bloodRequest.urgency, "within 6 hours");
+    assert.ok(res.body.bloodRequest.bloodBankName.includes("Urgent Dispatch"));
+  });
+
+  // 8c. Normal blood requirement timing
+  await t.test("8c. POST /api/blood-requests handles normal requirement timing options", async () => {
+    const res = await request(app)
+      .post("/api/blood-requests")
+      .send({
+        type: "REQUEST",
+        bloodBankName: "Saifee Hospital Blood Bank",
+        bloodGroup: "AB+",
+        patientOrDonorName: "Zainab Merchant",
+        units: 1,
+        urgency: "1 week",
+        hospitalName: "Saifee Hospital Charni Road",
+        contactPhone: "+91-98200-33445",
+      });
+
+    assert.equal(res.status, 201);
+    assert.ok(res.body.bloodRequest);
+    assert.equal(res.body.bloodRequest.urgency, "1 week");
+  });
+
   // 9. Hospital enriched data
   await t.test("9. GET /api/hospitals/:idOrSlug/enriched returns factual data", async () => {
     const res = await request(app).get(`/api/hospitals/${testHospital.slug}/enriched`);
