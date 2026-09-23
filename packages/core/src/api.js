@@ -31,6 +31,9 @@ export const listHospitals = (params = {}) =>
 export const getHospital = (slug) => req(`/api/hospitals/${slug}`);
 export const listAlerts = (region) =>
   req(`/api/alerts${region ? `?region=${encodeURIComponent(region)}` : ""}`);
+export const listResources = (kind, params = {}) =>
+  req(`/api/${kind}?${new URLSearchParams(clean(params))}`);
+export const getResource = (kind, id) => req(`/api/${kind}/${id}`);
 
 // Auth
 export const register = (payload) =>
