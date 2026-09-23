@@ -68,15 +68,29 @@ export function MapFallback({ count = 0 }) {
   );
 }
 
-export default function GoogleMapView({ items = [], selected, onSelect }) {
+const CATEGORY_COLORS = {
+  hospitals: "#d32029",
+  "blood-banks": "#b31b25",
+  diagnostics: "#1f5f8b",
+  ambulances: "#b26a00",
+};
+
+export default function GoogleMapView({
+  items = [],
+  selected,
+  onSelect,
+  category = "hospitals",
+  categoryLabel = "Hospitals",
+}) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || "DEMO_MAP_ID";
 
   const selectedItem = useMemo(
-    () => items.find((h) => (h._id || h.slug) === selected),
+    () => items.find((h) => String(h._id || h.slug) === String(selected)),
     [items, selected]
   );
   const selectedPos = useMemo(() => toLatLng(selectedItem), [selectedItem]);
+  const primaryColor = CATEGORY_COLORS[category] || "#d32029";
 
   if (!apiKey) return <MapFallback count={items.length} />;
 
@@ -101,8 +115,8 @@ export default function GoogleMapView({ items = [], selected, onSelect }) {
           {items.map((h) => {
             const pos = toLatLng(h);
             if (!pos) return null;
-            const id = h._id || h.slug;
-            const isSelected = id === selected;
+            const id = String(h._id || h.slug);
+            const isSelected = id === String(selected);
             return (
               <AdvancedMarker
                 key={id}
@@ -112,7 +126,7 @@ export default function GoogleMapView({ items = [], selected, onSelect }) {
                 onClick={() => onSelect(id)}
               >
                 <Pin
-                  background={isSelected ? "#10151a" : "#d32029"}
+                  background={isSelected ? "#10151a" : primaryColor}
                   borderColor="#ffffff"
                   glyphColor="#ffffff"
                   scale={isSelected ? 1.25 : 1.0}
@@ -127,31 +141,112 @@ export default function GoogleMapView({ items = [], selected, onSelect }) {
               onCloseClick={() => onSelect(null)}
               pixelOffset={[0, -36]}
             >
-              <div className="p-1" style={{ maxWidth: 280, color: "#1c2024" }}>
+              <div className="p-1" style={{ maxWidth: 290, color: "#1c2024" }}>
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <span
+                    className="inline-block px-1.5 py-0.5 rounded text-white text-[0.7rem] font-bold"
+                    style={{ backgroundColor: primaryColor }}
+                  >
+                    {category === "blood-banks"
+                      ? "Blood Bank"
+                      : category === "diagnostics"
+                      ? "Diagnostic Centre"
+                      : category === "ambulances"
+                      ? "Ambulance Provider"
+                      : "Hospital"}
+                  </span>
+                  {selectedItem.emergencyStatus ? (
+                    <span
+                      className={`text-xs font-bold ${
+                        selectedItem.emergencyStatus === "available"
+                          ? "text-green-600"
+                          : "text-amber-600"
+                      }`}
+                    >
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1" />
+                      {selectedItem.emergencyStatus}
+                    </span>
+                  ) : selectedItem.verificationStatus === "verified" ? (
+                    <span className="text-xs font-semibold text-green-700">
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1" />
+                      Verified
+                    </span>
+                  ) : selectedItem.operatingHours ? (
+                    <span className="text-xs text-[var(--color-muted)] font-medium">
+                      {selectedItem.operatingHours}
+                    </span>
+                  ) : null}
+                </div>
+
                 <h6 className="font-bold text-[.95rem] mb-1">{selectedItem.name}</h6>
-                <p className="text-[var(--color-muted)] text-sm mb-1">
+                <p className="text-[var(--color-muted)] text-xs mb-1">
                   {selectedItem.address || selectedItem.locality || selectedItem.city || "Mumbai"}
                 </p>
+
+                {/* Category-adapted details summary */}
+                {category === "blood-banks" && Array.isArray(selectedItem.listedBloodGroups) && selectedItem.listedBloodGroups.length > 0 && (
+                  <div className="text-xs mb-1">
+                    <span className="text-[var(--color-muted)]">Groups: </span>
+                    <span className="font-semibold text-red-600">
+                      {selectedItem.listedBloodGroups.slice(0, 5).join(" · ")}
+                      {selectedItem.listedBloodGroups.length > 5 ? "…" : ""}
+                    </span>
+                  </div>
+                )}
+                {category === "diagnostics" && Array.isArray(selectedItem.services) && selectedItem.services.length > 0 && (
+                  <div className="text-xs mb-1 truncate" title={selectedItem.services.join(", ")}>
+                    <span className="text-[var(--color-muted)]">Tests: </span>
+                    <span className="font-semibold text-blue-700">
+                      {selectedItem.services.slice(0, 3).join(" · ")}
+                    </span>
+                  </div>
+                )}
+                {category === "ambulances" && (selectedItem.providerType || selectedItem.coverageArea) && (
+                  <div className="text-xs mb-1">
+                    <span className="text-[var(--color-muted)]">Fleet: </span>
+                    <span className="font-semibold text-amber-700">
+                      {selectedItem.providerType || selectedItem.coverageArea}
+                    </span>
+                  </div>
+                )}
+                {category === "hospitals" && selectedItem.specialties?.length > 0 && (
+                  <div className="text-xs mb-1 truncate" title={selectedItem.specialties.join(", ")}>
+                    <span className="text-[var(--color-muted)]">Specialties: </span>
+                    <span className="font-semibold text-gray-700">
+                      {selectedItem.specialties.slice(0, 2).join(" · ")}
+                    </span>
+                  </div>
+                )}
+
                 {(selectedItem.emergencyPhone || selectedItem.phone) && (
-                  <p className="text-sm mb-2">
+                  <p className="text-xs mb-2">
                     <span className="text-[var(--color-muted)]">Tel:</span>{" "}
-                    <a href={`tel:${selectedItem.emergencyPhone || selectedItem.phone}`}
-                      className="no-underline">{selectedItem.emergencyPhone || selectedItem.phone}</a>
+                    <a
+                      href={`tel:${selectedItem.emergencyPhone || selectedItem.phone}`}
+                      className="font-semibold no-underline text-blue-700"
+                    >
+                      {selectedItem.emergencyPhone || selectedItem.phone}
+                    </a>
                   </p>
                 )}
+
                 <div className="flex gap-2 pt-1 border-t border-[var(--color-border)]">
-                  <Link
-                    className="flex-1 inline-flex items-center justify-center text-sm font-bold
-                      rounded-[var(--radius)] border border-[var(--color-emergency)] text-[var(--color-emergency)]
-                      px-2 py-1 no-underline hover:bg-[#fef2f2]"
-                    href={`/hospitals/${selectedItem.slug}`}
-                  >
-                    Details
-                  </Link>
                   <a
-                    className="flex-1 inline-flex items-center justify-center text-sm font-bold
-                      rounded-[var(--radius)] bg-[var(--color-emergency)] text-white
-                      px-2 py-1 no-underline hover:bg-[var(--color-emergency-dark)]"
+                    className="flex-1 inline-flex items-center justify-center text-xs font-bold
+                      rounded-[var(--radius)] border border-gray-300 text-gray-800
+                      px-2 py-1 no-underline hover:bg-gray-100"
+                    href={
+                      category === "hospitals"
+                        ? `/hospitals/${selectedItem.slug || selectedItem._id}`
+                        : `#selected-provider`
+                    }
+                  >
+                    View details
+                  </a>
+                  <a
+                    className="flex-1 inline-flex items-center justify-center text-xs font-bold
+                      rounded-[var(--radius)] text-white px-2 py-1 no-underline hover:opacity-90"
+                    style={{ backgroundColor: primaryColor }}
                     href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPos.lat},${selectedPos.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
