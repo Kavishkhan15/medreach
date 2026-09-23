@@ -137,7 +137,7 @@ export default function GoogleMapView({
               onCloseClick={() => onSelect("")}
               pixelOffset={[0, -36]}
             >
-              <div className="p-1" style={{ maxWidth: 280, color: "#1c2024" }}>
+              <div className="p-1" style={{ maxWidth: 300, color: "#1c2024" }}>
                 <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
                   <span
                     className="badge"
@@ -147,9 +147,15 @@ export default function GoogleMapView({
                       fontSize: "0.72rem",
                     }}
                   >
-                    {categoryLabel.replace(/s$/, "")}
+                    {category === "blood-banks"
+                      ? "Blood Bank"
+                      : category === "diagnostics"
+                      ? "Diagnostic Centre"
+                      : category === "ambulances"
+                      ? "Ambulance Provider"
+                      : "Hospital"}
                   </span>
-                  {selectedItem.emergencyStatus && (
+                  {selectedItem.emergencyStatus ? (
                     <span
                       className={`small fw-bold ${
                         selectedItem.emergencyStatus === "available"
@@ -157,34 +163,91 @@ export default function GoogleMapView({
                           : "text-warning"
                       }`}
                     >
-                      <span className="d-inline-block rounded-circle bg-success me-1" style={{ width: 8, height: 8 }} /> {selectedItem.emergencyStatus}
+                      <span
+                        className="d-inline-block rounded-circle bg-success me-1"
+                        style={{ width: 8, height: 8 }}
+                      />{" "}
+                      {selectedItem.emergencyStatus}
                     </span>
-                  )}
+                  ) : selectedItem.verificationStatus === "verified" ? (
+                    <span className="small fw-semibold text-success">
+                      <span
+                        className="d-inline-block rounded-circle bg-success me-1"
+                        style={{ width: 8, height: 8 }}
+                      />{" "}
+                      Verified
+                    </span>
+                  ) : selectedItem.operatingHours ? (
+                    <span className="small text-muted fw-semibold">
+                      {selectedItem.operatingHours}
+                    </span>
+                  ) : null}
                 </div>
+
                 <h6 className="mb-1 fw-bold" style={{ fontSize: "0.95rem" }}>
                   {selectedItem.name}
                 </h6>
                 <p className="text-muted small mb-1">
-                  {selectedItem.address || selectedItem.locality || "Mumbai"}
+                  {selectedItem.address || selectedItem.locality || selectedItem.city || "Mumbai"}
                 </p>
-                {selectedItem.phone && (
+
+                {/* Category-adapted details summary */}
+                {category === "blood-banks" && Array.isArray(selectedItem.listedBloodGroups) && selectedItem.listedBloodGroups.length > 0 && (
+                  <div className="small mb-1">
+                    <span className="text-muted">Groups: </span>
+                    <span className="fw-semibold text-danger">
+                      {selectedItem.listedBloodGroups.slice(0, 5).join(" · ")}
+                      {selectedItem.listedBloodGroups.length > 5 ? "…" : ""}
+                    </span>
+                  </div>
+                )}
+                {category === "diagnostics" && Array.isArray(selectedItem.services) && selectedItem.services.length > 0 && (
+                  <div className="small mb-1 text-truncate" title={selectedItem.services.join(", ")}>
+                    <span className="text-muted">Tests: </span>
+                    <span className="fw-semibold text-primary">
+                      {selectedItem.services.slice(0, 3).join(" · ")}
+                    </span>
+                  </div>
+                )}
+                {category === "ambulances" && (selectedItem.providerType || selectedItem.coverageArea) && (
+                  <div className="small mb-1">
+                    <span className="text-muted">Fleet: </span>
+                    <span className="fw-semibold text-warning-emphasis">
+                      {selectedItem.providerType || selectedItem.coverageArea}
+                    </span>
+                  </div>
+                )}
+                {category === "hospitals" && selectedItem.specialties?.length > 0 && (
+                  <div className="small mb-1 text-truncate" title={selectedItem.specialties.join(", ")}>
+                    <span className="text-muted">Specialties: </span>
+                    <span className="fw-semibold text-secondary">
+                      {selectedItem.specialties.slice(0, 2).join(" · ")}
+                    </span>
+                  </div>
+                )}
+
+                {(selectedItem.emergencyPhone || selectedItem.phone) && (
                   <p className="small mb-2">
                     <span className="text-muted">Tel:</span>{" "}
-                    <a href={`tel:${selectedItem.phone}`} className="text-decoration-none">
-                      {selectedItem.phone}
+                    <a
+                      href={`tel:${selectedItem.emergencyPhone || selectedItem.phone}`}
+                      className="text-decoration-none fw-semibold"
+                    >
+                      {selectedItem.emergencyPhone || selectedItem.phone}
                     </a>
                   </p>
                 )}
+
                 <div className="d-flex gap-2 pt-1 border-top">
                   <Link
                     className="btn btn-outline-primary btn-sm flex-fill"
                     href={
                       category === "hospitals"
-                        ? `/hospitals/${selectedItem.slug}`
+                        ? `/hospitals/${selectedItem.slug || selectedItem._id}`
                         : `/${category}`
                     }
                   >
-                    Details
+                    View details
                   </Link>
                   <a
                     className="btn btn-primary btn-sm flex-fill text-white"
