@@ -104,6 +104,25 @@ export default function RequestDetail({ params }) {
                 )}
               </div>
 
+              {request.ambulanceRequired ? (
+                <div className="alert alert-warning border small py-2 px-3 mb-3 d-flex align-items-center gap-2">
+                  <EmergencyIcon name="ambulance" size={18} className="text-danger flex-shrink-0" />
+                  <div>
+                    <strong className="text-dark">Ambulance Requested from Hospital</strong>
+                    {request.ambulancePickupAddress && (
+                      <div className="mt-0 text-dark">
+                        Pickup Location: <em>{request.ambulancePickupAddress}</em>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="small text-muted mb-3 d-flex align-items-center gap-1">
+                  <EmergencyIcon name="ambulance" size={14} className="text-secondary" />
+                  <span>Ambulance: Not required</span>
+                </div>
+              )}
+
               {request.contactEmail && (
                 <div className="alert alert-light border small text-secondary py-2 px-3 mb-3 d-flex align-items-center gap-2">
                   <EmergencyIcon name="mail" size={16} className="text-primary flex-shrink-0" />
