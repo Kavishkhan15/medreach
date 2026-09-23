@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
+import { useAuth } from "@medreach/core";
 import { post } from "../lib/productApi";
 import { EmergencyIcon } from "./EmergencyIcons";
 
@@ -12,16 +14,19 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
   const [submittedData, setSubmittedData] = useState(null);
 
   // Request form state
-  const [requestData, setRequestData] = useState({
-    patientName: "",
-    bloodGroup: "O+",
-    units: 1,
-    urgency: "URGENT",
-    hospitalName: "",
-    contactPhone: "",
-    contactEmail: "",
-    doctorNotes: "",
-  });
+    const { user } = useAuth();
+    const isLoggedIn = !!user;
+    // Request form state
+    const [requestData, setRequestData] = useState({
+        patientName: "",
+        bloodGroup: "O+",
+        units: 1,
+        timing: "3 days",
+        hospitalName: "",
+        contactPhone: "",
+        contactEmail: "",
+        doctorNotes: "",
+    });
 
   // Donation form state
   const [donateData, setDonateData] = useState({
@@ -48,7 +53,7 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
         bloodGroup: requestData.bloodGroup,
         patientOrDonorName: requestData.patientName,
         units: Number(requestData.units),
-        urgency: requestData.urgency,
+        urgency: requestData.timing,
         hospitalName: requestData.hospitalName,
         doctorNotes: requestData.doctorNotes,
         contactPhone: requestData.contactPhone,
@@ -242,8 +247,37 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
 
                 {error && <div className="alert alert-danger py-2">{error}</div>}
 
-                {/* Form: Request Blood */}
-                {activeTab === "request" && (
+                {!isLoggedIn ? (
+                  <div className="card text-center p-4 border-0 bg-light my-2 shadow-sm">
+                    <div className="mb-3 text-danger">
+                      <EmergencyIcon name="blood" size={44} />
+                    </div>
+                    <h5 className="fw-bold mb-2">Login Required</h5>
+                    <p className="text-secondary mb-3">
+                      {activeTab === "request"
+                        ? "You must be signed in to submit a verified blood requisition to this blood bank."
+                        : "You must be signed in to submit a blood donation pledge and schedule an appointment."}
+                    </p>
+                    <div className="d-flex justify-content-center gap-2">
+                      <Link
+                        href="/login?redirect=/blood-banks"
+                        className="btn btn-danger fw-semibold px-4"
+                      >
+                        Sign In / Register
+                      </Link>
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={onClose}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {/* Form: Request Blood */}
+                    {activeTab === "request" && (
                   <form onSubmit={handleRequestSubmit}>
                     <div className="row g-3">
                       <div className="col-md-7">
@@ -292,17 +326,19 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
                         />
                       </div>
                       <div className="col-md-4">
-                        <label className="form-label fw-semibold">Urgency Level *</label>
+                        <label className="form-label fw-semibold">Requirement Timing *</label>
                         <select
                           className="form-select"
-                          value={requestData.urgency}
+                          value={requestData.timing}
                           onChange={(e) =>
-                            setRequestData({ ...requestData, urgency: e.target.value })
+                            setRequestData({ ...requestData, timing: e.target.value })
                           }
+                          required
                         >
-                          <option value="EMERGENCY">Emergency (Immediate)</option>
-                          <option value="URGENT">Urgent (Within 6 Hours)</option>
-                          <option value="ROUTINE">Routine (Elective / Scheduled)</option>
+                          <option value="3 days">3 days</option>
+                          <option value="1 week">1 week</option>
+                          <option value="2 weeks">2 weeks</option>
+                          <option value="1 month">1 month</option>
                         </select>
                       </div>
                       <div className="col-md-4">
@@ -536,7 +572,9 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
                     </div>
                   </form>
                 )}
-              </div>
+              </>
+            )}
+          </div>
             )}
           </div>
         </div>
