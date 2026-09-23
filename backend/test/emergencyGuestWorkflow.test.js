@@ -134,4 +134,48 @@ test("Emergency Guest Workflow & Authentication Boundary Test Suite", async (t) 
     const unauthLookup = await request(app).get(`/api/emergency-requests/${authRequestId}`);
     assert.equal(unauthLookup.status, 403);
   });
+
+  await t.test("5. Stores ambulanceRequired=true and ambulancePickupAddress in Emergency Bed Request", async () => {
+    const res = await request(app)
+      .post("/api/emergency-requests")
+      .send({
+        hospitalId: testHospital._id.toString(),
+        emergencyType: "stroke",
+        requiredFacility: "Emergency Department",
+        contactPhone: "+91 98765 44444",
+        isEmergency: true,
+        ambulanceRequired: true,
+        ambulancePickupAddress: "Flat 402, Sea View Apts, Bandra West, Mumbai",
+      });
+
+    assert.equal(res.status, 201);
+    assert.equal(res.body.request.ambulanceRequired, true);
+    assert.equal(res.body.request.ambulancePickupAddress, "Flat 402, Sea View Apts, Bandra West, Mumbai");
+
+    // Verify persisted in DB
+    const dbDoc = await EmergencyRequest.findById(res.body.request._id);
+    assert.equal(dbDoc.ambulanceRequired, true);
+    assert.equal(dbDoc.ambulancePickupAddress, "Flat 402, Sea View Apts, Bandra West, Mumbai");
+  });
+
+  await t.test("6. Stores ambulanceRequired=false and omits pickup address in Standard Bed Request", async () => {
+    const res = await request(app)
+      .post("/api/emergency-requests")
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({
+        hospitalId: testHospital._id.toString(),
+        emergencyType: "general",
+        requiredFacility: "ICU",
+        contactPhone: "+91 98765 55555",
+        isEmergency: false,
+        ambulanceRequired: false,
+      });
+
+    assert.equal(res.status, 201);
+    assert.equal(res.body.request.ambulanceRequired, false);
+
+    const dbDoc = await EmergencyRequest.findById(res.body.request._id);
+    assert.equal(dbDoc.ambulanceRequired, false);
+    assert.ok(!dbDoc.ambulancePickupAddress);
+  });
 });
