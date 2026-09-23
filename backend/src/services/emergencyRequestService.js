@@ -34,6 +34,8 @@ export async function createEmergencyRequest(data, actor) {
     contactPhone: data.contactPhone,
     contactEmail: data.contactEmail || actor?.email || undefined,
     isEmergency,
+    ambulanceRequired: Boolean(data.ambulanceRequired),
+    ambulancePickupAddress: data.ambulanceRequired ? (data.ambulancePickupAddress?.trim() || "") : undefined,
     locality: data.locality,
     expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
     timeline: [{ status: "REQUESTED", actor: userId, note: userId ? undefined : "Guest emergency request" }],
