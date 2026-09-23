@@ -164,5 +164,6 @@ The app works **without a backend**: `useSystemStatus` probes `/health`; if unre
 | [`docs/security.md`](docs/security.md) | Security posture, rate limits, secrets, test coverage |
 | [`docs/privacy.md`](docs/privacy.md) | Location handling, IP hashing, data retention |
 | [`docs/deployment.md`](docs/deployment.md) | Environment variables, per-piece deployment, Bootstrap vendoring |
+| [`docs/SERVICES_AND_MAP_GUIDE.md`](docs/SERVICES_AND_MAP_GUIDE.md) | Services, ambulance booking, urgent blood dispatch & map parity |
 | [`docs/MedReach_Corrected_Plan.md`](docs/MedReach_Corrected_Plan.md) | Research design and RWD Security Risk Score instrument |
 | [`docs/RESULTS-prelim.md`](docs/RESULTS-prelim.md) | Preliminary evaluation results |
