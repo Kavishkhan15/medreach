@@ -217,15 +217,29 @@ export default function UrgentBloodPage() {
 
                 <div className="col-md-3">
                   <label className="form-label fw-semibold">Units Needed *</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    min="1"
-                    max="20"
-                    value={formData.units}
-                    onChange={(e) => setFormData({ ...formData, units: e.target.value })}
-                    required
-                  />
+                  <div className="input-group">
+                    <input
+                      type="number"
+                      className="form-control"
+                      min="1"
+                      max="20"
+                      value={formData.units}
+                      onChange={(e) => setFormData({ ...formData, units: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="btn-group btn-group-sm mt-1 w-100">
+                    {[1, 2, 4].map((u) => (
+                      <button
+                        key={u}
+                        type="button"
+                        className={`btn btn-outline-secondary ${Number(formData.units) === u ? "active" : ""}`}
+                        onClick={() => setFormData({ ...formData, units: u })}
+                      >
+                        {u}u
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="col-md-6">
