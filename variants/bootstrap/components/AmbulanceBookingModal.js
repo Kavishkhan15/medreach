@@ -55,9 +55,12 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
         style={{ width: "90%", maxWidth: "500px" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-lg font-bold mb-3">
+        <h3 className="text-lg font-bold mb-1">
           Book Ambulance – {provider?.name}
         </h3>
+        <p className="small text-muted mb-3">
+          For acute life-threatening emergencies, dial <a href="tel:108" className="fw-bold text-danger">108</a> or <a href="tel:112" className="fw-bold text-danger">112</a> immediately.
+        </p>
         {errorMsg && (
           <div className="alert alert-danger" role="alert" style={{ marginBottom: "1rem" }}>
             {errorMsg}
