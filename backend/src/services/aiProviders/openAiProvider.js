@@ -1,31 +1,46 @@
-// Optional external AI provider. Only reachable when AI_PROVIDER=openai AND
-// AI_API_KEY is set (see config/env.js) — otherwise assistantService never
-// selects this module. The API key never leaves the server process; this file
-// is imported only by backend code and is never bundled into any frontend.
-//
-// The model still only sees REAL MedReach data assembled by assistantService
-// (hospitals, facilities, freshness, confidence) — it is asked to phrase a
-// short, calm answer around that data, not to invent additional facts. If the
-// call fails or is unconfigured, callers must catch and fall back to the
-// rule-based provider (assistantService does this).
+// Optional external AI provider (OpenAI).
+// Uses LLM for natural language phrasing, intent clarification, and conversation,
+// grounded strictly in REAL data fetched by assistantService.
+
 import { env } from "../../config/env.js";
 
 const SYSTEM_PROMPT =
-  "You are the MedReach emergency-information assistant. You help users find " +
-  "hospitals and understand emergency options in Mumbai using ONLY the hospital " +
-  "data supplied to you. Never invent hospitals, beds, or availability. If " +
-  "availability is not supplied or is 'unknown', say availability is unknown. " +
-  "Never diagnose, prescribe, or claim to dispatch an ambulance. Keep answers " +
-  "short, calm, and actionable. For life-threatening emergencies, always lead " +
-  "with 'Call 112'.";
+  "You are the MedReach healthcare assistant for Mumbai. You help users find verified " +
+  "hospitals, blood banks, urgent blood supplies, ambulances, diagnostic centers, hospital beds, " +
+  "and healthcare careers using ONLY the factual data supplied to you in context. Never invent " +
+  "facilities, doctors, contact numbers, beds, blood units, or real-time availability. If data " +
+  "is unknown or missing, explicitly say so. Never provide clinical diagnoses, medical dosages, " +
+  "or claim to directly dispatch emergency ambulances. For acute life-threatening emergencies, " +
+  "always lead with 'Call 112 or 108 immediately.' Keep answers calm, concise, and actionable.";
 
 export async function generateReply(context) {
   if (!env.aiApiKey) {
     throw new Error("AI_API_KEY is not configured for the openai provider");
   }
 
-  const { message, intent, hospitals = [] } = context;
-  const userContent = JSON.stringify({ message, intent, hospitals });
+  const {
+    message,
+    intent,
+    locality,
+    hospitals = [],
+    bloodBanks = [],
+    ambulances = [],
+    diagnostics = [],
+    jobs = [],
+    suggestedActions = [],
+  } = context;
+
+  const userContent = JSON.stringify({
+    message,
+    intent,
+    locality,
+    hospitals: hospitals.slice(0, 3),
+    bloodBanks: bloodBanks.slice(0, 3),
+    ambulances: ambulances.slice(0, 3),
+    diagnostics: diagnostics.slice(0, 3),
+    jobs: jobs.slice(0, 3),
+    suggestedActions,
+  });
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -39,7 +54,7 @@ export async function generateReply(context) {
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userContent },
       ],
-      max_tokens: 300,
+      max_tokens: 450,
       temperature: 0.2,
     }),
   });

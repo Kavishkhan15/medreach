@@ -3,10 +3,7 @@ import { sanitizeMessage } from "../utils/sanitize.js";
 import { getAssistantReply } from "../services/assistantService.js";
 
 // POST /api/assistant/message — public, rate-limited (see routes/assistantRoutes.js).
-// Never echoes provider config, system prompts, or internal error detail back
-// to the client; provider/network failures always resolve to a safe reply via
-// assistantService's built-in fallback, so this handler cannot leak internals
-// even on error.
+// Delivers factual MedReach healthcare guidance, provider entities, and suggested actions.
 export const sendMessage = asyncHandler(async (req, res) => {
   const message = sanitizeMessage(req.body.message);
   if (!message) {
@@ -22,17 +19,33 @@ export const sendMessage = asyncHandler(async (req, res) => {
     res.json({
       reply: reply.text,
       intent: reply.intent,
-      hospitals: reply.hospitals,
       source: reply.source,
+      hospitals: reply.hospitals || [],
+      bloodBanks: reply.bloodBanks || [],
+      diagnostics: reply.diagnostics || [],
+      ambulances: reply.ambulances || [],
+      jobs: reply.jobs || [],
+      suggestedActions: reply.suggestedActions || [],
+      suggestedPrompts: reply.suggestedPrompts || [],
+      locality: reply.locality || null,
+      category: reply.category || null,
+      bloodGroup: reply.bloodGroup || null,
     });
-  } catch {
-    // getAssistantReply already falls back internally; this only catches truly
-    // unexpected failures (e.g. DB unreachable) so the client always gets a
-    // clean, safe response instead of a 500 that would break the chat UI.
+  } catch (err) {
+    // Unexpected error fallback
     res.json({
-      reply: "AI assistant is temporarily unavailable.",
+      reply: "AI assistant is temporarily unavailable. For emergency medical help, please dial 112 or 108 immediately.",
       intent: "unavailable",
       hospitals: [],
+      bloodBanks: [],
+      diagnostics: [],
+      ambulances: [],
+      jobs: [],
+      suggestedActions: [
+        { type: "call", label: "Call 112", phone: "112", primary: true },
+        { type: "call", label: "Call 108", phone: "108" },
+      ],
+      suggestedPrompts: [],
       source: "fallback",
       unavailable: true,
     });

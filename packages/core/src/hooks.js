@@ -130,32 +130,98 @@ export function useAdminAccess(systemOnly = false) {
 }
 
 // AI Assistant chat state. Headless — owns the message list, sending state,
-// and the unavailable/fallback flag; every variant renders this identically.
-// `locality`/`origin` are passed through as-is to the API (origin only ever
-// comes from useLocation, which never persists precise coordinates).
+// session persistence, modal states, and fallback flags.
 export function useAssistant() {
-  const [messages, setMessages] = useState([]); // { role: "user"|"assistant", text, hospitals? }
+  const SESSION_KEY = "medreach_assistant_session_v1";
+
+  const [messages, setMessages] = useState(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = window.sessionStorage.getItem(SESSION_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const [sending, setSending] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
+
+  // Modal integration states for in-chat actions
+  const [activeModal, setActiveModal] = useState(null); // 'ambulance' | 'blood' | null
+  const [modalData, setModalData] = useState(null);
+
+  // Sync to sessionStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      if (messages.length > 0) {
+        window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(messages.slice(-20)));
+      } else {
+        window.sessionStorage.removeItem(SESSION_KEY);
+      }
+    } catch {}
+  }, [messages]);
 
   const send = useCallback(async (text, { locality, origin } = {}) => {
     const trimmed = (text || "").trim();
     if (!trimmed || sending) return;
 
-    setMessages((prev) => [...prev, { role: "user", text: trimmed }]);
+    const userMsg = {
+      id: "u_" + Date.now(),
+      role: "user",
+      text: trimmed,
+      timestamp: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
     setSending(true);
+
     try {
       const r = await api.sendAssistantMessage(trimmed, { locality, origin });
       setUnavailable(Boolean(r.unavailable));
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", text: r.reply, intent: r.intent, hospitals: r.hospitals || [] },
-      ]);
+
+      const botMsg = {
+        id: "a_" + Date.now(),
+        role: "assistant",
+        text: r.reply,
+        intent: r.intent || "general",
+        source: r.source || "ai",
+        hospitals: r.hospitals || [],
+        bloodBanks: r.bloodBanks || [],
+        diagnostics: r.diagnostics || [],
+        ambulances: r.ambulances || [],
+        jobs: r.jobs || [],
+        suggestedActions: r.suggestedActions || [],
+        suggestedPrompts: r.suggestedPrompts || [],
+        locality: r.locality || null,
+        category: r.category || null,
+        bloodGroup: r.bloodGroup || null,
+        timestamp: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, botMsg]);
     } catch {
       setUnavailable(true);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", text: "AI assistant is temporarily unavailable.", intent: "unavailable", hospitals: [] },
+        {
+          id: "err_" + Date.now(),
+          role: "assistant",
+          text: "AI assistant is temporarily unavailable. For emergency medical help, please dial 112 or 108 immediately.",
+          intent: "unavailable",
+          hospitals: [],
+          bloodBanks: [],
+          diagnostics: [],
+          ambulances: [],
+          jobs: [],
+          suggestedActions: [
+            { type: "call", label: "Call 112", phone: "112", primary: true },
+            { type: "call", label: "Call 108", phone: "108" },
+          ],
+          suggestedPrompts: [],
+          timestamp: new Date().toISOString(),
+        },
       ]);
     } finally {
       setSending(false);
@@ -165,9 +231,40 @@ export function useAssistant() {
   const reset = useCallback(() => {
     setMessages([]);
     setUnavailable(false);
+    if (typeof window !== "undefined") {
+      try {
+        window.sessionStorage.removeItem(SESSION_KEY);
+      } catch {}
+    }
   }, []);
 
-  return { messages, sending, unavailable, send, reset };
+  const openAmbulanceModal = useCallback((provider) => {
+    setModalData(provider);
+    setActiveModal("ambulance");
+  }, []);
+
+  const openBloodModal = useCallback((bloodBank) => {
+    setModalData(bloodBank);
+    setActiveModal("blood");
+  }, []);
+
+  const closeModals = useCallback(() => {
+    setActiveModal(null);
+    setModalData(null);
+  }, []);
+
+  return {
+    messages,
+    sending,
+    unavailable,
+    send,
+    reset,
+    activeModal,
+    modalData,
+    openAmbulanceModal,
+    openBloodModal,
+    closeModals,
+  };
 }
 
 // Crawler admin dashboard state — headless. Owns overview cards, source list,

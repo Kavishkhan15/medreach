@@ -6,7 +6,7 @@ import { AuditLog } from "../models/AuditLog.js";
 import { canManageHospital } from "./hospitalAccess.js";
 import { notifyUser } from "./notificationService.js";
 
-import { sendEmailEvent } from "./emailService.js";
+import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "./emailService.js";
 
 const transitions = {
   REQUESTED: ["SENT", "UNDER_REVIEW", "REJECTED", "CANCELLED", "EXPIRED"],
@@ -52,20 +52,61 @@ export async function createEmergencyRequest(data, actor) {
     entityId: request._id, after: { status: request.status, hospital: hospital._id, requestId: request.requestId,
       hospitalStaffConnected: hasHospitalStaff, guest: !userId } });
 
+  const userRecipient = (data.contactEmail?.trim() || actor?.email || "").toLowerCase();
+
+  // 1. User confirmation email - strictly to provided email or authenticated user email
+  if (userRecipient) {
+    try {
+      await sendEmailEvent({
+        eventKey: `mail:emergency:${request._id}:user_confirm`,
+        to: userRecipient,
+        template: "emergency_submitted",
+        data: { reference: request.requestId, hospital: hospital.name, connected: hasHospitalStaff },
+      });
+    } catch (err) {
+      console.warn("Failed to dispatch emergency request user confirmation email:", err.message);
+    }
+  }
+
+  // 2. In-app notification for authenticated users
   if (userId) {
-    await notifyUser({ recipient: userId, eventKey: `emergency:${request._id}:created`, type: "emergency_request",
-      title: "Emergency request submitted", message: hasHospitalStaff
+    await notifyUser({
+      recipient: userId,
+      eventKey: `emergency:${request._id}:created`,
+      type: "emergency_request",
+      title: "Emergency request submitted",
+      message: hasHospitalStaff
         ? `${request.requestId} was sent to connected hospital staff. No bed is reserved.`
         : `${request.requestId} was recorded, but this hospital is not connected to MedReach staff. Call the hospital directly. No bed is reserved.`,
-      relatedType: "EmergencyRequest", relatedId: request._id,
-      emailTemplate: "emergency_submitted", emailData: { reference: request.requestId, hospital: hospital.name, connected: hasHospitalStaff } });
-  } else if (data.contactEmail) {
-    await sendEmailEvent({
-      eventKey: `mail:emergency:${request._id}:created`,
-      to: data.contactEmail,
-      template: "emergency_submitted",
-      data: { reference: request.requestId, hospital: hospital.name, connected: hasHospitalStaff }
+      relatedType: "EmergencyRequest",
+      relatedId: request._id,
     });
+  }
+
+  // 3. MedReach admin notification to medreachforyou@gmail.com
+  try {
+    await sendEmailEvent({
+      eventKey: `mail:emergency:${request._id}:admin_system`,
+      to: SYSTEM_NOTIFICATION_EMAIL,
+      template: "bed_request_admin_notification",
+      data: {
+        reference: request.requestId,
+        hospital: hospital.name,
+        isEmergency: request.isEmergency,
+        emergencyType: request.emergencyType,
+        requiredFacility: request.requiredFacility,
+        contactPhone: request.contactPhone,
+        contactEmail: userRecipient || "Not provided",
+        ambulanceRequired: request.ambulanceRequired,
+        ambulancePickupAddress: request.ambulancePickupAddress,
+        patientAgeGroup: request.patientAgeGroup,
+        patientReference: request.patientReference,
+        patientSummary: request.patientSummary,
+        locality: request.locality,
+      },
+    });
+  } catch (err) {
+    console.warn("Failed to dispatch emergency request admin notification email:", err.message);
   }
 
   for (const { _id: adminId } of connectedStaff) {

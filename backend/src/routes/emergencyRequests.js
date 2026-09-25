@@ -20,7 +20,7 @@ router.post(
   body("emergencyType").trim().isLength({ min: 2, max: 80 }),
   body("requiredFacility").isIn(FACILITY_TYPES),
   body("contactPhone").trim().isLength({ min: 7, max: 25 }),
-  body("contactEmail").optional({ checkFalsy: true }).isEmail().normalizeEmail(),
+  body("contactEmail").optional({ checkFalsy: true }).trim().toLowerCase().isEmail(),
   body("isEmergency").optional().isBoolean(),
   body("ambulanceRequired").optional().isBoolean(),
   body("ambulancePickupAddress").optional().isLength({ max: 300 }),

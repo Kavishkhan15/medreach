@@ -70,9 +70,10 @@ export const env = {
     process.env.GOOGLE_SMTP_USER ||
     process.env.GMAIL_USER ||
     process.env.SMTP_USER ||
-    "",
+    "medreachforyou@gmail.com",
   smtpFromName: process.env.SMTP_FROM_NAME || "MedReach",
   smtpConnectionTimeoutMs: Math.max(1000, Number(process.env.SMTP_CONNECTION_TIMEOUT_MS ?? 8000)),
+  systemEmail: process.env.SYSTEM_EMAIL || "medreachforyou@gmail.com",
   publicAppUrl: process.env.PUBLIC_APP_URL ?? "http://localhost:3000",
   routingProvider: process.env.ROUTING_PROVIDER ?? "none",
   routingBaseUrl: process.env.ROUTING_BASE_URL ?? "",

@@ -1,13 +1,16 @@
-// Assistant endpoint + service tests. Pure-logic tests (classifyIntent,
-// sanitizeMessage) need no DB, matching this repo's "validation runs before
-// any Mongoose query" pattern. Route-level tests below only exercise paths
-// that fail before touching the DB (validation, rate limiting) — same
-// convention as auth.test.js / app.test.js.
+// Assistant endpoint + service tests.
+// Pure-logic tests (classifyIntent, sanitizeMessage, entity detection) need no DB.
+// Route-level tests exercise validation, rate limiting, and response structure.
 import test from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
 import { createApp } from "../src/app.js";
-import { classifyIntent, detectEmergencyIntent } from "../src/services/assistantService.js";
+import {
+  classifyIntent,
+  detectEmergencyIntent,
+  detectBloodGroup,
+  detectLocality,
+} from "../src/services/assistantService.js";
 import { sanitizeMessage, MAX_MESSAGE_LENGTH } from "../src/utils/sanitize.js";
 
 const app = createApp();
@@ -18,12 +21,44 @@ test("classifyIntent: emergency keywords always win, checked first", () => {
   assert.equal(classifyIntent("My father is unconscious."), "emergency");
   assert.equal(classifyIntent("He is not breathing"), "emergency");
   assert.equal(classifyIntent("severe bleeding after the accident"), "emergency");
+  assert.equal(classifyIntent("chest pain and difficulty breathing"), "emergency");
 });
 
 test("classifyIntent: hospital search phrasing", () => {
   assert.equal(classifyIntent("Find cardiac hospitals near Andheri"), "hospital_search");
   assert.equal(classifyIntent("ICU hospitals near Bandra"), "hospital_search");
   assert.equal(classifyIntent("Where is the nearest hospital?"), "hospital_search");
+});
+
+test("classifyIntent: urgent blood vs blood bank search", () => {
+  assert.equal(classifyIntent("I need O+ blood urgently"), "urgent_blood");
+  assert.equal(classifyIntent("Emergency blood needed for surgery"), "urgent_blood");
+  assert.equal(classifyIntent("Find blood banks near Bandra"), "blood_bank_search");
+  assert.equal(classifyIntent("Where can I donate blood?"), "blood_bank_search");
+});
+
+test("classifyIntent: ambulance search phrasing", () => {
+  assert.equal(classifyIntent("Need an ambulance for patient transit"), "ambulance_search");
+  assert.equal(classifyIntent("Book ambulance from Bandra"), "ambulance_search");
+  assert.equal(classifyIntent("ALS cardiac ambulance services"), "ambulance_search");
+});
+
+test("classifyIntent: diagnostic search phrasing", () => {
+  assert.equal(classifyIntent("Show diagnostic centres for MRI in Andheri"), "diagnostic_search");
+  assert.equal(classifyIntent("Where can I get a CT scan and blood test?"), "diagnostic_search");
+  assert.equal(classifyIntent("Pathology labs in Ghatkopar"), "diagnostic_search");
+});
+
+test("classifyIntent: bed request phrasing", () => {
+  assert.equal(classifyIntent("I need a hospital bed"), "bed_request");
+  assert.equal(classifyIntent("Looking for ICU bed admission"), "bed_request");
+  assert.equal(classifyIntent("Check hospital bed vacancy"), "bed_request");
+});
+
+test("classifyIntent: career and job search phrasing", () => {
+  assert.equal(classifyIntent("Are there nurse jobs in Mumbai?"), "career_search");
+  assert.equal(classifyIntent("Doctor vacancies at hospitals"), "career_search");
+  assert.equal(classifyIntent("Looking for medical staffing jobs"), "career_search");
 });
 
 test("classifyIntent: general/informational falls through", () => {
@@ -34,6 +69,21 @@ test("classifyIntent: general/informational falls through", () => {
 test("detectEmergencyIntent: does not false-positive on unrelated text", () => {
   assert.equal(detectEmergencyIntent("What are your hospital hours?"), false);
   assert.equal(detectEmergencyIntent("Find ICU hospitals"), false);
+  assert.equal(detectEmergencyIntent("Diagnostic blood test"), false);
+});
+
+test("detectBloodGroup: accurately extracts blood types", () => {
+  assert.equal(detectBloodGroup("I need O+ blood immediately"), "O+");
+  assert.equal(detectBloodGroup("Looking for A- donors"), "A-");
+  assert.equal(detectBloodGroup("Patient requires AB+ platelets"), "AB+");
+  assert.equal(detectBloodGroup("Regular checkup"), null);
+});
+
+test("detectLocality: extracts Mumbai localities", () => {
+  assert.equal(detectLocality("Hospitals near Andheri"), "Andheri");
+  assert.equal(detectLocality("Ambulance in Bandra West"), "Bandra");
+  assert.equal(detectLocality("Blood bank in Ghatkopar"), "Ghatkopar");
+  assert.equal(detectLocality("General inquiry"), null);
 });
 
 // ---- sanitizeMessage (defense-in-depth input handling) ----
@@ -83,18 +133,21 @@ test("POST /api/assistant/message rejects out-of-range origin coordinates → 40
 });
 
 test("POST /api/assistant/message accepts a well-formed request without auth (public endpoint)", async () => {
-  // No Authorization header — the assistant is intentionally public, same
-  // trust tier as GET /api/hospitals. This should NOT be a 401.
   const res = await request(app).post("/api/assistant/message").send({ message: "hi" });
   assert.notEqual(res.status, 401);
+  assert.equal(res.status, 200);
+  assert.ok(typeof res.body.reply === "string");
+  assert.ok(Array.isArray(res.body.suggestedActions));
+  assert.ok(Array.isArray(res.body.hospitals));
+  assert.ok(Array.isArray(res.body.bloodBanks));
+  assert.ok(Array.isArray(res.body.ambulances));
+  assert.ok(Array.isArray(res.body.diagnostics));
+  assert.ok(Array.isArray(res.body.jobs));
 });
 
 // ---- rate limiting ----
 
 test("POST /api/assistant/message rate-limits after repeated requests", async () => {
-  // The limiter is 20 requests / 5 min, shared across this whole test file's
-  // requests (in-process, same limiter instance). We've already sent several
-  // above; drive it well past the ceiling and confirm a 429 eventually fires.
   let sawRateLimited = false;
   for (let i = 0; i < 25; i++) {
     const res = await request(app).post("/api/assistant/message").send({ message: "hello" });

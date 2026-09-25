@@ -138,3 +138,7 @@ export function EmergencyIcon({ name, size = 20, className = "", ...props }) {
       );
   }
 }
+
+export const AppIcon = EmergencyIcon;
+export const Icon = EmergencyIcon;
+export default EmergencyIcon;

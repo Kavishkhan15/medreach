@@ -30,7 +30,85 @@ const templates = {
       ? `Dear ${d.name || "Donor"},\n\nThank you for pledging to donate blood (${d.bloodGroup}) at ${d.bloodBankName}.\nYour Reference ID: ${d.reference}\nPreferred Date: ${d.preferredDate || "As scheduled"}\n\nThe blood bank team will review your pledge and reach out to you at ${d.contactPhone}.\n\nWarm regards,\nMedReach Health Network`
       : `Dear ${d.name || "Requester"},\n\nYour blood request for ${d.units || 1} unit(s) of ${d.bloodGroup} at ${d.bloodBankName} has been received.\nYour Reference ID: ${d.reference}\nUrgency: ${d.urgency || "URGENT"}\nHospital: ${d.hospitalName || "Not specified"}\n\nOur team and partner blood banks have been notified. Please keep this reference ID handy when communicating with the blood bank.\n\nWarm regards,\nMedReach Emergency Response`,
   ],
+  bed_request_admin_notification: (d) => [
+    `New Bed Request: ${d.reference} - ${d.hospital}`,
+    `A new ${d.isEmergency ? "emergency" : "routine"} bed request has been submitted on MedReach.\n\n` +
+    `Reference ID: ${d.reference}\n` +
+    `Hospital: ${d.hospital}\n` +
+    `Type: ${d.isEmergency ? "Emergency Bed Request" : "Standard Hospital Bed Request"}\n` +
+    `Emergency / Care Category: ${d.emergencyType || "General"}\n` +
+    `Facility Required: ${d.requiredFacility || "Emergency Department"}\n` +
+    `Contact Phone: ${d.contactPhone || "N/A"}\n` +
+    `Contact Email: ${d.contactEmail || "Not provided"}\n` +
+    `Ambulance Required: ${d.ambulanceRequired ? `Yes (Pickup: ${d.ambulancePickupAddress || "Not specified"})` : "No"}\n` +
+    `Patient Reference: ${d.patientReference || "N/A"}\n` +
+    `Patient Age Group: ${d.patientAgeGroup || "N/A"}\n` +
+    `Patient Summary: ${d.patientSummary || "None"}\n` +
+    `Locality: ${d.locality || "N/A"}\n\n` +
+    `Please review in MedReach administrator panel.`,
+  ],
+  blood_request_admin_notification: (d) => [
+    `New Blood ${d.type === "DONATION" ? "Donation Pledge" : "Requisition"}: ${d.reference} (${d.bloodGroup})`,
+    `A new blood ${d.type === "DONATION" ? "donation pledge" : "request"} has been received on MedReach.\n\n` +
+    `Reference ID: ${d.reference}\n` +
+    `Type: ${d.type === "DONATION" ? "Blood Donation Pledge" : "Blood Requisition"}\n` +
+    `Blood Group: ${d.bloodGroup}\n` +
+    `Units: ${d.units || 1}\n` +
+    `Blood Bank: ${d.bloodBankName}\n` +
+    `Urgency: ${d.urgency || "Normal"}\n` +
+    `Patient / Donor Name: ${d.name}\n` +
+    `Contact Phone: ${d.contactPhone}\n` +
+    `Contact Email: ${d.contactEmail || "Not provided"}\n` +
+    `Hospital: ${d.hospitalName || "Not specified"}\n` +
+    `Preferred Date: ${d.preferredDate || "N/A"}\n` +
+    `Notes: ${d.notes || "None"}\n\n` +
+    `Please review in MedReach administrator panel.`,
+  ],
+  ambulance_booking_confirmation: (d) => [
+    `MedReach Ambulance Booking Confirmation: ${d.reference}`,
+    `Dear ${d.patientName || "User"},\n\n` +
+    `Your ambulance booking request has been received.\n\n` +
+    `Reference ID: ${d.reference}\n` +
+    `Ambulance Provider: ${d.providerName}\n` +
+    `Provider Contact: ${d.providerPhone || "Available via MedReach directory"}\n` +
+    `Patient Name: ${d.patientName}\n` +
+    `Patient Age: ${d.patientAge}\n` +
+    `Ambulance Required: ${d.ambulanceRequired ? "Yes" : "No"}\n` +
+    `Pickup Address: ${d.pickupAddress || "Not specified"}\n` +
+    `Notes: ${d.notes || "None"}\n\n` +
+    `For acute life-threatening emergencies, dial 108 or 112 immediately.\n\n` +
+    `Warm regards,\nMedReach Emergency Response`,
+  ],
+  ambulance_booking_admin_notification: (d) => [
+    `New Ambulance Booking: ${d.reference} - ${d.providerName}`,
+    `A new ambulance booking request has been submitted on MedReach.\n\n` +
+    `Reference ID: ${d.reference}\n` +
+    `Ambulance Provider: ${d.providerName}\n` +
+    `Provider Phone: ${d.providerPhone || "N/A"}\n` +
+    `Patient Name: ${d.patientName}\n` +
+    `Patient Age: ${d.patientAge}\n` +
+    `Ambulance Required: ${d.ambulanceRequired ? "Yes" : "No"}\n` +
+    `Pickup Address: ${d.pickupAddress || "Not specified"}\n` +
+    `Contact Phone: ${d.contactPhone || "Not provided"}\n` +
+    `Contact Email: ${d.contactEmail || "Not provided"}\n` +
+    `Notes: ${d.notes || "None"}\n\n` +
+    `Please review in MedReach administrator panel.`,
+  ],
+  org_applied: (d) => [
+    "Application submitted",
+    `Your application to ${d.organizationName} was submitted. Open MedReach to track it.`
+  ],
+  org_application_received: (d) => [
+    "New organization application",
+    `A new application for ${d.organizationName} is ready for review in MedReach.`
+  ],
+  org_application_updated: (d) => [
+    "Application status updated",
+    `Your application to ${d.organizationName} is now ${d.status}.`
+  ],
 };
+
+export const SYSTEM_NOTIFICATION_EMAIL = env.systemEmail || "medreachforyou@gmail.com";
 
 let transporter;
 let transportFactory = (options) => nodemailer.createTransport(options);
