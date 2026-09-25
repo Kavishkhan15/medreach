@@ -14,7 +14,11 @@ export default function SosButton() {
 
   const openAssistant = () => {
     setOpen(false);
-    setAiOpen(true);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("medreach:open-assistant"));
+    } else {
+      setAiOpen(true);
+    }
   };
 
   return (
