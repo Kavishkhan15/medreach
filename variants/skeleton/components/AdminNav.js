@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@medreach/core";
 
 const LINKS = [
   { href: "/admin", label: "Overview" },
@@ -9,18 +10,25 @@ const LINKS = [
   { href: "/admin/crawler", label: "Crawler" },
   { href: "/admin/verification", label: "Verification" },
   { href: "/admin/alerts", label: "Alerts" },
-  { href: "/admin/audit", label: "Audit" },
+  { href: "/admin/audit", label: "Audit", systemOnly: true },
+  { href: "/admin/users", label: "Users", systemOnly: true },
+  { href: "/admin/security", label: "Security & auth", systemOnly: true },
+  { href: "/admin/operations", label: "Operations" },
 ];
 
 export default function AdminNav() {
   const path = usePathname();
+  const { user } = useAuth();
   return (
-    <nav aria-label="Admin sections" className="mb-4">
-      <ul className="admin-nav flex flex-wrap gap-1">
-        {LINKS.map((l) => (
+    <nav aria-label="Admin sections" className="admin-nav mb-4">
+      <ul className="nav-list" style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", listStyle: "none", padding: 0 }}>
+        {LINKS.filter((link) => !link.systemOnly || user?.role === "system_admin").map((l) => (
           <li key={l.href}>
-            <Link className={`admin-nav-link ${path === l.href ? "active" : ""}`} href={l.href}
-              aria-current={path === l.href ? "page" : undefined}>
+            <Link
+              className={`btn btn-sm ${path === l.href ? "btn-primary" : "btn-outline-secondary"}`}
+              href={l.href}
+              aria-current={path === l.href ? "page" : undefined}
+            >
               {l.label}
             </Link>
           </li>
