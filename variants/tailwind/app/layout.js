@@ -4,6 +4,7 @@ import Image from "next/image";
 import Navbar from "../components/Navbar";
 import SystemBanner from "../components/SystemBanner";
 import SosButton from "../components/SosButton";
+import HealthcareAssistant from "../components/HealthcareAssistant";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
         <Navbar />
         <main id="main" className="mx-auto w-full max-w-[1140px] px-3 py-4">{children}</main>
         <SosButton />
+        <HealthcareAssistant />
         <footer className="border-t border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-muted)] text-[.85rem] py-4 mt-12">
           <div className="mx-auto w-full max-w-[1140px] px-3 flex flex-wrap justify-between gap-2">
             <span><Image src="/logo.png" alt="MedReach" width={109} height={29} /></span>
