@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import { useHospitals, useLocation, emergencyCategory, MUMBAI_LOCALITIES } from "@medreach/core";
 import EmergencyCategorySelector from "../../components/EmergencyCategorySelector";
 import HospitalList from "../../components/HospitalList";
+import EmergencyHospitalCard from "../../components/EmergencyHospitalCard";
 import { toneClass, statusPill } from "../../lib/tone";
 import { EmergencyIcon } from "../../components/EmergencyIcons";
 
@@ -74,8 +75,23 @@ export default function EmergencyPage() {
               Looking for: {cat.specialties.join(", ")} · facilities: {cat.facilities.join(", ")}
             </p>
           )}
-          <HospitalList hospitals={data} loading={loading} flow="emergency"
-            emptyMessage="No hospitals currently match — try a different locality or category." />
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse h-48"></div>
+              ))}
+            </div>
+          ) : data.length === 0 ? (
+            <div className="bg-white rounded-lg border border-[var(--color-border)] p-6 text-center text-gray-500">
+              No hospitals currently match — try a different locality or category.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {data.map((h) => (
+                <EmergencyHospitalCard key={h._id || h.slug} hospital={h} category={cat} />
+              ))}
+            </div>
+          )}
         </section>
       )}
     </>

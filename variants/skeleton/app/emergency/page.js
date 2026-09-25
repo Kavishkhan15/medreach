@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import { useHospitals, useLocation, emergencyCategory, MUMBAI_LOCALITIES } from "@medreach/core";
 import EmergencyCategorySelector from "../../components/EmergencyCategorySelector";
 import HospitalList from "../../components/HospitalList";
+import EmergencyHospitalCard from "../../components/EmergencyHospitalCard";
 import { EmergencyIcon } from "../../components/EmergencyIcons";
 
 export default function EmergencyPage() {
@@ -73,8 +74,25 @@ export default function EmergencyPage() {
               Looking for: {cat.specialties.join(", ")} · facilities: {cat.facilities.join(", ")}
             </p>
           )}
-          <HospitalList hospitals={data} loading={loading} flow="emergency"
-            emptyMessage="No hospitals currently match — try a different locality or category." />
+          {loading ? (
+            <div className="grid-cards">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="surface p-4" style={{ height: 180 }}>Loading...</div>
+              ))}
+            </div>
+          ) : data.length === 0 ? (
+            <div className="surface text-center">
+              <p className="mb-0 text-secondary">No hospitals currently match — try a different locality or category.</p>
+            </div>
+          ) : (
+            <div className="grid-cards">
+              {data.map((h) => (
+                <div key={h._id || h.slug} className="card-col">
+                  <EmergencyHospitalCard hospital={h} category={cat} />
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       )}
     </>
