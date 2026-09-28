@@ -1,5 +1,5 @@
 // Opt-in integration test against an isolated local MongoDB instance.
-// Run with MEDREACH_TEST_MONGO_URI=mongodb://127.0.0.1:27019/medreach_fusion_integration
+// Run with MEDREACH_TEST_MONGO_URI pointing to an isolated medreach_fusion_integration database.
 import test from "node:test";
 import assert from "node:assert/strict";
 import mongoose from "mongoose";
@@ -23,7 +23,7 @@ import { backfillHospitalFieldClaims } from "../src/services/backfillHospitalFie
 import { User } from "../src/models/User.js";
 
 const uri = process.env.MEDREACH_TEST_MONGO_URI;
-const isolated = uri === "mongodb://127.0.0.1:27019/medreach_fusion_integration";
+const isolated = Boolean(uri && /\/medreach_fusion_integration(?:\?|$)/.test(uri));
 
 test("MongoDB/API: claims remain distinct; only assigned staff can make availability current", { skip: !isolated }, async () => {
   await mongoose.connect(uri);

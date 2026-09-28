@@ -14,7 +14,8 @@
     "seed:product-demo": "node scripts/seedProductDemo.js --demo",
     "sync:hospital-resources": "node scripts/syncHospitalResources.js",
     "migrate:auth-security": "node scripts/migrateAuthSecurity.js",
-    "test": "node --test",
+    "migrate:reliability-indexes": "node scripts/migrateReliabilityIndexes.js",
+    "test": "NODE_ENV=test EMAIL_ENABLED=false node --test --test-concurrency=1",
     "smoke:auth": "node scripts/smokeAuthSecurity.js"
   },
   "dependencies": {

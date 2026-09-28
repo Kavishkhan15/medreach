@@ -22,36 +22,17 @@ jobs:
           node-version: '24'
 
       - name: Install dependencies
-        run: |
-          npm ci || npm install
+        run: npm ci
 
       - name: Create artifact directory
         run: |
           mkdir -p data/raw
 
-      - name: Security dependency check
-        run: |
-          echo "Scanning dependencies for ${{ matrix.variant }}"
+      - name: Dependency vulnerability gate
+        run: npm audit --audit-level=high
 
-      - name: Security OWASP ZAP baseline
-        run: |
-          echo "Running baseline policy check for ${{ matrix.variant }}"
-
-      - name: Security header audit
-        run: |
-          echo "Auditing security headers for ${{ matrix.variant }}"
-
-      - name: Accessibility audit
-        run: |
-          echo "Running accessibility audit for ${{ matrix.variant }}"
-
-      - name: Responsiveness and performance check
-        run: |
-          echo "Checking performance and bundle size for ${{ matrix.variant }}"
-
-      - name: Privacy audit
-        run: |
-          echo "Auditing privacy and cookies for ${{ matrix.variant }}"
+      - name: Build production variant
+        run: npm --workspace @medreach/variant-${{ matrix.variant }} run build
 
       - name: Compute RWD Security Risk Score
         run: |

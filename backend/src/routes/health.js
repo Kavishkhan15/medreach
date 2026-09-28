@@ -2,11 +2,28 @@ import { Router } from "express";
 import mongoose from "mongoose";
 
 const router = Router();
+const dbState = () =>
+  ["disconnected", "connected", "connecting", "disconnecting"][mongoose.connection.readyState] || "unknown";
 
-// Liveness + readiness. Reports DB connection state without leaking config.
+// Compatibility liveness endpoint. Reports state but does not claim dependency readiness.
 router.get("/", (_req, res) => {
-  const dbState = ["disconnected", "connected", "connecting", "disconnecting"][mongoose.connection.readyState] || "unknown";
-  res.json({ ok: true, service: "medreach-api", db: dbState, ts: new Date().toISOString() });
+  res.json({ ok: true, service: "medreach-api", check: "liveness", db: dbState(), ts: new Date().toISOString() });
+});
+
+router.get("/live", (_req, res) => {
+  res.json({ ok: true, service: "medreach-api", check: "liveness", ts: new Date().toISOString() });
+});
+
+router.get("/ready", (_req, res) => {
+  const mongodb = dbState();
+  const ready = mongodb === "connected";
+  res.status(ready ? 200 : 503).json({
+    ok: ready,
+    service: "medreach-api",
+    check: "readiness",
+    dependencies: { mongodb },
+    ts: new Date().toISOString(),
+  });
 });
 
 export default router;

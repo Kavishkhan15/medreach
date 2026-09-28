@@ -12,13 +12,14 @@ npm run seed                 # needs a running MongoDB
 npm run dev                  # http://localhost:4000
 ```
 
-Requires **MongoDB** (local `mongod` or Atlas). Tests do **not** need it.
+Requires **MongoDB** (local `mongod` or Atlas). Most API tests exercise MongoDB and the release gate also enables the opt-in auth, product, and provenance integration suites.
 
 ## Endpoints
 
 | Method | Path | Access | Purpose |
 |--------|------|--------|---------|
-| GET  | `/health` | public | liveness |
+| GET  | `/health` or `/health/live` | public | process liveness |
+| GET  | `/health/ready` | public | readiness; returns 503 until MongoDB is connected |
 | POST | `/api/auth/register` | public | create user (rate-limited) |
 | POST | `/api/auth/login` | public | password login → short access + rotating refresh cookies |
 | POST | `/api/auth/refresh` | refresh cookie | rotate refresh session and renew access |
@@ -49,5 +50,8 @@ helmet CSP + HSTS + `no-referrer`, CORS/origin allow-list, bcrypt cost 12, 15-mi
 ## Tests
 
 ```bash
-npm test    # node --test; wiring + auth + RBAC, no DB needed
+# From the repository root; uses isolated local test databases by default.
+npm run backend:test:db
 ```
+
+The strict runner fails if any database-gated test is skipped. Override its four MongoDB URIs only with databases named `medreach_test`, `medreach_auth_test`, `medreach_product_integration`, and `medreach_fusion_integration`; every suite may drop its database.
