@@ -301,7 +301,11 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                         <div className="mt-3">
                           <div className="small fw-semibold text-muted mb-2">Verified Hospital Matches:</div>
                           {msg.hospitals.map((h) => (
-                            <AssistantHospitalCard key={h.id || h.slug} hospital={h} />
+                            <AssistantHospitalCard
+                              key={h.id || h.slug}
+                              hospital={h}
+                              emergency={msg.intent === "emergency"}
+                            />
                           ))}
                         </div>
                       )}

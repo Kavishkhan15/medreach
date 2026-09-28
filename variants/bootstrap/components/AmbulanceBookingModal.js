@@ -51,10 +51,13 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
         contactEmail: contactEmail.trim() || undefined,
         contactPhone: contactPhone.trim() || undefined,
       });
-      setSuccessMsg(res.message || `Ambulance booking recorded (${res.reference}). Confirmation email sent.`);
-      setTimeout(() => {
-        onClose();
-      }, 2500);
+      if (res.trackingToken) {
+        window.sessionStorage.setItem(`medreach:ambulance-booking-token:${res.reference}`, res.trackingToken);
+      }
+      const providerMessage = res.delivery?.provider?.sent
+        ? "The provider notification email was sent. Call to confirm dispatch."
+        : "The provider notification email was not sent. Call the provider directly to confirm availability.";
+      setSuccessMsg(`Request ${res.reference} was recorded. ${providerMessage}`);
     } catch (err) {
       setErrorMsg(err.message || "Failed to submit ambulance booking. Please try again.");
     } finally {
@@ -66,6 +69,9 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
     <div
       className="modal-overlay"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ambulance-booking-title"
       style={{
         position: "fixed",
         inset: 0,
@@ -81,7 +87,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
         style={{ width: "90%", maxWidth: "500px" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-lg font-bold mb-1">
+        <h3 id="ambulance-booking-title" className="text-lg font-bold mb-1">
           Book Ambulance – {provider?.name}
         </h3>
         <p className="small text-muted mb-3">

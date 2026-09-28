@@ -11,7 +11,7 @@ export default function EmergencyPage() {
   const cat = categoryId ? emergencyCategory(categoryId) : null;
 
   const filters = useMemo(() => ({ categoryId: categoryId || undefined, emergencyOnly: true }), [categoryId]);
-  const { data, loading } = useHospitals(filters, { origin, sort: "recommended" });
+  const { data, loading, error: dataError, retry } = useHospitals(filters, { origin, sort: "recommended" });
 
   const started = Boolean(categoryId);
 
@@ -73,7 +73,12 @@ export default function EmergencyPage() {
               Looking for: {cat.specialties.join(", ")} · facilities: {cat.facilities.join(", ")}
             </p>
           )}
-          {loading ? (
+          {dataError && !loading ? (
+            <div className="alert alert-danger d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
+              <span>{dataError}</span>
+              <button type="button" className="btn btn-sm btn-outline-danger" onClick={retry}>Retry</button>
+            </div>
+          ) : loading ? (
             <div className="row g-3" aria-busy="true">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div className="col-12 col-md-6 col-lg-4" key={i}>

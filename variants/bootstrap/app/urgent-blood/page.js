@@ -53,7 +53,7 @@ export default function UrgentBloodPage() {
     setError(null);
 
     const chosenBank = bloodBanks.find((b) => b._id === formData.selectedBloodBankId);
-    const bankName = chosenBank ? chosenBank.name : "All Mumbai Blood Banks (Urgent Dispatch)";
+    const bankName = chosenBank ? chosenBank.name : "No specific blood bank selected";
 
     const payload = {
       type: "REQUEST",
@@ -71,9 +71,13 @@ export default function UrgentBloodPage() {
     };
 
     try {
-      const res = await post("/api/blood-requests", payload);
+      const res = await post("/api/blood-requests/urgent", payload);
+      const reference = res.reference || res.bloodRequest?.reference;
+      if (res.trackingToken && reference) {
+        window.sessionStorage.setItem(`medreach:blood-request-token:${reference}`, res.trackingToken);
+      }
       setSubmittedData({
-        reference: res.reference || res.bloodRequest?.reference || "UBR-" + Date.now().toString(36).toUpperCase(),
+        reference,
         bankName,
         details: payload,
       });
@@ -107,7 +111,7 @@ export default function UrgentBloodPage() {
           <span className="badge bg-danger text-uppercase fw-bold mb-1">Critical Clinical Response</span>
           <h1 className="h4 alert-heading mb-0 fw-bold">Urgent Blood Requirement</h1>
           <p className="small mb-0 opacity-90">
-            Dedicated emergency blood requisition portal. Dispatches high-priority alerts to Mumbai blood banks.
+            Record an urgent requirement, then contact blood banks directly to confirm inventory and fulfillment.
           </p>
         </div>
       </div>
@@ -117,9 +121,9 @@ export default function UrgentBloodPage() {
           <div className="text-success mb-3">
             <EmergencyIcon name="approved" size={64} className="text-success" />
           </div>
-          <h2 className="h4 fw-bold text-success mb-2">Urgent Blood Request Dispatched!</h2>
+          <h2 className="h4 fw-bold text-success mb-2">Urgent Blood Request Recorded</h2>
           <p className="text-muted mb-4">
-            Your emergency requirement has been broadcast to verified Mumbai blood banks. A blood coordinator is prioritizing your dispatch.
+            MedReach recorded your requirement. No blood bank has confirmed inventory or fulfillment; call the selected bank directly.
           </p>
 
           <div className="card bg-light border-0 p-3 mb-4 text-start">
@@ -312,7 +316,7 @@ export default function UrgentBloodPage() {
                     onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
                     required
                   />
-                  <div className="form-text small">Blood coordinators will contact this number directly.</div>
+                  <div className="form-text small">Use a reachable number and call the blood bank directly; follow-up is not guaranteed.</div>
                 </div>
 
                 <div className="col-md-6">
@@ -348,7 +352,7 @@ export default function UrgentBloodPage() {
                   disabled={isSubmitting}
                 >
                   <EmergencyIcon name="blood" size={18} />
-                  {isSubmitting ? "Broadcasting Request..." : "Submit Urgent Blood Requirement"}
+                  {isSubmitting ? "Recording Request..." : "Submit Urgent Blood Requirement"}
                 </button>
               </div>
             </form>

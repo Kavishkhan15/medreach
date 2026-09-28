@@ -38,9 +38,9 @@ function MapRecenter({ selectedPos }) {
   return null;
 }
 
-export function MapFallback({ itemCount = 0, categoryLabel = "resources" }) {
+export function MapFallback({ itemCount = 0, categoryLabel = "resources", category = "hospitals" }) {
   return (
-    <div className="map-fallback" role="region" aria-label="Map configuration notice">
+    <div className="map-fallback" role="region" aria-label="Map unavailable">
       <div className="mb-3">
         <span
           className="d-inline-flex align-items-center justify-content-center bg-light text-primary rounded-circle border shadow-sm"
@@ -50,17 +50,13 @@ export function MapFallback({ itemCount = 0, categoryLabel = "resources" }) {
           <EmergencyIcon name="pin" size={16} className="text-danger" />
         </span>
       </div>
-      <h2 className="h5 fw-bold mb-2">Google Maps JavaScript API key required</h2>
+      <h2 className="h5 fw-bold mb-2">Map view is unavailable</h2>
       <p className="text-muted small mb-3" style={{ maxWidth: "460px" }}>
-        Set <code>NEXT_PUBLIC_GOOGLE_MAPS_API_KEY</code> in your environment to display the interactive map with live markers and navigation.
+        Browse the provider list on this page, open the full directory, or call emergency services if help is needed now.
       </p>
-      <div className="alert alert-light border text-start small mb-3 py-2 px-3 w-100" style={{ maxWidth: "460px" }}>
-        <div className="fw-semibold mb-1">Quick Setup:</div>
-        <ol className="mb-1 ps-3 text-muted">
-          <li>Enable <strong>Maps JavaScript API</strong> in Google Cloud Console.</li>
-          <li>Add <code>NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_key</code> to your environment.</li>
-          <li>Restart the development server.</li>
-        </ol>
+      <div className="d-flex flex-wrap justify-content-center gap-2 mb-3">
+        <Link className="btn btn-sm btn-outline-primary" href={`/${category}`}>Open {categoryLabel.toLowerCase()} directory</Link>
+        <a className="btn btn-sm btn-danger" href="tel:112">Call 112</a>
       </div>
       <p className="small text-secondary mb-0">
         You can continue exploring all <strong>{itemCount} {categoryLabel.toLowerCase()}</strong> using the list view.
@@ -88,7 +84,7 @@ export default function GoogleMapView({
   const primaryColor = CATEGORY_COLORS[category] || "#d32029";
 
   if (!apiKey) {
-    return <MapFallback itemCount={items.length} categoryLabel={categoryLabel} />;
+    return <MapFallback itemCount={items.length} categoryLabel={categoryLabel} category={category} />;
   }
 
   return (

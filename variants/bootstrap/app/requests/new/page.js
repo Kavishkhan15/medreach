@@ -41,7 +41,7 @@ export default function NewRequest() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [hospitals, setHospitals] = useState([]);
-  const [isEmergency, setIsEmergency] = useState(true);
+  const [isEmergency, setIsEmergency] = useState(false);
   const [form, setForm] = useState({
     hospitalId: "",
     emergencyType: "general",
@@ -57,6 +57,7 @@ export default function NewRequest() {
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [returnPath, setReturnPath] = useState("/requests/new?flow=standard");
 
   const normalizeEmergencyType = (val) => {
     if (!val) return "general";
@@ -71,16 +72,11 @@ export default function NewRequest() {
     const params = new URLSearchParams(window.location.search);
     const hospitalParam = params.get("hospital") || "";
     const flowParam = params.get("flow")?.toLowerCase();
-    const emergencyParam = params.get("emergency")?.toLowerCase();
-    const isEmergencyParam = params.get("isEmergency")?.toLowerCase();
     const typeParam = params.get("emergencyType");
     const facilityParam = params.get("facility");
+    setReturnPath(`${window.location.pathname}${window.location.search}`);
 
-    if (flowParam === "standard" || isEmergencyParam === "false" || emergencyParam === "false" || isEmergencyParam === "0") {
-      setIsEmergency(false);
-    } else if (flowParam === "emergency" || isEmergencyParam === "true" || emergencyParam === "true" || typeParam) {
-      setIsEmergency(true);
-    }
+    setIsEmergency(flowParam === "emergency");
 
     setForm((old) => ({
       ...old,
@@ -129,13 +125,18 @@ export default function NewRequest() {
     try {
       const payload = {
         ...form,
-        isEmergency,
         ambulanceRequired: Boolean(form.ambulanceRequired),
         ambulancePickupAddress: form.ambulanceRequired ? form.ambulancePickupAddress.trim() : undefined,
         contactEmail: form.contactEmail.trim() || undefined,
       };
-      const r = await post("/api/emergency-requests", payload);
-      router.push(`/requests/${r.request._id}`);
+      const endpoint = isEmergency
+        ? "/api/emergency-requests/emergency"
+        : "/api/emergency-requests/standard";
+      const r = await post(endpoint, payload);
+      const tokenFragment = r.trackingToken
+        ? `#token=${encodeURIComponent(r.trackingToken)}`
+        : "";
+      router.push(`/requests/${r.request._id}${tokenFragment}`);
     } catch (e) {
       setError(e.message);
       setBusy(false);
@@ -143,6 +144,7 @@ export default function NewRequest() {
   };
 
   const selectedHospital = hospitals.find((h) => h._id === form.hospitalId);
+  const loginHref = `/login?returnTo=${encodeURIComponent(returnPath)}`;
 
   return (
     <div className="row justify-content-center">
@@ -151,7 +153,7 @@ export default function NewRequest() {
         <div className="d-flex justify-content-between align-items-center mb-3">
           {isEmergency ? (
             <Link
-              href={selectedHospital ? `/hospitals/${selectedHospital.slug}?flow=emergency` : "/emergency"}
+              href="/emergency"
               className="small text-decoration-none"
             >
               ← Back to {selectedHospital ? `${selectedHospital.name} (Emergency)` : "Emergency response"}
@@ -179,7 +181,7 @@ export default function NewRequest() {
               </div>
               <h1 className="h2 mb-1">Request emergency bed &amp; care</h1>
               <p className="lead fs-6 text-muted mb-0">
-                Life-critical triage bed request. Hospital staff are notified immediately.
+                Records a time-sensitive triage request. Call the hospital directly; no bed is reserved.
                 For immediate life-threatening danger, always call <a href="tel:112" className="fw-bold text-danger">112</a>.
               </p>
             </>
@@ -207,10 +209,10 @@ export default function NewRequest() {
               and confirm admissions.
             </p>
             <div className="d-flex flex-wrap gap-2 align-items-center">
-              <Link href="/login" className="btn btn-sm btn-primary">
+              <Link href={loginHref} className="btn btn-sm btn-primary">
                 Sign in to your account
               </Link>
-              <Link href="/register" className="btn btn-sm btn-outline-secondary">
+              <Link href={`/register?returnTo=${encodeURIComponent(returnPath)}`} className="btn btn-sm btn-outline-secondary">
                 Register new account
               </Link>
             </div>
@@ -222,7 +224,7 @@ export default function NewRequest() {
             <div className="alert alert-danger d-flex align-items-center justify-content-between mb-0" role="alert">
               <span>{error}</span>
               {(error.includes("Authentication required") || error.includes("sign in")) && (
-                <Link href="/login" className="btn btn-sm btn-outline-danger ms-2">Sign in</Link>
+                <Link href={loginHref} className="btn btn-sm btn-outline-danger ms-2">Sign in</Link>
               )}
             </div>
           )}
@@ -325,7 +327,7 @@ export default function NewRequest() {
                 onChange={change("contactEmail")}
               />
               <div className="form-text small">
-                Confirmation &amp; status updates are sent to this address.
+                MedReach uses this address for confirmation and status emails when delivery is available.
               </div>
             </div>
           </div>
@@ -458,7 +460,7 @@ export default function NewRequest() {
 
             {isEmergency && (
               <p className="text-center text-muted small mt-2 mb-0">
-                <EmergencyIcon name="check" size={15} className="text-success me-1" /> Public emergency triage · Immediate dispatch to hospital emergency desk
+                <EmergencyIcon name="check" size={15} className="text-success me-1" /> Public emergency request · Private status tracking
               </p>
             )}
           </div>

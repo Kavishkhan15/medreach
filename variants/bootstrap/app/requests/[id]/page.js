@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@medreach/core";
-import { productApi, patch } from "../../../lib/productApi";
+import { productApi } from "../../../lib/productApi";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
 
 export default function RequestDetail({ params }) {
@@ -11,12 +11,23 @@ export default function RequestDetail({ params }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
+  const trackingHeaders = () => {
+    if (typeof window === "undefined") return {};
+    const token = window.sessionStorage.getItem(`medreach:emergency-request-token:${params.id}`);
+    return token ? { "X-MedReach-Tracking-Token": token } : {};
+  };
+
   const refresh = () =>
-    productApi(`/api/emergency-requests/${params.id}`)
+    productApi(`/api/emergency-requests/${params.id}`, { headers: trackingHeaders() })
       .then((r) => setRequest(r.request))
       .catch((e) => setError(e.message));
 
   useEffect(() => {
+    const fragmentToken = new URLSearchParams(window.location.hash.slice(1)).get("token");
+    if (fragmentToken) {
+      window.sessionStorage.setItem(`medreach:emergency-request-token:${params.id}`, fragmentToken);
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
     refresh();
   }, [params.id]);
 
@@ -24,7 +35,11 @@ export default function RequestDetail({ params }) {
     if (!window.confirm("Cancel this bed request?")) return;
     setBusy(true);
     try {
-      await patch(`/api/emergency-requests/${params.id}`, { status: "CANCELLED" });
+      await productApi(`/api/emergency-requests/${params.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...trackingHeaders() },
+        body: { status: "CANCELLED" },
+      });
       refresh();
     } catch (e) {
       setError(e.message);
@@ -109,7 +124,7 @@ export default function RequestDetail({ params }) {
                 <div className="alert alert-light border small text-secondary py-2 px-3 mb-3 d-flex align-items-center gap-2">
                   <EmergencyIcon name="mail" size={16} className="text-primary flex-shrink-0" />
                   <span>
-                    Email updates for this request will be sent to <strong>{request.contactEmail}</strong>.
+                    MedReach uses <strong>{request.contactEmail}</strong> for status emails when delivery is available.
                   </span>
                 </div>
               )}

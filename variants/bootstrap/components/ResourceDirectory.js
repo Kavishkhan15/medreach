@@ -8,6 +8,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [revision, setRevision] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(null);
 
@@ -21,10 +22,10 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
           setError("");
         }
       })
-      .catch(e => { if (live) setError(e.message); })
+      .catch(e => { if (live) { setItems([]); setError(e.message); } })
       .finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
-  }, [kind, query]);
+  }, [kind, query, revision]);
 
   const handleBook = (item) => {
     setSelectedProvider(item);
@@ -48,7 +49,10 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
       />
       {loading && <p role="status">Loading providers…</p>}
       {error && (
-        <div className="alert alert-danger" role="alert">{error}</div>
+        <div className="alert alert-danger d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
+          <span>{error}</span>
+          <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => setRevision((value) => value + 1)}>Retry</button>
+        </div>
       )}
       {!loading && !error && items.length === 0 && (
         <div className="surface">No listed providers match this search. Try another locality or service.</div>

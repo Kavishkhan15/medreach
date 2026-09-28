@@ -1,22 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useHospital, saveHospital, useAuth } from "@medreach/core";
 import { productApi } from "../../../lib/productApi";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
 
 export default function HospitalPage({ params }) {
   const { slug } = params;
-  const searchParams = useSearchParams();
-  const flow = searchParams.get("flow");
-  const isEmergencyFlow =
-    flow === "emergency" ||
-    searchParams.get("from") === "emergency" ||
-    searchParams.get("emergency") === "true" ||
-    searchParams.get("isEmergency") === "true";
-
-  const { hospital: baseHospital, loading: baseLoading, notFound } = useHospital(slug);
+  const { hospital: baseHospital, loading: baseLoading, notFound, error, retry } = useHospital(slug);
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);
   const [enrichedData, setEnrichedData] = useState(null);
@@ -46,6 +37,15 @@ export default function HospitalPage({ params }) {
 
   if (baseLoading) {
     return <p className="text-secondary p-4">Loading hospital details…</p>;
+  }
+
+  if (error) {
+    return (
+      <div className="alert alert-danger d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
+        <span>{error}</span>
+        <button type="button" className="btn btn-sm btn-outline-danger" onClick={retry}>Retry</button>
+      </div>
+    );
   }
 
   const hospital = enrichedData || baseHospital;
@@ -91,26 +91,13 @@ export default function HospitalPage({ params }) {
   return (
     <article className="pb-5">
       <nav aria-label="Breadcrumb" className="mb-3">
-        {isEmergencyFlow ? (
-          <Link href="/emergency" className="small text-decoration-none">
-            ← Back to Emergency Response
-          </Link>
-        ) : (
-          <Link href="/hospitals" className="small text-decoration-none">
-            ← Back to Hospital Directory
-          </Link>
-        )}
+        <Link href="/hospitals" className="small text-decoration-none">
+          ← Back to Hospital Directory
+        </Link>
       </nav>
 
       {/* Header section: name only */}
       <header className="mb-4">
-        {isEmergencyFlow && (
-          <div className="mb-2">
-            <span className="badge bg-danger text-white d-inline-flex align-items-center gap-1">
-              <EmergencyIcon name="siren" size={14} /> Emergency Response Flow
-            </span>
-          </div>
-        )}
         <h1 className="h2 mb-1 fw-bold">{name}</h1>
         <p className="text-secondary mb-0">Mumbai Healthcare Network · Information &amp; Discovery</p>
       </header>
@@ -198,23 +185,14 @@ export default function HospitalPage({ params }) {
                 </a>
               )}
 
-              {isEmergencyFlow ? (
-                <Link
-                  href={`/requests/new?hospital=${hospital.hospitalId || baseHospital?._id}&isEmergency=true&flow=emergency`}
-                  className="btn btn-danger w-100 d-inline-flex align-items-center justify-content-center gap-2 fw-bold"
-                >
-                  <EmergencyIcon name="bed" size={16} /> Request Emergency Bed
-                </Link>
-              ) : (
-                <Link
-                  href={`/requests/new?hospital=${hospital.hospitalId || baseHospital?._id}&isEmergency=false&flow=standard`}
-                  className="btn btn-outline-danger w-100 d-inline-flex align-items-center justify-content-center gap-2"
-                >
-                  <EmergencyIcon name="bed" size={16} /> Request Bed
-                </Link>
-              )}
+              <Link
+                href={`/requests/new?hospital=${hospital.hospitalId || baseHospital?._id}&flow=standard`}
+                className="btn btn-outline-danger w-100 d-inline-flex align-items-center justify-content-center gap-2"
+              >
+                <EmergencyIcon name="bed" size={16} /> Request Bed
+              </Link>
 
-              {!isEmergencyFlow && user && (
+              {user && (
                 <button
                   type="button"
                   className="btn btn-outline-secondary w-100"
@@ -227,16 +205,10 @@ export default function HospitalPage({ params }) {
             </div>
 
             <hr className="my-3" />
-            {isEmergencyFlow ? (
-              <p className="text-muted small mb-0">
-                Direct public emergency triage dispatch. For immediate life danger, call <a href="tel:112" className="fw-bold text-danger text-decoration-none">112</a>.
-              </p>
-            ) : (
-              <p className="text-muted small mb-0">
-                For acute triage, use the{" "}
-                <Link href="/emergency" className="fw-semibold text-danger">Emergency Response</Link> portal.
-              </p>
-            )}
+            <p className="text-muted small mb-0">
+              For acute triage, use the{" "}
+              <Link href="/emergency" className="fw-semibold text-danger">Emergency Response</Link> portal.
+            </p>
           </div>
         </div>
       </div>
