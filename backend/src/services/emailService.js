@@ -1,6 +1,9 @@
 import nodemailer from "nodemailer";
+import { createCipheriv, createDecipheriv, createHash, randomBytes, randomUUID } from "node:crypto";
 import { env } from "../config/env.js";
 import { EmailDelivery } from "../models/EmailDelivery.js";
+import { AuditLog } from "../models/AuditLog.js";
+import { AmbulanceBooking } from "../models/AmbulanceBooking.js";
 
 const templates = {
   welcome: (d) => ["Welcome to MedReach", `Hello ${d.name || "there"}, your MedReach account is ready.`],
@@ -12,7 +15,7 @@ const templates = {
   account_status: (d) => ["MedReach account security update", `Your MedReach account was ${d.status}. ${d.note || "Contact a system administrator if you have questions."}`],
   role_changed: (d) => ["MedReach access changed", `Your MedReach role is now ${d.role}. Sign in again to refresh your access.`],
   admin_security: (d) => ["MedReach security notification", `${d.message || "A security-sensitive account action occurred."}`],
-  emergency_submitted: (d) => ["Emergency request submitted", `Request ${d.reference} was created for ${d.hospital}. ${d.connected ? "Connected hospital staff were notified." : "No hospital staff account is connected; call the hospital directly."} Hospital confirmation is pending. For an immediate emergency call 112.`],
+  emergency_submitted: (d) => ["Emergency request submitted", `Request ${d.reference} was created for ${d.hospital}. ${d.connected ? "Connected hospital staff can review it in MedReach." : "No hospital staff account is connected; call the hospital directly."} Hospital confirmation is pending. For an immediate emergency call 112.`],
   emergency_accepted: (d) => ["Emergency request response", `Request ${d.reference} was accepted by ${d.hospital}. Contact the hospital to confirm next steps; this is not a bed reservation.`],
   emergency_rejected: (d) => ["Emergency request response", `Request ${d.reference} was declined by ${d.hospital}. Please contact another provider or call 112 in an immediate emergency.`],
   emergency_updated: (d) => ["Emergency request updated", `Request ${d.reference} is now ${d.status}. Open MedReach for details.`],
@@ -27,8 +30,8 @@ const templates = {
   blood_request_confirmation: (d) => [
     d.type === "DONATION" ? "MedReach Blood Donation Pledge Confirmed" : "MedReach Blood Request Received",
     d.type === "DONATION"
-      ? `Dear ${d.name || "Donor"},\n\nThank you for pledging to donate blood (${d.bloodGroup}) at ${d.bloodBankName}.\nYour Reference ID: ${d.reference}\nPreferred Date: ${d.preferredDate || "As scheduled"}\n\nThe blood bank team will review your pledge and reach out to you at ${d.contactPhone}.\n\nWarm regards,\nMedReach Health Network`
-      : `Dear ${d.name || "Requester"},\n\nYour blood request for ${d.units || 1} unit(s) of ${d.bloodGroup} at ${d.bloodBankName} has been received.\nYour Reference ID: ${d.reference}\nUrgency: ${d.urgency || "URGENT"}\nHospital: ${d.hospitalName || "Not specified"}\n\nOur team and partner blood banks have been notified. Please keep this reference ID handy when communicating with the blood bank.\n\nWarm regards,\nMedReach Emergency Response`,
+      ? `Dear ${d.name || "Donor"},\n\nYour pledge to donate blood (${d.bloodGroup}) at ${d.bloodBankName} was recorded by MedReach.\nYour Reference ID: ${d.reference}\nPreferred Date: ${d.preferredDate || "As scheduled"}\n\nContact the blood bank directly to confirm eligibility and an appointment.\n\nWarm regards,\nMedReach Health Network`
+      : `Dear ${d.name || "Requester"},\n\nYour blood request for ${d.units || 1} unit(s) of ${d.bloodGroup} at ${d.bloodBankName} was recorded by MedReach.\nYour Reference ID: ${d.reference}\nUrgency: ${d.urgency || "URGENT"}\nHospital: ${d.hospitalName || "Not specified"}\n\nThe request is available for MedReach administrator review. Contact the blood bank directly to confirm inventory and fulfillment.\n\nWarm regards,\nMedReach Emergency Response`,
   ],
   bed_request_admin_notification: (d) => [
     `New Bed Request: ${d.reference} - ${d.hospital}`,
@@ -94,6 +97,18 @@ const templates = {
     `Notes: ${d.notes || "None"}\n\n` +
     `Please review in MedReach administrator panel.`,
   ],
+  ambulance_booking_provider_notification: (d) => [
+    `New Ambulance Booking Request: ${d.reference}`,
+    `A new ambulance booking request has been recorded for ${d.providerName}.\n\n` +
+    `Reference ID: ${d.reference}\n` +
+    `Patient Name: ${d.patientName}\n` +
+    `Patient Age: ${d.patientAge}\n` +
+    `Pickup Address: ${d.pickupAddress || "Not specified"}\n` +
+    `Contact Phone: ${d.contactPhone || "Not provided"}\n` +
+    `Contact Email: ${d.contactEmail || "Not provided"}\n` +
+    `Notes: ${d.notes || "None"}\n\n` +
+    `Please contact the requester directly to confirm availability and next steps. This message does not confirm dispatch.`,
+  ],
   org_applied: (d) => [
     "Application submitted",
     `Your application to ${d.organizationName} was submitted. Open MedReach to track it.`
@@ -112,47 +127,120 @@ export const SYSTEM_NOTIFICATION_EMAIL = env.systemEmail || "medreachforyou@gmai
 
 let transporter;
 let transportFactory = (options) => nodemailer.createTransport(options);
+const NON_REPLAYABLE_TEMPLATES = new Set(["verify_email", "password_reset"]);
+const leaseDurationMs = 60_000;
+
+function envelopeKey() {
+  return createHash("sha256").update(env.jwtSecret).digest();
+}
+
+function encryptEnvelope(value) {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv("aes-256-gcm", envelopeKey(), iv);
+  const encrypted = Buffer.concat([cipher.update(JSON.stringify(value), "utf8"), cipher.final()]);
+  return JSON.stringify({ iv: iv.toString("base64url"), tag: cipher.getAuthTag().toString("base64url"),
+    data: encrypted.toString("base64url") });
+}
+
+function decryptEnvelope(value) {
+  const parsed = JSON.parse(value);
+  const decipher = createDecipheriv("aes-256-gcm", envelopeKey(), Buffer.from(parsed.iv, "base64url"));
+  decipher.setAuthTag(Buffer.from(parsed.tag, "base64url"));
+  return JSON.parse(Buffer.concat([
+    decipher.update(Buffer.from(parsed.data, "base64url")),
+    decipher.final(),
+  ]).toString("utf8"));
+}
+
+function getTransporter() {
+  transporter ||= transportFactory({ host: env.smtpHost, port: env.smtpPort, secure: env.smtpSecure,
+    connectionTimeout: env.smtpConnectionTimeoutMs, greetingTimeout: env.smtpConnectionTimeoutMs,
+    socketTimeout: env.smtpConnectionTimeoutMs,
+    auth: env.smtpUser ? { user: env.smtpUser, pass: env.smtpPassword } : undefined });
+  return transporter;
+}
+
+async function claimDelivery(id, actorId) {
+  const now = new Date();
+  const leaseToken = randomUUID();
+  const delivery = await EmailDelivery.findOneAndUpdate({
+    _id: id,
+    status: { $in: ["pending", "failed"] },
+    $or: [{ leaseUntil: { $exists: false } }, { leaseUntil: { $lte: now } }],
+  }, {
+    $set: { status: "pending", leaseToken, leaseUntil: new Date(now.getTime() + leaseDurationMs),
+      lastAttemptAt: now, ...(actorId ? { retriedBy: actorId, retriedAt: now } : {}) },
+    $inc: { attempts: 1 },
+  }, { new: true }).select("+leaseToken +retryEnvelope");
+  return delivery ? { delivery, leaseToken } : null;
+}
+
+async function finishDelivery({ delivery, leaseToken, message }) {
+  try {
+    await getTransporter().sendMail({ from: { name: env.smtpFromName, address: env.smtpFrom },
+      to: message.to, subject: message.subject, text: message.text });
+    return EmailDelivery.findOneAndUpdate({ _id: delivery._id, leaseToken }, {
+      $set: { status: "sent", sentAt: new Date() },
+      $unset: { lastError: 1, errorCode: 1, leaseToken: 1, leaseUntil: 1 },
+    }, { new: true });
+  } catch (error) {
+    const code = String(error?.code || "SMTP_DELIVERY_FAILED").replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
+    return EmailDelivery.findOneAndUpdate({ _id: delivery._id, leaseToken }, {
+      $set: { status: "failed", errorCode: code,
+        lastError: code === "EAUTH" ? "SMTP authentication failed" :
+          code.includes("TIME") ? "SMTP connection timed out" : "SMTP delivery failed" },
+      $unset: { leaseToken: 1, leaseUntil: 1 },
+    }, { new: true });
+  }
+}
 
 export function emailConfiguration() {
   const isGoogle =
     (env.smtpHost && env.smtpHost.includes("gmail")) ||
     ["google", "gmail"].includes((env.emailProvider || "").toLowerCase());
+  const configured = Boolean(env.smtpHost && env.smtpFrom
+    && (!isGoogle || (env.smtpUser && env.smtpPassword)));
   return {
     enabled: env.emailEnabled,
-    configured: Boolean(env.smtpHost && env.smtpFrom),
+    configured,
     provider: isGoogle ? "google" : (Boolean(env.smtpHost && env.smtpFrom) ? "smtp" : "none"),
     mode: env.emailEnabled ? (isGoogle ? "google" : "smtp") : "disabled",
   };
 }
 
-export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
+export async function sendEmailEvent({ eventKey, to, template, data = {}, source }) {
   try {
     if (!eventKey || !to || !templates[template]) return { status: "failed", errorCode: "INVALID_EMAIL_EVENT" };
     const [subject, text] = templates[template](data);
+    const retryable = !NON_REPLAYABLE_TEMPLATES.has(template);
+    const retryEnvelope = retryable ? encryptEnvelope({ to, subject, text }) : undefined;
     let delivery = await EmailDelivery.findOne({ eventKey });
     if (delivery?.status === "sent") return delivery;
-    if (!delivery) delivery = await EmailDelivery.create({ eventKey, recipient: to, template, subject,
-      status: env.emailEnabled ? "pending" : "disabled" });
-    if (!env.emailEnabled) return delivery;
-    if (!env.smtpHost || !env.smtpFrom) {
+    if (!delivery) {
+      try {
+        delivery = await EmailDelivery.create({ eventKey, recipient: to, template, subject,
+          status: env.emailEnabled ? "pending" : "disabled", retryable, retryEnvelope,
+          ...(source?.model && source?.id && source?.channel ? {
+            sourceModel: source.model,
+            sourceId: source.id,
+            sourceChannel: source.channel,
+          } : {}) });
+      } catch (error) {
+        if (error?.code !== 11000) throw error;
+        delivery = await EmailDelivery.findOne({ eventKey });
+      }
+    }
+    if (!env.emailEnabled || delivery.status === "disabled") return delivery;
+    if (!emailConfiguration().configured) {
       delivery.status = "failed";
       delivery.errorCode = "SMTP_CONFIG_INCOMPLETE";
       delivery.lastError = "SMTP configuration incomplete";
       await delivery.save();
       return delivery;
     }
-    transporter ||= transportFactory({ host: env.smtpHost, port: env.smtpPort, secure: env.smtpSecure,
-      connectionTimeout: env.smtpConnectionTimeoutMs, greetingTimeout: env.smtpConnectionTimeoutMs,
-      socketTimeout: env.smtpConnectionTimeoutMs,
-      auth: env.smtpUser ? { user: env.smtpUser, pass: env.smtpPassword } : undefined });
-    delivery.attempts += 1;
-    await transporter.sendMail({ from: { name: env.smtpFromName, address: env.smtpFrom }, to, subject, text });
-    delivery.status = "sent";
-    delivery.sentAt = new Date();
-    delivery.lastError = undefined;
-    delivery.errorCode = undefined;
-    await delivery.save();
-    return delivery;
+    const claim = await claimDelivery(delivery._id);
+    if (!claim) return EmailDelivery.findById(delivery._id);
+    return finishDelivery({ ...claim, message: { to, subject, text } });
   } catch (error) {
     // Persist only a bounded category. Provider messages can echo usernames or hosts.
     const code = String(error?.code || "SMTP_DELIVERY_FAILED").replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
@@ -170,6 +258,50 @@ export async function sendEmailEvent({ eventKey, to, template, data = {} }) {
     } catch { /* email persistence must never break the calling workflow */ }
     return { status: "failed", errorCode: code };
   }
+}
+
+export async function retryEmailDelivery({ deliveryId, actorId }) {
+  const existing = await EmailDelivery.findById(deliveryId).select("+retryEnvelope");
+  if (!existing) return { error: "Email delivery not found", status: 404 };
+  if (existing.status === "sent") return { error: "Email was already sent", status: 409 };
+  if (!existing.retryable || !existing.retryEnvelope) {
+    return { error: "This email cannot be retried; use the account recovery action instead", status: 409 };
+  }
+  if (!env.emailEnabled || !emailConfiguration().configured) {
+    return { error: "Email delivery is not configured", status: 409 };
+  }
+  const claim = await claimDelivery(existing._id, actorId);
+  if (!claim) return { error: "Email delivery is already being processed", status: 409 };
+  let message;
+  try {
+    message = decryptEnvelope(existing.retryEnvelope);
+  } catch {
+    await EmailDelivery.updateOne({ _id: existing._id, leaseToken: claim.leaseToken }, {
+      $set: { status: "failed", errorCode: "RETRY_ENVELOPE_INVALID", lastError: "Stored retry content is unavailable" },
+      $unset: { leaseToken: 1, leaseUntil: 1 },
+    });
+    return { error: "Stored retry content is unavailable", status: 409 };
+  }
+  const delivery = await finishDelivery({ ...claim, message });
+  if (delivery?.sourceModel === "AmbulanceBooking"
+    && ["user", "admin", "provider"].includes(delivery.sourceChannel)) {
+    const prefix = `delivery.${delivery.sourceChannel}`;
+    await AmbulanceBooking.updateOne({ _id: delivery.sourceId }, {
+      $set: {
+        [`${prefix}.status`]: delivery.status,
+        [`${prefix}.attempted`]: true,
+        [`${prefix}.attemptedAt`]: delivery.lastAttemptAt || new Date(),
+        [`${prefix}.emailDelivery`]: delivery._id,
+        ...(delivery.status === "sent" ? { [`${prefix}.sentAt`]: delivery.sentAt || new Date() } : {}),
+        ...(delivery.errorCode ? { [`${prefix}.errorCode`]: delivery.errorCode } : {}),
+      },
+      ...(delivery.status === "sent" ? { $unset: { [`${prefix}.errorCode`]: 1 } } : {}),
+    });
+  }
+  await AuditLog.create({ user: actorId, action: "update", entityType: "EmailDelivery",
+    entityId: existing._id, before: { status: existing.status },
+    after: { status: delivery.status, operation: "retry" } });
+  return { delivery };
 }
 
 export function setEmailTransportFactoryForTests(factory) {

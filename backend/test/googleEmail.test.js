@@ -59,12 +59,18 @@ test("Google / Gmail SMTP email authentication and delivery test suite", async (
     env.smtpHost = "smtp.gmail.com";
     env.smtpFrom = "medreach.alerts@gmail.com";
     env.emailProvider = "google";
+    env.smtpUser = "";
+    env.smtpPassword = "";
     assert.deepEqual(emailConfiguration(), {
       enabled: true,
-      configured: true,
+      configured: false,
       provider: "google",
       mode: "google",
     });
+
+    env.smtpUser = "medreach.alerts@gmail.com";
+    env.smtpPassword = "google-app-password";
+    assert.equal(emailConfiguration().configured, true);
 
     // Enabled with generic SMTP
     env.smtpHost = "mail.customhospital.org";
@@ -138,5 +144,44 @@ test("Google / Gmail SMTP email authentication and delivery test suite", async (
     assert.equal(delivery.errorCode, "EAUTH");
     assert.equal(delivery.lastError, "SMTP authentication failed");
     assert.equal(JSON.stringify(delivery).includes("super-secret-app-password"), false);
+  });
+
+  await t.test("request confirmations do not claim unverified notification delivery", async () => {
+    env.emailEnabled = true;
+    env.smtpHost = "smtp.gmail.com";
+    env.smtpFrom = "medreach.alerts@gmail.com";
+
+    const captured = [];
+    setEmailTransportFactoryForTests(() => ({
+      sendMail: async (mail) => {
+        captured.push(mail);
+        return { messageId: `message-${captured.length}` };
+      },
+    }));
+
+    await sendEmailEvent({
+      eventKey: "truthful-emergency-confirmation",
+      to: "patient@example.test",
+      template: "emergency_submitted",
+      data: { reference: "MR-TEST", hospital: "Test Hospital", connected: true },
+    });
+    await sendEmailEvent({
+      eventKey: "truthful-blood-confirmation",
+      to: "patient@example.test",
+      template: "blood_request_confirmation",
+      data: {
+        type: "REQUEST",
+        name: "Patient",
+        bloodGroup: "O+",
+        bloodBankName: "Test Blood Bank",
+        reference: "BR-TEST",
+      },
+    });
+
+    assert.equal(captured.length, 2);
+    assert.doesNotMatch(captured[0].text, /staff were notified/i);
+    assert.doesNotMatch(captured[1].text, /administrators were notified/i);
+    assert.match(captured[0].text, /confirmation is pending/i);
+    assert.match(captured[1].text, /recorded by MedReach/i);
   });
 });

@@ -1,8 +1,16 @@
 import { randomBytes } from "node:crypto";
 import { ResourceProvider, RESOURCE_KINDS } from "../models/ResourceProvider.js";
+import { AmbulanceBooking, DELIVERY_STATES } from "../models/AmbulanceBooking.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import {
+  generateTrackingToken,
+  hashTrackingToken,
+  verifyTrackingToken,
+  TRACKING_TOKEN_HEADER,
+} from "../utils/trackingToken.js";
 import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "../services/emailService.js";
+import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 export const listResources = (kind) => asyncHandler(async (req, res) => {
   const filter = { kind, active: { $ne: false } };
@@ -10,17 +18,17 @@ export const listResources = (kind) => asyncHandler(async (req, res) => {
   if (req.query.locality) filter.locality = { $regex: String(req.query.locality).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
   if (req.query.service) filter.services = String(req.query.service).slice(0, 80);
   if (req.query.bloodGroup && kind === "blood_bank") filter.listedBloodGroups = String(req.query.bloodGroup).slice(0, 10);
-  const data = await ResourceProvider.find(filter).sort({ verificationStatus: 1, name: 1 }).limit(100).lean();
+  const data = await ResourceProvider.find(filter).select("-email").sort({ verificationStatus: 1, name: 1 }).limit(100).lean();
   res.json({ data, currentInventory: "unknown", liveDispatch: false });
 });
 export const getResource = (kind) => asyncHandler(async (req, res) => {
-  const data = await ResourceProvider.findOne({ _id: req.params.id, kind, active: { $ne: false } }).lean();
+  const data = await ResourceProvider.findOne({ _id: req.params.id, kind, active: { $ne: false } }).select("-email").lean();
   if (!data) return res.status(404).json({ error: "Provider not found" });
   res.json({ data, currentInventory: "unknown", liveDispatch: false });
 });
 export const createResource = asyncHandler(async (req, res) => {
   if (!RESOURCE_KINDS.includes(req.body.kind)) return res.status(400).json({ error: "Invalid provider type" });
-  const allowed = ["kind", "name", "hospital", "address", "locality", "city", "phone", "website", "operatingHours", "services", "listedBloodGroups", "providerType", "coverageArea", "location", "sourceName", "sourceUrl", "observedAt", "confidence", "verificationStatus", "demo"];
+  const allowed = ["kind", "name", "hospital", "address", "locality", "city", "phone", "email", "website", "operatingHours", "services", "listedBloodGroups", "providerType", "coverageArea", "location", "sourceName", "sourceUrl", "observedAt", "confidence", "verificationStatus", "demo"];
   const data = Object.fromEntries(allowed.filter((key) => req.body[key] !== undefined).map((key) => [key, req.body[key]]));
   const provider = await ResourceProvider.create(data);
   await AuditLog.create({ user: req.user.id, action: "create", entityType: "ResourceProvider", entityId: provider._id,
@@ -28,7 +36,7 @@ export const createResource = asyncHandler(async (req, res) => {
   res.status(201).json({ data: provider });
 });
 export const updateResource = asyncHandler(async (req, res) => {
-  const allowed = ["name", "hospital", "address", "locality", "city", "phone", "website", "operatingHours", "services", "listedBloodGroups", "providerType", "coverageArea", "location", "sourceName", "sourceUrl", "observedAt", "confidence", "verificationStatus"];
+  const allowed = ["name", "hospital", "address", "locality", "city", "phone", "email", "website", "operatingHours", "services", "listedBloodGroups", "providerType", "coverageArea", "location", "sourceName", "sourceUrl", "observedAt", "confidence", "verificationStatus"];
   const patch = Object.fromEntries(allowed.filter((key) => req.body[key] !== undefined).map((key) => [key, req.body[key]]));
   const provider = await ResourceProvider.findById(req.params.id);
   if (!provider) return res.status(404).json({ error: "Provider not found" });
@@ -39,10 +47,53 @@ export const updateResource = asyncHandler(async (req, res) => {
   res.json({ data: provider });
 });
 
+function publicBooking(booking) {
+  const result = typeof booking.toObject === "function" ? booking.toObject() : { ...booking };
+  delete result.trackingTokenHash;
+  if (result.providerSnapshot) delete result.providerSnapshot.email;
+  return result;
+}
+
+function deliverySummary(delivery) {
+  return Object.fromEntries(Object.entries(delivery).map(([recipient, state]) => {
+    const value = typeof state?.toObject === "function" ? state.toObject() : state;
+    return [recipient, {
+      status: value.status,
+      attempted: Boolean(value.attempted),
+      sent: value.status === "sent",
+      ...(value.errorCode ? { errorCode: value.errorCode } : {}),
+    }];
+  }));
+}
+
+async function sendBookingEmail(booking, recipient, event) {
+  let result;
+  try {
+    result = await sendEmailEvent({
+      ...event,
+      source: { model: "AmbulanceBooking", id: booking._id, channel: recipient },
+    });
+  } catch (error) {
+    result = { status: "failed", errorCode: error?.code || "EMAIL_DELIVERY_FAILED" };
+  }
+
+  const status = DELIVERY_STATES.includes(result?.status) ? result.status : "failed";
+  const now = new Date();
+  booking.delivery[recipient].status = status;
+  booking.delivery[recipient].attempted = true;
+  booking.delivery[recipient].attemptedAt = now;
+  booking.delivery[recipient].sentAt = status === "sent" ? (result.sentAt || now) : undefined;
+  booking.delivery[recipient].errorCode = result?.errorCode;
+  booking.delivery[recipient].emailDelivery = result?._id;
+  await booking.save();
+}
+
 export const bookAmbulance = asyncHandler(async (req, res) => {
+  if (req.idempotencyKeyHash && await AmbulanceBooking.exists({ idempotencyKeyHash: req.idempotencyKeyHash })) {
+    return res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+  }
   const {
     providerId,
-    providerName,
     patientName,
     patientAge,
     ambulanceRequired,
@@ -59,20 +110,21 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Valid Patient Age is required" });
   }
 
-  let provider = null;
-  if (providerId) {
-    provider = await ResourceProvider.findById(providerId).lean().catch(() => null);
-  }
+  const provider = providerId
+    ? await ResourceProvider.findOne({ _id: providerId, kind: "ambulance", active: { $ne: false } })
+      .select("+email")
+      .lean()
+    : null;
+  if (!provider) return res.status(404).json({ error: "Active ambulance provider not found" });
 
-  const effectiveProviderName = provider?.name || providerName || "Mumbai Ambulance Service";
-  const effectiveProviderPhone = provider?.phone || "108 / 112";
   const userEmail = (contactEmail || req.user?.email || "").trim().toLowerCase();
   const reference = `AMB-${Date.now().toString(36).toUpperCase()}-${randomBytes(2).toString("hex").toUpperCase()}`;
+  const trackingToken = generateTrackingToken();
 
   const bookingData = {
     reference,
-    providerName: effectiveProviderName,
-    providerPhone: effectiveProviderPhone,
+    providerName: provider.name,
+    providerPhone: provider.phone,
     patientName: patientName.trim(),
     patientAge: Number(patientAge),
     ambulanceRequired: ambulanceRequired !== false,
@@ -82,37 +134,93 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
     notes: (bookingDetails || "").trim() || undefined,
   };
 
-  // 1. User confirmation email (if email provided)
-  if (userEmail) {
-    try {
-      await sendEmailEvent({
-        eventKey: `ambulance_booking_user_${reference}`,
-        to: userEmail,
-        template: "ambulance_booking_confirmation",
-        data: bookingData,
-      });
-    } catch (err) {
-      console.warn("Failed to dispatch ambulance booking user confirmation email:", err.message);
-    }
-  }
+  const booking = await AmbulanceBooking.create({
+    reference,
+    provider: provider._id,
+    user: req.user?.id || undefined,
+    providerSnapshot: {
+      name: provider.name,
+      phone: provider.phone,
+      email: provider.email,
+    },
+    requestSnapshot: {
+      patientName: bookingData.patientName,
+      patientAge: bookingData.patientAge,
+      ambulanceRequired: bookingData.ambulanceRequired,
+      pickupAddress: bookingData.pickupAddress,
+      contactEmail: bookingData.contactEmail,
+      contactPhone: bookingData.contactPhone,
+      notes: bookingData.notes,
+    },
+    status: "RECORDED",
+    delivery: {
+      user: { status: userEmail ? "pending" : "not_available" },
+      admin: { status: "pending" },
+      provider: { status: provider.email ? "pending" : "not_available" },
+    },
+    trackingTokenHash: hashTrackingToken(trackingToken),
+    idempotencyKeyHash: req.idempotencyKeyHash,
+  });
 
-  // 2. MedReach admin notification to medreachforyou@gmail.com
-  try {
-    await sendEmailEvent({
-      eventKey: `ambulance_booking_admin_${reference}`,
-      to: SYSTEM_NOTIFICATION_EMAIL,
-      template: "ambulance_booking_admin_notification",
+  if (userEmail) {
+    await sendBookingEmail(booking, "user", {
+      eventKey: `ambulance_booking_user_${reference}`,
+      to: userEmail,
+      template: "ambulance_booking_confirmation",
       data: bookingData,
     });
-  } catch (err) {
-    console.warn("Failed to dispatch ambulance booking admin notification email:", err.message);
+  }
+
+  await sendBookingEmail(booking, "admin", {
+    eventKey: `ambulance_booking_admin_${reference}`,
+    to: SYSTEM_NOTIFICATION_EMAIL,
+    template: "ambulance_booking_admin_notification",
+    data: bookingData,
+  });
+
+  if (provider.email) {
+    await sendBookingEmail(booking, "provider", {
+      eventKey: `ambulance_booking_provider_${reference}`,
+      to: provider.email,
+      template: "ambulance_booking_provider_notification",
+      data: bookingData,
+    });
   }
 
   res.status(201).json({
     success: true,
+    recorded: true,
     reference,
-    message: "Ambulance booking request submitted successfully. Response team and provider notified.",
-    booking: bookingData,
+    message: "Ambulance booking request recorded.",
+    booking: {
+      ...bookingData,
+      _id: booking._id,
+      status: booking.status,
+      createdAt: booking.createdAt,
+    },
+    delivery: deliverySummary(booking.delivery),
+    ...(!req.user ? { trackingToken } : {}),
   });
 });
 
+export const listAmbulanceBookings = asyncHandler(async (req, res) => {
+  const filter = ["admin", "system_admin"].includes(req.user.role) ? {} : { user: req.user.id };
+  const data = await AmbulanceBooking.find(filter).sort({ createdAt: -1 }).limit(100).lean();
+  res.json({ data: data.map(publicBooking), total: data.length });
+});
+
+export const getAmbulanceBooking = asyncHandler(async (req, res) => {
+  const booking = await AmbulanceBooking.findOne({ reference: req.params.reference })
+    .select("+trackingTokenHash");
+  if (!booking) return res.status(404).json({ error: "Ambulance booking not found" });
+
+  const isAdmin = req.user && ["admin", "system_admin"].includes(req.user.role);
+  const isOwner = req.user && booking.user && String(booking.user) === String(req.user.id);
+  const suppliedToken = req.get(TRACKING_TOKEN_HEADER);
+  const hasGuestAccess = verifyTrackingToken(suppliedToken, booking.trackingTokenHash);
+  if (!isAdmin && !isOwner && !hasGuestAccess) {
+    return res.status(403).json({ error: "Private tracking token required" });
+  }
+
+  res.json({ booking: publicBooking(booking), delivery: deliverySummary(booking.delivery) });
+});

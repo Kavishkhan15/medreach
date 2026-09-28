@@ -10,5 +10,15 @@ const schema = new mongoose.Schema({
   lastError: { type: String, maxlength: 240 },
   errorCode: { type: String, maxlength: 80 },
   sentAt: { type: Date },
+  retryable: { type: Boolean, default: false, index: true },
+  retryEnvelope: { type: String, select: false },
+  leaseToken: { type: String, select: false },
+  leaseUntil: { type: Date },
+  lastAttemptAt: { type: Date },
+  retriedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  retriedAt: { type: Date },
+  sourceModel: { type: String, enum: ["AmbulanceBooking"] },
+  sourceId: { type: mongoose.Schema.Types.ObjectId, index: true },
+  sourceChannel: { type: String, enum: ["user", "admin", "provider"] },
 }, { timestamps: true });
 export const EmailDelivery = mongoose.model("EmailDelivery", schema);
