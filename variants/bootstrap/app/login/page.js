@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth, validateLogin, validateRegister } from "@medreach/core";
+import { profileDestination, safeReturnTo, useAuth, validateLogin, validateRegister } from "@medreach/core";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -12,7 +12,19 @@ export default function LoginPage() {
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [notice, setNotice] = useState("");
+  const [returnTo, setReturnTo] = useState("/");
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setReturnTo(safeReturnTo(params.get("returnTo")));
+    if (params.get("registered") === "1") {
+      const pendingEmail = window.sessionStorage.getItem("medreach:pending-registration-email") || "";
+      window.sessionStorage.removeItem("medreach:pending-registration-email");
+      setForm((current) => ({ ...current, email: pendingEmail, password: "" }));
+      setNotice("Registration accepted. Check your email for verification instructions, then sign in to finish Profile & Security.");
+    }
+  }, []);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -22,11 +34,20 @@ export default function LoginPage() {
     setErrors(check.errors);
     if (!check.valid) return;
     try {
-      if (mode === "login") { await login(form.email, form.password); router.push("/"); }
+      if (mode === "login") {
+        const user = await login(form.email, form.password);
+        router.push(profileDestination(user, returnTo));
+      }
       else {
         const result = await register({ email: form.email, password: form.password, name: form.name });
-        if (result.accepted && !result.user) setNotice(result.message);
-        else router.push("/dashboard");
+        if (result.user) router.push(profileDestination(result.user, returnTo));
+        else if (result.accepted) {
+          window.sessionStorage.setItem("medreach:pending-registration-email", form.email.trim());
+          router.replace(`/login?returnTo=${encodeURIComponent(returnTo)}&registered=1`);
+          setMode("login");
+          setForm((current) => ({ ...current, password: "" }));
+          setNotice("Registration accepted. Check your email for verification instructions, then sign in to finish Profile & Security.");
+        } else setNotice(result.message);
       }
     } catch (err) {
       setServerError(err.message);
@@ -62,7 +83,7 @@ export default function LoginPage() {
             <button className="btn btn-primary btn-lg" type="submit">{mode === "login" ? "Sign in" : "Create account"}</button>
           </form>
           <div className="d-flex align-items-center gap-2 my-3" aria-hidden="true"><hr className="flex-grow-1" /><span className="small text-secondary">or</span><hr className="flex-grow-1" /></div>
-          <a className="btn btn-outline-dark w-100" href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/auth/google`}>
+          <a className="btn btn-outline-dark w-100" href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/auth/google?returnTo=${encodeURIComponent(returnTo)}`}>
             Continue with Google
           </a>
           <p className="disclaimer mt-2 mb-0">Google never shares your password with MedReach. Existing password accounts are never linked automatically.</p>
@@ -71,7 +92,7 @@ export default function LoginPage() {
               {mode === "login" ? "Need an account? Register here" : "Have an account? Sign in"}
             </button>
           </div>
-          {mode === "login" && <p className="text-center mt-2 mb-0"><Link href="/register">Open the registration page</Link></p>}
+          {mode === "login" && <p className="text-center mt-2 mb-0"><Link href={`/register?returnTo=${encodeURIComponent(returnTo)}`}>Open the registration page</Link></p>}
           {mode === "login" && <p className="text-center mt-2 mb-0"><Link href="/forgot-password">Forgot password?</Link></p>}
           <p className="disclaimer text-center mt-2 mb-0">Demo: admin@medreach.test / Admin1234</p>
         </div>

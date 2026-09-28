@@ -1,22 +1,34 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { useAuth, validateRegister } from "@medreach/core";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { safeReturnTo, useAuth, validateRegister } from "@medreach/core";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const { register } = useAuth();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [returnTo, setReturnTo] = useState("/");
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
+  useEffect(() => {
+    setReturnTo(safeReturnTo(new URLSearchParams(window.location.search).get("returnTo")));
+  }, []);
   const submit = async (e) => {
     e.preventDefault(); setMessage("");
     const result = validateRegister(form);
     setErrors(result.errors);
     if (!result.valid) return;
     setBusy(true);
-    try { const r = await register(form); setMessage(r.message); }
+    try {
+      const response = await register(form);
+      if (response.accepted) {
+        window.sessionStorage.setItem("medreach:pending-registration-email", form.email.trim());
+        router.replace(`/login?returnTo=${encodeURIComponent(returnTo)}&registered=1`);
+      } else setMessage(response.message);
+    }
     catch (err) { setMessage(err.message); }
     finally { setBusy(false); }
   };
@@ -29,7 +41,7 @@ export default function RegisterPage() {
       <div className="form-group"><label className="form-label" htmlFor="password">Password</label><input id="password" type="password" autoComplete="new-password" className={`form-control ${errors.password ? "is-invalid" : ""}`} minLength={12} maxLength={128} value={form.password} onChange={set("password")} />{errors.password && <p className="text-danger small">{errors.password}</p>}<p className="disclaimer">Use 12+ characters with upper, lower, and numeric characters.</p></div>
       <button className="btn btn-primary btn-block" disabled={busy}>{busy ? "Creating…" : "Create account"}</button>
       {message && <div className="alert alert-info mt-3" role="status">{message}</div>}
-      <p className="text-center mt-3"><Link href="/login">Already registered? Sign in</Link></p>
+      <p className="text-center mt-3"><Link href={`/login?returnTo=${encodeURIComponent(returnTo)}`}>Already registered? Sign in</Link></p>
     </form>
   </div>;
 }

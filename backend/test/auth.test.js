@@ -14,6 +14,17 @@ test("register with invalid body → 400", async () => {
   assert.equal(res.body.error, "Validation failed");
 });
 
+test("registration rejects an empty submitted region", async () => {
+  const res = await request(app).post("/api/auth/register").send({
+    name: "Patient",
+    email: "patient@example.test",
+    password: "StrongPassword123",
+    region: "   ",
+  });
+  assert.equal(res.status, 400);
+  assert.equal(res.body.error, "Validation failed");
+});
+
 test("GET /api/auth/me without token → 401", async () => {
   const res = await request(app).get("/api/auth/me");
   assert.equal(res.status, 401);

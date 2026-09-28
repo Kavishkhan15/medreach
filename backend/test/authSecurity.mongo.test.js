@@ -45,6 +45,11 @@ test("database-backed auth, OAuth, admin, and SMTP security flows", { skip: !iso
     assert.equal((await agent.post("/api/auth/verify-email").send({ token: verificationToken })).status, 200);
     assert.equal((await agent.post("/api/auth/verify-email").send({ token: verificationToken })).status, 400);
     const initialLogin = await agent.post("/api/auth/login").send({ email: "patient@example.test", password: "StrongPassword123" });
+    assert.equal(initialLogin.body.user.regionOnboardingRequired, true);
+    assert.equal((await agent.put("/api/auth/profile").send({ region: "   " })).status, 400);
+    const completedProfile = await agent.put("/api/auth/profile").send({ region: "Western Suburbs" });
+    assert.equal(completedProfile.status, 200);
+    assert.equal(completedProfile.body.user.regionOnboardingRequired, false);
     const originalRefresh = cookie(initialLogin, "refresh_token"); assert.ok(originalRefresh);
     const refreshed = await agent.post("/api/auth/refresh");
     assert.equal(refreshed.status, 200);
@@ -90,12 +95,17 @@ test("database-backed auth, OAuth, admin, and SMTP security flows", { skip: !iso
           audience: process.env.GOOGLE_CLIENT_ID, expiresIn: "5m" });
       return { ok: true, json: async () => ({ id_token: idToken, access_token: "must-not-store", refresh_token: "must-not-store" }) };
     };
-    const start = await request(app).get("/api/auth/google"); assert.equal(start.status, 302);
+    const start = await request(app).get("/api/auth/google?returnTo=%2Fjobs%2F507f1f77bcf86cd799439011"); assert.equal(start.status, 302);
     const stateValue = new URL(start.headers.location).searchParams.get("state");
     const stateDoc = await AuthToken.findOne({ purpose: "oauth_state" }).select("+metadata"); currentNonce = stateDoc.metadata.nonce;
+    assert.equal(stateDoc.metadata.returnTo, "/jobs/507f1f77bcf86cd799439011");
     resetGoogleJwksCacheForTests();
     const callback = await request(app).get(`/api/auth/google/callback?state=${stateValue}&code=test-code`);
     assert.equal(callback.status, 302); assert.match(callback.headers.location, /status=success/);
+    const newAccountResult = new URL(callback.headers.location);
+    assert.equal(newAccountResult.searchParams.get("returnTo"), "/jobs/507f1f77bcf86cd799439011");
+    assert.equal(newAccountResult.searchParams.get("accountCreated"), "true");
+    assert.equal(newAccountResult.searchParams.get("regionOnboardingRequired"), "true");
     const googleUser = await User.findOne({ email: "google@example.test" }).select("+googleSubject +passwordHash");
     assert.equal(googleUser.googleSubject, "google-new"); assert.equal(googleUser.passwordHash, undefined);
     assert.equal(JSON.stringify(await AuthToken.find().lean()).includes("must-not-store"), false);
@@ -109,7 +119,10 @@ test("database-backed auth, OAuth, admin, and SMTP security flows", { skip: !iso
     const linkedLoginState = new URL(linkedLoginStart.headers.location).searchParams.get("state");
     currentNonce = (await AuthToken.findOne({ purpose: "oauth_state", usedAt: { $exists: false } }).sort({ createdAt: -1 }).select("+metadata")).metadata.nonce;
     resetGoogleJwksCacheForTests();
-    assert.match((await request(app).get(`/api/auth/google/callback?state=${linkedLoginState}&code=test-code`)).headers.location, /status=success/);
+    const existingCallback = await request(app).get(`/api/auth/google/callback?state=${linkedLoginState}&code=test-code`);
+    assert.match(existingCallback.headers.location, /status=success/);
+    assert.equal(new URL(existingCallback.headers.location).searchParams.get("accountCreated"), "false");
+    assert.equal(new URL(existingCallback.headers.location).searchParams.get("regionOnboardingRequired"), "true");
     assert.equal(await User.countDocuments({ email: "google@example.test" }), 1);
 
     const collision = new User({ email: "collision@example.test", name: "Collision" }); await collision.setPassword("CollisionPass123"); await collision.save();

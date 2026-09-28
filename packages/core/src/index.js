@@ -11,6 +11,7 @@ export * from "./validation.js";
 export * from "./fixtures.js";
 export * from "./adminFixtures.js";
 export * from "./assistant.js";
+export * from "./authNavigation.js";
 
 // format.js — semantic tone metadata
 export {

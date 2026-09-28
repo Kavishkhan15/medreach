@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authStatus, changePassword, logout, me, requestVerification, revokeSession,
-  unlinkGoogle, updateProfile } from "@medreach/core";
+  safeReturnTo, unlinkGoogle, updateProfile } from "@medreach/core";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 const date = (value) => value ? new Date(value).toLocaleString() : "Unknown";
@@ -16,6 +16,8 @@ export default function Profile() {
   const [password, setPassword] = useState({ currentPassword: "", newPassword: "" });
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [onboarding, setOnboarding] = useState(false);
+  const [returnTo, setReturnTo] = useState("/dashboard");
 
   const refresh = useCallback(async () => {
     try {
@@ -24,22 +26,46 @@ export default function Profile() {
       setForm({ name: account.user.name || "", region: account.user.region || "", emergencyContact: account.user.emergencyContact || "" });
     } catch (error) { setStatus(error.message); }
   }, []);
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setOnboarding(params.get("onboarding") === "1");
+    const candidate = safeReturnTo(params.get("returnTo"), "/dashboard");
+    const parsed = new URL(candidate, window.location.origin);
+    setReturnTo(parsed.pathname === "/profile" && parsed.searchParams.get("onboarding") === "1" ? "/dashboard" : candidate);
+    refresh();
+  }, [refresh]);
   const action = async (fn, message = "Saved.") => {
     setBusy(true); setStatus("");
     try { await fn(); setStatus(message); await refresh(); } catch (error) { setStatus(error.message); }
     finally { setBusy(false); }
   };
+  const saveProfile = async (event) => {
+    event.preventDefault();
+    const next = { ...form, region: form.region.trim() };
+    if (onboarding && !next.region) {
+      setStatus("Enter your region to finish setting up your profile.");
+      return;
+    }
+    setBusy(true); setStatus("");
+    try {
+      const response = await updateProfile(next);
+      setUser(response.user);
+      window.dispatchEvent(new Event("medreach:auth-changed"));
+      if (onboarding) router.replace(returnTo);
+      else { setStatus("Saved."); await refresh(); }
+    } catch (error) { setStatus(error.message); }
+    finally { setBusy(false); }
+  };
   const signOut = async () => { await logout(); window.dispatchEvent(new Event("medreach:auth-changed")); router.push("/login"); };
   if (!user) return <div className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5"><h1 className="h3">Profile & security</h1><p role="status">{status || "Loading account…"}</p></div>;
-  return <><div className="mb-6"><span className="text-xs font-bold uppercase tracking-wider text-gray-500">Account</span><h1 className="text-2xl font-bold mt-1">Profile & security</h1>
-    <p>Manage your verified email, sign-in methods, password, and active sessions.</p></div>
+  return <><div className="mb-6"><span className="text-xs font-bold uppercase tracking-wider text-gray-500">Account</span><h1 className="text-2xl font-bold mt-1">{onboarding ? "Complete your profile" : "Profile & security"}</h1>
+    <p>{onboarding ? "Add your region so MedReach can prioritize nearby care and regional alerts." : "Manage your verified email, sign-in methods, password, and active sessions."}</p></div>
     {status && <div className="bg-blue-50 border border-blue-200 text-blue-800 rounded-md p-3 text-sm mb-4" role="status">{status}</div>}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div className="h-full"><form className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5 flex flex-col gap-3" onSubmit={(event) => { event.preventDefault(); action(() => updateProfile(form)); }}>
+      <div className="h-full"><form className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5 flex flex-col gap-3" onSubmit={saveProfile}>
         <h2 className="h5">Your profile</h2><p className="small text-secondary mb-1">{user.email}</p>
-        {["name", "region", "emergencyContact"].map((key) => <div key={key}><label htmlFor={key} className="block text-sm font-semibold mb-1">{key === "emergencyContact" ? "Emergency contact" : key[0].toUpperCase() + key.slice(1)}</label><input id={key} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" maxLength={120} value={form[key]} onChange={(event) => setForm({ ...form, [key]: event.target.value })} /></div>)}
-        <button className="bg-[var(--color-emergency)] text-white font-bold px-4 py-2 rounded-md hover:bg-[var(--color-emergency-dark)] text-sm" disabled={busy}>Save profile</button>
+        {["name", "region", "emergencyContact"].map((key) => <div key={key}><label htmlFor={key} className="block text-sm font-semibold mb-1">{key === "emergencyContact" ? "Emergency contact" : key[0].toUpperCase() + key.slice(1)}{onboarding && key === "region" ? " (required)" : ""}</label><input id={key} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" maxLength={120} required={onboarding && key === "region"} autoFocus={onboarding && key === "region"} value={form[key]} onChange={(event) => setForm({ ...form, [key]: event.target.value })} /></div>)}
+        <button className="bg-[var(--color-emergency)] text-white font-bold px-4 py-2 rounded-md hover:bg-[var(--color-emergency-dark)] text-sm" disabled={busy}>{busy ? "Saving…" : onboarding ? "Save and continue" : "Save profile"}</button>
       </form></div>
       <div className="h-full"><section className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5 h-full"><h2 className="h5">Email verification</h2>
         <p>{security.emailVerified ? "Verified" : "Not verified"}</p>

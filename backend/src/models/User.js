@@ -44,6 +44,13 @@ userSchema.virtual("isAdmin").get(function () {
   return ADMIN_ROLES.includes(this.role);
 });
 
+// Region is the only profile field required by the discovery experience. Keep
+// this derived so legacy and Google-created accounts become complete as soon as
+// a region is saved, without a second flag that can drift out of sync.
+userSchema.virtual("regionOnboardingRequired").get(function () {
+  return !String(this.region || "").trim();
+});
+
 // Strip sensitive/internal fields from any JSON representation.
 userSchema.set("toJSON", {
   virtuals: true,

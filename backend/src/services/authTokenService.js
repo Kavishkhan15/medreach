@@ -92,12 +92,12 @@ export async function listSessions(userId) {
   return sessions.map(({ familyId: _familyId, ...session }) => session);
 }
 
-export async function issueOAuthState({ flow, user }) {
+export async function issueOAuthState({ flow, user, returnTo }) {
   const state = opaqueToken();
   const nonce = opaqueToken();
   await AuthToken.create({ user: user?._id, purpose: "oauth_state", tokenHash: digestToken(state),
     expiresAt: new Date(Date.now() + env.oauthStateExpiresMinutes * 60000),
-    metadata: { flow, nonce, authVersion: Number(user?.authVersion || 0) } });
+    metadata: { flow, nonce, authVersion: Number(user?.authVersion || 0), ...(returnTo ? { returnTo } : {}) } });
   return { state, nonce };
 }
 

@@ -1,14 +1,21 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { useAuth, validateRegister } from "@medreach/core";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { profileDestination, safeReturnTo, useAuth, validateRegister } from "@medreach/core";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const { register } = useAuth();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [returnTo, setReturnTo] = useState("/");
+  useEffect(() => {
+    const candidate = new URLSearchParams(window.location.search).get("returnTo");
+    setReturnTo(safeReturnTo(candidate));
+  }, []);
   const set = (key) => (event) => setForm({ ...form, [key]: event.target.value });
   const submit = async (event) => {
     event.preventDefault();
@@ -19,7 +26,12 @@ export default function RegisterPage() {
     setBusy(true);
     try {
       const response = await register(form);
-      setMessage(response.message);
+      if (response.user) router.push(profileDestination(response.user, returnTo));
+      else if (response.accepted) {
+        window.sessionStorage.setItem("medreach:pending-registration-email", form.email.trim());
+        router.replace(`/login?returnTo=${encodeURIComponent(returnTo)}&registered=1`);
+      }
+      else setMessage(response.message);
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -35,7 +47,7 @@ export default function RegisterPage() {
       <div><label className="form-label fw-semibold" htmlFor="password">Password</label><input id="password" type="password" autoComplete="new-password" className={`form-control ${errors.password ? "is-invalid" : ""}`} minLength={12} maxLength={128} value={form.password} onChange={set("password")} />{errors.password && <div className="invalid-feedback">{errors.password}</div>}<p className="disclaimer mt-1 mb-0">Use 12+ characters with upper, lower, and numeric characters.</p></div>
       <button className="btn btn-primary btn-lg" disabled={busy}>{busy ? "Creating…" : "Create account"}</button>
       {message && <div className="alert alert-info mb-0" role="status">{message}</div>}
-      <p className="text-center mb-0"><Link href="/login">Already registered? Sign in</Link></p>
+      <p className="text-center mb-0"><Link href={`/login?returnTo=${encodeURIComponent(returnTo)}`}>Already registered? Sign in</Link></p>
     </form>
   </div></div>;
 }

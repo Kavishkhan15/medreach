@@ -22,7 +22,7 @@ router.post(
   body("email").isEmail().withMessage("Valid email required"),
   strongPassword(),
   body("name").trim().notEmpty().isLength({ max: 120 }).withMessage("Name required"),
-  body("region").optional().trim().isLength({ max: 120 }),
+  body("region").optional().trim().notEmpty().isLength({ max: 120 }),
   body("emergencyContact").optional().trim().isLength({ max: 120 }),
   validate,
   register
@@ -48,7 +48,7 @@ router.post("/reset-password", namedLimiter("recoveryLimiter"), body("token").is
 router.post("/request-verification", namedLimiter("recoveryLimiter"), requireAuth, requestVerification);
 router.post("/verify-email", namedLimiter("recoveryLimiter"), body("token").isLength({ min: 40, max: 128 }), validate, verifyEmail);
 router.put("/profile", requireAuth, body("name").optional().trim().notEmpty().isLength({ max: 120 }),
-  body("region").optional().trim().isLength({ max: 120 }),
+  body("region").optional().trim().notEmpty().isLength({ max: 120 }),
   body("emergencyContact").optional().trim().isLength({ max: 120 }), validate, updateProfile);
 router.put("/password", requireAuth, body("currentPassword").notEmpty(),
   body("newPassword").isLength({ min: 12, max: 128 }).matches(/[a-z]/).matches(/[A-Z]/).matches(/[0-9]/),

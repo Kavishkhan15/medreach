@@ -19,6 +19,8 @@ const context = (req) => ({ ip: req.ip, userAgent: req.get("user-agent") || "" }
 
 function publicUser(user) {
   const raw = user?.toObject ? user.toObject() : { ...user };
+  raw.regionOnboardingRequired = user?.regionOnboardingRequired
+    ?? !String(raw.region || "").trim();
   delete raw.passwordHash; delete raw.googleSubject; delete raw.authVersion; delete raw.__v;
   return raw;
 }
@@ -228,14 +230,28 @@ export const googleStart = asyncHandler(async (req, res) => {
     user = await User.findById(req.user.id).select("+authVersion");
     if (!user || user.accountStatus !== "active") return res.status(401).json({ error: "Authentication required" });
   }
-  const state = await issueOAuthState({ flow, user });
+  const returnTo = safeReturnTo(req.query.returnTo);
+  const state = await issueOAuthState({ flow, user, returnTo });
   await audit(req, { user: user?._id, action: "oauth_started", entityType: "GoogleIdentity" });
   res.redirect(302, buildGoogleAuthorizationUrl(state));
 });
 
-function googleResult(res, status) {
+function safeReturnTo(value) {
+  return typeof value === "string" && value.length <= 500 && value.startsWith("/")
+    && !value.startsWith("//") && !/[\r\n]/.test(value) ? value : undefined;
+}
+
+function googleResult(res, status, returnTo, signals = {}) {
   const url = new URL("/auth/google/callback", env.publicAppUrl);
   url.searchParams.set("status", status);
+  const safeDestination = safeReturnTo(returnTo);
+  if (safeDestination) url.searchParams.set("returnTo", safeDestination);
+  if (typeof signals.accountCreated === "boolean") {
+    url.searchParams.set("accountCreated", String(signals.accountCreated));
+  }
+  if (typeof signals.regionOnboardingRequired === "boolean") {
+    url.searchParams.set("regionOnboardingRequired", String(signals.regionOnboardingRequired));
+  }
   res.redirect(302, url.toString());
 }
 
@@ -245,9 +261,10 @@ export const googleCallback = asyncHandler(async (req, res) => {
     await audit(req, { action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "invalid_state" } });
     return googleResult(res, "invalid_state");
   }
+  const returnTo = safeReturnTo(state.metadata?.returnTo);
   if (req.query.error) {
     await audit(req, { action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "denied" } });
-    return googleResult(res, "denied");
+    return googleResult(res, "denied", returnTo);
   }
   try {
     const identity = await exchangeGoogleCode(req.query.code, state.metadata.nonce);
@@ -255,47 +272,52 @@ export const googleCallback = asyncHandler(async (req, res) => {
       const user = await User.findById(state.user).select("+googleSubject +passwordHash +authVersion");
       if (!user || user.accountStatus !== "active" || Number(user.authVersion || 0) !== Number(state.metadata.authVersion || 0)) {
         await audit(req, { user: state.user, action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "link_session_expired" } });
-        return googleResult(res, "link_session_expired");
+        return googleResult(res, "link_session_expired", returnTo);
       }
       if (identity.email !== user.email) {
         await audit(req, { user: user._id, action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "link_email_mismatch" } });
-        return googleResult(res, "link_email_mismatch");
+        return googleResult(res, "link_email_mismatch", returnTo);
       }
       const collision = await User.exists({ googleSubject: identity.subject, _id: { $ne: user._id } });
       if (collision) {
         await audit(req, { user: user._id, action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "identity_in_use" } });
-        return googleResult(res, "identity_in_use");
+        return googleResult(res, "identity_in_use", returnTo);
       }
       user.googleSubject = identity.subject;
       user.emailVerifiedAt ||= new Date();
       await user.save();
       await sendEmailEvent({ eventKey: `google-linked:${user._id}:${Date.now()}`, to: user.email, template: "google_linked" });
       await audit(req, { user: user._id, action: "provider_linked", entityType: "GoogleIdentity", entityId: user._id });
-      return googleResult(res, "linked");
+      return googleResult(res, "linked", returnTo);
     }
+    let accountCreated = false;
     let user = await User.findOne({ googleSubject: identity.subject }).select("+googleSubject +passwordHash +authVersion");
     if (!user) {
       const emailOwner = await User.findOne({ email: identity.email }).select("+passwordHash +googleSubject");
       if (emailOwner) {
         await audit(req, { user: emailOwner._id, action: "oauth_failed", entityType: "GoogleIdentity" });
-        return googleResult(res, "email_exists");
+        return googleResult(res, "email_exists", returnTo);
       }
       user = await User.create({ email: identity.email, name: identity.name, googleSubject: identity.subject,
         emailVerifiedAt: new Date(), role: "user" });
+      accountCreated = true;
     }
     if (user.accountStatus !== "active") {
       await audit(req, { user: user._id, action: "oauth_failed", entityType: "GoogleIdentity",
         after: { reason: "account_unavailable" } });
-      return googleResult(res, "account_unavailable");
+      return googleResult(res, "account_unavailable", returnTo);
     }
     user.lastLogin = new Date();
     await user.save();
     await establishSession(req, res, user);
     await audit(req, { user: user._id, action: "oauth_login", entityType: "GoogleIdentity", entityId: user._id });
-    return googleResult(res, "success");
+    return googleResult(res, "success", returnTo, {
+      accountCreated,
+      regionOnboardingRequired: user.regionOnboardingRequired,
+    });
   } catch {
     await audit(req, { action: "oauth_failed", entityType: "GoogleIdentity" });
-    return googleResult(res, "provider_error");
+    return googleResult(res, "provider_error", returnTo);
   }
 });
 

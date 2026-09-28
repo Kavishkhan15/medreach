@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { me, profileDestination, safeReturnTo } from "@medreach/core";
 
 const messages = {
   denied: "Google sign-in was cancelled.", invalid_state: "This sign-in request is invalid or has already been used.",
@@ -17,16 +18,22 @@ export default function GoogleCallbackPage() {
   const router = useRouter();
   const [status, setStatus] = useState("Checking Google sign-in…");
   useEffect(() => {
+    let active = true;
     const value = new URLSearchParams(window.location.search).get("status") || "provider_error";
+    const candidate = new URLSearchParams(window.location.search).get("returnTo");
+    const returnTo = safeReturnTo(candidate, "/dashboard");
     if (value === "success") {
       window.dispatchEvent(new Event("medreach:auth-changed"));
       setStatus("Google sign-in complete. Redirecting…");
-      router.replace("/dashboard");
+      me().then(({ user }) => {
+        if (active) router.replace(profileDestination(user, returnTo));
+      }).catch((error) => { if (active) setStatus(error.message); });
     } else if (value === "linked") {
       window.dispatchEvent(new Event("medreach:auth-changed"));
       setStatus("Google sign-in is now linked to your account. Redirecting…");
       router.replace("/profile?provider=linked");
     } else setStatus(messages[value] || messages.provider_error);
+    return () => { active = false; };
   }, [router]);
   return <div className="container"><div className="surface" style={{ maxWidth: 600, margin: "0 auto" }}>
     <h1 className="h3">Google sign-in</h1><p role="status">{status}</p><Link href="/login">Return to sign in</Link>
