@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import GoogleMapView from "../../components/GoogleMapView";
+import AmbulanceBookingModal from "../../components/AmbulanceBookingModal";
 
 const BASE_API =
   (typeof process !== "undefined" && process.env.NEXT_PUBLIC_API_URL) ||
@@ -27,10 +28,9 @@ export default function MapPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [revision, setRevision] = useState(0);
   const [selected, setSelected] = useState("");
   const [showBooking, setShowBooking] = useState(false);
-  const [bookingPickup, setBookingPickup] = useState("");
-  const [ambulanceRequired, setAmbulanceRequired] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -51,6 +51,7 @@ export default function MapPage() {
       })
       .catch((err) => {
         if (active) {
+          setItems([]);
           setError(err.message);
           setLoading(false);
         }
@@ -59,7 +60,7 @@ export default function MapPage() {
     return () => {
       active = false;
     };
-  }, [category]);
+  }, [category, revision]);
 
   const visible = useMemo(
     () =>
@@ -144,7 +145,13 @@ export default function MapPage() {
       />
 
       {loading && <p role="status">Loading {categories[category].toLowerCase()} data…</p>}
-      {error && <div className="alert alert-danger" role="alert">{error}</div>}
+      {error && (
+        <div className="alert alert-danger d-flex flex-wrap align-items-center gap-2" role="alert">
+          <span className="me-auto">{error}</span>
+          <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => setRevision((value) => value + 1)}>Retry</button>
+          <Link className="btn btn-sm btn-outline-secondary" href={`/${category}`}>Open directory</Link>
+        </div>
+      )}
 
       <div className="grid-map">
         {/* Left Column: Interactive Map & Detailed Card */}
@@ -231,9 +238,9 @@ export default function MapPage() {
                   <Link
                     className="btn btn-danger btn-sm fw-bold"
                     style={{ marginLeft: "auto" }}
-                    href={`/requests/new?hospital=${selectedItem._id || selectedItem.slug}&isEmergency=true&flow=emergency`}
+                    href={`/requests/new?hospital=${selectedItem._id || selectedItem.slug}&flow=standard`}
                   >
-                    Request Emergency Bed
+                    Request Bed
                   </Link>
                 )}
                 {category === "blood-banks" && (
@@ -241,32 +248,12 @@ export default function MapPage() {
                     Request / Donate Blood
                   </Link>
                 )}
-              <button className="btn btn-success btn-sm ms-auto" onClick={() => setShowBooking(true)}>Book Ambulance</button>
-</div>
-{showBooking && selectedItem && category === "ambulances" && (
-  <div className="modal-overlay" onClick={() => setShowBooking(false)} style={{position:"fixed", inset:0, backgroundColor:"rgba(0,0,0,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000}}>
-    <div className="modal-content bg-white p-4 rounded shadow" style={{width:"90%", maxWidth:"400px"}} onClick={e=>e.stopPropagation()}>
-      <h3 className="text-lg font-bold mb-2">Book Ambulance – {selectedItem.name}</h3>
-      <label className="block mb-2">
-        Ambulance Required?
-        <select className="mt-1 block w-full" value={ambulanceRequired ? "yes" : "no"} onChange={e=>setAmbulanceRequired(e.target.value==="yes")}>
-          <option value="no">No</option>
-          <option value="yes">Yes</option>
-        </select>
-      </label>
-      {ambulanceRequired && (
-        <label className="block mb-2">
-          Pickup Address
-          <input className="mt-1 block w-full border rounded p-1" type="text" value={bookingPickup} onChange={e=>setBookingPickup(e.target.value)} placeholder="Enter address" />
-        </label>
-      )}
-      <div className="flex justify-end gap-2 mt-3">
-        <button className="btn btn-sm btn-outline-secondary" onClick={()=>setShowBooking(false)}>Cancel</button>
-        <button className="btn btn-sm btn-primary" onClick={()=>{ console.log({providerId: selectedItem._id || selectedItem.slug, ambulanceRequired, bookingPickup}); setShowBooking(false); }}>Submit</button>
-      </div>
-    </div>
-  </div>
-)}
+                {category === "ambulances" && (
+                  <button className="btn btn-success btn-sm ms-auto" onClick={() => setShowBooking(true)}>
+                    Book Ambulance
+                  </button>
+                )}
+              </div>
 
               {/* Category-Specific Rich Information */}
               {category === "blood-banks" && (
@@ -305,7 +292,7 @@ export default function MapPage() {
                     </div>
                   )}
                   <p className="disclaimer mt-2 mb-0">
-                    Blood availability is synchronized with registered transfusion services. In urgent cases, call the blood bank directly to reserve units.
+                    MedReach does not display live blood inventory. Call the blood bank directly to confirm availability and fulfillment.
                   </p>
                 </div>
               )}
@@ -367,7 +354,7 @@ export default function MapPage() {
                     </p>
                   )}
                   <p className="disclaimer mt-2 mb-0">
-                    Emergency ambulance fleet dispatch. For immediate life-threatening resuscitation or disaster coordination, dial 108 or 112.
+                    Ambulance provider directory. Call the provider to confirm availability; for immediate danger, dial 108 or 112.
                   </p>
                 </div>
               )}
@@ -511,6 +498,9 @@ export default function MapPage() {
           </div>
         </div>
       </div>
+      {showBooking && selectedItem && category === "ambulances" && (
+        <AmbulanceBookingModal provider={selectedItem} onClose={() => setShowBooking(false)} />
+      )}
     </>
   );
 }

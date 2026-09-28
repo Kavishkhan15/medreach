@@ -60,10 +60,14 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
         contactPhone: requestData.contactPhone,
         contactEmail: requestData.contactEmail,
       };
-      const res = await post("/api/blood-requests", payload);
+      const res = await post("/api/blood-requests/standard", payload);
+      const reference = res.reference || res.bloodRequest?.reference;
+      if (res.trackingToken && reference) {
+        window.sessionStorage.setItem(`medreach:blood-request-token:${reference}`, res.trackingToken);
+      }
       setSubmittedData({
         type: "REQUEST",
-        reference: res.reference || res.bloodRequest?.reference || "BR-" + Date.now().toString(36).toUpperCase(),
+        reference,
         bloodBankName: bloodBank?.name,
         details: payload,
       });
@@ -96,10 +100,14 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
         contactEmail: donateData.contactEmail,
         notes: donateData.notes,
       };
-      const res = await post("/api/blood-requests", payload);
+      const res = await post("/api/blood-requests/standard", payload);
+      const reference = res.reference || res.bloodRequest?.reference;
+      if (res.trackingToken && reference) {
+        window.sessionStorage.setItem(`medreach:blood-request-token:${reference}`, res.trackingToken);
+      }
       setSubmittedData({
         type: "DONATION",
-        reference: res.reference || res.bloodRequest?.reference || "BDP-" + Date.now().toString(36).toUpperCase(),
+        reference,
         bloodBankName: bloodBank?.name,
         details: payload,
       });
@@ -160,8 +168,8 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
             </h4>
             <p className="small text-secondary mb-3">
               {submittedData.type === "REQUEST"
-                ? "Your request has been routed to the duty officer. They will call you to confirm units."
-                : "Thank you for saving lives! The blood bank will coordinate your appointment."}
+                ? "MedReach recorded your request. Contact the blood bank directly to confirm inventory and fulfillment."
+                : "MedReach recorded your pledge. Contact the blood bank directly to confirm eligibility and an appointment."}
             </p>
 
             <div className="surface p-3 mb-3 text-start small">
@@ -252,7 +260,7 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
                     : "Please sign in to schedule your blood donation pledge."}
                 </p>
                 <div className="flex justify-center gap-2">
-                  <Link href="/login?redirect=/blood-banks" className="btn btn-sm btn-danger">
+                  <Link href="/login?returnTo=%2Fblood-banks" className="btn btn-sm btn-danger">
                     Sign In / Register
                   </Link>
                   <button type="button" className="btn btn-sm btn-outline-secondary" onClick={onClose}>

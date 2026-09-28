@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useHospital, availabilityMeta, saveHospital, useAuth } from "@medreach/core";
 import { toneClass } from "../../../lib/tone";
 import FacilityStatus from "../../../components/FacilityStatus";
@@ -13,19 +12,12 @@ function edStatus(h) {
 
 export default function HospitalPage({ params }) {
   const { slug } = params;
-  const searchParams = useSearchParams();
-  const flow = searchParams.get("flow");
-  const isEmergencyFlow =
-    flow === "emergency" ||
-    searchParams.get("from") === "emergency" ||
-    searchParams.get("emergency") === "true" ||
-    searchParams.get("isEmergency") === "true";
-
-  const { hospital, loading, notFound } = useHospital(slug);
+  const { hospital, loading, notFound, error, retry } = useHospital(slug);
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);
 
   if (loading) return <p className="text-secondary">Loading…</p>;
+  if (error) return <div className="alert alert-danger d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert"><span>{error}</span><button type="button" className="btn btn-sm btn-outline-danger" onClick={retry}>Retry</button></div>;
   if (notFound || !hospital) {
     return <div className="surface">Hospital not found. <Link href="/hospitals">Back to directory</Link></div>;
   }
@@ -39,20 +31,8 @@ export default function HospitalPage({ params }) {
   return (
     <article>
       <nav aria-label="Breadcrumb" className="mb-2">
-        {isEmergencyFlow ? (
-          <Link href="/emergency" className="small text-decoration-none">← Back to Emergency mode</Link>
-        ) : (
-          <Link href="/hospitals" className="small text-decoration-none">← Directory</Link>
-        )}
+        <Link href="/hospitals" className="small text-decoration-none">← Directory</Link>
       </nav>
-
-      {isEmergencyFlow && (
-        <div className="mb-2">
-          <span className={`status-pill ${toneClass.critical}`}>
-            Emergency Response Flow
-          </span>
-        </div>
-      )}
 
       <div className="flex flex-wrap justify-between items-start gap-2">
         <div>
@@ -97,26 +77,15 @@ export default function HospitalPage({ params }) {
                 <a className="btn btn-outline-secondary" target="_blank" rel="noopener noreferrer"
                   href={`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Navigate</a>
               )}
-              {isEmergencyFlow ? (
-                <Link
-                  className="btn btn-primary"
-                  style={{ backgroundColor: "var(--color-emergency)", borderColor: "var(--color-emergency)", color: "#fff" }}
-                  href={`/requests/new?hospital=${hospital._id}&isEmergency=true&flow=emergency`}
-                >
-                  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
-                  Request Emergency Bed
-                </Link>
-              ) : (
-                <Link
-                  className="btn btn-outline-secondary"
-                  href={`/requests/new?hospital=${hospital._id}&isEmergency=false&flow=standard`}
-                >
-                  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
-                  Request Bed
-                </Link>
-              )}
+              <Link
+                className="btn btn-outline-secondary"
+                href={`/requests/new?hospital=${hospital._id}&flow=standard`}
+              >
+                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+                Request Bed
+              </Link>
 
-              {!isEmergencyFlow && user && (
+              {user && (
                 <button className="btn btn-outline-secondary" onClick={onSave} disabled={saved}>
                   {saved ? (
                     <><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polyline points="20 6 9 17 4 12"/></svg>Saved</>
@@ -127,16 +96,10 @@ export default function HospitalPage({ params }) {
               )}
             </div>
             <hr />
-            {isEmergencyFlow ? (
-              <p className="disclaimer mb-0">
-                Direct public emergency triage dispatch. For immediate life danger, call 112.
-              </p>
-            ) : (
-              <p className="disclaimer mb-0">
-                Verification: {hospital.verificationStatus || "unverified"}. Availability reflects the
-                last known observation and may have changed. Confirm by phone before travelling.
-              </p>
-            )}
+            <p className="disclaimer mb-0">
+              Verification: {hospital.verificationStatus || "unverified"}. Availability reflects the
+              last known observation and may have changed. Confirm by phone before travelling.
+            </p>
           </div>
         </div>
       </div>

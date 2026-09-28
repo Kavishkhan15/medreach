@@ -6,7 +6,7 @@ export default function EmergencyHospitalCard({ hospital, category }) {
   const hasCoords = coords.length === 2 && Number.isFinite(coords[0]) && Number.isFinite(coords[1]);
   const emergencyPhone = hospital.emergencyPhone || hospital.phone || "112";
 
-  const requestUrl = `/requests/new?hospital=${hospital._id || hospital.slug}&isEmergency=true&flow=emergency&emergencyType=${encodeURIComponent(
+  const requestUrl = `/requests/new?hospital=${hospital._id || hospital.slug}&flow=emergency&emergencyType=${encodeURIComponent(
     category?.id || "general"
   )}&facility=Emergency%20Department`;
 
@@ -25,7 +25,7 @@ export default function EmergencyHospitalCard({ hospital, category }) {
 
       <div className="card-body" style={{ padding: "1rem", display: "flex", flexDirection: "column", flexGrow: 1 }}>
         <h3 className="h5 mb-1 fw-bold">
-          <Link href={`/hospitals/${hospital.slug}?flow=emergency`}>
+          <Link href={`/hospitals/${hospital.slug}`}>
             {hospital.name}
           </Link>
         </h3>
@@ -80,7 +80,7 @@ export default function EmergencyHospitalCard({ hospital, category }) {
           </Link>
 
           <div style={{ textAlign: "right" }}>
-            <Link href={`/hospitals/${hospital.slug}?flow=emergency`} className="disclaimer">
+            <Link href={`/hospitals/${hospital.slug}`} className="disclaimer">
               View Full Details →
             </Link>
           </div>

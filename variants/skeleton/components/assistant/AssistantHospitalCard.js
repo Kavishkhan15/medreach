@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import EmergencyIcon from "../EmergencyIcons";
 
-export default function AssistantHospitalCard({ hospital, onAction }) {
+export default function AssistantHospitalCard({ hospital, emergency = false }) {
   if (!hospital) return null;
 
   const hasCoords =
@@ -15,7 +15,9 @@ export default function AssistantHospitalCard({ hospital, onAction }) {
   const phone = hospital.phone || hospital.emergencyPhone;
   const slug = hospital.slug || hospital.id;
 
-  const requestBedUrl = `/requests/new?hospital=${encodeURIComponent(hospital.id || slug)}&isEmergency=true&flow=emergency&facility=Emergency%20Department`;
+  const requestBedUrl = emergency
+    ? `/requests/new?hospital=${encodeURIComponent(hospital.id || slug)}&flow=emergency&facility=Emergency%20Department`
+    : `/requests/new?hospital=${encodeURIComponent(hospital.id || slug)}&flow=standard`;
 
   return (
     <div className="card border-0 shadow-sm rounded-3 mb-2 overflow-hidden bg-white assistant-card">

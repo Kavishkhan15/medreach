@@ -33,6 +33,7 @@ export default function JobDetailPage({ params }) {
   const { user } = useAuth();
   const [job, setJob] = useState(null);
   const [loadingJob, setLoadingJob] = useState(true);
+  const [jobRevision, setJobRevision] = useState(0);
 
   // Candidate Form Fields
   const [candidateName, setCandidateName] = useState("");
@@ -61,6 +62,7 @@ export default function JobDetailPage({ params }) {
   useEffect(() => {
     let active = true;
     setLoadingJob(true);
+    setStatus("");
     productApi(`/api/jobs/${params?.id}`)
       .then((res) => {
         if (active) {
@@ -81,7 +83,7 @@ export default function JobDetailPage({ params }) {
     return () => {
       active = false;
     };
-  }, [params?.id]);
+  }, [params?.id, jobRevision]);
 
   // Pre-fill user details if logged in and form is untouched
   useEffect(() => {
@@ -199,9 +201,7 @@ export default function JobDetailPage({ params }) {
 
       const result = await post(`/api/jobs/${params.id}/apply`, payload);
 
-      const refId =
-        result.application?._id ||
-        `MED-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+      const refId = result.application?._id || null;
 
       const orgName = job?.hospital?.name || job?.provider?.name || job?.organizationName || "Healthcare Facility";
 
@@ -252,7 +252,10 @@ export default function JobDetailPage({ params }) {
         <div className="alert alert-warning mt-3" role="alert">
           {status === "Authentication required" ? "Login required" : (status || "Job listing not found or is no longer active.")}
           {(status === "Login required" || status === "Authentication required") && (
-            <> · <Link href="/login" className="alert-link">Sign in</Link></>
+            <> · <Link href={`/login?returnTo=${encodeURIComponent(`/jobs/${params.id}`)}`} className="alert-link">Sign in</Link></>
+          )}
+          {status && status !== "Login required" && status !== "Authentication required" && (
+            <> · <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setJobRevision((value) => value + 1)}>Retry</button></>
           )}
         </div>
       )}
@@ -326,8 +329,11 @@ export default function JobDetailPage({ params }) {
 
                 {/* Reference ID Card */}
                 <div className="p-3 bg-light rounded border text-center mb-3">
-                  <span className="text-muted small text-uppercase fw-semibold d-block">Application Reference ID</span>
-                  <code className="fs-5 fw-bold text-primary">{submissionRecap.referenceId}</code>
+                  {submissionRecap.referenceId ? (
+                    <><span className="text-muted small text-uppercase fw-semibold d-block">Application Reference ID</span><code className="fs-5 fw-bold text-primary">{submissionRecap.referenceId}</code></>
+                  ) : (
+                    <span className="text-muted small">Application recorded. No reference ID was returned.</span>
+                  )}
                   <div className="text-muted small mt-1">Submitted on {submissionRecap.submittedAt}</div>
                 </div>
 
@@ -657,7 +663,7 @@ export default function JobDetailPage({ params }) {
                   >
                     {status === "Authentication required" ? "Login required" : status}
                     {(status === "Login required" || status === "Authentication required") && (
-                      <> · <Link href="/login" className="alert-link">Sign in</Link></>
+                      <> · <Link href={`/login?returnTo=${encodeURIComponent(`/jobs/${params.id}`)}`} className="alert-link">Sign in</Link></>
                     )}
                   </div>
                 )}

@@ -11,15 +11,20 @@ import {
 } from "@vis.gl/react-google-maps";
 import Link from "next/link";
 
-export function MapFallback() {
+export function MapFallback({ category = "hospitals", categoryLabel = "Hospitals", itemCount = 0 }) {
   return (
     <div className="map-fallback">
       <div className="text-center p-4">
         <div style={{ fontSize: "2rem" }} aria-hidden="true"><svg width="2rem" height="2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg></div>
-        <p className="mb-1 fw-semibold">Map view</p>
-        <p className="disclaimer mb-0">
-          A tile-map provider plugs in here. Use the list to select a hospital.
+        <p className="mb-1 fw-semibold">Map view is unavailable</p>
+        <p className="disclaimer mb-2">
+          Browse the {categoryLabel.toLowerCase()} list on this page or open the full directory.
         </p>
+        <div className="d-flex flex-wrap justify-content-center gap-2 mb-2">
+          <Link className="btn btn-sm btn-outline-primary" href={`/${category}`}>Open directory</Link>
+          <a className="btn btn-sm btn-danger" href="tel:112">Call 112</a>
+        </div>
+        <p className="disclaimer mb-0">{itemCount} listings remain available below.</p>
       </div>
     </div>
   );
@@ -56,7 +61,7 @@ export default function GoogleMapView({
   if (!apiKey) {
     return (
       <div className="map-canvas" role="img" aria-label={`Map of Mumbai ${categoryLabel || "care resources"}`}>
-        <MapFallback />
+        <MapFallback category={category} categoryLabel={categoryLabel} itemCount={items.length} />
       </div>
     );
   }
