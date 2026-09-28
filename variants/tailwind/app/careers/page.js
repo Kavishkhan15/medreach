@@ -62,6 +62,7 @@ export default function Careers() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [revision, setRevision] = useState(0);
 
   // Filters State
   const [searchQuery, setSearchQuery] = useState("");
@@ -119,7 +120,7 @@ export default function Careers() {
     return () => {
       live = false;
     };
-  }, []);
+  }, [revision]);
 
   // Filter organizations based on active search & selector criteria
   const filteredOrgs = useMemo(() => {
@@ -302,8 +303,8 @@ export default function Careers() {
       setModalFeedback({
         type: "success",
         message: response.demo
-          ? "Demo application recorded! This verified posting is part of our simulation dataset."
-          : `Application submitted successfully! Reference ID: ${response.application?._id || "MED-APP"}. The healthcare facility has received your application.`,
+          ? "Demo application recorded. No healthcare organization was contacted."
+          : `Application recorded successfully.${response.application?._id ? ` Reference ID: ${response.application._id}.` : ""} Track its status from your dashboard.`,
       });
       setSop("");
       setResumeFile(null);
@@ -474,13 +475,16 @@ export default function Careers() {
         <div className="alert alert-danger py-2 mb-4" role="alert">
           {error === "Authentication required" ? "Login required" : error}
           {(error === "Login required" || error === "Authentication required") && (
-            <> · <Link href="/login" className="alert-link">Sign in</Link></>
+            <> · <Link href="/login?returnTo=%2Fcareers" className="alert-link">Sign in</Link></>
+          )}
+          {error !== "Login required" && error !== "Authentication required" && (
+            <> · <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => setRevision((value) => value + 1)}>Retry</button></>
           )}
         </div>
       )}
 
       {/* Empty State when zero orgs match */}
-      {!loading && filteredOrgs.length === 0 && (
+      {!loading && !error && filteredOrgs.length === 0 && (
         <div className="surface text-center py-5 px-3 my-4">
           <div className="mb-3 text-muted"><EmergencyIcon name="search" size={48} /></div>
           <h2 className="h4 fw-bold text-dark mb-2">No Verified Organizations Found</h2>
@@ -624,7 +628,7 @@ export default function Careers() {
                     <div className={`alert alert-${modalFeedback.type} mb-4 small`} role="alert">
                       {modalFeedback.message === "Authentication required" ? "Login required" : modalFeedback.message}
                       {(modalFeedback.message === "Login required" || modalFeedback.message === "Authentication required") && (
-                        <> · <Link href="/login" className="alert-link">Sign in</Link></>
+                        <> · <Link href="/login?returnTo=%2Fcareers" className="alert-link">Sign in</Link></>
                       )}
                     </div>
                   )}

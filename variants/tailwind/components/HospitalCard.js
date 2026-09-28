@@ -8,12 +8,12 @@ function edStatus(h) {
 }
 
 // Scannable-in-seconds hospital card. Information hierarchy per spec §18.
-export default function HospitalCard({ hospital, rank, flow }) {
+export default function HospitalCard({ hospital, rank }) {
   const ed = edStatus(hospital);
   const edMeta = availabilityMeta(ed);
   const r = rank || hospital._rank || hospital._ranking;
   const verified = hospital.verificationStatus === "verified";
-  const detailsUrl = flow === "emergency" ? `/hospitals/${hospital.slug}?flow=emergency` : `/hospitals/${hospital.slug}`;
+  const detailsUrl = `/hospitals/${hospital.slug}`;
 
   return (
     <div className="relative h-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] shadow-[var(--shadow-sm)] transition-[transform,box-shadow] duration-150 hover:-translate-y-[3px] hover:shadow-[var(--shadow-md)]">

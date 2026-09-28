@@ -55,16 +55,15 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
         contactEmail: contactEmail.trim() || undefined,
         contactPhone: contactPhone.trim() || undefined,
       });
-      setSuccessMsg(res.message || `Ambulance booking recorded (${res.reference || "CONFIRMED"}). Dispatch team notified.`);
-      setTimeout(() => {
-        onClose();
-      }, 2500);
+      if (res.trackingToken) {
+        window.sessionStorage.setItem(`medreach:ambulance-booking-token:${res.reference}`, res.trackingToken);
+      }
+      const providerMessage = res.delivery?.provider?.sent
+        ? "The provider notification email was sent. Call to confirm dispatch."
+        : "The provider notification email was not sent. Call the provider directly to confirm availability.";
+      setSuccessMsg(`Request ${res.reference} was recorded. ${providerMessage}`);
     } catch (err) {
-      // Fallback if backend route isn't available
-      setSuccessMsg(`Ambulance dispatch request received for ${provider?.name || "LifeLine EMS"}. Dispatch team will call ${contactPhone || "your contact number"} immediately.`);
-      setTimeout(() => {
-        onClose();
-      }, 2500);
+      setErrorMsg(err.message || "Failed to submit ambulance booking. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -120,7 +119,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
             <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-600">
               <EmergencyIcon name="check" size={28} />
             </div>
-            <h4 className="text-base font-bold text-gray-900 mb-2">Booking Dispatched!</h4>
+            <h4 className="text-base font-bold text-gray-900 mb-2">Booking Request Recorded</h4>
             <p className="text-sm text-gray-600 mb-4">{successMsg}</p>
             <button
               type="button"
@@ -173,7 +172,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
                   onChange={(e) => setAmbulanceRequired(e.target.value === "yes")}
                 >
                   <option value="no">No (Consult Only)</option>
-                  <option value="yes">Yes (Immediate Dispatch)</option>
+                  <option value="yes">Yes (Pickup requested)</option>
                 </select>
               </div>
             </div>

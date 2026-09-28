@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect, useTransition } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import EmergencyIcon from "./EmergencyIcons";
 import {
@@ -59,22 +59,11 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
     }
   }, [isOpen]);
 
-  // Listen for global custom event to open assistant (e.g. from SosButton or Hero)
-  useEffect(() => {
-    const handleOpen = (e) => {
-      setIsOpen(true);
-      if (e?.detail?.query) {
-        send(e.detail.query, { locality: label, origin });
-      }
-    };
-    window.addEventListener("medreach:open-assistant", handleOpen);
-    return () => window.removeEventListener("medreach:open-assistant", handleOpen);
-  }, [label, origin, send]);
-
   const handleSend = (textToSend) => {
-    const text = (textToSend ?? input).trim();
-    if (!text || sending) return;
-    send(text, { locality: label, origin });
+    const message = typeof textToSend === "string" ? textToSend : input;
+    if (!message || !message.trim() || sending) return;
+
+    send(message.trim(), { locality: label, coordinates: origin?.coordinates });
     setInput("");
   };
 
@@ -92,16 +81,19 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
     <>
       {/* Floating Assistant Launcher Button (Bottom Right) */}
       {!isOpen && (
-        <div className="assistant-launcher-container" style={{ position: "fixed", bottom: "24px", right: "24px", zIndex: 1050 }}>
+        <div className="fixed bottom-6 right-6 z-50">
           <button
             type="button"
-            className="btn btn-primary shadow-lg rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2 assistant-launcher-btn"
+            className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white font-semibold text-sm shadow-xl hover:shadow-2xl transition-all duration-200 hover:-translate-y-0.5 group focus:outline-none focus:ring-4 focus:ring-red-200"
             onClick={() => setIsOpen(true)}
             aria-label="Open MedReach Healthcare Assistant"
           >
-            <span className="assistant-pulse-indicator" />
-            <EmergencyIcon name="bot" size={20} className="text-white" />
-            <span className="fw-semibold small d-none d-sm-inline">MedReach Assistant</span>
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-200 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
+            </span>
+            <EmergencyIcon name="bot" size={18} className="text-white" />
+            <span className="hidden sm:inline font-semibold">MedReach Assistant</span>
           </button>
         </div>
       )}
@@ -109,46 +101,36 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
       {/* Expandable Chat Window */}
       {isOpen && (
         <div
-          className={`assistant-chat-panel shadow-lg rounded-4 d-flex flex-column ${isExpanded ? "assistant-expanded" : ""}`}
-          style={{
-            position: "fixed",
-            bottom: "24px",
-            right: "24px",
-            width: isExpanded ? "640px" : "400px",
-            maxWidth: "calc(100vw - 32px)",
-            height: isExpanded ? "760px" : "620px",
-            maxHeight: "calc(100vh - 48px)",
-            backgroundColor: "#ffffff",
-            zIndex: 1060,
-            border: "1px solid #e2e8f0",
-            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-          }}
+          className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transition-all duration-300 ${
+            isExpanded
+              ? "w-[calc(100vw-32px)] sm:w-[640px] h-[calc(100vh-48px)] sm:h-[760px] max-h-[880px]"
+              : "w-[calc(100vw-32px)] sm:w-[410px] h-[calc(100vh-48px)] sm:h-[620px] max-h-[700px]"
+          }`}
         >
           {/* Header */}
-          <div className="p-3 bg-light border-bottom d-flex align-items-center justify-content-between rounded-top-4">
-            <div className="d-flex align-items-center gap-2">
-              <div className="assistant-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: "36px", height: "36px" }}>
+          <div className="p-3.5 bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 shadow-sm">
                 <EmergencyIcon name="bot" size={20} />
               </div>
               <div>
-                <h3 className="h6 mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+                <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
                   {ASSISTANT_CHAT_TITLE}
-                  <span className="badge bg-success-subtle text-success border border-success-subtle" style={{ fontSize: "0.68rem" }}>
+                  <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Online
                   </span>
                 </h3>
-                <div className="d-flex align-items-center gap-1 text-muted" style={{ fontSize: "0.75rem" }}>
+                <div className="flex items-center gap-1.5 text-xs text-gray-500">
                   <span>Mumbai Care Network</span>
                   {label && (
                     <>
                       <span>·</span>
                       <button
                         type="button"
-                        className="btn btn-link p-0 text-secondary text-decoration-none d-inline-flex align-items-center gap-1"
-                        style={{ fontSize: "0.75rem" }}
+                        className="inline-flex items-center gap-1 text-gray-600 hover:text-red-600 font-medium transition-colors"
                         onClick={() => setShowLocalityMenu((v) => !v)}
                       >
-                        <EmergencyIcon name="pin" size={11} /> {label}
+                        <EmergencyIcon name="pin" size={11} className="text-red-500" /> {label}
                       </button>
                     </>
                   )}
@@ -156,10 +138,10 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
               </div>
             </div>
 
-            <div className="d-flex align-items-center gap-1">
+            <div className="flex items-center gap-1">
               <button
                 type="button"
-                className="btn btn-sm btn-light border-0 text-secondary"
+                className="p-1.5 rounded-lg text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
                 onClick={() => setIsExpanded((v) => !v)}
                 title={isExpanded ? "Collapse" : "Expand"}
                 aria-label={isExpanded ? "Collapse panel" : "Expand panel"}
@@ -169,7 +151,7 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
               {messages.length > 0 && (
                 <button
                   type="button"
-                  className="btn btn-sm btn-light border-0 text-secondary"
+                  className="p-1.5 rounded-lg text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
                   onClick={reset}
                   title="Clear conversation"
                   aria-label="Clear chat"
@@ -179,27 +161,32 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
               )}
               <button
                 type="button"
-                className="btn-close ms-1"
+                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors ml-1"
                 aria-label="Close Assistant"
                 onClick={() => {
                   setIsOpen(false);
                   onCloseModal?.();
                 }}
-              />
+              >
+                ✕
+              </button>
             </div>
           </div>
 
           {/* Locality Dropdown Selector */}
           {showLocalityMenu && (
-            <div className="p-2 border-bottom bg-white shadow-sm" style={{ maxHeight: "140px", overflowY: "auto" }}>
-              <div className="small fw-semibold text-muted mb-1 px-1">Select your Mumbai locality:</div>
-              <div className="d-flex flex-wrap gap-1">
+            <div className="p-3 border-b border-gray-200 bg-white shadow-sm max-h-36 overflow-y-auto shrink-0">
+              <div className="text-xs font-semibold text-gray-500 mb-1.5">Select your Mumbai locality:</div>
+              <div className="flex flex-wrap gap-1.5">
                 {MUMBAI_LOCALITIES.map((loc) => (
                   <button
                     key={loc}
                     type="button"
-                    className={`btn btn-sm ${label === loc ? "btn-primary text-white" : "btn-light border text-secondary"}`}
-                    style={{ fontSize: "0.75rem", padding: "2px 8px" }}
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                      label === loc
+                        ? "bg-red-600 text-white"
+                        : "bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
+                    }`}
                     onClick={() => {
                       useLocality(loc);
                       setShowLocalityMenu(false);
@@ -213,13 +200,12 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
           )}
 
           {/* Quick Category Launchers */}
-          <div className="p-2 border-bottom bg-light d-flex gap-1 overflow-x-auto" style={{ whiteSpace: "nowrap" }}>
+          <div className="p-2 border-b border-gray-200 bg-gray-50/70 flex gap-1.5 overflow-x-auto shrink-0 scrollbar-none">
             {ASSISTANT_CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 type="button"
-                className="btn btn-sm btn-white border rounded-pill shadow-xs text-secondary flex-shrink-0"
-                style={{ fontSize: "0.74rem", padding: "3px 10px", backgroundColor: "#fff" }}
+                className="px-3 py-1 rounded-full text-xs font-medium bg-white hover:bg-gray-100 border border-gray-200 text-gray-700 shadow-2xs shrink-0 transition-colors"
                 onClick={() => handleSend(cat.prompt)}
               >
                 {cat.label}
@@ -228,27 +214,26 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
           </div>
 
           {/* Message List */}
-          <div className="flex-grow-1 p-3 overflow-y-auto" style={{ backgroundColor: "#f8fafc" }}>
+          <div className="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-3.5">
             {messages.length === 0 ? (
-              <div className="text-center py-4">
-                <div className="mb-3 text-primary">
-                  <div className="d-inline-flex p-3 rounded-circle bg-primary-subtle text-primary mb-2">
-                    <EmergencyIcon name="bot" size={32} />
+              <div className="text-center py-6">
+                <div className="mb-4">
+                  <div className="inline-flex p-3 rounded-2xl bg-red-50 text-red-600 mb-2 border border-red-100 shadow-sm">
+                    <EmergencyIcon name="bot" size={30} />
                   </div>
-                  <h4 className="h6 fw-bold mb-1 text-dark">How can MedReach help you today?</h4>
-                  <p className="text-muted small px-3 mb-3">
+                  <h4 className="text-sm font-bold text-gray-900 mb-1">How can MedReach help you today?</h4>
+                  <p className="text-xs text-gray-500 px-4 max-w-sm mx-auto">
                     Ask about emergency care, hospital beds, urgent blood requirements, ambulances, diagnostics, or jobs.
                   </p>
                 </div>
 
-                <div className="d-flex flex-column gap-1 text-start">
-                  <div className="text-muted fw-semibold small mb-1 px-1">Suggested inquiries:</div>
+                <div className="flex flex-col gap-1.5 text-left max-w-sm mx-auto">
+                  <div className="text-xs font-semibold text-gray-400 px-1 uppercase tracking-wider">Suggested inquiries:</div>
                   {ASSISTANT_QUICK_ACTIONS.map((q) => (
                     <button
                       key={q}
                       type="button"
-                      className="btn btn-white border text-dark text-start small p-2 rounded-3 shadow-xs hover-bg-light"
-                      style={{ backgroundColor: "#ffffff" }}
+                      className="w-full text-left text-xs font-medium p-2.5 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 shadow-2xs hover:border-gray-300 transition-colors"
                       onClick={() => handleSend(q)}
                     >
                       {q}
@@ -257,39 +242,47 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                 </div>
               </div>
             ) : (
-              <div className="d-flex flex-column gap-3">
+              <div className="flex flex-col space-y-3.5">
                 {messages.map((msg) => (
                   <div
                     key={msg.id || Math.random()}
-                    className={`d-flex ${msg.role === "user" ? "justify-content-end" : "justify-content-start"}`}
+                    className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`rounded-4 p-3 shadow-xs ${
+                      className={`p-3.5 shadow-sm text-sm ${
                         msg.role === "user"
-                          ? "bg-primary text-white"
-                          : "bg-white border text-dark"
+                          ? "rounded-2xl rounded-tr-xs bg-red-600 text-white max-w-[85%]"
+                          : "rounded-2xl rounded-tl-xs bg-white text-gray-900 border border-gray-200 max-w-[92%]"
                       }`}
-                      style={{ maxWidth: "90%" }}
                     >
                       {/* Message Content */}
-                      <div className="small" style={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}>
+                      <div className="text-xs leading-relaxed whitespace-pre-wrap">
                         {msg.text}
                       </div>
 
                       {/* Code Red Emergency Dialers if intent is emergency or unavailable */}
                       {(msg.intent === "emergency" || msg.intent === "unavailable") && (
-                        <div className="mt-3 p-2 rounded-3 bg-danger-subtle border border-danger-subtle">
-                          <div className="fw-bold text-danger small mb-1 d-flex align-items-center gap-1">
+                        <div className="mt-3 p-3 rounded-xl bg-red-50 border border-red-200">
+                          <div className="font-bold text-red-700 text-xs mb-1.5 flex items-center gap-1.5">
                             <EmergencyIcon name="siren" size={14} /> Immediate Emergency Contacts:
                           </div>
-                          <div className="d-flex flex-wrap gap-1 mt-2">
-                            <a href="tel:112" className="btn btn-sm btn-danger fw-bold d-inline-flex align-items-center gap-1">
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            <a
+                              href="tel:112"
+                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-sm transition-colors"
+                            >
                               <EmergencyIcon name="phone" size={12} /> Call 112 (Emergency)
                             </a>
-                            <a href="tel:108" className="btn btn-sm btn-outline-danger fw-semibold d-inline-flex align-items-center gap-1">
+                            <a
+                              href="tel:108"
+                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-lg border border-red-300 bg-white text-red-700 hover:bg-red-50 transition-colors"
+                            >
                               <EmergencyIcon name="ambulance" size={12} /> Call 108 (Ambulance)
                             </a>
-                            <Link href="/emergency" className="btn btn-sm btn-light border text-danger fw-semibold">
+                            <Link
+                              href="/emergency"
+                              className="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors"
+                            >
                               Emergency Mode ›
                             </Link>
                           </div>
@@ -299,9 +292,13 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                       {/* Render Hospital Result Cards */}
                       {msg.hospitals?.length > 0 && (
                         <div className="mt-3">
-                          <div className="small fw-semibold text-muted mb-2">Verified Hospital Matches:</div>
+                          <div className="text-xs font-semibold text-gray-500 mb-2">Verified Hospital Matches:</div>
                           {msg.hospitals.map((h) => (
-                            <AssistantHospitalCard key={h.id || h.slug} hospital={h} />
+                            <AssistantHospitalCard
+                              key={h.id || h.slug}
+                              hospital={h}
+                              emergency={msg.intent === "emergency"}
+                            />
                           ))}
                         </div>
                       )}
@@ -309,7 +306,7 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                       {/* Render Blood Bank Result Cards */}
                       {msg.bloodBanks?.length > 0 && (
                         <div className="mt-3">
-                          <div className="small fw-semibold text-muted mb-2">Verified Blood Banks:</div>
+                          <div className="text-xs font-semibold text-gray-500 mb-2">Verified Blood Banks:</div>
                           {msg.bloodBanks.map((b) => (
                             <AssistantBloodBankCard
                               key={b.id || b.name}
@@ -323,7 +320,7 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                       {/* Render Ambulance Result Cards */}
                       {msg.ambulances?.length > 0 && (
                         <div className="mt-3">
-                          <div className="small fw-semibold text-muted mb-2">Verified Ambulance Providers:</div>
+                          <div className="text-xs font-semibold text-gray-500 mb-2">Verified Ambulance Providers:</div>
                           {msg.ambulances.map((a) => (
                             <AssistantAmbulanceCard
                               key={a.id || a.name}
@@ -337,7 +334,7 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                       {/* Render Diagnostic Result Cards */}
                       {msg.diagnostics?.length > 0 && (
                         <div className="mt-3">
-                          <div className="small fw-semibold text-muted mb-2">Diagnostic & Scan Centers:</div>
+                          <div className="text-xs font-semibold text-gray-500 mb-2">Diagnostic & Scan Centers:</div>
                           {msg.diagnostics.map((d) => (
                             <AssistantDiagnosticCard key={d.id || d.name} diagnostic={d} />
                           ))}
@@ -347,7 +344,7 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                       {/* Render Job Result Cards */}
                       {msg.jobs?.length > 0 && (
                         <div className="mt-3">
-                          <div className="small fw-semibold text-muted mb-2">Active Clinical Openings:</div>
+                          <div className="text-xs font-semibold text-gray-500 mb-2">Active Clinical Openings:</div>
                           {msg.jobs.map((j) => (
                             <AssistantJobCard key={j.id} job={j} />
                           ))}
@@ -356,14 +353,18 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
 
                       {/* Suggested Actions Buttons */}
                       {msg.suggestedActions?.length > 0 && (
-                        <div className="mt-2 pt-2 border-top d-flex flex-wrap gap-1">
+                        <div className="mt-2.5 pt-2 border-t border-gray-100 flex flex-wrap gap-1.5">
                           {msg.suggestedActions.map((act, idx) => {
                             if (act.type === "call") {
                               return (
                                 <a
                                   key={idx}
                                   href={`tel:${act.phone}`}
-                                  className={`btn btn-sm ${act.primary ? "btn-danger" : "btn-outline-danger"} d-inline-flex align-items-center gap-1`}
+                                  className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${
+                                    act.primary
+                                      ? "bg-red-600 hover:bg-red-700 text-white"
+                                      : "border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
+                                  }`}
                                 >
                                   <EmergencyIcon name="phone" size={12} /> {act.label}
                                 </a>
@@ -374,7 +375,11 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                                 <Link
                                   key={idx}
                                   href={act.url}
-                                  className={`btn btn-sm ${act.primary ? "btn-primary" : "btn-outline-primary"}`}
+                                  className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${
+                                    act.primary
+                                      ? "bg-red-600 hover:bg-red-700 text-white"
+                                      : "border border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100"
+                                  }`}
                                 >
                                   {act.label}
                                 </Link>
@@ -387,15 +392,14 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
 
                       {/* Follow-up Prompts */}
                       {msg.suggestedPrompts?.length > 0 && (
-                        <div className="mt-2 pt-2 border-top">
-                          <div className="text-muted" style={{ fontSize: "0.72rem" }}>Suggested follow-ups:</div>
-                          <div className="d-flex flex-wrap gap-1 mt-1">
+                        <div className="mt-2.5 pt-2 border-t border-gray-100">
+                          <div className="text-gray-400 text-[11px] mb-1">Suggested follow-ups:</div>
+                          <div className="flex flex-wrap gap-1.5">
                             {msg.suggestedPrompts.map((p) => (
                               <button
                                 key={p}
                                 type="button"
-                                className="btn btn-sm btn-light border text-secondary rounded-pill py-0 px-2"
-                                style={{ fontSize: "0.72rem" }}
+                                className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
                                 onClick={() => handleSend(p)}
                               >
                                 {p}
@@ -410,10 +414,10 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
 
                 {/* Animated Typing Indicator */}
                 {sending && (
-                  <div className="d-flex justify-content-start">
-                    <div className="bg-white border rounded-4 p-3 shadow-xs">
-                      <div className="d-flex align-items-center gap-2 text-muted small">
-                        <span className="spinner-grow spinner-grow-sm text-primary" role="status" />
+                  <div className="flex justify-start">
+                    <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-xs p-3.5 shadow-sm">
+                      <div className="flex items-center gap-2 text-gray-500 text-xs">
+                        <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
                         <span>Consulting verified MedReach records…</span>
                       </div>
                     </div>
@@ -425,9 +429,9 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
           </div>
 
           {/* Input Form & Footer */}
-          <div className="p-3 bg-white border-top rounded-bottom-4">
+          <div className="p-3.5 bg-white border-t border-gray-200 shrink-0">
             <form
-              className="d-flex gap-2"
+              className="flex gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSend();
@@ -436,7 +440,7 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
               <input
                 ref={inputRef}
                 type="text"
-                className="form-control"
+                className="flex-1 px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition-all"
                 placeholder="Ask about hospitals, urgent blood, ambulances…"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -446,13 +450,13 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
               />
               <button
                 type="submit"
-                className="btn btn-primary d-inline-flex align-items-center gap-1 flex-shrink-0"
+                className="inline-flex items-center gap-1 px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white shadow-sm transition-colors shrink-0"
                 disabled={sending || !input.trim()}
               >
-                Send <EmergencyIcon name="navigate" size={14} />
+                <span>Send</span> <EmergencyIcon name="navigate" size={14} />
               </button>
             </form>
-            <div className="text-muted mt-2 text-center" style={{ fontSize: "0.68rem" }}>
+            <div className="text-gray-400 mt-2 text-center text-[10px] sm:text-[11px] leading-tight">
               {ASSISTANT_DISCLAIMER}
             </div>
           </div>

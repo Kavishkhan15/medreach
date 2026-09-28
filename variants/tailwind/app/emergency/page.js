@@ -13,7 +13,7 @@ export default function EmergencyPage() {
   const cat = categoryId ? emergencyCategory(categoryId) : null;
 
   const filters = useMemo(() => ({ categoryId: categoryId || undefined, emergencyOnly: true }), [categoryId]);
-  const { data, loading } = useHospitals(filters, { origin, sort: "recommended" });
+  const { data, loading, error: dataError, retry } = useHospitals(filters, { origin, sort: "recommended" });
 
   const started = Boolean(categoryId);
 
@@ -75,7 +75,12 @@ export default function EmergencyPage() {
               Looking for: {cat.specialties.join(", ")} · facilities: {cat.facilities.join(", ")}
             </p>
           )}
-          {loading ? (
+          {dataError && !loading ? (
+            <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-3 flex flex-wrap items-center justify-between gap-2" role="alert">
+              <span>{dataError}</span>
+              <button type="button" className="border border-red-300 rounded px-3 py-1 text-sm font-semibold" onClick={retry}>Retry</button>
+            </div>
+          ) : loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[1, 2, 3].map((n) => (
                 <div key={n} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse h-48"></div>

@@ -8,6 +8,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [revision, setRevision] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(null);
 
@@ -21,10 +22,10 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
           setError("");
         }
       })
-      .catch(e => { if (live) setError(e.message); })
+      .catch(e => { if (live) { setItems([]); setError(e.message); } })
       .finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
-  }, [kind, query]);
+  }, [kind, query, revision]);
 
   const handleBook = (item) => {
     setSelectedProvider(item);
@@ -48,7 +49,10 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
       />
       {loading && <p role="status">Loading providers…</p>}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-3 text-sm mb-4" role="alert">{error}</div>
+        <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-3 text-sm mb-4 flex flex-wrap items-center justify-between gap-2" role="alert">
+          <span>{error}</span>
+          <button type="button" className="border border-red-300 rounded px-3 py-1 font-semibold" onClick={() => setRevision((value) => value + 1)}>Retry</button>
+        </div>
       )}
       {!loading && !error && items.length === 0 && (
         <div className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5">No listed providers match this search. Try another locality or service.</div>

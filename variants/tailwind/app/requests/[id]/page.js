@@ -14,10 +14,17 @@ export default function RequestDetail({ params }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
+  const trackingHeaders = () => {
+    if (typeof window === "undefined") return {};
+    const token = window.sessionStorage.getItem(`medreach:emergency-request-token:${params.id}`);
+    return token ? { "X-MedReach-Tracking-Token": token } : {};
+  };
+
   const refresh = async () => {
     try {
       const res = await fetch(`${BASE_API}/api/emergency-requests/${params.id}`, {
         credentials: "include",
+        headers: trackingHeaders(),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to load request");
@@ -28,6 +35,11 @@ export default function RequestDetail({ params }) {
   };
 
   useEffect(() => {
+    const fragmentToken = new URLSearchParams(window.location.hash.slice(1)).get("token");
+    if (fragmentToken) {
+      window.sessionStorage.setItem(`medreach:emergency-request-token:${params.id}`, fragmentToken);
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
     refresh();
   }, [params.id]);
 
@@ -37,7 +49,7 @@ export default function RequestDetail({ params }) {
     try {
       const res = await fetch(`${BASE_API}/api/emergency-requests/${params.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...trackingHeaders() },
         credentials: "include",
         body: JSON.stringify({ status: "CANCELLED" }),
       });
@@ -134,7 +146,7 @@ export default function RequestDetail({ params }) {
             {request.contactEmail && (
               <div className="p-3 bg-gray-50 border border-gray-200 rounded text-xs text-gray-700 flex items-center gap-2 mb-4">
                 <EmergencyIcon name="mail" size={16} className="text-blue-600 flex-shrink-0" />
-                <span>Updates for this request will be sent to <strong>{request.contactEmail}</strong>.</span>
+                <span>MedReach uses <strong>{request.contactEmail}</strong> for status emails when delivery is available.</span>
               </div>
             )}
 

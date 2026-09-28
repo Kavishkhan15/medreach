@@ -60,10 +60,14 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
         contactPhone: requestData.contactPhone,
         contactEmail: requestData.contactEmail,
       };
-      const res = await post("/api/blood-requests", payload);
+      const res = await post("/api/blood-requests/standard", payload);
+      const reference = res.reference || res.bloodRequest?.reference;
+      if (res.trackingToken && reference) {
+        window.sessionStorage.setItem(`medreach:blood-request-token:${reference}`, res.trackingToken);
+      }
       setSubmittedData({
         type: "REQUEST",
-        reference: res.reference || res.bloodRequest?.reference || "BR-" + Date.now().toString(36).toUpperCase(),
+        reference,
         bloodBankName: bloodBank?.name,
         details: payload,
       });
@@ -96,10 +100,14 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
         contactEmail: donateData.contactEmail,
         notes: donateData.notes,
       };
-      const res = await post("/api/blood-requests", payload);
+      const res = await post("/api/blood-requests/standard", payload);
+      const reference = res.reference || res.bloodRequest?.reference;
+      if (res.trackingToken && reference) {
+        window.sessionStorage.setItem(`medreach:blood-request-token:${reference}`, res.trackingToken);
+      }
       setSubmittedData({
         type: "DONATION",
-        reference: res.reference || res.bloodRequest?.reference || "BDP-" + Date.now().toString(36).toUpperCase(),
+        reference,
         bloodBankName: bloodBank?.name,
         details: payload,
       });
@@ -155,13 +163,13 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
             </div>
             <h4 className="text-lg font-bold text-gray-900 mb-2">
               {submittedData.type === "REQUEST"
-                ? "Blood Requisition Dispatched!"
+                ? "Blood Requisition Recorded"
                 : "Donation Pledge Received!"}
             </h4>
             <p className="text-sm text-gray-600 mb-4">
               {submittedData.type === "REQUEST"
-                ? "Your request has been routed to the transfusion medical officer on duty. They will reach out via telephone."
-                : "Thank you for saving lives! The blood bank team will contact you to coordinate appointment timing."}
+                ? "MedReach recorded your request. Contact the blood bank directly to confirm inventory and fulfillment."
+                : "MedReach recorded your pledge. Contact the blood bank directly to confirm eligibility and an appointment."}
             </p>
 
             <div className="rounded-xl bg-gray-50 border border-gray-200 p-4 mb-4 text-left text-xs space-y-2">
@@ -267,7 +275,7 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
                 </p>
                 <div className="flex justify-center gap-2">
                   <Link
-                    href="/login?redirect=/blood-banks"
+                    href="/login?returnTo=%2Fblood-banks"
                     className="px-4 py-2 rounded-lg bg-red-600 text-xs font-semibold text-white hover:bg-red-700"
                   >
                     Sign In / Register

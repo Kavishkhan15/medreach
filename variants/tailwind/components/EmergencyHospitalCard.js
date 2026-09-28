@@ -6,7 +6,7 @@ export default function EmergencyHospitalCard({ hospital, category }) {
   const hasCoords = coords.length === 2 && Number.isFinite(coords[0]) && Number.isFinite(coords[1]);
   const emergencyPhone = hospital.emergencyPhone || hospital.phone || "112";
 
-  const requestUrl = `/requests/new?hospital=${hospital._id || hospital.slug}&isEmergency=true&flow=emergency&emergencyType=${encodeURIComponent(
+  const requestUrl = `/requests/new?hospital=${hospital._id || hospital.slug}&flow=emergency&emergencyType=${encodeURIComponent(
     category?.id || "general"
   )}&facility=Emergency%20Department`;
 
@@ -25,7 +25,7 @@ export default function EmergencyHospitalCard({ hospital, category }) {
 
       <div className="p-4 flex flex-col flex-1">
         <h3 className="text-base font-bold text-gray-900 mb-1">
-          <Link className="hover:text-red-600 transition-colors" href={`/hospitals/${hospital.slug}?flow=emergency`}>
+          <Link className="hover:text-red-600 transition-colors" href={`/hospitals/${hospital.slug}`}>
             {hospital.name}
           </Link>
         </h3>
@@ -77,7 +77,7 @@ export default function EmergencyHospitalCard({ hospital, category }) {
           </Link>
 
           <div className="text-right">
-            <Link href={`/hospitals/${hospital.slug}?flow=emergency`} className="text-xs text-gray-400 hover:text-gray-600">
+            <Link href={`/hospitals/${hospital.slug}`} className="text-xs text-gray-400 hover:text-gray-600">
               View Full Details →
             </Link>
           </div>

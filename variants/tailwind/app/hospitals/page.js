@@ -23,7 +23,7 @@ export default function HospitalsPage() {
     emergencyOnly: emergencyOnly || undefined,
   }), [q, specialty, hospitalType, facility, emergencyOnly]);
 
-  const { data, loading, total } = useHospitals(filters, { origin, sort });
+  const { data, loading, total, error: dataError, retry } = useHospitals(filters, { origin, sort });
 
   return (
     <>
@@ -84,7 +84,13 @@ export default function HospitalsPage() {
         </div>
       </form>
 
-      <HospitalList hospitals={data} loading={loading} />
+      {dataError && !loading && (
+        <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-3 mb-4 flex flex-wrap items-center justify-between gap-2" role="alert">
+          <span>{dataError}</span>
+          <button type="button" className="border border-red-300 rounded px-3 py-1 text-sm font-semibold" onClick={retry}>Retry</button>
+        </div>
+      )}
+      {!dataError && <HospitalList hospitals={data} loading={loading} />}
     </>
   );
 }

@@ -4,10 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth, listHospitals } from "@medreach/core";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
-
-const BASE_API =
-  (typeof process !== "undefined" && process.env.NEXT_PUBLIC_API_URL) ||
-  "http://localhost:4000";
+import { post } from "../../../lib/productApi";
 
 const FACILITIES = [
   "Emergency Department",
@@ -47,7 +44,7 @@ export default function NewRequest() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [hospitals, setHospitals] = useState([]);
-  const [isEmergency, setIsEmergency] = useState(true);
+  const [isEmergency, setIsEmergency] = useState(false);
   const [form, setForm] = useState({
     hospitalId: "",
     emergencyType: "general",
@@ -63,6 +60,7 @@ export default function NewRequest() {
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [returnPath, setReturnPath] = useState("/requests/new?flow=standard");
 
   const normalizeEmergencyType = (val) => {
     if (!val) return "general";
@@ -77,16 +75,11 @@ export default function NewRequest() {
     const params = new URLSearchParams(window.location.search);
     const hospitalParam = params.get("hospital") || "";
     const flowParam = params.get("flow")?.toLowerCase();
-    const emergencyParam = params.get("emergency")?.toLowerCase();
-    const isEmergencyParam = params.get("isEmergency")?.toLowerCase();
     const typeParam = params.get("emergencyType");
     const facilityParam = params.get("facility");
+    setReturnPath(`${window.location.pathname}${window.location.search}`);
 
-    if (flowParam === "standard" || isEmergencyParam === "false" || emergencyParam === "false" || isEmergencyParam === "0") {
-      setIsEmergency(false);
-    } else if (flowParam === "emergency" || isEmergencyParam === "true" || emergencyParam === "true" || typeParam) {
-      setIsEmergency(true);
-    }
+    setIsEmergency(flowParam === "emergency");
 
     setForm((old) => ({
       ...old,
@@ -135,20 +128,16 @@ export default function NewRequest() {
     try {
       const payload = {
         ...form,
-        isEmergency,
         ambulanceRequired: Boolean(form.ambulanceRequired),
         ambulancePickupAddress: form.ambulanceRequired ? form.ambulancePickupAddress.trim() : undefined,
         contactEmail: form.contactEmail.trim() || undefined,
       };
-      const res = await fetch(`${BASE_API}/api/emergency-requests`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Request submission failed");
-      router.push(`/requests/${data.request._id}`);
+      const endpoint = isEmergency ? "emergency" : "standard";
+      const data = await post(`/api/emergency-requests/${endpoint}`, payload);
+      const tokenFragment = data.trackingToken
+        ? `#token=${encodeURIComponent(data.trackingToken)}`
+        : "";
+      router.push(`/requests/${data.request._id}${tokenFragment}`);
     } catch (e) {
       setError(e.message);
       setBusy(false);
@@ -156,6 +145,7 @@ export default function NewRequest() {
   };
 
   const selectedHospital = hospitals.find((h) => h._id === form.hospitalId);
+  const loginHref = `/login?returnTo=${encodeURIComponent(returnPath)}`;
 
   return (
     <div className="max-w-3xl mx-auto py-4">
@@ -163,7 +153,7 @@ export default function NewRequest() {
       <div className="flex justify-between items-center mb-4">
         {isEmergency ? (
           <Link
-            href={selectedHospital ? `/hospitals/${selectedHospital.slug}?flow=emergency` : "/emergency"}
+            href="/emergency"
             className="text-sm font-semibold text-[var(--color-emergency-dark)] no-underline hover:underline"
           >
             ← Back to {selectedHospital ? `${selectedHospital.name} (Emergency)` : "Emergency response"}
@@ -191,7 +181,7 @@ export default function NewRequest() {
             </div>
             <h1 className="text-2xl font-bold mb-1">Request emergency bed &amp; care</h1>
             <p className="text-sm text-[var(--color-muted)] mb-0">
-              Life-critical triage bed request. Hospital staff are notified immediately.
+              Records a time-sensitive triage request. Call the hospital directly; no bed is reserved.
               For immediate life-threatening danger, always call <a href="tel:112" className="font-bold text-red-600">112</a>.
             </p>
           </>
@@ -219,10 +209,10 @@ export default function NewRequest() {
             and confirm admissions.
           </p>
           <div className="flex flex-wrap gap-2 items-center">
-            <Link href="/login" className="inline-flex items-center font-bold text-sm rounded-[var(--radius)] bg-blue-600 text-white px-3 py-1.5 hover:bg-blue-700 no-underline">
+            <Link href={loginHref} className="inline-flex items-center font-bold text-sm rounded-[var(--radius)] bg-blue-600 text-white px-3 py-1.5 hover:bg-blue-700 no-underline">
               Sign in to your account
             </Link>
-            <Link href="/login" className="inline-flex items-center font-semibold text-sm rounded-[var(--radius)] border border-gray-300 bg-white text-gray-700 px-3 py-1.5 hover:bg-gray-50 no-underline">
+            <Link href="/register" className="inline-flex items-center font-semibold text-sm rounded-[var(--radius)] border border-gray-300 bg-white text-gray-700 px-3 py-1.5 hover:bg-gray-50 no-underline">
               Register new account
             </Link>
           </div>
@@ -335,7 +325,7 @@ export default function NewRequest() {
               onChange={change("contactEmail")}
             />
             <div className="text-xs text-[var(--color-muted)] mt-1">
-              Confirmation &amp; status updates are sent to this address.
+              MedReach uses this address for confirmation and status emails when delivery is available.
             </div>
           </div>
         </div>
@@ -476,7 +466,7 @@ export default function NewRequest() {
           {isEmergency && (
             <p className="text-center text-xs text-[var(--color-muted)] mt-2 mb-0">
               <EmergencyIcon name="check" size={14} className="inline text-emerald-600 mr-1" />
-              Public emergency triage · Immediate dispatch to hospital emergency desk
+              Public emergency request · Private status tracking
             </p>
           )}
         </div>

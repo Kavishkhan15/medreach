@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import GoogleMapView from "../../components/GoogleMapView";
+import AmbulanceBookingModal from "../../components/AmbulanceBookingModal";
 import { toneClass, statusPill } from "../../lib/tone";
 
 const BASE_API =
@@ -28,11 +29,9 @@ export default function MapPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [revision, setRevision] = useState(0);
   const [selected, setSelected] = useState("");
   const [showBooking, setShowBooking] = useState(false);
-  const [bookingPickup, setBookingPickup] = useState("");
-  const [bookingDetails, setBookingDetails] = useState("");
-  const [ambulanceRequired, setAmbulanceRequired] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -53,6 +52,7 @@ export default function MapPage() {
       })
       .catch((err) => {
         if (active) {
+          setItems([]);
           setError(err.message);
           setLoading(false);
         }
@@ -61,7 +61,7 @@ export default function MapPage() {
     return () => {
       active = false;
     };
-  }, [category]);
+  }, [category, revision]);
 
   const visible = useMemo(
     () =>
@@ -157,8 +157,10 @@ export default function MapPage() {
 
       {loading && <p className="text-sm text-[var(--color-muted)] mb-3" role="status">Loading {categories[category].toLowerCase()}…</p>}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-[var(--radius)] text-sm mb-3">
-          {error}
+        <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-[var(--radius)] text-sm mb-3 flex flex-wrap items-center gap-2" role="alert">
+          <span className="mr-auto">{error}</span>
+          <button type="button" className="border border-red-300 rounded px-3 py-1 font-semibold" onClick={() => setRevision((value) => value + 1)}>Retry</button>
+          <Link className="border border-gray-300 rounded px-3 py-1 font-semibold" href={`/${category}`}>Open directory</Link>
         </div>
       )}
 
@@ -257,9 +259,9 @@ export default function MapPage() {
                 {category === "hospitals" && (
                   <Link
                     className="inline-flex items-center justify-center font-bold text-sm rounded-[var(--radius)] bg-red-700 text-white px-3 py-1.5 hover:bg-red-800 no-underline ml-auto"
-                    href={`/requests/new?hospital=${selectedItem._id || selectedItem.slug}&isEmergency=true&flow=emergency`}
+                    href={`/requests/new?hospital=${selectedItem._id || selectedItem.slug}&flow=standard`}
                   >
-                    Request Emergency Bed
+                    Request Bed
                   </Link>
                 )}
               {category === "ambulances" && (
@@ -271,54 +273,6 @@ export default function MapPage() {
   </button>
 )}
 </div>
-{showBooking && selectedItem && category === "ambulances" && (
-  <div className="modal-overlay" onClick={() => setShowBooking(false)} style={{position:"fixed", inset:0, backgroundColor:"rgba(0,0,0,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000}}>
-    <div className="modal-content bg-white p-4 rounded shadow" style={{width:"90%", maxWidth:"400px"}} onClick={e=>e.stopPropagation()}>
-      <h3 className="text-lg font-bold mb-2">Book Ambulance – {selectedItem.name}</h3>
-      <label className="block mb-2">
-        Ambulance Required?
-        <select className="mt-1 block w-full" value={ambulanceRequired ? "yes" : "no"} onChange={e=>setAmbulanceRequired(e.target.value==="yes")}>
-          <option value="no">No</option>
-          <option value="yes">Yes</option>
-        </select>
-      </label>
-      {ambulanceRequired && (
-        <label className="block mb-2">
-          Pickup Address
-          <input className="mt-1 block w-full border rounded p-1" type="text" value={bookingPickup} onChange={e=>setBookingPickup(e.target.value)} placeholder="Enter address" />
-        </label>
-      )}
-      <div className="flex justify-end gap-2 mt-3">
-        <button className="btn btn-sm btn-outline-secondary" onClick={()=>setShowBooking(false)}>Cancel</button>
-        <button className="btn btn-sm btn-primary" onClick={()=>{ console.log({providerId: selectedItem._id || selectedItem.slug, ambulanceRequired, bookingPickup}); setShowBooking(false); }}>Submit</button>
-      </div>
-    </div>
-  </div>
-)}
-{showBooking && selectedItem && category === "ambulances" && (
-  <div className="modal-overlay" onClick={() => setShowBooking(false)} style={{position:"fixed", inset:0, backgroundColor:"rgba(0,0,0,0.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000}}>
-    <div className="modal-content bg-white p-4 rounded shadow" style={{width:"90%", maxWidth:"400px"}} onClick={e=>e.stopPropagation()}>
-      <h3 className="text-lg font-bold mb-2">Book Ambulance – {selectedItem.name}</h3>
-      <label className="block mb-2">
-        Ambulance Required?
-        <select className="mt-1 block w-full" value={ambulanceRequired ? "yes" : "no"} onChange={e=>setAmbulanceRequired(e.target.value==="yes")}>
-          <option value="no">No</option>
-          <option value="yes">Yes</option>
-        </select>
-      </label>
-      {ambulanceRequired && (
-        <label className="block mb-2">
-          Pickup Address
-          <input className="mt-1 block w-full border rounded p-1" type="text" value={bookingPickup} onChange={e=>setBookingPickup(e.target.value)} placeholder="Enter address" />
-        </label>
-      )}
-      <div className="flex justify-end gap-2 mt-3">
-        <button className="btn btn-sm btn-outline-secondary" onClick={()=>setShowBooking(false)}>Cancel</button>
-        <button className="btn btn-sm btn-primary" onClick={()=>{ console.log({providerId: selectedItem._id || selectedItem.slug, ambulanceRequired, bookingPickup}); setShowBooking(false); }}>Submit</button>
-      </div>
-    </div>
-  </div>
-)}
 
               {/* Category-Specific Rich Information */}
               {category === "blood-banks" && (
@@ -349,7 +303,7 @@ export default function MapPage() {
                     </div>
                   )}
                   <p className="text-xs text-[var(--color-muted)] mt-2 mb-0">
-                    Blood availability is synchronized with registered transfusion services. In urgent cases, call the blood bank directly to reserve units.
+                    MedReach does not display live blood inventory. Call the blood bank directly to confirm availability and fulfillment.
                   </p>
                 </div>
               )}
@@ -399,7 +353,7 @@ export default function MapPage() {
                     </p>
                   )}
                   <p className="text-xs text-[var(--color-muted)] mt-2 mb-0">
-                    Emergency ambulance fleet dispatch. For immediate life-threatening resuscitation or disaster coordination, dial 108 or 112.
+                    Ambulance provider directory. Call the provider to confirm availability; for immediate danger, dial 108 or 112.
                   </p>
                 </div>
               )}
@@ -544,7 +498,9 @@ export default function MapPage() {
           </div>
         </div>
       </div>
+      {showBooking && selectedItem && category === "ambulances" && (
+        <AmbulanceBookingModal provider={selectedItem} onClose={() => setShowBooking(false)} />
+      )}
     </>
   );
 }
-

@@ -53,29 +53,34 @@ export default function UrgentBloodPage() {
     setError(null);
 
     const chosenBank = bloodBanks.find((b) => b._id === formData.selectedBloodBankId);
-    const bankName = chosenBank ? chosenBank.name : "All Mumbai Blood Banks (Urgent Dispatch)";
+    const bankName = chosenBank ? chosenBank.name : "No specific blood bank selected";
 
     const payload = {
       type: "REQUEST",
       isUrgent: true,
-      providerId: chosenBank ? chosenBank._id : undefined,
-      bloodBankName: bankName,
       bloodGroup: formData.bloodGroup,
-      patientOrDonorName: formData.patientName,
       units: Number(formData.units),
       urgency: formData.urgency,
+      patientOrDonorName: formData.patientName,
       hospitalName: formData.hospitalName,
-      doctorNotes: `[Doctor: ${formData.treatingDoctor || "N/A"}] ${formData.doctorNotes || ""}`.trim(),
+      treatingDoctor: formData.treatingDoctor,
       contactPhone: formData.contactPhone,
-      contactEmail: formData.contactEmail,
+      contactEmail: formData.contactEmail || undefined,
+      providerId: formData.selectedBloodBankId || undefined,
+      bloodBankName: bankName,
+      notes: formData.doctorNotes,
     };
 
     try {
-      const res = await post("/api/blood-requests", payload);
+      const res = await post("/api/blood-requests/urgent", payload);
+      const reference = res.reference || res.bloodRequest?.reference;
+      if (res.trackingToken && reference) {
+        window.sessionStorage.setItem(`medreach:blood-request-token:${reference}`, res.trackingToken);
+      }
       setSubmittedData({
-        reference: res.reference || res.bloodRequest?.reference || "UBR-" + Date.now().toString(36).toUpperCase(),
-        bankName,
+        reference,
         details: payload,
+        bankName,
       });
     } catch (err) {
       setError(err.message || "Failed to submit urgent blood requirement");
@@ -85,270 +90,308 @@ export default function UrgentBloodPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-6 px-4">
-      {/* Navigation breadcrumbs */}
-      <nav aria-label="breadcrumb" className="mb-3">
-        <ol className="breadcrumb small">
-          <li className="breadcrumb-item">
-            <Link href="/blood-banks">Blood Banks</Link>
-          </li>
-          <li className="breadcrumb-item active" aria-current="page">
-            Urgent Blood Requirement
-          </li>
-        </ol>
-      </nav>
-
+    <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Critical Emergency Banner */}
-      <div className="bg-red-50 border border-red-200 rounded-xl shadow-sm flex items-center gap-4 mb-6 p-4">
-        <div className="p-2 bg-danger bg-opacity-25 rounded-circle text-white d-flex align-items-center justify-content-center">
+      <div className="bg-gradient-to-r from-red-600 via-red-700 to-rose-800 rounded-2xl shadow-lg flex flex-col sm:flex-row sm:items-center gap-4 mb-8 p-6 text-white">
+        <div className="p-3 bg-white/15 backdrop-blur-xs rounded-2xl text-white flex items-center justify-center shrink-0 w-14 h-14 border border-white/20">
           <EmergencyIcon name="blood" size={32} />
         </div>
         <div>
-          <span className="badge bg-danger text-uppercase fw-bold mb-1">Critical Clinical Response</span>
-          <h1 className="h4 alert-heading mb-0 fw-bold">Urgent Blood Requirement</h1>
-          <p className="small mb-0 opacity-90">
-            Dedicated emergency blood requisition portal. Dispatches high-priority alerts to Mumbai blood banks.
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white/20 text-white border border-white/30 mb-1.5">
+            Critical Clinical Response
+          </span>
+          <h1 className="text-2xl font-extrabold tracking-tight mb-1 text-white">
+            Urgent Blood Requisition
+          </h1>
+          <p className="text-sm text-red-100/90 max-w-2xl leading-relaxed">
+            Record an urgent requirement, then contact blood banks directly to confirm inventory and fulfillment.
           </p>
         </div>
       </div>
 
       {submittedData ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-          <div className="text-success mb-3">
-            <EmergencyIcon name="approved" size={64} className="text-success" />
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
+          <div className="inline-flex p-4 rounded-full bg-emerald-50 text-emerald-600 mb-4 border border-emerald-100 shadow-sm">
+            <EmergencyIcon name="approved" size={48} className="text-emerald-600" />
           </div>
-          <h2 className="h4 fw-bold text-success mb-2">Urgent Blood Request Dispatched!</h2>
-          <p className="text-muted mb-4">
-            Your emergency requirement has been broadcast to verified Mumbai blood banks. A blood coordinator is prioritizing your dispatch.
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Urgent Blood Request Recorded</h2>
+          <p className="text-sm text-gray-600 max-w-lg mx-auto mb-6">
+            MedReach recorded your requirement. No blood bank has confirmed inventory or fulfillment; call the selected bank directly.
           </p>
 
-          <div className="card bg-light border-0 p-3 mb-4 text-start">
-            <div className="row g-3">
-              <div className="col-sm-6">
-                <span className="text-muted small">Tracking Reference:</span>
-                <p className="fw-bold text-danger mb-0 font-monospace fs-5">{submittedData.reference}</p>
+          <div className="bg-slate-50 rounded-xl border border-gray-200 p-6 mb-6 text-left max-w-2xl mx-auto shadow-2xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <span className="text-xs font-medium text-gray-500">Tracking Reference:</span>
+                <p className="font-mono text-lg font-bold text-red-600">{submittedData.reference}</p>
               </div>
-              <div className="col-sm-6">
-                <span className="text-muted small">Urgency Window:</span>
-                <p className="fw-bold text-dark mb-0">
-                  <span className="badge bg-danger">{submittedData.details.urgency}</span>
+              <div>
+                <span className="text-xs font-medium text-gray-500">Urgency Window:</span>
+                <p className="font-bold text-gray-900">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                    {submittedData.details.urgency}
+                  </span>
                 </p>
               </div>
-              <div className="col-sm-6">
-                <span className="text-muted small">Patient Name:</span>
-                <p className="fw-semibold mb-0">{submittedData.details.patientOrDonorName}</p>
+              <div>
+                <span className="text-xs font-medium text-gray-500">Patient Name:</span>
+                <p className="font-semibold text-gray-900 text-sm">{submittedData.details.patientOrDonorName}</p>
               </div>
-              <div className="col-sm-6">
-                <span className="text-muted small">Blood Group & Units:</span>
-                <p className="fw-bold text-danger mb-0">
+              <div>
+                <span className="text-xs font-medium text-gray-500">Blood Group & Units:</span>
+                <p className="font-bold text-red-600 text-sm">
                   {submittedData.details.bloodGroup} — {submittedData.details.units} unit(s)
                 </p>
               </div>
-              <div className="col-sm-6">
-                <span className="text-muted small">Hospital / Medical Center:</span>
-                <p className="fw-semibold mb-0">{submittedData.details.hospitalName || "Not specified"}</p>
+              <div>
+                <span className="text-xs font-medium text-gray-500">Hospital / Medical Center:</span>
+                <p className="font-semibold text-gray-900 text-sm">{submittedData.details.hospitalName || "Not specified"}</p>
               </div>
-              <div className="col-sm-6">
-                <span className="text-muted small">Target Provider:</span>
-                <p className="fw-semibold mb-0">{submittedData.bankName}</p>
+              <div>
+                <span className="text-xs font-medium text-gray-500">Target Provider:</span>
+                <p className="font-semibold text-gray-900 text-sm">{submittedData.bankName}</p>
               </div>
-              <div className="col-sm-6">
-                <span className="text-muted small">Emergency Contact:</span>
-                <p className="mb-0">{submittedData.details.contactPhone}</p>
+              <div>
+                <span className="text-xs font-medium text-gray-500">Emergency Contact:</span>
+                <p className="text-sm text-gray-800 font-medium">{submittedData.details.contactPhone}</p>
               </div>
               {submittedData.details.contactEmail && (
-                <div className="col-sm-6">
-                  <span className="text-muted small">Alert Email:</span>
-                  <p className="mb-0">{submittedData.details.contactEmail}</p>
+                <div>
+                  <span className="text-xs font-medium text-gray-500">Alert Email:</span>
+                  <p className="text-sm text-gray-800 font-medium">{submittedData.details.contactEmail}</p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="d-flex justify-content-center gap-3">
-            <button type="button" className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 text-sm" onClick={() => window.print()}>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold text-sm transition-colors shadow-2xs"
+              onClick={() => window.print()}
+            >
               Print Confirmation Receipt
             </button>
-            <Link href="/blood-banks" className="bg-red-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-red-700 text-sm">
+            <Link
+              href="/blood-banks"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-sm transition-colors shadow-sm"
+            >
               Return to Blood Banks
             </Link>
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div >
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
+          <div>
             {error && (
-              <div className="alert alert-danger d-flex align-items-center gap-2 mb-4" role="alert">
-                <EmergencyIcon name="alert" size={20} />
+              <div className="p-4 mb-6 rounded-xl bg-red-50 border border-red-200 text-red-800 flex items-center gap-3 text-sm">
+                <EmergencyIcon name="alert" size={20} className="shrink-0 text-red-600" />
                 <span>{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit}>
-              <h2 className="h5 fw-bold mb-3 border-bottom pb-2">1. Patient & Medical Details</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div >
-                  <label className="block text-sm font-semibold mb-1">Patient Full Name *</label>
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                    placeholder="e.g. Ramesh Patel"
-                    value={formData.patientName}
-                    onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div >
-                  <label className="block text-sm font-semibold mb-1">Blood Group *</label>
-                  <select
-                    className="w-full border border-red-300 rounded-md px-3 py-2 text-sm font-bold text-red-600 bg-white"
-                    value={formData.bloodGroup}
-                    onChange={(e) => setFormData({ ...formData, bloodGroup: e.target.value })}
-                    required
-                  >
-                    {BLOOD_GROUPS.map((bg) => (
-                      <option key={bg} value={bg}>
-                        {bg}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div >
-                  <label className="block text-sm font-semibold mb-1">Units Needed *</label>
-                  <div className="input-group">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div>
+                <h2 className="text-base font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-700 text-xs font-bold">1</span>
+                  Patient & Medical Details
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Patient Full Name *
+                    </label>
                     <input
-                      type="number"
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                      min="1"
-                      max="20"
-                      value={formData.units}
-                      onChange={(e) => setFormData({ ...formData, units: e.target.value })}
+                      type="text"
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                      placeholder="e.g. Ramesh Patel"
+                      value={formData.patientName}
+                      onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
                       required
                     />
                   </div>
-                  <div className="btn-group btn-group-sm mt-1 w-100">
-                    {[1, 2, 4].map((u) => (
-                      <button
-                        key={u}
-                        type="button"
-                        className={`btn btn-outline-secondary ${Number(formData.units) === u ? "active" : ""}`}
-                        onClick={() => setFormData({ ...formData, units: u })}
-                      >
-                        {u}u
-                      </button>
-                    ))}
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Blood Group *
+                    </label>
+                    <select
+                      className="w-full rounded-xl border border-red-300 px-4 py-2.5 text-sm font-bold text-red-600 bg-white focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                      value={formData.bloodGroup}
+                      onChange={(e) => setFormData({ ...formData, bloodGroup: e.target.value })}
+                      required
+                    >
+                      {BLOOD_GROUPS.map((bg) => (
+                        <option key={bg} value={bg}>
+                          {bg}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Units Needed *
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        className="w-28 rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-900 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                        min="1"
+                        max="20"
+                        value={formData.units}
+                        onChange={(e) => setFormData({ ...formData, units: e.target.value })}
+                        required
+                      />
+                      <div className="inline-flex rounded-xl shadow-2xs border border-gray-200 overflow-hidden">
+                        {[1, 2, 4].map((u) => (
+                          <button
+                            key={u}
+                            type="button"
+                            className={`px-3 py-2 text-xs font-semibold transition-colors ${
+                              Number(formData.units) === u
+                                ? "bg-red-600 text-white"
+                                : "bg-gray-50 hover:bg-gray-100 text-gray-700 border-r border-gray-200 last:border-r-0"
+                            }`}
+                            onClick={() => setFormData({ ...formData, units: u })}
+                          >
+                            {u} unit{u > 1 ? "s" : ""}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-red-600 mb-1.5">
+                      Required Urgency *
+                    </label>
+                    <select
+                      className="w-full rounded-xl border border-red-300 px-4 py-2.5 text-sm font-medium text-gray-900 bg-white focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                      value={formData.urgency}
+                      onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
+                      required
+                    >
+                      {URGENCY_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="block text-xs text-gray-500 mt-1">Select the maximum clinical window for blood readiness.</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Hospital / Clinic Admitted *
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                      placeholder="e.g. Lilavati Hospital, Bandra West"
+                      value={formData.hospitalName}
+                      onChange={(e) => setFormData({ ...formData, hospitalName: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Treating Doctor / Surgeon
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                      placeholder="e.g. Dr. Kulkarni (Trauma / ICU)"
+                      value={formData.treatingDoctor}
+                      onChange={(e) => setFormData({ ...formData, treatingDoctor: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Target Blood Bank
+                    </label>
+                    <select
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 bg-white focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                      value={formData.selectedBloodBankId}
+                      onChange={(e) => setFormData({ ...formData, selectedBloodBankId: e.target.value })}
+                      disabled={loadingBanks}
+                    >
+                      <option value="">⚡ Any Available Blood Bank in Mumbai (Fastest Match)</option>
+                      {bloodBanks.map((bank) => (
+                        <option key={bank._id} value={bank._id}>
+                          {bank.name} — {bank.locality || bank.address || "Mumbai"}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
+              </div>
 
-                <div >
-                  <label className="block text-sm font-semibold text-red-600 mb-1">Required Urgency *</label>
-                  <select
-                    className="w-full border border-red-400 rounded-md px-3 py-2 text-sm bg-white"
-                    value={formData.urgency}
-                    onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
-                    required
-                  >
-                    {URGENCY_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="form-text small">Select the maximum clinical window for blood readiness.</div>
-                </div>
+              <div>
+                <h2 className="text-base font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-700 text-xs font-bold">2</span>
+                  Emergency Contact Information
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Attendant Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                      placeholder="e.g. +91 98200 11223"
+                      value={formData.contactPhone}
+                      onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+                      required
+                    />
+                    <span className="block text-xs text-gray-500 mt-1">Use a reachable number and call the blood bank directly; follow-up is not guaranteed.</span>
+                  </div>
 
-                <div >
-                  <label className="block text-sm font-semibold mb-1">Hospital / Clinic Admitted *</label>
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                    placeholder="e.g. Lilavati Hospital, Bandra West"
-                    value={formData.hospitalName}
-                    onChange={(e) => setFormData({ ...formData, hospitalName: e.target.value })}
-                    required
-                  />
-                </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Contact Email
+                    </label>
+                    <input
+                      type="email"
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                      placeholder="For immediate tracking receipt"
+                      value={formData.contactEmail}
+                      onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                    />
+                  </div>
 
-                <div >
-                  <label className="block text-sm font-semibold mb-1">Treating Doctor / Surgeon</label>
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                    placeholder="e.g. Dr. Kulkarni (Trauma / ICU)"
-                    value={formData.treatingDoctor}
-                    onChange={(e) => setFormData({ ...formData, treatingDoctor: e.target.value })}
-                  />
-                </div>
-
-                <div >
-                  <label className="block text-sm font-semibold mb-1">Target Blood Bank</label>
-                  <select
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white"
-                    value={formData.selectedBloodBankId}
-                    onChange={(e) => setFormData({ ...formData, selectedBloodBankId: e.target.value })}
-                    disabled={loadingBanks}
-                  >
-                    <option value="">⚡ Any Available Blood Bank in Mumbai (Fastest Match)</option>
-                    {bloodBanks.map((bank) => (
-                      <option key={bank._id} value={bank._id}>
-                        {bank.name} — {bank.locality || bank.address || "Mumbai"}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="col-span-full">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Prescription Notes / Component Details
+                    </label>
+                    <textarea
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all"
+                      rows="3"
+                      placeholder="Specify components required (e.g. Packed Red Blood Cells, Fresh Frozen Plasma, Single Donor Platelets), cross-matching status, or urgent surgical notes..."
+                      value={formData.doctorNotes}
+                      onChange={(e) => setFormData({ ...formData, doctorNotes: e.target.value })}
+                    ></textarea>
+                  </div>
                 </div>
               </div>
 
-              <h2 className="h5 fw-bold mb-3 border-bottom pb-2">2. Emergency Contact Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div >
-                  <label className="block text-sm font-semibold mb-1">Attendant / Contact Phone Number *</label>
-                  <input
-                    type="tel"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                    placeholder="e.g. +91 98200 11223"
-                    value={formData.contactPhone}
-                    onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
-                    required
-                  />
-                  <div className="form-text small">Blood coordinators will contact this number directly.</div>
-                </div>
-
-                <div >
-                  <label className="block text-sm font-semibold mb-1">Contact Email</label>
-                  <input
-                    type="email"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                    placeholder="For immediate tracking receipt"
-                    value={formData.contactEmail}
-                    onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
-                  />
-                </div>
-
-                <div className="col-span-full">
-                  <label className="block text-sm font-semibold mb-1">Prescription Notes / Component Details</label>
-                  <textarea
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                    rows="3"
-                    placeholder="Specify components required (e.g. Packed Red Blood Cells, Fresh Frozen Plasma, Single Donor Platelets), cross-matching status, or urgent surgical notes..."
-                    value={formData.doctorNotes}
-                    onChange={(e) => setFormData({ ...formData, doctorNotes: e.target.value })}
-                  ></textarea>
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-between align-items-center pt-3 border-top">
-                <Link href="/blood-banks" className="border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-gray-100">
+                <Link
+                  href="/blood-banks"
+                  className="inline-flex items-center px-4 py-2.5 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold text-sm transition-colors"
+                >
                   Back to Blood Banks
                 </Link>
                 <button
                   type="submit"
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2 rounded-md flex items-center gap-2 text-sm"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all disabled:opacity-50"
                   disabled={isSubmitting}
                 >
                   <EmergencyIcon name="blood" size={18} />
-                  {isSubmitting ? "Broadcasting Request..." : "Submit Urgent Blood Requirement"}
+                  {isSubmitting ? "Recording Request..." : "Submit Urgent Blood Requirement"}
                 </button>
               </div>
             </form>

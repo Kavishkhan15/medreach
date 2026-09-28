@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { useHospitals, MUMBAI_LOCALITIES, fixtures } from "@medreach/core";
+import { useHospitals, MUMBAI_LOCALITIES } from "@medreach/core";
 import { productApi } from "../lib/productApi";
 import EmergencyIcon from "../components/EmergencyIcons";
 import LiveFeatureIcon from "../components/LiveFeatureIcon";
@@ -10,247 +10,19 @@ import GoogleMapView from "../components/GoogleMapView";
 import AmbulanceBookingModal from "../components/AmbulanceBookingModal";
 import BloodBankActionModal from "../components/BloodBankActionModal";
 
-// Fallback seed items when backend API is offline
-const FALLBACK_BLOOD_BANKS = [
-  {
-    _id: "bb-kem",
-    name: "KEM Hospital Blood Centre",
-    locality: "Parel",
-    address: "Acharya Donde Marg, Parel, Mumbai 400012",
-    phone: "+91-22-2410-7000",
-    operatingHours: "24/7 Emergency Blood Bank",
-    providerType: "Government / Municipal Blood Centre",
-    services: ["Whole Blood", "PRBC", "Fresh Frozen Plasma", "Platelet Apheresis"],
-    location: { type: "Point", coordinates: [72.842, 19.0] },
-    verificationStatus: "verified",
-    sourceName: "BMC Mumbai Blood Transfusion Council",
-  },
-  {
-    _id: "bb-lilavati",
-    name: "Lilavati Hospital Blood Bank",
-    locality: "Bandra",
-    address: "A-791, Bandra Reclamation, Bandra West, Mumbai 400050",
-    phone: "+91-22-2675-1000",
-    operatingHours: "24/7",
-    providerType: "NABH Accredited Blood Centre",
-    services: ["Single Donor Platelets (SDP)", "Cryoprecipitate", "Voluntary Donation Camps"],
-    location: { type: "Point", coordinates: [72.828, 19.051] },
-    verificationStatus: "verified",
-    sourceName: "FDA Maharashtra Blood Directory",
-  },
-  {
-    _id: "bb-tata",
-    name: "Tata Memorial Hospital Blood Bank",
-    locality: "Parel",
-    address: "Dr. E Borges Road, Parel, Mumbai 400012",
-    phone: "+91-22-2417-7000",
-    operatingHours: "24 Hours Open",
-    providerType: "Oncology Specialty Transfusion Center",
-    services: ["Irradiated Blood Components", "Leukoreduced PRBC", "Emergency Transfusion"],
-    location: { type: "Point", coordinates: [72.843, 19.004] },
-    verificationStatus: "verified",
-    sourceName: "Tata Memorial Healthcare Network",
-  },
-  {
-    _id: "bb-hinduja",
-    name: "P.D. Hinduja Hospital Blood Bank",
-    locality: "Mahim",
-    address: "Veer Savarkar Marg, Mahim, Mumbai 400016",
-    phone: "+91-22-2445-1515",
-    operatingHours: "24/7",
-    providerType: "Tertiary Care Transfusion Medicine",
-    services: ["Stem Cell Apheresis", "Cross Matching", "Rare Blood Group Registry"],
-    location: { type: "Point", coordinates: [72.839, 19.033] },
-    verificationStatus: "verified",
-    sourceName: "FDA Maharashtra",
-  },
-];
-
-const FALLBACK_DIAGNOSTICS = [
-  {
-    _id: "diag-suburban",
-    name: "Suburban Diagnostics Central Lab",
-    locality: "Andheri",
-    address: "Near Fun Republic, Andheri West, Mumbai 400053",
-    phone: "+91-22-6170-0000",
-    operatingHours: "06:30 AM – 10:00 PM",
-    providerType: "NABL / CAP Accredited Diagnostic Centre",
-    services: ["3T MRI", "128-Slice CT Scan", "Digital X-Ray", "Pathology", "2D Echo"],
-    location: { type: "Point", coordinates: [72.834, 19.136] },
-    verificationStatus: "verified",
-    sourceName: "NABL Certified Directory",
-  },
-  {
-    _id: "diag-metropolis",
-    name: "Metropolis Healthcare Reference Laboratory",
-    locality: "Vidyavihar",
-    address: "Kohinoor City, Commercial 1, Kurla West, Mumbai 400070",
-    phone: "+91-22-3399-3939",
-    operatingHours: "24/7 Reference Lab",
-    providerType: "Advanced Pathology & Molecular Genetics",
-    services: ["Molecular Diagnostics", "Oncology Markers", "Biochemistry", "Hormone Profiles"],
-    location: { type: "Point", coordinates: [72.889, 19.074] },
-    verificationStatus: "verified",
-    sourceName: "Metropolis Network",
-  },
-  {
-    _id: "diag-srl",
-    name: "Agilus Diagnostics (SRL) Dadar",
-    locality: "Dadar",
-    address: "Swami Gyan Jivandas Marg, Dadar East, Mumbai 400014",
-    phone: "+91-22-2410-1234",
-    operatingHours: "07:00 AM – 09:00 PM",
-    providerType: "Multi-Specialty Imaging & Laboratory",
-    services: ["Ultra-Sound & Doppler", "Mammography", "Health Checkups", "Cardiology Workup"],
-    location: { type: "Point", coordinates: [72.844, 19.018] },
-    verificationStatus: "verified",
-    sourceName: "Agilus Network",
-  },
-  {
-    _id: "diag-neuropath",
-    name: "NM Medical Imaging & Health Centre",
-    locality: "Bandra",
-    address: "Bandra West, Linking Road, Mumbai 400052",
-    phone: "+91-22-2640-1000",
-    operatingHours: "07:00 AM – 09:30 PM",
-    providerType: "Advanced Imaging & Preventive Health",
-    services: ["High-Field MRI", "Multi-Detector CT", "Bone Densitometry (DEXA)", "Stress Test (TMT)"],
-    location: { type: "Point", coordinates: [72.831, 19.06] },
-    verificationStatus: "verified",
-    sourceName: "NM Medical Records",
-  },
-];
-
-const FALLBACK_AMBULANCES = [
-  {
-    _id: "amb-lifeline",
-    name: "LifeLine Critical Care Ambulance Mumbai",
-    locality: "Bandra",
-    address: "Bandra Reclamation, Near Lilavati, Mumbai 400050",
-    phone: "+91-98200-10800",
-    operatingHours: "24/7 Rapid Response",
-    providerType: "Advanced Life Support (ALS)",
-    services: ["ALS Transport", "Ventilator Support", "Defibrillator", "Paramedic Onboard"],
-    location: { type: "Point", coordinates: [72.8295, 19.0522] },
-    verificationStatus: "verified",
-    sourceName: "BMC Mumbai EMS Directory",
-  },
-  {
-    _id: "amb-citycare",
-    name: "City Care Emergency Ambulance Service",
-    locality: "Andheri",
-    address: "Opposite Andheri Railway Station East, Mumbai 400069",
-    phone: "+91-98200-24700",
-    operatingHours: "24/7",
-    providerType: "Cardiac ICU Mobile Unit",
-    services: ["Cardiac ICU Mobile", "ECG Monitoring", "Infusion Pumps", "Oxygen Pipeline"],
-    location: { type: "Point", coordinates: [72.853, 19.119] },
-    verificationStatus: "verified",
-    sourceName: "Mumbai EMS Alliance",
-  },
-  {
-    _id: "amb-apex",
-    name: "Apex Mumbai Emergency Transit",
-    locality: "Dadar",
-    address: "Dadar TT Circle, Dadar East, Mumbai 400014",
-    phone: "+91-98200-33300",
-    operatingHours: "24 Hours Dispatch",
-    providerType: "Basic & Advanced Transport",
-    services: ["BLS Transport", "Patient Shift", "Airway Management", "Stretcher Transit"],
-    location: { type: "Point", coordinates: [72.843, 19.019] },
-    verificationStatus: "verified",
-    sourceName: "Apex Medical Transport",
-  },
-  {
-    _id: "amb-navimumbai",
-    name: "Navi Mumbai Express EMS Fleet",
-    locality: "Vashi",
-    address: "Sector 17, Vashi, Navi Mumbai 400703",
-    phone: "+91-98200-55500",
-    operatingHours: "24/7 Highway & City EMS",
-    providerType: "Trauma Response Mobile Unit",
-    services: ["High-Speed Highway Trauma", "Neonatal Transport (NICU)", "Spine Board"],
-    location: { type: "Point", coordinates: [73.003, 19.076] },
-    verificationStatus: "verified",
-    sourceName: "Navi Mumbai EMS",
-  },
-];
-
-const FALLBACK_CAMPAIGNS = [
-  {
-    _id: "camp-1",
-    name: "Bandra Community Mega Blood Donation Drive",
-    organizer: "Rotary Club of Bandra & Lilavati Blood Centre",
-    location: "Bandra Reclamation Promenade Hall, Bandra West",
-    date: new Date(Date.now() + 86400000 * 2).toISOString(),
-    bloodGroups: ["All"],
-    targetDonors: 150,
-    status: "active",
-    contact: "+91 98200 12345",
-  },
-  {
-    _id: "camp-2",
-    name: "Dadar Red Cross Lifesaver Camp",
-    organizer: "Indian Red Cross Society Maharashtra Branch",
-    location: "Shivaji Park Community Center, Dadar West",
-    date: new Date(Date.now() + 86400000 * 4).toISOString(),
-    bloodGroups: ["O-", "B-", "A-", "AB-"],
-    targetDonors: 100,
-    status: "active",
-    contact: "+91 98200 67890",
-  },
-];
-
-const FALLBACK_JOBS = [
-  {
-    _id: "job-1",
-    title: "ICU Staff Nurse (Critical Care)",
-    organizationName: "Lilavati Hospital and Research Centre",
-    organizationType: "hospital",
-    locality: "Bandra West",
-    employmentType: "Full-Time",
-    experienceYears: "2-4 years",
-  },
-  {
-    _id: "job-2",
-    title: "Emergency Medical Officer (EMO - Trauma)",
-    organizationName: "KEM Hospital",
-    organizationType: "hospital",
-    locality: "Parel",
-    employmentType: "Full-Time",
-    experienceYears: "1-3 years",
-  },
-  {
-    _id: "job-3",
-    title: "Blood Bank Apheresis Technician",
-    organizationName: "Tata Memorial Blood Centre",
-    organizationType: "blood_bank",
-    locality: "Parel",
-    employmentType: "Full-Time",
-    experienceYears: "2+ years",
-  },
-  {
-    _id: "job-4",
-    title: "Advanced Paramedic / EMT Specialist",
-    organizationName: "LifeLine Critical Care Ambulance",
-    organizationType: "ambulance",
-    locality: "Mumbai Metropolitan",
-    employmentType: "Shift-based",
-    experienceYears: "1+ year",
-  },
-];
-
 export default function HomePage() {
-  // 1. Hospital dataset from core hook (with built-in offline fixtures fallback)
-  const { data: hospitalsData, loading: hospitalsLoading } = useHospitals({}, { sort: "updated" });
+  // 1. Hospital dataset from the backend
+  const { data: hospitalsData, loading: hospitalsLoading, error: hospitalsError, retry: retryHospitals } = useHospitals({}, { sort: "updated" });
 
   // 2. Extra provider states
-  const [bloodBanks, setBloodBanks] = useState(FALLBACK_BLOOD_BANKS);
-  const [diagnostics, setDiagnostics] = useState(FALLBACK_DIAGNOSTICS);
-  const [ambulances, setAmbulances] = useState(FALLBACK_AMBULANCES);
-  const [campaigns, setCampaigns] = useState(FALLBACK_CAMPAIGNS);
-  const [jobs, setJobs] = useState(FALLBACK_JOBS);
+  const [bloodBanks, setBloodBanks] = useState([]);
+  const [diagnostics, setDiagnostics] = useState([]);
+  const [ambulances, setAmbulances] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
+  const [jobs, setJobs] = useState([]);
   const [resourcesLoading, setResourcesLoading] = useState(true);
+  const [resourcesError, setResourcesError] = useState("");
+  const [resourcesRevision, setResourcesRevision] = useState(0);
 
   // 3. Modals state
   const [bookingAmbulance, setBookingAmbulance] = useState(null);
@@ -281,24 +53,13 @@ export default function HomePage() {
     ])
       .then(([bbRes, diagRes, ambRes, campRes, jobRes]) => {
         if (!isLive) return;
-        if (bbRes.status === "fulfilled" && bbRes.value?.data?.length) {
-          setBloodBanks(bbRes.value.data);
-        }
-        if (diagRes.status === "fulfilled" && diagRes.value?.data?.length) {
-          setDiagnostics(diagRes.value.data);
-        }
-        if (ambRes.status === "fulfilled" && ambRes.value?.data?.length) {
-          setAmbulances(ambRes.value.data);
-        }
-        if (campRes.status === "fulfilled" && campRes.value?.data?.length) {
-          setCampaigns(campRes.value.data);
-        }
-        if (jobRes.status === "fulfilled" && (jobRes.value?.jobs?.length || jobRes.value?.data?.length)) {
-          setJobs(jobRes.value.jobs || jobRes.value.data);
-        }
-      })
-      .catch((err) => {
-        console.warn("Using offline fallback data for landing page:", err);
+        setBloodBanks(bbRes.status === "fulfilled" ? bbRes.value?.data || [] : []);
+        setDiagnostics(diagRes.status === "fulfilled" ? diagRes.value?.data || [] : []);
+        setAmbulances(ambRes.status === "fulfilled" ? ambRes.value?.data || [] : []);
+        setCampaigns(campRes.status === "fulfilled" ? campRes.value?.data || [] : []);
+        setJobs(jobRes.status === "fulfilled" ? jobRes.value?.jobs || jobRes.value?.data || [] : []);
+        const failed = [bbRes, diagRes, ambRes, campRes, jobRes].filter((result) => result.status === "rejected").length;
+        setResourcesError(failed ? `${failed} provider data source${failed === 1 ? "" : "s"} could not be loaded.` : "");
       })
       .finally(() => {
         if (isLive) setResourcesLoading(false);
@@ -307,7 +68,7 @@ export default function HomePage() {
     return () => {
       isLive = false;
     };
-  }, []);
+  }, [resourcesRevision]);
 
   // Compute live dataset stats from actual loaded items
   const stats = useMemo(() => {
@@ -658,56 +419,48 @@ export default function HomePage() {
 
       {/* 4. REAL BACKEND NETWORK METRICS */}
       <section className="mb-5" aria-label="Verified Healthcare Statistics">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="col-6 col-md-3">
-            <div className="metric-card h-100">
-              <div className="d-flex justify-content-between align-items-start mb-2">
-                <span className="text-secondary small fw-bold text-uppercase">Verified Hospitals</span>
-                <span className="badge badge-soft-danger"><EmergencyIcon name="hospital" size={16} /></span>
-              </div>
-              <div className="metric-value text-danger interactive-counter">{stats.hospitals}</div>
-              <div className="small text-muted mt-2">
-                <strong>{stats.erCount}</strong> with 24/7 ER Trauma Units
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="metric-card h-full">
+            <div className="d-flex justify-content-between align-items-start mb-2">
+              <span className="text-secondary small fw-bold text-uppercase">Verified Hospitals</span>
+              <span className="badge badge-soft-danger"><EmergencyIcon name="hospital" size={16} /></span>
+            </div>
+            <div className="metric-value text-danger interactive-counter">{stats.hospitals}</div>
+            <div className="small text-muted mt-2">
+              <strong>{stats.erCount}</strong> with 24/7 ER Trauma Units
             </div>
           </div>
 
-          <div className="col-6 col-md-3">
-            <div className="metric-card h-100">
-              <div className="d-flex justify-content-between align-items-start mb-2">
-                <span className="text-secondary small fw-bold text-uppercase">Blood Centres</span>
-                <span className="badge badge-soft-danger"><EmergencyIcon name="blood" size={16} /></span>
-              </div>
-              <div className="metric-value text-danger interactive-counter">{stats.bloodBanks}</div>
-              <div className="small text-muted mt-2">
-                <strong>{campaigns.length}</strong> active donation drives
-              </div>
+          <div className="metric-card h-full">
+            <div className="d-flex justify-content-between align-items-start mb-2">
+              <span className="text-secondary small fw-bold text-uppercase">Blood Centres</span>
+              <span className="badge badge-soft-danger"><EmergencyIcon name="blood" size={16} /></span>
+            </div>
+            <div className="metric-value text-danger interactive-counter">{stats.bloodBanks}</div>
+            <div className="small text-muted mt-2">
+              <strong>{campaigns.length}</strong> active donation drives
             </div>
           </div>
 
-          <div className="col-6 col-md-3">
-            <div className="metric-card h-100">
-              <div className="d-flex justify-content-between align-items-start mb-2">
-                <span className="text-secondary small fw-bold text-uppercase">Diagnostic Labs</span>
-                <span className="badge badge-soft-info"><EmergencyIcon name="diagnostic" size={16} /></span>
-              </div>
-              <div className="metric-value text-primary interactive-counter">{stats.diagnostics}</div>
-              <div className="small text-muted mt-2">
-                CT, 3T MRI & NABL Pathology
-              </div>
+          <div className="metric-card h-full">
+            <div className="d-flex justify-content-between align-items-start mb-2">
+              <span className="text-secondary small fw-bold text-uppercase">Diagnostic Labs</span>
+              <span className="badge badge-soft-info"><EmergencyIcon name="diagnostic" size={16} /></span>
+            </div>
+            <div className="metric-value text-primary interactive-counter">{stats.diagnostics}</div>
+            <div className="small text-muted mt-2">
+              CT, 3T MRI & NABL Pathology
             </div>
           </div>
 
-          <div className="col-6 col-md-3">
-            <div className="metric-card h-100">
-              <div className="d-flex justify-content-between align-items-start mb-2">
-                <span className="text-secondary small fw-bold text-uppercase">Ambulance Fleets</span>
-                <span className="badge badge-soft-warning"><EmergencyIcon name="ambulance" size={16} /></span>
-              </div>
-              <div className="metric-value text-warning interactive-counter">{stats.ambulances}</div>
-              <div className="small text-muted mt-2">
-                ALS & Cardiac Mobile ICU
-              </div>
+          <div className="metric-card h-full">
+            <div className="d-flex justify-content-between align-items-start mb-2">
+              <span className="text-secondary small fw-bold text-uppercase">Ambulance Fleets</span>
+              <span className="badge badge-soft-warning"><EmergencyIcon name="ambulance" size={16} /></span>
+            </div>
+            <div className="metric-value text-warning interactive-counter">{stats.ambulances}</div>
+            <div className="small text-muted mt-2">
+              ALS & Cardiac Mobile ICU
             </div>
           </div>
         </div>
@@ -774,7 +527,7 @@ export default function HomePage() {
               Facing an acute medical crisis or surgical emergency?
             </h2>
             <p className="mb-0 text-secondary" style={{ maxWidth: "60ch" }}>
-              Coordinate immediate hospital bed triage or urgent blood dispatch. Direct dial national emergency networks or launch our clinical transfer request pipeline.
+              Record a hospital bed or urgent blood request, then contact providers directly. For immediate help, use the national emergency numbers.
             </p>
           </div>
           <div className="col-lg-4 text-lg-end">
@@ -785,7 +538,7 @@ export default function HomePage() {
               <a href="tel:112" className="btn btn-dark fw-bold px-3 py-2 d-flex align-items-center gap-2">
                 <EmergencyIcon name="phone" size={18} /> Dial 112 (National)
               </a>
-              <Link href="/requests/new" className="btn btn-outline-danger fw-bold px-3 py-2">
+              <Link href="/emergency" className="btn btn-outline-danger fw-bold px-3 py-2">
                 Request Emergency Bed
               </Link>
             </div>
@@ -801,7 +554,7 @@ export default function HomePage() {
               Discovered Providers ({filteredProviders.length})
             </h2>
             <p className="small text-muted mb-0">
-              Showing real verified facilities from the MedReach database.
+              Showing provider records from the MedReach database. Check each record's verification status and source.
             </p>
           </div>
 
@@ -845,15 +598,23 @@ export default function HomePage() {
           </div>
         </div>
 
+        {(hospitalsError || resourcesError) && !hospitalsLoading && !resourcesLoading && (
+          <div className="bg-amber-50 border border-amber-300 text-amber-900 rounded-md p-3 mb-4 flex flex-wrap items-center gap-2" role="alert">
+            <span className="mr-auto">{[hospitalsError, resourcesError].filter(Boolean).join(" ")}</span>
+            {hospitalsError && <button type="button" className="border border-amber-400 rounded px-3 py-1 text-sm font-semibold" onClick={retryHospitals}>Retry hospitals</button>}
+            {resourcesError && <button type="button" className="border border-amber-400 rounded px-3 py-1 text-sm font-semibold" onClick={() => setResourcesRevision((value) => value + 1)}>Retry providers</button>}
+          </div>
+        )}
+
         {/* Results Grid */}
-        {hospitalsLoading && resourcesLoading ? (
+        {hospitalsLoading || resourcesLoading ? (
           <div className="surface p-5 text-center my-4">
             <div className="spinner-border text-danger mb-2" role="status">
               <span className="visually-hidden">Loading healthcare providers...</span>
             </div>
             <p className="text-muted small mb-0">Loading verified Mumbai healthcare network data...</p>
           </div>
-        ) : filteredProviders.length === 0 ? (
+        ) : (hospitalsError || resourcesError) && filteredProviders.length === 0 ? null : filteredProviders.length === 0 ? (
           <div className="surface p-5 text-center my-4">
             <div className="text-muted mb-2"><EmergencyIcon name="search" size={40} /></div>
             <h3 className="h5 fw-bold">No healthcare providers match your filters</h3>

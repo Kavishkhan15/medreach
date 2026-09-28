@@ -30,14 +30,14 @@ function MapRecenter({ selectedPos }) {
   return null;
 }
 
-export function MapFallback({ count = 0 }) {
+export function MapFallback({ count = 0, category = "hospitals", categoryLabel = "Hospitals" }) {
   return (
     <div
       className="min-h-[420px] flex flex-col items-center justify-center text-center p-10
         bg-[var(--color-surface)] border border-dashed border-[var(--color-border)]
         rounded-[var(--radius-lg,1rem)]"
       role="region"
-      aria-label="Map configuration notice"
+      aria-label="Map unavailable"
     >
       <span
         className="inline-flex items-center justify-center w-[60px] h-[60px] rounded-full
@@ -47,22 +47,16 @@ export function MapFallback({ count = 0 }) {
       >
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
       </span>
-      <h2 className="text-lg font-bold mb-2">Google Maps API key required</h2>
+      <h2 className="text-lg font-bold mb-2">Map view is unavailable</h2>
       <p className="text-[var(--color-muted)] text-sm mb-3 max-w-[460px]">
-        Set <code className="bg-[#f1f3f5] px-1 rounded text-xs">NEXT_PUBLIC_GOOGLE_MAPS_API_KEY</code> in
-        your environment to display the interactive map.
+        Browse the provider list on this page, open the full directory, or call emergency services if help is needed now.
       </p>
-      <div className="bg-[#f8f9fa] border border-[var(--color-border)] rounded-[var(--radius)]
-        text-left text-sm p-3 w-full max-w-[460px] mb-3">
-        <div className="font-semibold mb-1">Quick Setup:</div>
-        <ol className="list-decimal pl-5 text-[var(--color-muted)] space-y-0.5">
-          <li>Enable <strong>Maps JavaScript API</strong> in Google Cloud Console.</li>
-          <li>Add <code className="bg-[#eef0f2] px-0.5 rounded text-xs">NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_key</code> to your environment.</li>
-          <li>Restart the dev server.</li>
-        </ol>
+      <div className="flex flex-wrap justify-center gap-2 mb-3">
+        <Link className="border border-gray-300 rounded px-3 py-2 text-sm font-semibold" href={`/${category}`}>Open {categoryLabel.toLowerCase()} directory</Link>
+        <a className="bg-red-600 text-white rounded px-3 py-2 text-sm font-semibold" href="tel:112">Call 112</a>
       </div>
       <p className="text-xs text-[var(--color-muted)]">
-        You can continue exploring all <strong>{count} hospitals</strong> using the list.
+        You can continue exploring all <strong>{count} {categoryLabel.toLowerCase()}</strong> using the list.
       </p>
     </div>
   );
@@ -92,7 +86,7 @@ export default function GoogleMapView({
   const selectedPos = useMemo(() => toLatLng(selectedItem), [selectedItem]);
   const primaryColor = CATEGORY_COLORS[category] || "#d32029";
 
-  if (!apiKey) return <MapFallback count={items.length} />;
+  if (!apiKey) return <MapFallback count={items.length} category={category} categoryLabel={categoryLabel} />;
 
   return (
     <div className="w-full h-[min(65vh,570px)] min-h-[420px] rounded-[var(--radius-lg,1rem)]
