@@ -2,6 +2,9 @@ import crypto from "crypto";
 import { BloodRequest } from "../models/BloodRequest.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "../services/emailService.js";
+import { TRACKING_TOKEN_HEADER, generateTrackingToken, hashTrackingToken, verifyTrackingToken } from "../utils/trackingToken.js";
+import { ResourceProvider } from "../models/ResourceProvider.js";
+import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 function generateReference(type) {
   const prefix = type === "DONATION" ? "BDP" : "BR";
@@ -12,6 +15,9 @@ function generateReference(type) {
 
 // POST /api/blood-requests — submit a blood requisition or donation pledge (public / authenticated)
 export const createBloodRequest = asyncHandler(async (req, res) => {
+  if (req.idempotencyKeyHash && await BloodRequest.exists({ idempotencyKeyHash: req.idempotencyKeyHash })) {
+    return res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+  }
   const {
     type,
     providerId,
@@ -35,7 +41,13 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "type must be either 'REQUEST' or 'DONATION'" });
   }
 
-  const effectiveBloodBankName = bloodBankName?.trim() || (isUrgent ? "All Mumbai Blood Banks (Urgent Dispatch)" : "");
+  let provider;
+  if (providerId) {
+    provider = await ResourceProvider.findOne({ _id: providerId, kind: "blood_bank", active: { $ne: false } });
+    if (!provider) return res.status(400).json({ error: "Active blood bank provider not found" });
+  }
+
+  const effectiveBloodBankName = provider?.name || bloodBankName?.trim() || (isUrgent ? "No specific blood bank selected" : "");
   if (!effectiveBloodBankName) {
     return res.status(400).json({ error: "bloodBankName is required" });
   }
@@ -59,11 +71,12 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
 
   const reference = generateReference(type);
   const userId = req.user?._id || req.user?.id;
+  const trackingToken = userId ? undefined : generateTrackingToken();
 
   const bloodRequest = await BloodRequest.create({
     reference,
     type,
-    provider: providerId || undefined,
+    provider: provider?._id,
     bloodBankName: effectiveBloodBankName,
     bloodGroup,
     patientOrDonorName: patientOrDonorName.trim(),
@@ -79,6 +92,8 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
     contactEmail: (contactEmail || req.user?.email || "").trim().toLowerCase() || undefined,
     notes: notes ? notes.trim() : undefined,
     user: userId || undefined,
+    trackingTokenHash: trackingToken ? hashTrackingToken(trackingToken) : undefined,
+    idempotencyKeyHash: req.idempotencyKeyHash,
     status: "REQUESTED",
   });
 
@@ -137,9 +152,10 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
   res.status(201).json({
     bloodRequest,
     reference: bloodRequest.reference,
+    ...(trackingToken ? { trackingToken } : {}),
     message: type === "DONATION"
-      ? "Blood donation pledge received. The blood bank has been notified."
-      : "Blood requisition request submitted successfully.",
+      ? "Blood donation pledge recorded. Contact the blood bank to arrange the donation."
+      : "Blood request recorded. Contact the blood bank to confirm inventory and fulfillment.",
   });
 });
 
@@ -175,11 +191,21 @@ export const getBloodRequest = asyncHandler(async (req, res) => {
   const isObjectId = /^[0-9a-fA-F]{24}$/.test(reference);
 
   const bloodRequest = isObjectId
-    ? await BloodRequest.findById(reference).populate("user", "name email").lean()
-    : await BloodRequest.findOne({ reference }).populate("user", "name email").lean();
+    ? await BloodRequest.findById(reference).select("+trackingTokenHash").populate("user", "name email")
+    : await BloodRequest.findOne({ reference }).select("+trackingTokenHash").populate("user", "name email");
 
   if (!bloodRequest) {
     return res.status(404).json({ error: "Blood request not found" });
+  }
+
+  const userId = req.user?._id || req.user?.id;
+  const requestOwnerId = bloodRequest.user?._id || bloodRequest.user;
+  const isOwner = Boolean(userId && requestOwnerId && String(userId) === String(requestOwnerId));
+  const isAdmin = Boolean(req.user && ["admin", "system_admin"].includes(req.user.role));
+  const hasGuestToken = !bloodRequest.user
+    && verifyTrackingToken(req.get(TRACKING_TOKEN_HEADER), bloodRequest.trackingTokenHash);
+  if (!isOwner && !isAdmin && !hasGuestToken) {
+    return res.status(403).json({ error: "Access denied" });
   }
 
   res.json({ bloodRequest });

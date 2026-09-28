@@ -63,4 +63,6 @@ export function applySecurity(app) {
   app.locals.registerLimiter = limiter(8, 60 * 60 * 1000);
   app.locals.recoveryLimiter = limiter(6, 60 * 60 * 1000);
   app.locals.oauthLimiter = limiter(20);
+  app.locals.trackingLimiter = limiter(60);
+  app.locals.publicSubmissionLimiter = limiter(20);
 }

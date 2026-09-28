@@ -4,9 +4,11 @@ import { Hospital } from "../models/Hospital.js";
 import { User } from "../models/User.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { canManageHospital } from "./hospitalAccess.js";
-import { notifyUser } from "./notificationService.js";
+import { notifyUserSafely } from "./notificationService.js";
+import { generateTrackingToken, hashTrackingToken, verifyTrackingToken } from "../utils/trackingToken.js";
 
 import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "./emailService.js";
+import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 const transitions = {
   REQUESTED: ["SENT", "UNDER_REVIEW", "REJECTED", "CANCELLED", "EXPIRED"],
@@ -18,13 +20,19 @@ const transitions = {
 };
 
 export async function createEmergencyRequest(data, actor) {
+  if (data.idempotencyKeyHash && await EmergencyRequest.exists({ idempotencyKeyHash: data.idempotencyKeyHash })) {
+    return { error: IDEMPOTENCY_REPLAY_ERROR, status: 409 };
+  }
   const hospital = await Hospital.findById(data.hospitalId);
   if (!hospital) return { error: "Hospital not found", status: 404 };
   const userId = actor?.id || null;
   const isEmergency = data.isEmergency !== false;
+  const trackingToken = userId ? undefined : generateTrackingToken();
   const request = await EmergencyRequest.create({
     requestId: `MR-${Date.now().toString(36).toUpperCase()}-${randomBytes(3).toString("hex").toUpperCase()}`,
     user: userId,
+    trackingTokenHash: trackingToken ? hashTrackingToken(trackingToken) : undefined,
+    idempotencyKeyHash: data.idempotencyKeyHash,
     hospital: hospital._id,
     emergencyType: data.emergencyType,
     requiredFacility: data.requiredFacility,
@@ -70,13 +78,13 @@ export async function createEmergencyRequest(data, actor) {
 
   // 2. In-app notification for authenticated users
   if (userId) {
-    await notifyUser({
+    await notifyUserSafely({
       recipient: userId,
       eventKey: `emergency:${request._id}:created`,
       type: "emergency_request",
       title: "Emergency request submitted",
       message: hasHospitalStaff
-        ? `${request.requestId} was sent to connected hospital staff. No bed is reserved.`
+        ? `${request.requestId} is available to connected hospital staff. No bed is reserved.`
         : `${request.requestId} was recorded, but this hospital is not connected to MedReach staff. Call the hospital directly. No bed is reserved.`,
       relatedType: "EmergencyRequest",
       relatedId: request._id,
@@ -110,20 +118,23 @@ export async function createEmergencyRequest(data, actor) {
   }
 
   for (const { _id: adminId } of connectedStaff) {
-    await notifyUser({ recipient: adminId, eventKey: `emergency:${request._id}:hospital:${adminId}`,
+    await notifyUserSafely({ recipient: adminId, eventKey: `emergency:${request._id}:hospital:${adminId}`,
       type: "emergency_request", title: "New emergency request", message: `${request.requestId} needs review.`,
       relatedType: "EmergencyRequest", relatedId: request._id,
       emailTemplate: "emergency_staff", emailData: { reference: request.requestId, hospital: hospital.name } });
   }
-  return { request };
+  return { request, trackingToken };
 }
 
-export async function changeEmergencyRequest({ requestId, actor, nextStatus, note = "", hospitalResponse = "" }) {
-  const request = await EmergencyRequest.findById(requestId);
+export async function changeEmergencyRequest({ requestId, actor, trackingToken, nextStatus, note = "", hospitalResponse = "" }) {
+  const request = await EmergencyRequest.findById(requestId).select("+trackingTokenHash");
   if (!request) return { error: "Request not found", status: 404 };
   const hospital = await Hospital.findById(request.hospital);
   const isStaff = actor ? canManageHospital(actor, hospital) : false;
-  const isOwner = (request.user && actor) ? String(request.user) === String(actor.id) : (!request.user && nextStatus === "CANCELLED");
+  const isAuthenticatedOwner = Boolean(request.user && actor && String(request.user) === String(actor.id));
+  const isGuestOwner = Boolean(!request.user && nextStatus === "CANCELLED"
+    && verifyTrackingToken(trackingToken, request.trackingTokenHash));
+  const isOwner = isAuthenticatedOwner || isGuestOwner;
   if (!isOwner && !isStaff) return { error: "Access denied", status: 403 };
   if (request.expiresAt < new Date() && !["ACCEPTED", "REJECTED", "CANCELLED", "COMPLETED"].includes(request.status)) {
     request.status = "EXPIRED";
@@ -144,7 +155,7 @@ export async function changeEmergencyRequest({ requestId, actor, nextStatus, not
     before: { status: previousStatus }, after: { status: nextStatus } });
 
   if (request.user) {
-    await notifyUser({ recipient: request.user, eventKey: `emergency:${request._id}:${request.timeline.length}`,
+    await notifyUserSafely({ recipient: request.user, eventKey: `emergency:${request._id}:${request.timeline.length}`,
       type: "emergency_request", title: "Emergency request updated",
       message: `${request.requestId}: ${nextStatus.replaceAll("_", " ")}. This is not a confirmed bed reservation.`,
       relatedType: "EmergencyRequest", relatedId: request._id,

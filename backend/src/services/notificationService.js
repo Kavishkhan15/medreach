@@ -12,3 +12,18 @@ export async function notifyUser({ recipient, eventKey, type, title, message, re
   }
   return notification;
 }
+
+// Use after a primary record has already been committed. A notification-store or
+// email-delivery failure must not turn a successful request into an HTTP 500 and
+// prompt the caller to submit the primary record again.
+export async function notifyUserSafely(event) {
+  try {
+    return { notification: await notifyUser(event), status: "recorded" };
+  } catch (error) {
+    const errorCode = String(error?.code || "NOTIFICATION_FAILED")
+      .replace(/[^A-Z0-9_-]/gi, "_")
+      .slice(0, 80);
+    console.warn(`[medreach] notification ${event?.eventKey || "unknown"} failed: ${errorCode}`);
+    return { notification: null, status: "failed", errorCode };
+  }
+}

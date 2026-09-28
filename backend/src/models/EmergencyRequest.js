@@ -13,6 +13,8 @@ const timeline = new mongoose.Schema({
 const schema = new mongoose.Schema({
   requestId: { type: String, required: true, unique: true, index: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false, index: true },
+  trackingTokenHash: { type: String, select: false },
+  idempotencyKeyHash: { type: String, select: false },
   hospital: { type: mongoose.Schema.Types.ObjectId, ref: "Hospital", required: true, index: true },
   emergencyType: { type: String, trim: true, required: true, maxlength: 80 },
   requiredFacility: { type: String, enum: FACILITY_TYPES, required: true },
@@ -33,4 +35,13 @@ const schema = new mongoose.Schema({
 }, { timestamps: true });
 
 schema.index({ hospital: 1, status: 1, createdAt: -1 });
+schema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
+schema.set("toJSON", {
+  transform: (_doc, ret) => {
+    delete ret.trackingTokenHash;
+    delete ret.idempotencyKeyHash;
+    delete ret.__v;
+    return ret;
+  },
+});
 export const EmergencyRequest = mongoose.model("EmergencyRequest", schema);

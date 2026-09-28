@@ -18,6 +18,12 @@ export function errorHandler(err, req, res, _next) {
     return res.status(400).json({ error: `Invalid ${err.path}` });
   }
   if (err.code === 11000) {
+    if (Object.hasOwn(err.keyValue ?? {}, "idempotencyKeyHash")) {
+      return res.status(409).json({
+        error: "This Idempotency-Key was already used. Check the original request status; do not submit again.",
+        code: "IDEMPOTENCY_KEY_REUSED",
+      });
+    }
     return res.status(409).json({
       error: "Duplicate value",
       fields: Object.keys(err.keyValue ?? {}),

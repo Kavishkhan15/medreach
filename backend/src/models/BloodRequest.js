@@ -105,6 +105,14 @@ const bloodRequestSchema = new mongoose.Schema(
       ref: "User",
       index: true,
     },
+    trackingTokenHash: {
+      type: String,
+      select: false,
+    },
+    idempotencyKeyHash: {
+      type: String,
+      select: false,
+    },
     notes: {
       type: String,
       trim: true,
@@ -115,5 +123,14 @@ const bloodRequestSchema = new mongoose.Schema(
 );
 
 bloodRequestSchema.index({ type: 1, status: 1, createdAt: -1 });
+bloodRequestSchema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
+bloodRequestSchema.set("toJSON", {
+  transform: (_doc, ret) => {
+    delete ret.trackingTokenHash;
+    delete ret.idempotencyKeyHash;
+    delete ret.__v;
+    return ret;
+  },
+});
 
 export const BloodRequest = mongoose.model("BloodRequest", bloodRequestSchema);

@@ -16,6 +16,10 @@ test("Emergency Guest Workflow & Authentication Boundary Test Suite", async (t) 
   let testHospital;
   let testUser;
   let userToken;
+  let staffToken;
+  let adminToken;
+  let guestRequestId;
+  let guestTrackingToken;
 
   t.before(async () => {
     await connectDB(testDbUri);
@@ -30,6 +34,21 @@ test("Emergency Guest Workflow & Authentication Boundary Test Suite", async (t) 
     });
     userToken = signToken(testUser);
 
+    const staff = await User.create({
+      name: "Hospital Staff",
+      email: "hospital-staff.guesttest@medreach.test",
+      role: "hospital_admin",
+      phone: "+91 98765 00002",
+    });
+    const admin = await User.create({
+      name: "System Admin",
+      email: "system-admin.guesttest@medreach.test",
+      role: "system_admin",
+      phone: "+91 98765 00003",
+    });
+    staffToken = signToken(staff);
+    adminToken = signToken(admin);
+
     testHospital = await Hospital.create({
       name: "Holy Family Hospital",
       slug: "holy-family-hospital",
@@ -37,6 +56,7 @@ test("Emergency Guest Workflow & Authentication Boundary Test Suite", async (t) 
       city: "Mumbai",
       facilities: [{ facility: "Emergency Department", status: "available" }, { facility: "ICU", status: "limited" }],
       location: { type: "Point", coordinates: [72.83, 19.05] },
+      admins: [staff._id],
     });
   });
 
@@ -97,14 +117,58 @@ test("Emergency Guest Workflow & Authentication Boundary Test Suite", async (t) 
     assert.equal(res.body.request.contactEmail, "bystander@example.com");
     assert.ok(res.body.request.requestId.startsWith("MR-"));
     assert.equal(res.body.request.isEmergency, true);
+    assert.equal(typeof res.body.trackingToken, "string");
+    assert.ok(res.body.trackingToken.length >= 32);
+    assert.equal(res.body.request.trackingTokenHash, undefined);
 
-    const guestRequestId = res.body.request._id;
+    guestRequestId = res.body.request._id;
+    guestTrackingToken = res.body.trackingToken;
 
-    // Unauthenticated lookup of guest emergency request succeeds
-    const lookupRes = await request(app).get(`/api/emergency-requests/${guestRequestId}`);
+    const stored = await EmergencyRequest.findById(guestRequestId).select("+trackingTokenHash");
+    assert.ok(stored.trackingTokenHash);
+    assert.notEqual(stored.trackingTokenHash, guestTrackingToken);
+
+    const missingToken = await request(app).get(`/api/emergency-requests/${guestRequestId}`);
+    assert.equal(missingToken.status, 403);
+
+    const wrongToken = await request(app)
+      .get(`/api/emergency-requests/${guestRequestId}`)
+      .set("X-MedReach-Tracking-Token", "wrong-token");
+    assert.equal(wrongToken.status, 403);
+
+    const lookupRes = await request(app)
+      .get(`/api/emergency-requests/${guestRequestId}`)
+      .set("X-MedReach-Tracking-Token", guestTrackingToken);
     assert.equal(lookupRes.status, 200);
     assert.equal(lookupRes.body.request._id, guestRequestId);
     assert.equal(lookupRes.body.request.user, null);
+    assert.equal(lookupRes.body.request.trackingTokenHash, undefined);
+    assert.equal(lookupRes.body.request.hospital.admins, undefined);
+
+    const staffLookup = await request(app)
+      .get(`/api/emergency-requests/${guestRequestId}`)
+      .set("Authorization", `Bearer ${staffToken}`);
+    assert.equal(staffLookup.status, 200);
+
+    const adminLookup = await request(app)
+      .get(`/api/emergency-requests/${guestRequestId}`)
+      .set("Authorization", `Bearer ${adminToken}`);
+    assert.equal(adminLookup.status, 200);
+  });
+
+  await t.test("3b. Guest cancellation requires the private tracking token", async () => {
+    const missingToken = await request(app)
+      .patch(`/api/emergency-requests/${guestRequestId}`)
+      .send({ status: "CANCELLED", note: "Transported elsewhere" });
+    assert.equal(missingToken.status, 403);
+
+    const cancelled = await request(app)
+      .patch(`/api/emergency-requests/${guestRequestId}`)
+      .set("X-MedReach-Tracking-Token", guestTrackingToken)
+      .send({ status: "CANCELLED", note: "Transported elsewhere" });
+    assert.equal(cancelled.status, 200);
+    assert.equal(cancelled.body.request.status, "CANCELLED");
+    assert.equal(cancelled.body.request.trackingTokenHash, undefined);
   });
 
   await t.test("4. Authenticated emergency request properly associates user ID and enforces access control", async () => {
@@ -122,6 +186,8 @@ test("Emergency Guest Workflow & Authentication Boundary Test Suite", async (t) 
 
     assert.equal(res.status, 201);
     assert.equal(res.body.request.user, testUser._id.toString());
+    assert.equal(res.body.trackingToken, undefined);
+    assert.equal(res.body.request.trackingTokenHash, undefined);
     const authRequestId = res.body.request._id;
 
     // Owner can view request

@@ -5,30 +5,73 @@ import { validate } from "../middleware/validate.js";
 import { FACILITY_TYPES } from "../config/constants.js";
 import { REQUEST_STATES } from "../models/EmergencyRequest.js";
 import { createRequest, listRequests, getRequest, updateRequest } from "../controllers/emergencyRequestController.js";
+import { captureIdempotencyKey } from "../middleware/idempotency.js";
+import { PHONE_PATTERN } from "../validation/healthcare.js";
 
 const router = Router();
+const trackingLimiter = (req, res, next) =>
+  (req.app.locals.trackingLimiter ?? ((_request, _response, done) => done()))(req, res, next);
+const publicSubmissionLimiter = (req, res, next) =>
+  (req.app.locals.publicSubmissionLimiter ?? ((_request, _response, done) => done()))(req, res, next);
 
-// Listing user requests requires auth
-router.get("/", requireAuth, listRequests);
-
-// Emergency Bed Request: No login required (guest allowed)
-// Routine Hospital Bed Request (isEmergency === false): Login required
-router.post(
-  "/",
-  optionalAuth,
+const requestValidation = () => [
   body("hospitalId").isMongoId(),
   body("emergencyType").trim().isLength({ min: 2, max: 80 }),
   body("requiredFacility").isIn(FACILITY_TYPES),
-  body("contactPhone").trim().isLength({ min: 7, max: 25 }),
+  body("contactPhone").trim().matches(PHONE_PATTERN).withMessage("Valid contact phone is required"),
   body("contactEmail").optional({ checkFalsy: true }).trim().toLowerCase().isEmail(),
-  body("isEmergency").optional().isBoolean(),
-  body("ambulanceRequired").optional().isBoolean(),
+  body("ambulanceRequired").optional().isBoolean().toBoolean(),
   body("ambulancePickupAddress").optional().isLength({ max: 300 }),
   body("patientAgeGroup").optional().isIn(["infant", "child", "adult", "older_adult", "unknown"]),
   body("patientReference").optional().isLength({ max: 80 }),
   body("patientSummary").optional().isLength({ max: 500 }),
   body("locality").optional().isLength({ max: 120 }),
   validate,
+];
+
+const useEmergencyMode = (isEmergency) => (req, _res, next) => {
+  req.body.isEmergency = isEmergency;
+  next();
+};
+
+// Listing user requests requires auth
+router.get("/", requireAuth, listRequests);
+
+// Explicit creation contracts. Emergency creation remains public; standard
+// hospital-bed requests require an authenticated account.
+router.post(
+  "/emergency",
+  optionalAuth,
+  publicSubmissionLimiter,
+  captureIdempotencyKey("bed-request"),
+  ...requestValidation(),
+  useEmergencyMode(true),
+  createRequest
+);
+
+router.post(
+  "/standard",
+  requireAuth,
+  publicSubmissionLimiter,
+  captureIdempotencyKey("bed-request"),
+  ...requestValidation(),
+  useEmergencyMode(false),
+  createRequest
+);
+
+// Compatibility contract for existing clients. The flow flag is mandatory so
+// an omitted boolean can never silently become an emergency request.
+router.post(
+  "/",
+  optionalAuth,
+  publicSubmissionLimiter,
+  captureIdempotencyKey("bed-request"),
+  body("isEmergency")
+    .exists({ checkNull: true })
+    .withMessage("isEmergency is required; use /emergency or /standard for explicit flows")
+    .isBoolean()
+    .toBoolean(),
+  ...requestValidation(),
   (req, res, next) => {
     const isEmergency = req.body.isEmergency !== false;
     if (!isEmergency && !req.user) {
@@ -39,10 +82,11 @@ router.post(
   createRequest
 );
 
-router.get("/:id", optionalAuth, param("id").isMongoId(), validate, getRequest);
+router.get("/:id", trackingLimiter, optionalAuth, param("id").isMongoId(), validate, getRequest);
 
 router.patch(
   "/:id",
+  trackingLimiter,
   optionalAuth,
   param("id").isMongoId(),
   body("status").isIn(REQUEST_STATES),

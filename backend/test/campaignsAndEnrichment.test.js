@@ -164,14 +164,14 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
   // 7. Blood request creation (REQUEST type)
   await t.test("7. POST /api/blood-requests creates a valid blood requisition", async () => {
     const res = await request(app)
-      .post("/api/blood-requests")
+      .post("/api/blood-requests/standard")
       .send({
         type: "REQUEST",
         bloodBankName: "KEM Hospital Blood Bank",
         bloodGroup: "O-",
         patientOrDonorName: "Ramesh Sharma",
         units: 2,
-        urgency: "EMERGENCY",
+        urgency: "3 days",
         hospitalName: "KEM Hospital",
         contactPhone: "+91-98200-99887",
         contactEmail: "requester@example.com",
@@ -187,7 +187,7 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
   // 8. Blood donation pledge creation (DONATION type)
   await t.test("8. POST /api/blood-requests creates a valid donation pledge", async () => {
     const res = await request(app)
-      .post("/api/blood-requests")
+      .post("/api/blood-requests/standard")
       .send({
         type: "DONATION",
         bloodBankName: "Lilavati Blood Bank",
@@ -208,7 +208,7 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
   // 8b. Urgent blood requirement with isUrgent and emergency urgency window
   await t.test("8b. POST /api/blood-requests handles urgent blood requirements", async () => {
     const res = await request(app)
-      .post("/api/blood-requests")
+      .post("/api/blood-requests/urgent")
       .send({
         type: "REQUEST",
         isUrgent: true,
@@ -224,13 +224,13 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
     assert.ok(res.body.bloodRequest);
     assert.equal(res.body.bloodRequest.isUrgent, true);
     assert.equal(res.body.bloodRequest.urgency, "within 6 hours");
-    assert.ok(res.body.bloodRequest.bloodBankName.includes("Urgent Dispatch"));
+    assert.equal(res.body.bloodRequest.bloodBankName, "No specific blood bank selected");
   });
 
   // 8c. Normal blood requirement timing
   await t.test("8c. POST /api/blood-requests handles normal requirement timing options", async () => {
     const res = await request(app)
-      .post("/api/blood-requests")
+      .post("/api/blood-requests/standard")
       .send({
         type: "REQUEST",
         bloodBankName: "Saifee Hospital Blood Bank",
