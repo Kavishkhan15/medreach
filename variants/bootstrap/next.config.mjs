@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  outputFileTracing: false,
+  outputFileTracingRoot: path.resolve(__dirname, "../.."),
   webpack(config) {
     // @medreach/core is bundled locally in _core/ so it works outside the monorepo.
     config.resolve.alias["@medreach/core"] =
