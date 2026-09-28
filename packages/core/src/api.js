@@ -9,16 +9,29 @@ const clean = (obj = {}) =>
   Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined && v !== "" && v !== null));
 
 async function req(path, opts = {}, retried = false) {
+  const shouldAttachIdempotencyKey =
+    opts.method === "POST" &&
+    !path.startsWith("/api/auth/") &&
+    !opts.headers?.["Idempotency-Key"];
+  const requestOptions = {
+    ...opts,
+    headers: {
+      "Content-Type": "application/json",
+      ...(opts.headers || {}),
+      ...(shouldAttachIdempotencyKey
+        ? { "Idempotency-Key": globalThis.crypto?.randomUUID?.() || `web-${Date.now()}-${Math.random().toString(36).slice(2)}` }
+        : {}),
+    },
+  };
   const res = await fetch(`${BASE}${path}`, {
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
-    ...opts,
+    ...requestOptions,
   });
   const json = await res.json().catch(() => ({}));
   if (res.status === 401 && !retried && path !== "/api/auth/refresh") {
     const refreshed = await fetch(`${BASE}/api/auth/refresh`, { method: "POST", credentials: "include",
       headers: { "Content-Type": "application/json" } });
-    if (refreshed.ok) return req(path, opts, true);
+    if (refreshed.ok) return req(path, requestOptions, true);
   }
   if (!res.ok) throw new Error(json.error || `Request failed (${res.status})`);
   return json;

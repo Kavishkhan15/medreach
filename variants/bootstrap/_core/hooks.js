@@ -4,68 +4,75 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import * as api from "./api.js";
-import { fixtures } from "./fixtures.js";
 import { searchHospitals } from "./search.js";
 import { getBrowserLocation, localityToCoords } from "./location.js";
 
-// System data mode: are we showing LIVE backend data or DEMO fixtures?
-// "checking" → "live" → or "demo" (API unreachable). Exposed so the UI can show
-// an honest, prominent banner and never misrepresent demo data as live.
+// System data mode. API failures are surfaced instead of substituting fixture data.
 export function useSystemStatus() {
-  const [mode, setMode] = useState("checking"); // checking | live | demo
+  const [mode, setMode] = useState("checking"); // checking | live | unavailable
   useEffect(() => {
     let active = true;
     api
       .health()
       .then(() => active && setMode("live"))
-      .catch(() => active && setMode("demo"));
+      .catch(() => active && setMode("unavailable"));
     return () => { active = false; };
   }, []);
-  return { mode, isDemo: mode === "demo", isLive: mode === "live" };
+  return { mode, isUnavailable: mode === "unavailable", isLive: mode === "live" };
 }
 
-// Unified hospital search/filter/sort/rank. Runs against the API when available,
-// falls back to fixtures. The SAME searchHospitals() logic runs in both modes.
+// Unified hospital search/filter/sort/rank using backend data only.
 export function useHospitals(filters = {}, options = {}) {
   const key = useMemo(() => JSON.stringify({ filters, options }), [filters, options]);
-  const [state, setState] = useState({ loading: true, data: [], total: 0, offline: false });
+  const [revision, setRevision] = useState(0);
+  const [state, setState] = useState({ loading: true, data: [], total: 0, offline: false, error: "" });
+  const retry = useCallback(() => setRevision((value) => value + 1), []);
 
   useEffect(() => {
     let active = true;
-    setState((s) => ({ ...s, loading: true }));
+    setState((s) => ({ ...s, loading: true, error: "" }));
     api
       .listHospitals(filters)
       .then((r) => {
         // Re-rank/sort client-side so ranking is identical to demo mode.
         const data = searchHospitals(r.data || [], filters, options);
-        if (active) setState({ loading: false, data, total: data.length, offline: false });
+        if (active) setState({ loading: false, data, total: data.length, offline: false, error: "" });
       })
-      .catch(() => {
-        const data = searchHospitals(fixtures, filters, options);
-        if (active) setState({ loading: false, data, total: data.length, offline: true });
+      .catch((error) => {
+        if (active) setState({
+          loading: false,
+          data: [],
+          total: 0,
+          offline: true,
+          error: error?.message || "Hospital data is temporarily unavailable.",
+        });
       });
     return () => { active = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+  }, [key, revision]);
 
-  return state;
+  return { ...state, retry };
 }
 
-// One hospital by slug, with fixture fallback.
+// One hospital by slug, using backend data only.
 export function useHospital(slug) {
-  const [state, setState] = useState({ loading: true, hospital: null, notFound: false, offline: false });
+  const [revision, setRevision] = useState(0);
+  const [state, setState] = useState({ loading: true, hospital: null, notFound: false, offline: false, error: "" });
+  const retry = useCallback(() => setRevision((value) => value + 1), []);
   useEffect(() => {
     let active = true;
+    setState((current) => ({ ...current, loading: true, error: "", notFound: false }));
     api
       .getHospital(slug)
-      .then((r) => active && setState({ loading: false, hospital: r.hospital, notFound: false, offline: false }))
-      .catch(() => {
-        const h = fixtures.find((x) => x.slug === slug);
-        if (active) setState({ loading: false, hospital: h || null, notFound: !h, offline: true });
+      .then((r) => active && setState({ loading: false, hospital: r.hospital, notFound: false, offline: false, error: "" }))
+      .catch((error) => {
+        const message = error?.message || "Hospital details are temporarily unavailable.";
+        const notFound = /not found/i.test(message);
+        if (active) setState({ loading: false, hospital: null, notFound, offline: true, error: notFound ? "" : message });
       });
     return () => { active = false; };
-  }, [slug]);
-  return state;
+  }, [slug, revision]);
+  return { ...state, retry };
 }
 
 // Location state: browser GPS (on demand) or manual locality. Never persisted.
@@ -119,7 +126,7 @@ export function useAuth() {
   const logout = useCallback(async () => { await api.logout(); setUser(null); window.dispatchEvent(new Event("medreach:auth-changed")); }, []);
 
   const isAdmin = ["admin", "system_admin", "hospital_admin"].includes(user?.role);
-  return { user, ready, login, register, logout, isAdmin };
+  return { user, ready, loading: !ready, login, register, logout, isAdmin };
 }
 
 export function useAdminAccess(systemOnly = false) {
