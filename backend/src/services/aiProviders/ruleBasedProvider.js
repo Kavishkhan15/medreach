@@ -111,7 +111,7 @@ export async function generateReply(context) {
       "For urgent blood requirements, MedReach provides a dedicated Urgent Blood flow with 6h, 12h, 18h, 24h, and 2-day delivery options without requiring an account.";
     const list = formatBloodBankList(bloodBanks, bloodGroup);
     return {
-      text: `${intro}\n\n${list}\n\nYou can click "Submit Urgent Blood Requirement" below to dispatch an immediate request across verified blood banks.`,
+      text: `${intro}\n\n${list}\n\nYou can record an urgent blood requirement below, then call listed blood banks directly to confirm inventory and fulfillment.`,
       source: "rule_based",
     };
   }

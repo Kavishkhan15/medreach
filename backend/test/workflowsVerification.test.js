@@ -480,13 +480,13 @@ test("MedReach Workflows Verification Suite", async (t) => {
   await t.test("Emergency requests lifecycle (/api/emergency-requests)", async () => {
     // Unauthenticated standard hospital bed request rejected (401)
     const unauth = await request(app)
-      .post("/api/emergency-requests")
-      .send({ hospitalId: mainHospital._id, emergencyType: "Routine Bed", requiredFacility: "ICU", contactPhone: "9876543210", isEmergency: false });
+      .post("/api/emergency-requests/standard")
+      .send({ hospitalId: mainHospital._id, emergencyType: "Routine Bed", requiredFacility: "ICU", contactPhone: "9876543210" });
     assert.equal(unauth.status, 401);
 
     // Unauthenticated emergency bed request accepted (201) without login
     const guestEmergency = await request(app)
-      .post("/api/emergency-requests")
+      .post("/api/emergency-requests/emergency")
       .send({
         hospitalId: mainHospital._id,
         emergencyType: "Cardiac Emergency",
@@ -501,7 +501,7 @@ test("MedReach Workflows Verification Suite", async (t) => {
 
     // Patient submits emergency request
     const createRes = await request(app)
-      .post("/api/emergency-requests")
+      .post("/api/emergency-requests/emergency")
       .set("Authorization", `Bearer ${patientToken}`)
       .send({
         hospitalId: mainHospital._id,
@@ -588,7 +588,7 @@ test("MedReach Workflows Verification Suite", async (t) => {
   await t.test("Emergency request cancellation and background expiry", async () => {
     // Create a new request to test patient cancellation
     const cancelReq = await request(app)
-      .post("/api/emergency-requests")
+      .post("/api/emergency-requests/emergency")
       .set("Authorization", `Bearer ${patientToken}`)
       .send({
         hospitalId: secondaryHospital._id,

@@ -1,0 +1,262 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import request from "supertest";
+import mongoose from "mongoose";
+import { createApp } from "../src/app.js";
+import { connectDB, disconnectDB } from "../src/config/db.js";
+import { env } from "../src/config/env.js";
+import { User } from "../src/models/User.js";
+import { Hospital } from "../src/models/Hospital.js";
+import { ResourceProvider } from "../src/models/ResourceProvider.js";
+import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
+import { BloodRequest } from "../src/models/BloodRequest.js";
+import { AmbulanceBooking } from "../src/models/AmbulanceBooking.js";
+import { EmailDelivery } from "../src/models/EmailDelivery.js";
+import { Job } from "../src/models/Job.js";
+import { JobApplication } from "../src/models/JobApplication.js";
+import { OrganizationApplication } from "../src/models/OrganizationApplication.js";
+import { setEmailTransportFactoryForTests, sendEmailEvent } from "../src/services/emailService.js";
+import { notifyUserSafely } from "../src/services/notificationService.js";
+import { signToken } from "../src/utils/token.js";
+
+const uri = "mongodb://127.0.0.1:27017/medreach_reliability_contracts_test";
+
+test("backend reliability contracts", async (t) => {
+  const app = createApp();
+  let user;
+  let admin;
+  let hospital;
+  let ambulance;
+  const originalEmail = { enabled: env.emailEnabled, host: env.smtpHost, from: env.smtpFrom };
+
+  t.before(async () => {
+    await connectDB(uri);
+    await mongoose.connection.dropDatabase();
+    user = await User.create({ name: "Reliability User", email: "reliability@example.test", role: "user" });
+    admin = await User.create({ name: "Reliability Admin", email: "reliability-admin@example.test", role: "system_admin" });
+    hospital = await Hospital.create({ name: "Reliability Hospital", city: "Mumbai" });
+    ambulance = await ResourceProvider.create({ kind: "ambulance", name: "Reliable Ambulance", sourceName: "Test registry", active: true });
+  });
+
+  t.after(async () => {
+    setEmailTransportFactoryForTests();
+    Object.assign(env, { emailEnabled: originalEmail.enabled, smtpHost: originalEmail.host, smtpFrom: originalEmail.from });
+    await mongoose.connection.dropDatabase();
+    await disconnectDB();
+  });
+
+  await t.test("optional authentication rejects a revoked or stale presented session", async () => {
+    const staleToken = signToken({ ...user.toObject(), authVersion: Number(user.authVersion || 0) + 1 });
+    const response = await request(app)
+      .post("/api/blood-requests/standard")
+      .set("Authorization", `Bearer ${staleToken}`)
+      .send({
+        type: "REQUEST",
+        bloodBankName: "Example Blood Bank",
+        bloodGroup: "O+",
+        patientOrDonorName: "Patient",
+        contactPhone: "+91-98200-10000",
+        urgency: "3 days",
+      });
+    assert.equal(response.status, 401);
+    assert.equal(await BloodRequest.countDocuments(), 0);
+  });
+
+  await t.test("provider type and application contact fields are validated server-side", async () => {
+    const wrongBloodProvider = await request(app)
+      .post("/api/blood-requests/standard")
+      .send({
+        type: "REQUEST",
+        providerId: ambulance.id,
+        bloodBankName: ambulance.name,
+        bloodGroup: "A+",
+        patientOrDonorName: "Patient",
+        contactPhone: "+91-98200-10000",
+        urgency: "3 days",
+      });
+    assert.equal(wrongBloodProvider.status, 400);
+
+    const mismatch = await request(app)
+      .post(`/api/organizations/${ambulance.id}/apply`)
+      .set("Authorization", `Bearer ${signToken(user)}`)
+      .send({
+        organizationType: "blood_bank",
+        roleInterested: "Technician",
+        contactEmail: "invalid",
+        contactPhone: "abc",
+        experienceYears: 99,
+        sop: "A sufficiently detailed statement of purpose.",
+      });
+    assert.equal(mismatch.status, 400);
+
+    const invalidAmbulance = await request(app)
+      .post("/api/ambulances/book")
+      .send({
+        providerId: ambulance.id,
+        patientName: "Patient",
+        patientAge: 40,
+        ambulanceRequired: "sometimes",
+        bookingPickup: "Bandra West",
+        contactPhone: "abc",
+      });
+    assert.equal(invalidAmbulance.status, 400);
+  });
+
+  await t.test("idempotency keys prevent duplicate requests, bookings, and applications", async () => {
+    const emergencyPayload = {
+      hospitalId: hospital.id,
+      emergencyType: "cardiac",
+      requiredFacility: "Emergency Department",
+      contactPhone: "+91-98200-10000",
+    };
+    const firstEmergency = await request(app).post("/api/emergency-requests/emergency")
+      .set("Idempotency-Key", "emergency-retry-0001").send(emergencyPayload);
+    const duplicateEmergency = await request(app).post("/api/emergency-requests/emergency")
+      .set("Idempotency-Key", "emergency-retry-0001").send(emergencyPayload);
+    assert.equal(firstEmergency.status, 201);
+    assert.equal(duplicateEmergency.status, 409);
+    assert.equal(await EmergencyRequest.countDocuments(), 1);
+
+    const bloodPayload = {
+      type: "REQUEST",
+      bloodBankName: "Example Blood Bank",
+      bloodGroup: "B+",
+      patientOrDonorName: "Patient",
+      contactPhone: "+91-98200-10000",
+      urgency: "3 days",
+    };
+    assert.equal((await request(app).post("/api/blood-requests/standard")
+      .set("Idempotency-Key", "blood-retry-0001").send(bloodPayload)).status, 201);
+    assert.equal((await request(app).post("/api/blood-requests/standard")
+      .set("Idempotency-Key", "blood-retry-0001").send(bloodPayload)).status, 409);
+    assert.equal(await BloodRequest.countDocuments(), 1);
+
+    const ambulancePayload = {
+      providerId: ambulance.id,
+      patientName: "Patient",
+      patientAge: 40,
+      ambulanceRequired: true,
+      bookingPickup: "Bandra West",
+      contactPhone: "+91-98200-10000",
+    };
+    assert.equal((await request(app).post("/api/ambulances/book")
+      .set("Idempotency-Key", "ambulance-retry-0001").send(ambulancePayload)).status, 201);
+    assert.equal((await request(app).post("/api/ambulances/book")
+      .set("Idempotency-Key", "ambulance-retry-0001").send(ambulancePayload)).status, 409);
+    assert.equal(await AmbulanceBooking.countDocuments(), 1);
+
+    const job = await Job.create({
+      hospital: hospital._id,
+      organizationName: hospital.name,
+      title: "Reliability Nurse",
+      category: "Nurse",
+      description: "Provide reliable patient care and clinical support.",
+      employmentType: "full_time",
+      status: "published",
+      createdBy: admin._id,
+    });
+    const applicationPayload = { sop: "A sufficiently detailed statement of purpose for this role." };
+    assert.equal((await request(app).post(`/api/jobs/${job.id}/apply`)
+      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Idempotency-Key", "job-application-retry-0001").send(applicationPayload)).status, 201);
+    assert.equal((await request(app).post(`/api/jobs/${job.id}/apply`)
+      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Idempotency-Key", "job-application-retry-0001").send(applicationPayload)).status, 409);
+    assert.equal(await JobApplication.countDocuments(), 1);
+
+    const organizationPayload = {
+      organizationType: "hospital",
+      roleInterested: "Staff Nurse",
+      contactEmail: user.email,
+      sop: "A sufficiently detailed statement of purpose for this hospital.",
+    };
+    assert.equal((await request(app).post(`/api/organizations/${hospital.id}/apply`)
+      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Idempotency-Key", "organization-application-retry-0001").send(organizationPayload)).status, 201);
+    assert.equal((await request(app).post(`/api/organizations/${hospital.id}/apply`)
+      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Idempotency-Key", "organization-application-retry-0001").send(organizationPayload)).status, 409);
+    assert.equal(await OrganizationApplication.countDocuments(), 1);
+  });
+
+  await t.test("a post-save notification failure leaves the primary record recoverable", async () => {
+    const existing = await EmergencyRequest.findOne();
+    assert.ok(existing);
+    const result = await notifyUserSafely({
+      eventKey: `invalid-notification:${existing._id}`,
+      recipient: user._id,
+      type: "emergency_request",
+      title: "x".repeat(141),
+      message: "This exercises the failure boundary after the request is saved.",
+      relatedType: "EmergencyRequest",
+      relatedId: existing._id,
+    });
+    assert.equal(result.status, "failed");
+    assert.ok(await EmergencyRequest.exists({ _id: existing._id }));
+  });
+
+  await t.test("system administrators can retry a persisted failed non-sensitive email", async () => {
+    env.emailEnabled = true;
+    env.smtpHost = "smtp.example.test";
+    env.smtpFrom = "sender@example.test";
+    setEmailTransportFactoryForTests(() => ({ sendMail: async () => {
+      const error = new Error("delivery failed");
+      error.code = "ETIMEDOUT";
+      throw error;
+    } }));
+    const booking = await AmbulanceBooking.create({
+      reference: "AMB-RETRY-0001",
+      provider: ambulance._id,
+      providerSnapshot: { name: ambulance.name },
+      requestSnapshot: {
+        patientName: "Retry Patient",
+        patientAge: 40,
+        ambulanceRequired: true,
+        pickupAddress: "Bandra West",
+      },
+      delivery: {
+        user: { status: "not_available" },
+        admin: { status: "not_available" },
+        provider: { status: "pending" },
+      },
+      trackingTokenHash: "test-only-tracking-hash",
+    });
+    const failed = await sendEmailEvent({
+      eventKey: "reliability-admin-email",
+      to: "recipient@example.test",
+      template: "admin_security",
+      data: { message: "Review the saved request." },
+      source: { model: "AmbulanceBooking", id: booking._id, channel: "provider" },
+    });
+    assert.equal(failed.status, "failed");
+    booking.delivery.provider.status = "failed";
+    booking.delivery.provider.attempted = true;
+    booking.delivery.provider.emailDelivery = failed._id;
+    await booking.save();
+
+    setEmailTransportFactoryForTests(() => ({ sendMail: async () => ({ messageId: "retry-ok" }) }));
+    const denied = await request(app)
+      .post(`/api/email/deliveries/${failed._id}/retry`)
+      .set("Authorization", `Bearer ${signToken(user)}`);
+    assert.equal(denied.status, 403);
+
+    const retried = await request(app)
+      .post(`/api/email/deliveries/${failed._id}/retry`)
+      .set("Authorization", `Bearer ${signToken(admin)}`);
+    assert.equal(retried.status, 200, JSON.stringify(retried.body));
+    assert.equal(retried.body.delivery.status, "sent");
+    assert.equal(retried.body.delivery.attempts, 2);
+
+    const stored = await EmailDelivery.findById(failed._id);
+    assert.equal(stored.status, "sent");
+    const recoveredBooking = await AmbulanceBooking.findById(booking._id);
+    assert.equal(recoveredBooking.delivery.provider.status, "sent");
+    assert.equal(recoveredBooking.delivery.provider.emailDelivery.toString(), failed._id.toString());
+
+    const duplicateRetry = await request(app)
+      .post(`/api/email/deliveries/${failed._id}/retry`)
+      .set("Authorization", `Bearer ${signToken(admin)}`);
+    assert.equal(duplicateRetry.status, 409);
+    assert.equal((await EmailDelivery.findById(failed._id)).attempts, 2);
+  });
+});

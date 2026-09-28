@@ -8,6 +8,8 @@ import {
   organizationApplications,
   reviewOrganizationApplication,
 } from '../controllers/organizationCareersController.js';
+import { applicationValidators } from '../validation/healthcare.js';
+import { captureIdempotencyKey } from '../middleware/idempotency.js';
 
 export const organizationCareersRouter = Router();
 
@@ -18,9 +20,11 @@ organizationCareersRouter.get('/careers', listOrganizationsForCareers);
 organizationCareersRouter.post(
   '/:id/apply',
   requireAuth,
+  captureIdempotencyKey('organization-application'),
   param('id').isMongoId(),
   body('organizationType').isIn(['hospital', 'blood_bank', 'diagnostic', 'ambulance']),
   body('roleInterested').trim().isLength({ min: 2, max: 120 }),
+  ...applicationValidators(body),
   body().custom((_value, { req }) => {
     const text = (req.body.sop || req.body.statement || '').trim();
     if (!text || text.length < 10 || text.length > 4000) {

@@ -12,6 +12,7 @@ const schema = new mongoose.Schema(
     provider: { type: mongoose.Schema.Types.ObjectId, ref: "ResourceProvider", index: true },
     roleInterested: { type: String, required: true, trim: true, maxlength: 120 },
     applicant: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    idempotencyKeyHash: { type: String, select: false },
     candidateName: { type: String, trim: true, maxlength: 150 },
     candidatePhone: { type: String, trim: true, maxlength: 50 },
     contactEmail: { type: String, required: true, trim: true, lowercase: true },
@@ -38,6 +39,12 @@ const schema = new mongoose.Schema(
 
 schema.index({ hospital: 1, applicant: 1 }, { unique: true, partialFilterExpression: { hospital: { $exists: true } } });
 schema.index({ provider: 1, applicant: 1 }, { unique: true, partialFilterExpression: { provider: { $exists: true } } });
+schema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
 schema.index({ organizationType: 1, status: 1 });
+schema.set("toJSON", { transform: (_doc, result) => {
+  delete result.idempotencyKeyHash;
+  delete result.__v;
+  return result;
+} });
 
 export const OrganizationApplication = mongoose.model("OrganizationApplication", schema);

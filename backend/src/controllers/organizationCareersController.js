@@ -4,8 +4,9 @@ import { ResourceProvider } from "../models/ResourceProvider.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { User } from "../models/User.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
-import { notifyUser } from "../services/notificationService.js";
+import { notifyUserSafely } from "../services/notificationService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 export const listOrganizationsForCareers = asyncHandler(async (req, res) => {
   const q = req.query.q ? String(req.query.q) : "";
@@ -80,6 +81,9 @@ export const listOrganizationsForCareers = asyncHandler(async (req, res) => {
 });
 
 export const applyToOrganization = asyncHandler(async (req, res) => {
+  if (req.idempotencyKeyHash && await OrganizationApplication.exists({ idempotencyKeyHash: req.idempotencyKeyHash })) {
+    return res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+  }
   const { id } = req.params;
   const {
     organizationType,
@@ -99,6 +103,9 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     organization = await Hospital.findById(id);
   } else if (["blood_bank", "diagnostic", "ambulance"].includes(organizationType)) {
     organization = await ResourceProvider.findById(id);
+    if (organization && (organization.kind !== organizationType || organization.active === false)) {
+      return res.status(400).json({ error: "Organization does not match the selected type" });
+    }
   }
 
   if (!organization) {
@@ -128,6 +135,7 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     experienceYears: experienceYears !== undefined && !isNaN(Number(experienceYears)) ? Number(experienceYears) : undefined,
     sop: (sop || statement || "").trim(),
     statement: (statement || sop || "").trim(),
+    idempotencyKeyHash: req.idempotencyKeyHash,
   };
 
   if (organizationType === "hospital") {
@@ -162,7 +170,7 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     requestId: req.id,
   });
 
-  await notifyUser({
+  await notifyUserSafely({
     recipient: req.user.id,
     eventKey: `org_application:${application._id}:submitted`,
     type: "organization_application",
@@ -176,7 +184,7 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
 
   if (organizationType === "hospital" && organization.admins && organization.admins.length > 0) {
     for (const adminId of organization.admins) {
-      await notifyUser({
+      await notifyUserSafely({
         recipient: adminId,
         eventKey: `org_application:${application._id}:received:${adminId}`,
         type: "organization_application",
@@ -257,7 +265,7 @@ export const reviewOrganizationApplication = asyncHandler(async (req, res) => {
     requestId: req.id,
   });
 
-  await notifyUser({
+  await notifyUserSafely({
     recipient: application.applicant,
     eventKey: `org_application:${application._id}:${application.status}`,
     type: "organization_application",

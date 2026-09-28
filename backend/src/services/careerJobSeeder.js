@@ -177,12 +177,12 @@ export async function seedCareersFromProviders({ adminId = null } = {}) {
             organizationName: hospital.name,
             location: `${hospital.locality || hospital.city || "Mumbai"}, Maharashtra`,
             deadline,
-            status: "published",
-            verificationStatus: "verified",
+            status: "draft",
+            verificationStatus: "unverified",
             createdBy: admin._id,
-            reviewedBy: admin._id,
-            demo: false,
+            demo: true,
           },
+          $unset: { reviewedBy: 1 },
         },
         { upsert: true, new: true, runValidators: true }
       );
@@ -225,12 +225,12 @@ export async function seedCareersFromProviders({ adminId = null } = {}) {
             organizationName: diag.name,
             location: `${diag.locality || diag.city || "Mumbai"}, Maharashtra`,
             deadline,
-            status: "published",
-            verificationStatus: "verified",
+            status: "draft",
+            verificationStatus: "unverified",
             createdBy: admin._id,
-            reviewedBy: admin._id,
-            demo: false,
+            demo: true,
           },
+          $unset: { reviewedBy: 1 },
         },
         { upsert: true, new: true, runValidators: true }
       );
@@ -273,12 +273,12 @@ export async function seedCareersFromProviders({ adminId = null } = {}) {
             organizationName: bb.name,
             location: `${bb.locality || bb.city || "Mumbai"}, Maharashtra`,
             deadline,
-            status: "published",
-            verificationStatus: "verified",
+            status: "draft",
+            verificationStatus: "unverified",
             createdBy: admin._id,
-            reviewedBy: admin._id,
-            demo: false,
+            demo: true,
           },
+          $unset: { reviewedBy: 1 },
         },
         { upsert: true, new: true, runValidators: true }
       );
@@ -287,20 +287,7 @@ export async function seedCareersFromProviders({ adminId = null } = {}) {
   }
 
   // 4. Seed Ambulance Providers Jobs
-  let ambulances = await ResourceProvider.find({ kind: "ambulance", active: true }).limit(3);
-  if (!ambulances.length) {
-    // Create reference EMS provider if none exist in ResourceProvider
-    const ems = await ResourceProvider.create({
-      kind: "ambulance",
-      name: "Maharashtra 108 Emergency Medical Services (MEMS)",
-      providerType: "Advanced Life Support & Patient Transport",
-      locality: "Dadar & BKC Fleet Hub",
-      city: "Mumbai",
-      sourceName: "Maharashtra State EMS Ingestion",
-      verificationStatus: "verified",
-    });
-    ambulances = [ems];
-  }
+  const ambulances = await ResourceProvider.find({ kind: "ambulance", active: true }).limit(3);
 
   for (const amb of ambulances) {
     const ambJobs = [
@@ -335,12 +322,12 @@ export async function seedCareersFromProviders({ adminId = null } = {}) {
             organizationName: amb.name,
             location: `${amb.locality || amb.city || "Mumbai"}, Maharashtra`,
             deadline,
-            status: "published",
-            verificationStatus: "verified",
+            status: "draft",
+            verificationStatus: "unverified",
             createdBy: admin._id,
-            reviewedBy: admin._id,
-            demo: false,
+            demo: true,
           },
+          $unset: { reviewedBy: 1 },
         },
         { upsert: true, new: true, runValidators: true }
       );

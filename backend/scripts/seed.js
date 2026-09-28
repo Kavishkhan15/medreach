@@ -52,7 +52,7 @@ async function run() {
   console.log(`  - ${createdHospitals.length} Hospitals across South Mumbai, Western, Central & Harbour corridors`);
   console.log(`  - ${createdResources.length} Diagnostic centres, pathology labs & blood banks`);
   console.log(`  - ${bloodCampaignsSeed.length} Blood campaigns`);
-  console.log(`  - ${seededJobs.length} Verified clinical and healthcare job openings`);
+  console.log(`  - ${seededJobs.length} draft demo job listings awaiting verification`);
   console.log(`  - 2 Users (Admin & Registered User)`);
   console.log(`  - 1 Emergency Alert`);
   await disconnectDB();

@@ -5,8 +5,9 @@ import { ResourceProvider } from "../models/ResourceProvider.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { User } from "../models/User.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
-import { notifyUser } from "../services/notificationService.js";
+import { notifyUserSafely } from "../services/notificationService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 const jobFields = [
   "hospital",
@@ -106,7 +107,7 @@ export const listOrganizationsWithJobs = asyncHandler(async (req, res) => {
           address: job.hospital.address,
           phone: job.hospital.phone,
           website: job.hospital.website,
-          verificationStatus: job.hospital.verificationStatus || "verified",
+          verificationStatus: job.hospital.verificationStatus || "unverified",
         };
       } else if (job.provider) {
         meta = {
@@ -119,7 +120,7 @@ export const listOrganizationsWithJobs = asyncHandler(async (req, res) => {
           address: job.provider.address,
           phone: job.provider.phone,
           website: job.provider.website,
-          verificationStatus: job.provider.verificationStatus || "verified",
+          verificationStatus: job.provider.verificationStatus || "unverified",
         };
       } else {
         meta = {
@@ -129,7 +130,7 @@ export const listOrganizationsWithJobs = asyncHandler(async (req, res) => {
           organizationType: job.organizationType || "other",
           locality: job.location || "Mumbai",
           city: "Mumbai",
-          verificationStatus: "verified",
+          verificationStatus: "unverified",
         };
       }
       orgMap.set(orgKey, { ...meta, jobs: [], jobCount: 0 });
@@ -303,6 +304,9 @@ export const setJobStatus = asyncHandler(async (req, res) => {
 });
 
 export const applyToJob = asyncHandler(async (req, res) => {
+  if (req.idempotencyKeyHash && await JobApplication.exists({ idempotencyKeyHash: req.idempotencyKeyHash })) {
+    return res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+  }
   const job = await Job.findById(req.params.id);
   if (!job || job.status !== "published") return res.status(404).json({ error: "Job not found" });
   if (job.deadline && job.deadline < new Date()) {
@@ -360,6 +364,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
     sop,
     resume,
     contactEmail,
+    idempotencyKeyHash: req.idempotencyKeyHash,
   });
 
   await AuditLog.create({
@@ -371,7 +376,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
     requestId: req.id,
   });
 
-  await notifyUser({
+  await notifyUserSafely({
     recipient: req.user.id,
     eventKey: `application:${application._id}:submitted`,
     type: "job_application",
@@ -388,7 +393,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
   if (job.hospital) {
     const hospital = await Hospital.findById(job.hospital).select("admins").lean();
     for (const recipient of hospital?.admins || []) {
-      await notifyUser({
+      await notifyUserSafely({
         recipient,
         eventKey: `application:${application._id}:received:${recipient}`,
         type: "job_application",
@@ -472,7 +477,7 @@ export const reviewApplication = asyncHandler(async (req, res) => {
     requestId: req.id,
   });
 
-  await notifyUser({
+  await notifyUserSafely({
     recipient: application.applicant,
     eventKey: `application:${application._id}:${application.status}`,
     type: "job_application",

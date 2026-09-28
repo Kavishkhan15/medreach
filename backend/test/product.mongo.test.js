@@ -22,9 +22,10 @@ import { signToken } from "../src/utils/token.js";
 import { AuthToken } from "../src/models/AuthToken.js";
 import { digestToken } from "../src/services/authTokenService.js";
 
-const uri = "mongodb://127.0.0.1:27017/medreach_product_integration";
+const uri = process.env.MEDREACH_PRODUCT_TEST_MONGO_URI;
+const isolated = Boolean(uri && /\/medreach_product_integration(?:\?|$)/.test(uri));
 test("product workflow: register, ownership, request response, notifications, jobs, resources, analytics", {
-  skip: process.env.MEDREACH_PRODUCT_TEST_MONGO_URI !== uri,
+  skip: !isolated,
   timeout: 60000,
 }, async () => {
   await connectDB(uri);
@@ -57,6 +58,10 @@ test("product workflow: register, ownership, request response, notifications, jo
     const staffToken = signToken(staff); const adminToken = signToken(admin);
     const hospital = await Hospital.create({ name: "Integration Hospital", city: "Mumbai", locality: "Bandra", hospitalType: "Private", address: "Demo Road", pincode: "400050" });
     const other = await Hospital.create({ name: "Other Integration Hospital", city: "Mumbai", locality: "Andheri", hospitalType: "Private", address: "Other Road", pincode: "400053" });
+    const otherHospitalStaff = new User({ name: "Other Hospital Staff", email: "other@test.io", role: "hospital_admin" });
+    await otherHospitalStaff.setPassword("SafePassword123"); await otherHospitalStaff.save();
+    other.admins = [otherHospitalStaff._id]; await other.save();
+    const otherHospitalStaffToken = signToken(otherHospitalStaff);
     const claim = await request(app).post("/api/hospital-admin/ownership-claims").set("Authorization", `Bearer ${staffToken}`)
       .send({ hospitalId: hospital.id, hospitalEmail: "staff@integration.example", explanation: "Hospital staff test" });
     assert.equal(claim.status, 201);
@@ -114,14 +119,14 @@ test("product workflow: register, ownership, request response, notifications, jo
     assert.equal(resolvedConflict.status, "resolved");
     assert.equal(resolvedConflict.claims.length, 2);
     assert.equal(resolvedConflict.history.length >= 2, true);
-    const created = await request(app).post("/api/emergency-requests").set("Authorization", `Bearer ${patientToken}`)
+    const created = await request(app).post("/api/emergency-requests/emergency").set("Authorization", `Bearer ${patientToken}`)
       .send({ hospitalId: hospital.id, emergencyType: "cardiac", requiredFacility: "ICU", contactPhone: "9999999999" });
     assert.equal(created.status, 201);
     const reqId = created.body.request._id;
     const staffList = await request(app).get("/api/emergency-requests").set("Authorization", `Bearer ${staffRoleToken}`);
     assert.equal(staffList.status, 200); assert.equal(staffList.body.data.length, 1);
-    const noOtherStaffAccess = await request(app).get(`/api/emergency-requests/${reqId}`).set("Authorization", `Bearer ${signToken({ _id: new mongoose.Types.ObjectId(), role: "hospital_admin", email: "other@test.io", name: "Other" })}`);
-    assert.equal(noOtherStaffAccess.status, 401);
+    const noOtherStaffAccess = await request(app).get(`/api/emergency-requests/${reqId}`).set("Authorization", `Bearer ${otherHospitalStaffToken}`);
+    assert.equal(noOtherStaffAccess.status, 403);
     const review = await request(app).patch(`/api/emergency-requests/${reqId}`).set("Authorization", `Bearer ${staffRoleToken}`).send({ status: "UNDER_REVIEW" });
     assert.equal(review.status, 200);
     const accepted = await request(app).patch(`/api/emergency-requests/${reqId}`).set("Authorization", `Bearer ${staffRoleToken}`).send({ status: "ACCEPTED" });

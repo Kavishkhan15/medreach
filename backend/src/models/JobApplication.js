@@ -4,6 +4,7 @@ const schema = new mongoose.Schema(
   {
     job: { type: mongoose.Schema.Types.ObjectId, ref: "Job", required: true, index: true },
     applicant: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    idempotencyKeyHash: { type: String, select: false },
     candidateName: { type: String, trim: true, maxlength: 150 },
     candidatePhone: { type: String, trim: true, maxlength: 50 },
     qualifications: { type: String, trim: true, maxlength: 500 },
@@ -30,6 +31,12 @@ const schema = new mongoose.Schema(
 );
 
 schema.index({ job: 1, applicant: 1 }, { unique: true });
+schema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
 schema.index({ job: 1, status: 1 });
+schema.set("toJSON", { transform: (_doc, result) => {
+  delete result.idempotencyKeyHash;
+  delete result.__v;
+  return result;
+} });
 
 export const JobApplication = mongoose.model("JobApplication", schema);
