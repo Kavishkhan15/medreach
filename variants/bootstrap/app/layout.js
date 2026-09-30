@@ -1,13 +1,10 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
-import { Inter } from "next/font/google";
 import Image from "next/image";
 import Navbar from "../components/Navbar";
 import SystemBanner from "../components/SystemBanner";
 import SosButton from "../components/SosButton";
 import HealthcareAssistant from "../components/HealthcareAssistant";
-
-const inter = Inter({ subsets: ["latin"], display: "swap", weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 
 export const metadata = {
   title: "MedReach — Emergency care, when every second matters",
@@ -18,7 +15,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en">
       <body>
         <a href="#main" className="visually-hidden-focusable p-2">Skip to content</a>
         <SystemBanner />
