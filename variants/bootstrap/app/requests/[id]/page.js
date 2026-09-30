@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@medreach/core";
 import { productApi } from "../../../lib/productApi";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
 
-export default function RequestDetail({ params }) {
+export default function RequestDetail() {
+  const { id } = useParams();
   const { user } = useAuth();
   const [request, setRequest] = useState(null);
   const [error, setError] = useState("");
@@ -13,29 +15,29 @@ export default function RequestDetail({ params }) {
 
   const trackingHeaders = () => {
     if (typeof window === "undefined") return {};
-    const token = window.sessionStorage.getItem(`medreach:emergency-request-token:${params.id}`);
+    const token = window.sessionStorage.getItem(`medreach:emergency-request-token:${id}`);
     return token ? { "X-MedReach-Tracking-Token": token } : {};
   };
 
   const refresh = () =>
-    productApi(`/api/emergency-requests/${params.id}`, { headers: trackingHeaders() })
-      .then((r) => setRequest(r.request))
+    productApi(`/api/emergency-requests/${id}`, { headers: trackingHeaders() })
+      .then((r) => { setRequest(r.request); setError(""); })
       .catch((e) => setError(e.message));
 
   useEffect(() => {
     const fragmentToken = new URLSearchParams(window.location.hash.slice(1)).get("token");
     if (fragmentToken) {
-      window.sessionStorage.setItem(`medreach:emergency-request-token:${params.id}`, fragmentToken);
+      window.sessionStorage.setItem(`medreach:emergency-request-token:${id}`, fragmentToken);
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
     }
     refresh();
-  }, [params.id]);
+  }, [id]);
 
   const cancel = async () => {
     if (!window.confirm("Cancel this bed request?")) return;
     setBusy(true);
     try {
-      await productApi(`/api/emergency-requests/${params.id}`, {
+      await productApi(`/api/emergency-requests/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...trackingHeaders() },
         body: { status: "CANCELLED" },

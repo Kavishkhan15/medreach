@@ -1,5 +1,6 @@
 import { Job } from "../models/Job.js";
 import { JobApplication } from "../models/JobApplication.js";
+import { OrganizationApplication } from "../models/OrganizationApplication.js";
 import { Hospital } from "../models/Hospital.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
 import { AuditLog } from "../models/AuditLog.js";
@@ -304,8 +305,11 @@ export const setJobStatus = asyncHandler(async (req, res) => {
 });
 
 export const applyToJob = asyncHandler(async (req, res) => {
-  if (req.idempotencyKeyHash && await JobApplication.exists({ idempotencyKeyHash: req.idempotencyKeyHash })) {
-    return res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+  if (req.idempotencyKeyHash) {
+    const previous = await JobApplication.findOne({ idempotencyKeyHash: req.idempotencyKeyHash });
+    if (previous) return String(previous.applicant) === String(req.user.id)
+      ? res.status(200).json({ application: previous })
+      : res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
   }
   const job = await Job.findById(req.params.id);
   if (!job || job.status !== "published") return res.status(404).json({ error: "Job not found" });
@@ -320,7 +324,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
   const sop = (req.body.sop || req.body.statement || "").trim();
   const statement = (req.body.statement || req.body.sop || "").trim();
   const candidateName = (req.body.candidateName || req.body.name || user?.name || "").trim();
-  const candidatePhone = (req.body.candidatePhone || req.body.phone || user?.emergencyContact || user?.phone || "").trim();
+  const candidatePhone = (req.body.contactPhone || req.body.candidatePhone || req.body.phone || user?.emergencyContact || user?.phone || "").trim();
   const qualifications = (req.body.qualifications || req.body.qualification || "").trim();
   const experienceYears =
     req.body.experienceYears !== undefined && !isNaN(Number(req.body.experienceYears))
@@ -352,7 +356,9 @@ export const applyToJob = asyncHandler(async (req, res) => {
     };
   }
 
-  const application = await JobApplication.create({
+  let application;
+  try {
+    application = await JobApplication.create({
     job: job._id,
     applicant: req.user.id,
     candidateName,
@@ -365,16 +371,23 @@ export const applyToJob = asyncHandler(async (req, res) => {
     resume,
     contactEmail,
     idempotencyKeyHash: req.idempotencyKeyHash,
-  });
+    });
+  } catch (error) {
+    if (error?.code === 11000) {
+      const previous = await JobApplication.findOne({ job: job._id, applicant: req.user.id });
+      if (previous) return res.status(200).json({ application: previous, demo: job.demo });
+    }
+    throw error;
+  }
 
-  await AuditLog.create({
+  try { await AuditLog.create({
     user: req.user.id,
     action: "create",
     entityType: "JobApplication",
     entityId: application._id,
     after: { job: job._id, status: application.status },
     requestId: req.id,
-  });
+  }); } catch (error) { console.warn("Job application recorded but audit logging failed:", error.message); }
 
   await notifyUserSafely({
     recipient: req.user.id,
@@ -411,7 +424,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
 });
 
 export const myApplications = asyncHandler(async (req, res) => {
-  const data = await JobApplication.find({ applicant: req.user.id })
+  const jobs = await JobApplication.find({ applicant: req.user.id })
     .populate({
       path: "job",
       select: "title status hospital provider organizationName organizationType location",
@@ -423,6 +436,15 @@ export const myApplications = asyncHandler(async (req, res) => {
     .sort({ createdAt: -1 })
     .lean();
 
+  const organizations = await OrganizationApplication.find({ applicant: req.user.id })
+    .populate("hospital", "name slug locality")
+    .populate("provider", "name kind locality")
+    .sort({ createdAt: -1 })
+    .lean();
+  const data = [
+    ...jobs.map((application) => ({ ...application, applicationType: "job" })),
+    ...organizations.map((application) => ({ ...application, applicationType: "organization" })),
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json({ data });
 });
 

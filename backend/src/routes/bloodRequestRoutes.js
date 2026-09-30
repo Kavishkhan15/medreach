@@ -35,11 +35,16 @@ const requestValidation = () => [
     .isIn(["REQUEST", "DONATION"])
     .withMessage("Type must be either 'REQUEST' or 'DONATION'"),
   body("bloodBankName")
+    .optional({ checkFalsy: true }).isString().isLength({ max: 180 }),
+  body("bloodBankName")
     .custom((val, { req }) => {
       if (req.body.isUrgent) return true;
-      if (!val || !val.trim()) throw new Error("Blood bank name is required");
+      if (typeof val !== "string" || !val.trim()) throw new Error("Blood bank name is required");
       return true;
     }),
+  body("hospitalName").optional({ checkFalsy: true }).isString().trim().isLength({ max: 200 }),
+  body("doctorNotes").optional({ checkFalsy: true }).isString().trim().isLength({ max: 2000 }),
+  body("notes").optional({ checkFalsy: true }).isString().trim().isLength({ max: 2000 }),
   body("bloodGroup")
     .isIn(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
     .withMessage("Valid blood group is required"),
@@ -78,6 +83,7 @@ router.post(
   publicSubmissionLimiter,
   captureIdempotencyKey("blood-request"),
   useUrgentMode(false),
+  body("providerId").isMongoId().withMessage("A listed blood bank is required"),
   urgencyValidation(STANDARD_BLOOD_URGENCY),
   ...requestValidation(),
   createBloodRequest
@@ -98,6 +104,12 @@ router.post(
   body("isUrgent").custom((value, { req }) => {
     if (req.body.type === "DONATION" && value) {
       throw new Error("Donation pledges cannot use the urgent blood request flow");
+    }
+    return true;
+  }),
+  body("providerId").custom((value, { req }) => {
+    if (!req.body.isUrgent && !value) {
+      throw new Error("A listed blood bank is required");
     }
     return true;
   }),

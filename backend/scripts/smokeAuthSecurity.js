@@ -310,7 +310,6 @@ async function main() {
       assert.ok(res.body.user);
       assert.equal(res.body.user.email, testUserEmail);
       assert.equal("passwordHash" in res.body.user, false);
-      assert.equal("googleSubject" in res.body.user, false);
       assert.equal("authVersion" in res.body.user, false);
 
       rawAccessToken = getCookieVal(res, "token");

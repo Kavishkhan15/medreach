@@ -59,7 +59,7 @@ export async function rotateSession(token, context = {}) {
     await User.updateOne({ _id: existing.user }, { $inc: { authVersion: 1 } });
     return { error: "replay", userId: existing.user };
   }
-  const user = await User.findById(existing.user).select("+authVersion +passwordHash +googleSubject");
+  const user = await User.findById(existing.user).select("+authVersion +passwordHash");
   if (!user || user.accountStatus !== "active" || Number(existing.metadata?.authVersion || 0) !== Number(user.authVersion || 0)) {
     await AuthToken.updateMany({ familyId: existing.familyId, purpose: "refresh_session" },
       { $set: { revokedAt: new Date(), revokeReason: "account_changed" } });
@@ -90,20 +90,4 @@ export async function listSessions(userId) {
     revokedAt: { $exists: false }, usedAt: { $exists: false }, expiresAt: { $gt: new Date() } })
     .select("_id createdAt expiresAt ipHash userAgentHash familyId").sort({ createdAt: -1 }).lean();
   return sessions.map(({ familyId: _familyId, ...session }) => session);
-}
-
-export async function issueOAuthState({ flow, user, returnTo }) {
-  const state = opaqueToken();
-  const nonce = opaqueToken();
-  await AuthToken.create({ user: user?._id, purpose: "oauth_state", tokenHash: digestToken(state),
-    expiresAt: new Date(Date.now() + env.oauthStateExpiresMinutes * 60000),
-    metadata: { flow, nonce, authVersion: Number(user?.authVersion || 0), ...(returnTo ? { returnTo } : {}) } });
-  return { state, nonce };
-}
-
-export async function consumeOAuthState(state) {
-  if (typeof state !== "string" || state.length < 40 || state.length > 128) return null;
-  return AuthToken.findOneAndUpdate({ tokenHash: digestToken(state), purpose: "oauth_state",
-    usedAt: { $exists: false }, revokedAt: { $exists: false }, expiresAt: { $gt: new Date() } },
-    { $set: { usedAt: new Date() } }, { new: true }).select("+metadata");
 }

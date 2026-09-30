@@ -85,11 +85,6 @@ export default function LoginPage() {
             </div>
             <button className="inline-flex items-center justify-center font-bold text-lg rounded-[var(--radius)] bg-[var(--color-emergency)] text-white px-4 py-2 hover:bg-[var(--color-emergency-dark)]" type="submit">{mode === "login" ? "Sign in" : "Create account"}</button>
           </form>
-          <div className="flex items-center gap-2 my-3" aria-hidden="true"><hr className="flex-1" /><span className="text-sm text-[var(--color-muted)]">or</span><hr className="flex-1" /></div>
-          <a className="block text-center border border-gray-700 text-gray-800 font-semibold px-4 py-2 rounded-[var(--radius)] hover:bg-gray-100" href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/auth/google?returnTo=${encodeURIComponent(returnTo)}`}>
-            Continue with Google
-          </a>
-          <p className="text-[.78rem] text-[var(--color-muted)] mt-2 mb-0">Google never shares your password with MedReach. Existing password accounts are never linked automatically.</p>
           <div className="text-center mt-3">
             <button className="p-0 bg-transparent text-[var(--color-emergency-dark)] underline" onClick={() => { setMode(mode === "login" ? "register" : "login"); setErrors({}); }}>
               {mode === "login" ? "Need an account? Register" : "Have an account? Sign in"}

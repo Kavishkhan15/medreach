@@ -2,13 +2,14 @@ import { defineConfig, devices } from "@playwright/test";
 
 const mongoUri = process.env.MEDREACH_E2E_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_e2e";
 const apiUrl = "http://localhost:4000";
+const tailwindPort = Number(process.env.MEDREACH_TAILWIND_E2E_PORT || 3001);
 const commonEnv = {
   NODE_ENV: "test",
   MEDREACH_E2E_MONGO_URI: mongoUri,
   MONGO_URI: mongoUri,
   EMAIL_ENABLED: "false",
   JWT_SECRET: "medreach-e2e-only-secret-that-is-never-used-in-production",
-  CORS_ORIGINS: "http://localhost:3000,http://localhost:3001,http://localhost:3002",
+  CORS_ORIGINS: `http://localhost:3000,http://localhost:${tailwindPort},http://localhost:3002`,
   PUBLIC_APP_URL: "http://localhost:3000",
 };
 
@@ -38,10 +39,12 @@ export default defineConfig({
     },
     ...[
       ["@medreach/variant-bootstrap", 3000],
-      ["@medreach/variant-tailwind", 3001],
+      ["@medreach/variant-tailwind", tailwindPort],
       ["@medreach/variant-skeleton", 3002],
     ].map(([workspace, port]) => ({
-      command: `npm --workspace ${workspace} run start`,
+      command: workspace === "@medreach/variant-tailwind" && port !== 3001
+        ? `npm --workspace ${workspace} exec -- next start -p ${port}`
+        : `npm --workspace ${workspace} run start`,
       url: `http://localhost:${port}`,
       env: { ...commonEnv, NEXT_PUBLIC_API_URL: apiUrl },
       reuseExistingServer: false,
@@ -50,7 +53,7 @@ export default defineConfig({
   ],
   projects: [
     { name: "bootstrap", use: { baseURL: "http://localhost:3000" } },
-    { name: "tailwind", use: { baseURL: "http://localhost:3001" } },
+    { name: "tailwind", use: { baseURL: `http://localhost:${tailwindPort}` } },
     { name: "skeleton", use: { baseURL: "http://localhost:3002" } },
   ],
 });

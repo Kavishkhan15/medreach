@@ -9,6 +9,7 @@ import { Job } from "../models/Job.js";
 import { latestByFacility } from "./availabilityService.js";
 import { relativeTime } from "./freshnessService.js";
 import { rankHospitals } from "./rankingService.js";
+import { composeHospitalDataView } from "./hospitalDataView.js";
 
 // Haversine distance in km between two lat/lng coordinates
 export function computeDistanceKm(lat1, lon1, lat2, lon2) {
@@ -30,26 +31,31 @@ export async function searchHospitals({ locality, category, specialty, emergency
     const filter = {};
     if (locality) {
       const escapedLoc = locality.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      filter.$or = [
+      filter.$and = [{ $or: [
         { locality: { $regex: new RegExp(`^${escapedLoc}$`, "i") } },
         { city: { $regex: new RegExp(escapedLoc, "i") } },
-      ];
+      ] }];
     }
     if (specialty) {
       const specFilter = [{ specialties: specialty }, { departments: specialty }];
-      filter.$or = filter.$or ? filter.$or.concat(specFilter) : specFilter;
+      filter.$and = [...(filter.$and || []), { $or: specFilter }];
     } else if (category?.specialties?.length) {
       const catFilter = [
         { specialties: { $in: category.specialties } },
         { departments: { $in: category.specialties } },
       ];
-      filter.$or = filter.$or ? filter.$or.concat(catFilter) : catFilter;
+      filter.$and = [...(filter.$and || []), { $or: catFilter }];
     }
 
     let candidates = await Hospital.find(filter).limit(30).lean();
-    if (!candidates.length && locality) {
-      // Fallback: If no match in specific locality, query across Mumbai
-      candidates = await Hospital.find({}).limit(20).lean();
+    if (emergencyOnly && candidates.length) {
+      const capable = await HospitalFacility.distinct("hospital", {
+        hospital: { $in: candidates.map((hospital) => hospital._id) },
+        facility: "Emergency Department",
+        capability: "yes",
+      });
+      const capableIds = new Set(capable.map(String));
+      candidates = candidates.filter((hospital) => capableIds.has(String(hospital._id)));
     }
 
     const ranked = rankHospitals(candidates, { category });
@@ -66,7 +72,7 @@ export async function searchHospitals({ locality, category, specialty, emergency
           id: String(h._id),
           slug: h.slug,
           name: h.name,
-          locality: h.locality || h.city || "Mumbai",
+          locality: h.locality || h.city || null,
           address: h.address || null,
           specialties: h.specialties || h.departments || [],
           matchedFacilities,
@@ -93,11 +99,12 @@ export async function searchHospitals({ locality, category, specialty, emergency
             .limit(1)
             .lean();
           const latest = latestByFacility(obs)[0];
-          const fac = facilities.find((f) => f.facility === relevantFacility);
+          const current = composeHospitalDataView(h, facilities, obs).facilities
+            .find((facility) => facility.facility === relevantFacility);
           summary.facilityDetail = {
             facility: relevantFacility,
-            status: latest?.status ?? fac?.status ?? "unknown",
-            confidence: latest?.confidence ?? fac?.confidence ?? "UNKNOWN",
+            status: current?.status || "unknown",
+            confidence: current?.confidence || "UNKNOWN",
             retrievedAtRelative: latest?.retrievedAt ? relativeTime(latest.retrievedAt) : null,
           };
         }
@@ -129,19 +136,15 @@ export async function searchBloodBanks({ locality, bloodGroup, limit = 4, origin
     }
 
     let records = await ResourceProvider.find(filter).limit(limit * 2).lean();
-    if (!records.length && (locality || bloodGroup)) {
-      // Relax filter if empty
-      records = await ResourceProvider.find({ kind: "blood_bank", active: true }).limit(limit).lean();
-    }
 
     return records.slice(0, limit).map((r) => {
       const summary = {
         id: String(r._id),
         name: r.name,
-        locality: r.locality || "Mumbai",
+        locality: r.locality || r.city || null,
         address: r.address || null,
         phone: r.phone || null,
-        operatingHours: r.operatingHours || "24/7",
+        operatingHours: r.operatingHours || null,
         listedBloodGroups: r.listedBloodGroups || [],
         verificationStatus: r.verificationStatus || "unverified",
         confidence: r.confidence || "UNKNOWN",
@@ -182,18 +185,15 @@ export async function searchDiagnostics({ locality, service, limit = 4, origin }
     }
 
     let records = await ResourceProvider.find(filter).limit(limit * 2).lean();
-    if (!records.length) {
-      records = await ResourceProvider.find({ kind: "diagnostic", active: true }).limit(limit).lean();
-    }
 
     return records.slice(0, limit).map((r) => {
       const summary = {
         id: String(r._id),
         name: r.name,
-        locality: r.locality || "Mumbai",
+        locality: r.locality || r.city || null,
         address: r.address || null,
         phone: r.phone || null,
-        operatingHours: r.operatingHours || "8:00 AM - 9:00 PM",
+        operatingHours: r.operatingHours || null,
         services: r.services || [],
         verificationStatus: r.verificationStatus || "unverified",
         confidence: r.confidence || "UNKNOWN",
@@ -233,20 +233,17 @@ export async function searchAmbulances({ locality, providerType, limit = 4, orig
     }
 
     let records = await ResourceProvider.find(filter).limit(limit * 2).lean();
-    if (!records.length) {
-      records = await ResourceProvider.find({ kind: "ambulance", active: true }).limit(limit).lean();
-    }
 
     return records.slice(0, limit).map((r) => {
       const summary = {
         id: String(r._id),
         name: r.name,
-        locality: r.locality || "Mumbai",
+        locality: r.locality || r.city || null,
         address: r.address || null,
-        phone: r.phone || "108",
-        providerType: r.providerType || "Emergency Ambulance (ALS / BLS)",
-        coverageArea: r.coverageArea || "Mumbai Metropolitan Region",
-        operatingHours: r.operatingHours || "24/7 Service",
+        phone: r.phone || null,
+        providerType: r.providerType || null,
+        coverageArea: r.coverageArea || null,
+        operatingHours: r.operatingHours || null,
         verificationStatus: r.verificationStatus || "unverified",
         confidence: r.confidence || "UNKNOWN",
         coordinates:
@@ -285,9 +282,7 @@ export async function searchJobs({ locality, department, query, limit = 4 } = {}
     }
     if (locality) {
       const escapedLoc = locality.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      filter.$or = filter.$or
-        ? filter.$or.concat([{ location: { $regex: new RegExp(escapedLoc, "i") } }])
-        : [{ location: { $regex: new RegExp(escapedLoc, "i") } }];
+      filter.location = { $regex: new RegExp(escapedLoc, "i") };
     }
 
     let jobs = await Job.find(filter)
@@ -297,23 +292,16 @@ export async function searchJobs({ locality, department, query, limit = 4 } = {}
       .limit(limit)
       .lean();
 
-    if (!jobs.length) {
-      // Fallback: search any active/published jobs
-      jobs = await Job.find({ status: "published" })
-        .populate("hospital", "name slug locality city address")
-        .limit(limit)
-        .lean();
-    }
 
     return jobs.map((j) => ({
       id: String(j._id),
       title: j.title,
-      department: j.department || "Clinical Staff",
+      department: j.department || null,
       category: j.category,
       employmentType: j.employmentType,
-      hospitalName: j.hospital?.name || j.organizationName || "Mumbai Healthcare Partner",
+      hospitalName: j.hospital?.name || j.provider?.name || j.organizationName || null,
       hospitalSlug: j.hospital?.slug || null,
-      location: j.location || j.hospital?.locality || "Mumbai",
+      location: j.location || j.hospital?.locality || null,
       createdAt: j.createdAt,
     }));
   } catch (err) {
@@ -332,18 +320,28 @@ export async function getHospitalDetails({ idOrSlug }) {
     if (!h) return null;
 
     const facilities = await HospitalFacility.find({ hospital: h._id }).lean();
+    const observations = await AvailabilityObservation.find({ hospital: h._id })
+      .sort({ retrievedAt: -1 }).limit(100).lean();
+    const current = composeHospitalDataView(h, facilities, observations);
     return {
       id: String(h._id),
       slug: h.slug,
       name: h.name,
-      locality: h.locality || h.city || "Mumbai",
+      locality: h.locality || h.city || null,
       address: h.address || null,
       phone: h.phone || null,
       emergencyPhone: h.emergencyPhone || null,
       specialties: h.specialties || h.departments || [],
-      facilities: facilities.map((f) => ({ facility: f.facility, status: f.status, confidence: f.confidence })),
+      facilities: current.facilities.map((f) => ({
+        facility: f.facility,
+        capability: f.capability,
+        status: f.status,
+        confidence: f.confidence,
+        observedAt: f.observedAt,
+      })),
       hospitalType: h.hospitalType || null,
-      coordinates: h.location?.coordinates || null,
+      coordinates: Array.isArray(h.location?.coordinates) && h.location.coordinates.some((value) => value !== 0)
+        ? h.location.coordinates : null,
     };
   } catch (err) {
     console.error("getHospitalDetails error:", err);

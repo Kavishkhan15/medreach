@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
-  purpose: { type: String, enum: ["verify_email", "reset_password", "refresh_session", "oauth_state"], required: true },
+  purpose: { type: String, enum: ["verify_email", "reset_password", "refresh_session"], required: true },
   tokenHash: { type: String, required: true, unique: true },
   familyId: { type: String, index: true },
   replacedBy: { type: mongoose.Schema.Types.ObjectId, ref: "AuthToken" },

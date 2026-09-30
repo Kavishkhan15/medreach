@@ -73,8 +73,9 @@ export default function HomePage() {
   // Compute live dataset stats from actual loaded items
   const stats = useMemo(() => {
     const totalHospitals = hospitalsData?.length || 0;
+    const verifiedHospitals = hospitalsData?.filter((h) => h.verificationStatus === "verified").length || 0;
     const erHospitals = hospitalsData?.filter(
-      (h) => h.emergencyStatus === "available" || h.specialties?.includes("Emergency") || h.facilities?.some((f) => f.facility?.includes("Emergency"))
+      (h) => h.emergencyStatus === "available" || h.facilities?.some((f) => f.facility === "Emergency Department" && f.capability === "yes")
     ).length || 0;
     const icuHospitals = hospitalsData?.filter(
       (h) => h.facilities?.some((f) => f.facility?.includes("ICU") && f.status === "available")
@@ -86,6 +87,7 @@ export default function HomePage() {
 
     return {
       hospitals: totalHospitals,
+      verifiedHospitals,
       erCount: erHospitals,
       icuCount: icuHospitals,
       bloodBanks: totalBloodBanks,
@@ -135,8 +137,7 @@ export default function HomePage() {
         if (item.category === "hospitals") {
           const isEr =
             item.emergencyStatus === "available" ||
-            item.specialties?.includes("Emergency") ||
-            item.facilities?.some((f) => f.facility?.includes("Emergency"));
+            item.facilities?.some((f) => f.facility === "Emergency Department" && f.capability === "yes");
           if (!isEr) return false;
         } else if (item.category === "ambulances") {
           // All ambulances qualify for emergency transit
@@ -199,7 +200,7 @@ export default function HomePage() {
         <div className="d-flex align-items-center gap-2">
           <span className="spinner-grow spinner-grow-sm text-success" role="status" aria-hidden="true"></span>
           <span className="small fw-bold text-dark">Live Mumbai Healthcare Grid</span>
-          <span className="badge bg-light text-secondary border d-none d-sm-inline">24/7 Verified Network</span>
+          <span className="badge bg-light text-secondary border d-none d-sm-inline">Source-backed healthcare directory</span>
         </div>
         <div className="d-flex flex-wrap align-items-center gap-2 small">
           <span className="text-secondary">
@@ -228,10 +229,10 @@ export default function HomePage() {
               <EmergencyIcon name="verified" size={16} /> Source-Backed Mumbai Health Directory
             </div>
             <h1 className="mb-3">
-              Find verified healthcare & critical emergency care when seconds count.
+              Find listed healthcare providers and check their verification status when seconds count.
             </h1>
             <p className="lead mb-4">
-              Real-time access to Mumbai hospitals, ICU availability, emergency trauma response, blood banks, diagnostic labs, and 24/7 ambulance fleets. Provenance backed by factual public datasets.
+              Explore Mumbai hospitals, reported facility information, blood banks, diagnostic labs, and ambulance providers. Confirm availability and dispatch directly with the provider.
             </p>
 
             {/* Quick Action Navigation Buttons */}
@@ -382,10 +383,10 @@ export default function HomePage() {
                 emergencyOnly ? "btn-danger" : "btn-outline-danger"
               }`}
               onClick={() => setEmergencyOnly(!emergencyOnly)}
-              title="Show 24/7 Emergency trauma capabilities only"
+              title="Show providers with listed emergency capabilities"
             >
               <EmergencyIcon name="siren" size={16} />
-              24/7 ER
+              Emergency care
             </button>
             {(searchQuery || selectedCategory !== "all" || selectedLocality !== "all" || selectedSpecialty !== "all" || emergencyOnly) && (
               <button
@@ -426,9 +427,9 @@ export default function HomePage() {
                 <span className="text-secondary small fw-bold text-uppercase">Verified Hospitals</span>
                 <span className="badge badge-soft-danger"><EmergencyIcon name="hospital" size={16} /></span>
               </div>
-              <div className="metric-value text-danger interactive-counter">{stats.hospitals}</div>
+              <div className="metric-value text-danger interactive-counter">{stats.verifiedHospitals}</div>
               <div className="small text-muted mt-2">
-                <strong>{stats.erCount}</strong> with 24/7 ER Trauma Units
+                <strong>{stats.erCount}</strong> with an emergency department listed
               </div>
             </div>
           </div>
@@ -620,7 +621,7 @@ export default function HomePage() {
             <div className="spinner-border text-danger mb-2" role="status">
               <span className="visually-hidden">Loading healthcare providers...</span>
             </div>
-            <p className="text-muted small mb-0">Loading verified Mumbai healthcare network data...</p>
+            <p className="text-muted small mb-0">Loading Mumbai healthcare directory data...</p>
           </div>
         ) : (hospitalsError || resourcesError) && filteredProviders.length === 0 ? null : filteredProviders.length === 0 ? (
           <div className="surface p-5 text-center my-4">
@@ -663,9 +664,9 @@ export default function HomePage() {
                       />
                       {item.categoryName}
                     </span>
-                    <span className="badge bg-light text-success border border-success-subtle">
-                      <EmergencyIcon name="verified" size={13} className="text-success me-1" />
-                      {item.verificationStatus || "Verified"}
+                    <span className={`badge bg-light border ${item.verificationStatus === "verified" ? "text-success border-success-subtle" : "text-secondary"}`}>
+                      {item.verificationStatus === "verified" && <EmergencyIcon name="verified" size={13} className="me-1" />}
+                      {item.verificationStatus || "Unverified"}
                     </span>
                   </div>
 

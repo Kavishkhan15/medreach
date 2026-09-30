@@ -2,13 +2,13 @@
 
 ## Run locally
 
-Use Node.js 20 or newer and a local MongoDB on port 27017. From the repository root, install dependencies with `npm install`, copy `backend/.env.example` to `backend/.env`, and run `./run.sh`. The Bootstrap app is at `http://localhost:3000`; the shared API is at `http://localhost:4000`. `run.sh` starts only Bootstrap and the backend for this product phase. Tailwind and Skeleton remain in the repository for the later research comparison.
+Use Node.js 22.19 or newer and a local MongoDB on port 27017. From the repository root, install dependencies with `npm install`, copy `backend/.env.example` to `backend/.env`, and run `./run.sh`. The Bootstrap app is at `http://localhost:3000`; the shared API is at `http://localhost:4000`. `run.sh` starts only Bootstrap and the backend for this product phase. Tailwind and Skeleton remain in the repository for the later research comparison.
 
 To populate a safe local demo, run `npm run seed --workspace @medreach/backend`, `npm run sync:hospital-resources --workspace @medreach/backend`, then `npm run seed:product-demo --workspace @medreach/backend`. The resource sync derives listings only from persisted hospital claims; the product seed marks its additional providers and job as **demo**. It does not seed live availability or claim a hospital has accepted requests. Seed commands are additive and should be run against a development database.
 
 ## Working flows
 
-Users can register, sign in with a password or Google, verify email, reset and change a password, link or safely unlink Google, inspect and revoke sessions, search hospitals, inspect provenance, save hospitals, submit and track emergency bed requests, receive in-app notifications, search care resources, and apply for moderated jobs. An emergency request is a coordination message, never a confirmed bed reservation. A request is marked **SENT** only when that hospital has an assigned administrator; otherwise it remains **REQUESTED** until reviewed or expired. A background worker expires unattended requests.
+Users can register, sign in with a password, verify email, reset and change a password, inspect and revoke sessions, search hospitals, inspect provenance, save hospitals, submit and track emergency bed requests, receive in-app notifications, search care resources, and apply for moderated jobs. An emergency request is a coordination message, never a confirmed bed reservation. A request is marked **SENT** only when that hospital has an assigned administrator; otherwise it remains **REQUESTED** until reviewed or expired. A background worker expires unattended requests.
 
 Hospital staff see only assigned hospitals. They can update permitted contact fields, submit source-specific facility capability statements with a supporting statement for review, submit timestamped availability observations, review requests, and manage jobs. Staff capability statements are audited and remain unverified until system-admin review; they cannot set current availability or bed counts. Prospective staff submit an ownership claim; a system administrator must manually approve it before hospital access is assigned. After approval, the user should sign in again to refresh their role token. System administrators review ownership, jobs, source claims, conflicts, crawler state, resources, analytics, audit logs, safe authentication events, and user accounts. They can enable or disable accounts, revoke sessions, trigger reset/verification email, and perform guarded role changes. Hospital administrators never receive system user/security access. Public hospital data retains source-level claims and never treats static capability as live availability.
 
@@ -16,7 +16,7 @@ The public resource endpoints are `/api/blood-banks`, `/api/diagnostics`, and `/
 
 ## Optional services
 
-`EMAIL_ENABLED=false` is the default. Registration verification, password reset/change, Google link/security, emergency request/response, job/application, hospital ownership, and admin security events create delivery intent records without attempting SMTP. Raw verification/reset tokens are never returned by the API or stored in delivery records. SMTP failures are categorized without storing provider messages that may echo credentials and never abort the related product flow.
+`EMAIL_ENABLED=false` is the default. Registration verification, password reset/change, emergency request/response, job/application, hospital ownership, and admin security events create delivery intent records without attempting SMTP. Raw verification/reset tokens are never returned by the API or stored in delivery records. SMTP failures are categorized without storing provider messages that may echo credentials and never abort the related product flow.
 
 ### Google Maps JavaScript API setup
 
@@ -25,15 +25,6 @@ The public resource endpoints are `/api/blood-banks`, `/api/diagnostics`, and `/
 3. Under **APIs & Services → Credentials**, create an API key. Restrict it to HTTP referrers (e.g., `http://localhost:3000/*` and your production origin).
 4. Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `variants/bootstrap/.env.local`.
 5. If the key is missing or empty, the map page gracefully displays a setup notice without crashing, keeping the resource search list fully accessible.
-
-
-### Google Console setup
-
-1. In Google Cloud Console, create or select a project. Open **APIs & Services → OAuth consent screen**, configure the app name and support email, and add test users while the app is in testing.
-2. Open **Credentials → Create credentials → OAuth client ID → Web application**.
-3. Add `http://localhost:3000` as an authorized JavaScript origin. Add the exact production frontend origin separately.
-4. Add `http://localhost:4000/api/auth/google/callback` as an authorized redirect URI. For production add the exact deployed backend callback, such as `https://api.example.com/api/auth/google/callback`; scheme, host, port, and path must match exactly.
-5. Put the values only in backend `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; set `GOOGLE_CALLBACK_URL` to that redirect and `PUBLIC_APP_URL` to the frontend. Never put the client secret in a `NEXT_PUBLIC_*` variable.
 
 ### Gmail App Password SMTP setup
 
@@ -49,6 +40,6 @@ The public resource endpoints are `/api/blood-banks`, `/api/diagnostics`, and `/
 
 ## Validation and honest boundaries
 
-The product workflow has MongoDB integration tests in `backend/test/product.mongo.test.js` and `backend/test/authSecurity.mongo.test.js`; set `MEDREACH_PRODUCT_TEST_MONGO_URI` / `MEDREACH_AUTH_TEST_MONGO_URI` to isolated test database names to run them. Google and SMTP are mocked, so no live credentials are needed. The regular backend suite and crawler suite run without network access. Ten crawler live-network cases are intentionally skipped by default.
+The product workflow has MongoDB integration tests in `backend/test/product.mongo.test.js` and `backend/test/authSecurity.mongo.test.js`; set `MEDREACH_PRODUCT_TEST_MONGO_URI` / `MEDREACH_AUTH_TEST_MONGO_URI` to isolated test database names to run them. SMTP is mocked, so no live credentials are needed. The deterministic backend and crawler suites run without network access. Live crawler probes run separately with `npm run crawler:test:live`; their passing contract checks do not mean every external source is reachable.
 
 Current limitations: no real hospital bed reservation or dispatch integration, no current blood inventory feed, no live SMTP or routing provider configured by default, no street-map tiles, no automatic proof of hospital ownership, and no automatic promotion of Gemini suggestions. Only Bootstrap is actively developed for this phase; Tailwind/Skeleton parity is future research work. Historical source records may lack a verbatim excerpt, and unsupported availability remains unknown.

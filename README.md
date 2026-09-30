@@ -34,7 +34,7 @@ Hospital search, ranking, freshness/confidence, data fusion, and workflow rules 
 |---|---|
 | Frontend framework | [Next.js](https://nextjs.org) 14 (App Router), React 18 |
 | CSS (the variable under test) | [Bootstrap](https://getbootstrap.com) 5 · [Tailwind CSS](https://tailwindcss.com) 4 · [Skeleton CSS](http://getskeleton.com) |
-| Backend | [Express](https://expressjs.com) 4, Node.js ≥20 (ESM) |
+| Backend | [Express](https://expressjs.com) 4, Node.js ≥22.19 (ESM) |
 | Database | [MongoDB](https://www.mongodb.com) + [Mongoose](https://mongoosejs.com) 8 (2dsphere geo index, text search) |
 | Auth | [JSON Web Tokens](https://jwt.io) (httpOnly cookie or Bearer), [bcrypt](https://www.npmjs.com/package/bcryptjs) |
 | Security middleware | [Helmet](https://helmetjs.github.io), [express-rate-limit](https://www.npmjs.com/package/express-rate-limit), [express-validator](https://express-validator.github.io) |
@@ -122,10 +122,9 @@ npm run score                      # RWD Security Risk Score
 
 Authentication uses a short-lived access JWT plus an opaque, hashed, rotating
 refresh session in httpOnly cookies. Password, recovery, verification, session,
-Google OIDC, local/production callback, and Gmail App Password setup are documented
-in the [Bootstrap product guide](docs/Bootstrap_Product_Guide.md#google-console-setup).
-All backend variable names are in `backend/.env.example`; Google and SMTP secrets
-must never be placed in `NEXT_PUBLIC_*` variables.
+and SMTP setup are documented in the [Bootstrap product guide](docs/Bootstrap_Product_Guide.md).
+All backend variable names are in `backend/.env.example`; SMTP secrets must never
+be placed in `NEXT_PUBLIC_*` variables.
 
 **AI Assistant is optional and off by default.** No extra setup is required to try it — it works immediately after `backend:dev` using the zero-config rule-based provider. To connect a real LLM instead, add to `backend/.env`:
 
@@ -136,18 +135,18 @@ AI_MODEL=gpt-4o-mini   # optional, this is the default
 ```
 → full details in [`docs/ai-assistant.md`](docs/ai-assistant.md#provider-abstraction-swap-without-touching-the-ui)
 
-## Demo vs live data
+## Data and release status
 
-The app works **without a backend**: `useSystemStatus` probes `/health`; if unreachable it falls back to clearly-labelled **DEMO** fixtures and shows a prominent banner. It never presents demo data as live. To go live, set `NEXT_PUBLIC_API_URL` to a deployed backend. → [`docs/deployment.md`](docs/deployment.md)
+The product frontends require the backend for provider and request data. When the API is unavailable, they show an error or recovery state rather than substitute fixture providers. Set `NEXT_PUBLIC_API_URL` to the public backend origin **before building** a hosted frontend. Local test fixtures are used only by isolated tests. See [deployment](docs/deployment.md) and [release QA](docs/release-qa.md) for the separate local and hosted checks.
 
 ## Status
 
 | Piece | State |
 |-------|-------|
-| `backend/` | ✅ models, rotating-session auth, Google OIDC, recovery/email, RBAC, availability time-series, verification+audit, crawler API, AI Assistant API |
-| `crawler/` | ✅ SSRF-safe modular pipeline — 76 tests (71 pass, 5 skipped live-network) |
+| `backend/` | ✅ models, rotating-session auth, recovery/email, RBAC, availability time-series, verification+audit, crawler API, AI Assistant API |
+| `crawler/` | ✅ SSRF-safe modular pipeline; deterministic tests and live-network probes run separately |
 | `packages/core/` | ✅ deterministic brain (ranking/search/freshness/confidence/emergency/location/assistant), zero framework classes |
-| `variants/{bootstrap,tailwind,skeleton}/` | ✅ all build; identical routes/components; strict parity (only CSS differs) |
+| `variants/{bootstrap,tailwind,skeleton}/` | ✅ shared API journeys with three separate design systems; use release QA for current build and browser results |
 | AI Assistant | ✅ chat UI in all 3 variants, deterministic by default, optional swappable LLM provider, fails safe |
 | `evaluation/` | ✅ security + performance axes → machine-readable `results/` |
 | Core ranking/discovery AI/ML | 🚫 none — deterministic rules only, by design |

@@ -5,7 +5,7 @@ import { User } from "../models/User.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { canManageHospital } from "./hospitalAccess.js";
 import { notifyUserSafely } from "./notificationService.js";
-import { generateTrackingToken, hashTrackingToken, verifyTrackingToken } from "../utils/trackingToken.js";
+import { generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, verifyTrackingToken } from "../utils/trackingToken.js";
 
 import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "./emailService.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
@@ -20,15 +20,30 @@ const transitions = {
 };
 
 export async function createEmergencyRequest(data, actor) {
-  if (data.idempotencyKeyHash && await EmergencyRequest.exists({ idempotencyKeyHash: data.idempotencyKeyHash })) {
+  async function replay() {
+    if (!data.idempotencyKeyHash) return null;
+    const previous = await EmergencyRequest.findOne({ idempotencyKeyHash: data.idempotencyKeyHash })
+      .select("+trackingTokenHash");
+    if (!previous) return null;
+    if (previous.user && String(previous.user) === String(actor?.id)) {
+      return { request: previous, status: 200 };
+    }
+    const token = trackingTokenForIdempotency(data.idempotencyKeyHash);
+    if (!previous.user && verifyTrackingToken(token, previous.trackingTokenHash)) {
+      return { request: previous, trackingToken: token, status: 200 };
+    }
     return { error: IDEMPOTENCY_REPLAY_ERROR, status: 409 };
   }
+  const previous = await replay();
+  if (previous) return previous;
   const hospital = await Hospital.findById(data.hospitalId);
   if (!hospital) return { error: "Hospital not found", status: 404 };
   const userId = actor?.id || null;
   const isEmergency = data.isEmergency !== false;
-  const trackingToken = userId ? undefined : generateTrackingToken();
-  const request = await EmergencyRequest.create({
+  const trackingToken = userId ? undefined : (trackingTokenForIdempotency(data.idempotencyKeyHash) || generateTrackingToken());
+  let request;
+  try {
+    request = await EmergencyRequest.create({
     requestId: `MR-${Date.now().toString(36).toUpperCase()}-${randomBytes(3).toString("hex").toUpperCase()}`,
     user: userId,
     trackingTokenHash: trackingToken ? hashTrackingToken(trackingToken) : undefined,
@@ -47,18 +62,39 @@ export async function createEmergencyRequest(data, actor) {
     locality: data.locality,
     expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
     timeline: [{ status: "REQUESTED", actor: userId, note: userId ? undefined : "Guest emergency request" }],
-  });
-  const connectedStaff = await User.find({ _id: { $in: hospital.admins || [] },
-    accountStatus: "active", role: { $in: ["hospital_admin", "admin", "system_admin"] } }).select("_id").lean();
-  const hasHospitalStaff = connectedStaff.length > 0;
-  if (hasHospitalStaff) {
-    request.status = "SENT";
-    request.timeline.push({ status: "SENT", at: new Date() });
-    await request.save();
+    });
+  } catch (error) {
+    if (error?.code === 11000) {
+      const existing = await replay();
+      if (existing) return existing;
+    }
+    throw error;
   }
-  await AuditLog.create({ user: userId || undefined, action: "create", entityType: "EmergencyRequest",
-    entityId: request._id, after: { status: request.status, hospital: hospital._id, requestId: request.requestId,
-      hospitalStaffConnected: hasHospitalStaff, guest: !userId } });
+  let connectedStaff = [];
+  let hasHospitalStaff = false;
+  try {
+    connectedStaff = await User.find({ _id: { $in: hospital.admins || [] },
+      accountStatus: "active", role: { $in: ["hospital_admin", "admin", "system_admin"] } }).select("_id").lean();
+    hasHospitalStaff = connectedStaff.length > 0;
+    if (hasHospitalStaff) {
+      request.status = "SENT";
+      request.timeline.push({ status: "SENT", at: new Date() });
+      await request.save();
+    }
+  } catch (error) {
+    console.warn("Emergency request recorded but staff routing status could not be updated:", error.message);
+    connectedStaff = [];
+    hasHospitalStaff = false;
+    request.status = "REQUESTED";
+    request.timeline = request.timeline.slice(0, 1);
+  }
+  try {
+    await AuditLog.create({ user: userId || undefined, action: "create", entityType: "EmergencyRequest",
+      entityId: request._id, after: { status: request.status, hospital: hospital._id, requestId: request.requestId,
+        hospitalStaffConnected: hasHospitalStaff, guest: !userId } });
+  } catch (error) {
+    console.warn("Emergency request recorded but audit logging failed:", error.message);
+  }
 
   const userRecipient = (data.contactEmail?.trim() || actor?.email || "").toLowerCase();
 
@@ -151,8 +187,12 @@ export async function changeEmergencyRequest({ requestId, actor, trackingToken, 
   if (isStaff) request.respondedAt = new Date();
   request.timeline.push({ status: nextStatus, actor: actor?.id || undefined, note });
   await request.save();
-  await AuditLog.create({ user: actor?.id || undefined, action: "update", entityType: "EmergencyRequest", entityId: request._id,
-    before: { status: previousStatus }, after: { status: nextStatus } });
+  try {
+    await AuditLog.create({ user: actor?.id || undefined, action: "update", entityType: "EmergencyRequest", entityId: request._id,
+      before: { status: previousStatus }, after: { status: nextStatus } });
+  } catch (error) {
+    console.warn("Emergency request updated but audit logging failed:", error.message);
+  }
 
   if (request.user) {
     await notifyUserSafely({ recipient: request.user, eventKey: `emergency:${request._id}:${request.timeline.length}`,

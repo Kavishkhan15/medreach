@@ -6,6 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {
   generateTrackingToken,
   hashTrackingToken,
+  trackingTokenForIdempotency,
   verifyTrackingToken,
   TRACKING_TOKEN_HEADER,
 } from "../utils/trackingToken.js";
@@ -89,9 +90,25 @@ async function sendBookingEmail(booking, recipient, event) {
 }
 
 export const bookAmbulance = asyncHandler(async (req, res) => {
-  if (req.idempotencyKeyHash && await AmbulanceBooking.exists({ idempotencyKeyHash: req.idempotencyKeyHash })) {
-    return res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+  async function replay() {
+    if (!req.idempotencyKeyHash) return false;
+    const previous = await AmbulanceBooking.findOne({ idempotencyKeyHash: req.idempotencyKeyHash })
+      .select("+trackingTokenHash");
+    if (!previous) return false;
+    const isOwner = previous.user && String(previous.user) === String(req.user?.id);
+    const token = trackingTokenForIdempotency(req.idempotencyKeyHash);
+    const isGuest = !previous.user && verifyTrackingToken(token, previous.trackingTokenHash);
+    if (!isOwner && !isGuest) {
+      res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+      return true;
+    }
+    res.status(200).json({ success: true, recorded: true, reference: previous.reference,
+      message: "Ambulance booking request already recorded.",
+      booking: publicBooking(previous), delivery: deliverySummary(previous.delivery),
+      ...(isGuest ? { trackingToken: token } : {}) });
+    return true;
   }
+  if (await replay()) return;
   const {
     providerId,
     patientName,
@@ -119,7 +136,7 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
 
   const userEmail = (contactEmail || req.user?.email || "").trim().toLowerCase();
   const reference = `AMB-${Date.now().toString(36).toUpperCase()}-${randomBytes(2).toString("hex").toUpperCase()}`;
-  const trackingToken = generateTrackingToken();
+  const trackingToken = trackingTokenForIdempotency(req.idempotencyKeyHash) || generateTrackingToken();
 
   const bookingData = {
     reference,
@@ -134,7 +151,9 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
     notes: (bookingDetails || "").trim() || undefined,
   };
 
-  const booking = await AmbulanceBooking.create({
+  let booking;
+  try {
+    booking = await AmbulanceBooking.create({
     reference,
     provider: provider._id,
     user: req.user?.id || undefined,
@@ -160,10 +179,18 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
     },
     trackingTokenHash: hashTrackingToken(trackingToken),
     idempotencyKeyHash: req.idempotencyKeyHash,
-  });
+    });
+  } catch (error) {
+    if (error?.code === 11000 && await replay()) return;
+    throw error;
+  }
 
+  async function deliver(recipient, event) {
+    try { await sendBookingEmail(booking, recipient, event); }
+    catch (error) { console.warn(`Ambulance booking ${reference} recorded but ${recipient} delivery state could not be saved:`, error.message); }
+  }
   if (userEmail) {
-    await sendBookingEmail(booking, "user", {
+    await deliver("user", {
       eventKey: `ambulance_booking_user_${reference}`,
       to: userEmail,
       template: "ambulance_booking_confirmation",
@@ -171,7 +198,7 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
     });
   }
 
-  await sendBookingEmail(booking, "admin", {
+  await deliver("admin", {
     eventKey: `ambulance_booking_admin_${reference}`,
     to: SYSTEM_NOTIFICATION_EMAIL,
     template: "ambulance_booking_admin_notification",
@@ -179,7 +206,7 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
   });
 
   if (provider.email) {
-    await sendBookingEmail(booking, "provider", {
+    await deliver("provider", {
       eventKey: `ambulance_booking_provider_${reference}`,
       to: provider.email,
       template: "ambulance_booking_provider_notification",

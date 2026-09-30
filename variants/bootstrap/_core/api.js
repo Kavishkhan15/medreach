@@ -8,7 +8,33 @@ const BASE =
 const clean = (obj = {}) =>
   Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined && v !== "" && v !== null));
 
+const GUEST_SUBMISSIONS = new Set([
+  "/api/emergency-requests/emergency",
+  "/api/blood-requests/urgent",
+  "/api/blood-requests/standard",
+  "/api/ambulances/book",
+]);
+
+function refreshState() {
+  if (typeof window === "undefined") return { generation: 0, promise: null };
+  return (window.__medreachRefreshState ||= { generation: 0, promise: null });
+}
+
+async function refreshOnce(state) {
+  if (!state.promise) {
+    state.promise = fetch(`${BASE}/api/auth/refresh`, { method: "POST", credentials: "include",
+      headers: { "Content-Type": "application/json" } })
+      .then((response) => {
+        if (response.ok) state.generation += 1;
+        return response.ok;
+      }).catch(() => false).finally(() => { state.promise = null; });
+  }
+  return state.promise;
+}
+
 async function req(path, opts = {}, retried = false) {
+  const state = refreshState();
+  const generation = state.generation;
   const shouldAttachIdempotencyKey =
     opts.method === "POST" &&
     !path.startsWith("/api/auth/") &&
@@ -29,9 +55,11 @@ async function req(path, opts = {}, retried = false) {
   });
   const json = await res.json().catch(() => ({}));
   if (res.status === 401 && !retried && path !== "/api/auth/refresh") {
-    const refreshed = await fetch(`${BASE}/api/auth/refresh`, { method: "POST", credentials: "include",
-      headers: { "Content-Type": "application/json" } });
-    if (refreshed.ok) return req(path, requestOptions, true);
+    const refreshed = state.generation !== generation || await refreshOnce(state);
+    if (refreshed) return req(path, requestOptions, true);
+    if (opts.method === "POST" && GUEST_SUBMISSIONS.has(path)) {
+      return req(path, { ...requestOptions, credentials: "omit" }, true);
+    }
   }
   if (!res.ok) throw new Error(json.error || `Request failed (${res.status})`);
   return json;
@@ -60,7 +88,6 @@ export const requestVerification = () => req(`/api/auth/request-verification`, {
 export const updateProfile = (body) => req(`/api/auth/profile`, { method: "PUT", body: JSON.stringify(body) });
 export const changePassword = (body) => req(`/api/auth/password`, { method: "PUT", body: JSON.stringify(body) });
 export const revokeSession = (id) => req(`/api/auth/sessions/${id}`, { method: "DELETE" });
-export const unlinkGoogle = () => req(`/api/auth/providers/google`, { method: "DELETE", body: JSON.stringify({ confirm: "UNLINK" }) });
 
 // Registered-user features
 export const getSaved = () => req(`/api/users/me/saved`);
@@ -82,7 +109,6 @@ export const adminSetUserRole = (id, role) => req(`/api/admin/users/${id}/role`,
 export const adminRevokeUserSessions = (id) => req(`/api/admin/users/${id}/revoke-sessions`, { method: "POST" });
 export const adminTriggerUserReset = (id) => req(`/api/admin/users/${id}/trigger-reset`, { method: "POST" });
 export const adminResendUserVerification = (id) => req(`/api/admin/users/${id}/resend-verification`, { method: "POST" });
-export const adminUnlinkUserGoogle = (id) => req(`/api/admin/users/${id}/providers/google`, { method: "DELETE", body: JSON.stringify({ confirm: "UNLINK" }) });
 export const listSources = () => req(`/api/sources`);
 export const createSource = (body) => req(`/api/sources`, { method: "POST", body: JSON.stringify(body) });
 export const listCrawlerJobs = (params = {}) =>

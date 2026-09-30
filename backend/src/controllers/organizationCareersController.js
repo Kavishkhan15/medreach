@@ -81,8 +81,11 @@ export const listOrganizationsForCareers = asyncHandler(async (req, res) => {
 });
 
 export const applyToOrganization = asyncHandler(async (req, res) => {
-  if (req.idempotencyKeyHash && await OrganizationApplication.exists({ idempotencyKeyHash: req.idempotencyKeyHash })) {
-    return res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+  if (req.idempotencyKeyHash) {
+    const previous = await OrganizationApplication.findOne({ idempotencyKeyHash: req.idempotencyKeyHash });
+    if (previous) return String(previous.applicant) === String(req.user.id)
+      ? res.status(200).json({ application: previous })
+      : res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
   }
   const { id } = req.params;
   const {
@@ -130,7 +133,7 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     roleInterested,
     candidateName,
     contactEmail,
-    contactPhone,
+    candidatePhone: contactPhone,
     qualifications,
     experienceYears: experienceYears !== undefined && !isNaN(Number(experienceYears)) ? Number(experienceYears) : undefined,
     sop: (sop || statement || "").trim(),
@@ -159,16 +162,25 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     };
   }
 
-  const application = await OrganizationApplication.create(applicationData);
+  let application;
+  try {
+    application = await OrganizationApplication.create(applicationData);
+  } catch (error) {
+    if (error?.code === 11000) {
+      const previous = await OrganizationApplication.findOne(duplicateFilter);
+      if (previous) return res.status(200).json({ application: previous });
+    }
+    throw error;
+  }
 
-  await AuditLog.create({
+  try { await AuditLog.create({
     user: req.user.id,
     action: "create",
     entityType: "OrganizationApplication",
     entityId: application._id,
     after: { organizationType, hospital: applicationData.hospital, provider: applicationData.provider },
     requestId: req.id,
-  });
+  }); } catch (error) { console.warn("Organization application recorded but audit logging failed:", error.message); }
 
   await notifyUserSafely({
     recipient: req.user.id,

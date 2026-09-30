@@ -3,8 +3,7 @@ import { body } from "express-validator";
 import { validate } from "../middleware/validate.js";
 import { requireAuth } from "../middleware/auth.js";
 import { register, login, logout, refresh, me, sessionStatus, revokeOwnSession, forgotPassword,
-  resetPassword, requestVerification, verifyEmail, updateProfile, changePassword, googleStart,
-  googleCallback, unlinkGoogle } from "../controllers/authController.js";
+  resetPassword, requestVerification, verifyEmail, updateProfile, changePassword } from "../controllers/authController.js";
 
 const router = Router();
 
@@ -14,7 +13,6 @@ const namedLimiter = (name) => (req, res, next) => (req.app.locals[name] ?? limi
 const strongPassword = () => body("password").isLength({ min: 12, max: 128 })
   .matches(/[a-z]/).matches(/[A-Z]/).matches(/[0-9]/)
   .withMessage("Password must be 12–128 characters with upper, lower, and numeric characters");
-const googleLinkAuth = (req, res, next) => req.query.flow === "link" ? requireAuth(req, res, next) : next();
 
 router.post(
   "/register",
@@ -53,8 +51,5 @@ router.put("/profile", requireAuth, body("name").optional().trim().notEmpty().is
 router.put("/password", requireAuth, body("currentPassword").notEmpty(),
   body("newPassword").isLength({ min: 12, max: 128 }).matches(/[a-z]/).matches(/[A-Z]/).matches(/[0-9]/),
   validate, changePassword);
-router.get("/google", namedLimiter("oauthLimiter"), googleLinkAuth, googleStart);
-router.get("/google/callback", namedLimiter("oauthLimiter"), googleCallback);
-router.delete("/providers/google", requireAuth, body("confirm").equals("UNLINK"), validate, unlinkGoogle);
 
 export default router;

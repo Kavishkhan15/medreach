@@ -13,7 +13,7 @@ the same regardless of the CSS framework in use.
 - **CORS** allowlist with credentials enabled
 - **cookie-parser**
 - Purpose-specific rate limits: login 10/15 min, registration 8/hour,
-  recovery/verification 6/hour, OAuth 20/15 min, plus the general auth ceiling
+  recovery/verification 6/hour, plus the general auth ceiling
 - Cookie-authenticated unsafe requests with a foreign `Origin` are rejected;
   cookies are `httpOnly` and `secure` in production. `COOKIE_SAME_SITE` defaults
   to `lax` locally and `none` in production so split-site HTTPS deployments work;
@@ -27,16 +27,12 @@ the same regardless of the CSS framework in use.
   **httpOnly cookie**, or as a `Bearer` token for API clients
 - Long-lived opaque refresh/session token in a path-scoped httpOnly cookie. Only
   its SHA-256 digest is stored; every refresh rotates it. Reuse revokes the whole
-  family. Logout, password/reset/provider/role/status changes and admin revocation
+  family. Logout, password/reset/role/status changes and admin revocation
   invalidate sessions. Access JWTs are bound to an active server-side session;
   protected requests re-check the session, active account, and auth version.
 - Password hashing with **bcrypt cost 12** and a 12–128 character policy
-- Reset/verification tokens and OAuth state are cryptographically random, hashed,
+- Reset/verification tokens are cryptographically random, hashed,
   expiring and single use. Reissue supersedes older links.
-- Google OIDC code exchange is server-side. ID tokens require a Google JWKS
-  signature, RS256, accepted issuer, configured audience, expiry, verified email,
-  and matching nonce. Provider access/refresh tokens are ignored. Password-email
-  collisions never auto-link; linking starts from an authenticated confirmed flow.
 - **RBAC** enforced via `requireRole`
 - User, authentication-security, email-delivery, and audit administration is
   restricted to `system_admin`; legacy and hospital administrator roles cannot access it.
@@ -80,8 +76,7 @@ the same regardless of the CSS framework in use.
 
 ## Secrets
 - Provided via env: `JWT_SECRET`, `MONGO_URI`, `CORS_ORIGINS`, `ACCESS_TOKEN_EXPIRES`,
-  `REFRESH_TOKEN_EXPIRES_DAYS`, `OAUTH_STATE_EXPIRES_MINUTES`, `GOOGLE_CLIENT_ID`,
-  `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`, `COOKIE_SAME_SITE`, and the SMTP variables documented
+  `REFRESH_TOKEN_EXPIRES_DAYS`, `COOKIE_SAME_SITE`, and the SMTP variables documented
   in `.env.example`.
 - Production **requires** `JWT_SECRET`.
 - AI provider secrets are **optional**: `AI_PROVIDER`, `AI_API_KEY`, `AI_MODEL`.
@@ -91,8 +86,7 @@ the same regardless of the CSS framework in use.
 
 ## Audit
 - `AuditLog` stores an `ipHash` (SHA-256), **never** the raw IP. Auth success/failure,
-  register, refresh, logout, reset/change, verification, OAuth start/failure/login,
-  link/unlink, enable/disable, role changes, and revocations are recorded without secrets.
+  register, refresh, logout, reset/change, verification, enable/disable, role changes, and revocations are recorded without secrets.
 
 ## Test coverage
 Tests cover:
@@ -104,8 +98,7 @@ Tests cover:
   (`400` on empty/oversized message, invalid coordinates), public access
   (no `401`), and rate limiting (`429` after the ceiling) — see
   `backend/test/assistant.test.js`
-- Google signature/issuer/audience/expiry/nonce validation; state validity/reuse;
-  provider create/login/collision/link/unlink; session rotation/replay/revocation;
-  reset expiry/single use; account disable and system-only RBAC; safe SMTP disabled,
-  success, authentication failure and timeout paths. The DB-backed suite uses an
-  isolated local MongoDB and mocked Google/SMTP providers—never live credentials.
+- Session rotation/replay/revocation; reset expiry/single use and legacy account recovery;
+  account disable and system-only RBAC; safe SMTP disabled, success, authentication
+  failure and timeout paths. The DB-backed suite uses an isolated local MongoDB
+  and mocked SMTP transport.

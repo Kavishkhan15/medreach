@@ -9,7 +9,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { SOURCES, getSource } from "../src/registry/sources.js";
-import { crawlHospitalSource } from "../src/orchestrator.js";
+import { crawlHospitalSource, crawlDirectorySource } from "../src/orchestrator.js";
 import { createMemoryRepo } from "../src/persistence/memoryRepo.js";
 import { isAllowedByRobots } from "../src/robots/robotsChecker.js";
 
@@ -28,7 +28,9 @@ test("live: robots.txt is reachable and parsed for every approved source", opts,
 for (const s of SOURCES) {
   test(`live: ${s.sourceId} crawl (dry-run, no writes)`, opts, async () => {
     const repo = createMemoryRepo();
-    const job = await crawlHospitalSource(getSource(s.sourceId), { repo, dryRun: true });
+    const crawl = s.sourceType === "government_directory" ? crawlDirectorySource : crawlHospitalSource;
+    const job = await crawl(getSource(s.sourceId), { repo, dryRun: true });
+    console.log(`${s.sourceId}: ${job.status}; pages=${job.pagesVisited}; records=${job.recordsFound}; reasons=${job.errorMessages.join(",") || "none"}`);
     // A live site may be down/blocked — that must NOT throw, only report status.
     assert.ok(
       ["success", "partial", "failed", "blocked", "rate_limited", "parsing_error"].includes(job.status),
@@ -36,11 +38,13 @@ for (const s of SOURCES) {
     );
     // Dry-run must never write.
     assert.equal(repo.store.observations.length, 0);
+    assert.equal(repo.store.directoryListings.length, 0);
     // If we did get a record, it must obey the capability-vs-availability rule.
     if (job.record) {
       assert.ok(job.record.facilities.every((f) => f.availability === "unknown"));
       assert.ok(job.record.facilities.every((f) => f.quantity == null));
       assert.equal(job.record.provenance.sourceId, s.sourceId);
     }
+    if (job.listings) assert.ok(job.listings.every((listing) => listing.name));
   });
 }

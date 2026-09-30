@@ -11,7 +11,7 @@ const validId = (id) => mongoose.isValidObjectId(id);
 const safeUser = (user) => ({ _id: user._id, email: user.email, name: user.name, role: user.role,
   accountStatus: user.accountStatus, emailVerifiedAt: user.emailVerifiedAt, lastLogin: user.lastLogin,
   createdAt: user.createdAt, updatedAt: user.updatedAt,
-  providers: { password: Boolean(user.passwordHash), google: Boolean(user.googleSubject) } });
+  providers: { password: Boolean(user.passwordHash) } });
 const audit = (req, entry) => writeAudit({ ...entry, ipHash: hashIp(req.ip), requestId: req.id });
 
 export const listUsers = asyncHandler(async (req, res) => {
@@ -19,20 +19,20 @@ export const listUsers = asyncHandler(async (req, res) => {
   const filter = {};
   if (["active", "suspended", "pending"].includes(req.query.status)) filter.accountStatus = req.query.status;
   if ([...SAFE_ROLES, "admin"].includes(req.query.role)) filter.role = req.query.role;
-  const users = await User.find(filter).select("+passwordHash +googleSubject").sort({ createdAt: -1 }).limit(limit);
+  const users = await User.find(filter).select("+passwordHash").sort({ createdAt: -1 }).limit(limit);
   res.json({ data: users.map(safeUser) });
 });
 
 export const getUser = asyncHandler(async (req, res) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: "Invalid user id" });
-  const user = await User.findById(req.params.id).select("+passwordHash +googleSubject");
+  const user = await User.findById(req.params.id).select("+passwordHash");
   if (!user) return res.status(404).json({ error: "User not found" });
   res.json({ user: safeUser(user) });
 });
 
 export const setUserStatus = asyncHandler(async (req, res) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: "Invalid user id" });
-  const user = await User.findById(req.params.id).select("+authVersion +passwordHash +googleSubject");
+  const user = await User.findById(req.params.id).select("+authVersion +passwordHash");
   if (!user) return res.status(404).json({ error: "User not found" });
   const next = req.body.status;
   if (String(user._id) === req.user.id && next !== "active") return res.status(409).json({ error: "You cannot disable your own account" });
@@ -55,7 +55,7 @@ export const setUserStatus = asyncHandler(async (req, res) => {
 
 export const setUserRole = asyncHandler(async (req, res) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: "Invalid user id" });
-  const user = await User.findById(req.params.id).select("+authVersion +passwordHash +googleSubject");
+  const user = await User.findById(req.params.id).select("+authVersion +passwordHash");
   if (!user) return res.status(404).json({ error: "User not found" });
   const next = req.body.role;
   if (!SAFE_ROLES.includes(next)) return res.status(400).json({ error: "Invalid role" });
@@ -104,20 +104,4 @@ export const resendUserVerification = asyncHandler(async (req, res) => {
   if (!user.emailVerifiedAt) await issueAuthToken(user, "verify_email");
   await audit(req, { user: req.user.id, action: "email_verification_requested", entityType: "UserEmail", entityId: user._id });
   res.json({ ok: true, alreadyVerified: Boolean(user.emailVerifiedAt) });
-});
-
-export const adminUnlinkGoogle = asyncHandler(async (req, res) => {
-  if (!validId(req.params.id)) return res.status(400).json({ error: "Invalid user id" });
-  const user = await User.findById(req.params.id).select("+googleSubject +passwordHash +authVersion");
-  if (!user) return res.status(404).json({ error: "User not found" });
-  if (!user.googleSubject) return res.status(404).json({ error: "Google is not linked" });
-  if (!user.passwordHash) return res.status(409).json({ error: "Cannot remove the only sign-in method" });
-  user.googleSubject = undefined;
-  user.authVersion = Number(user.authVersion || 0) + 1;
-  await user.save();
-  await revokeAllSessions(user._id, "admin_provider_unlinked");
-  await sendEmailEvent({ eventKey: `admin-google-unlinked:${user._id}:${user.authVersion}`,
-    to: user.email, template: "google_unlinked" });
-  await audit(req, { user: req.user.id, action: "provider_unlinked", entityType: "GoogleIdentity", entityId: user._id });
-  res.json({ ok: true });
 });

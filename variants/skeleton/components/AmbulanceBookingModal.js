@@ -18,6 +18,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
   const [contactPhone, setContactPhone] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [tracking, setTracking] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
       const providerMessage = res.delivery?.provider?.sent
         ? "The provider notification email was sent. Call to confirm dispatch."
         : "The provider notification email was not sent. Call the provider directly to confirm availability.";
+      setTracking({ reference: res.reference, token: res.trackingToken });
       setSuccessMsg(`Request ${res.reference} was recorded. ${providerMessage}`);
     } catch (err) {
       setErrorMsg(err.message || "Failed to submit ambulance booking. Please try again.");
@@ -75,10 +77,11 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
       onClick={onClose}
       role="dialog"
       aria-modal="true"
+      style={{ zIndex: 1060 }}
     >
       <div
         className="modal-content"
-        style={{ maxWidth: "520px", padding: "1.5rem" }}
+        style={{ maxWidth: "520px", padding: "1.5rem", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-3 border-bottom pb-2">
@@ -118,6 +121,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
             </div>
             <h4 className="h6 fw-bold text-dark mb-1">Booking Recorded</h4>
             <p className="small text-secondary mb-3">{successMsg}</p>
+            {tracking && <div className="mb-3"><a href={`/track?type=ambulance&reference=${encodeURIComponent(tracking.reference)}${tracking.token ? `#token=${encodeURIComponent(tracking.token)}` : ""}`} className="btn btn-sm btn-outline-danger">Track request</a></div>}
             <button
               type="button"
               onClick={onClose}

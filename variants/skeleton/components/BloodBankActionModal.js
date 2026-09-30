@@ -68,6 +68,7 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
       setSubmittedData({
         type: "REQUEST",
         reference,
+        trackingToken: res.trackingToken,
         bloodBankName: bloodBank?.name,
         details: payload,
       });
@@ -108,6 +109,7 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
       setSubmittedData({
         type: "DONATION",
         reference,
+        trackingToken: res.trackingToken,
         bloodBankName: bloodBank?.name,
         details: payload,
       });
@@ -209,6 +211,7 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
               >
                 Print Receipt
               </button>
+              <a className="btn btn-sm btn-outline-danger" href={`/track?type=blood&reference=${encodeURIComponent(submittedData.reference)}${submittedData.trackingToken ? `#token=${encodeURIComponent(submittedData.trackingToken)}` : ""}`}>Track request</a>
               <button
                 type="button"
                 className="btn btn-sm btn-danger"

@@ -6,9 +6,8 @@ import { signToken, verifyToken } from "../utils/token.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { env } from "../config/env.js";
 import { issueAuthToken, consumeAuthToken, issueSession, rotateSession, revokeSessionToken,
-  revokeAllSessions, listSessions, issueOAuthState, consumeOAuthState } from "../services/authTokenService.js";
+  revokeAllSessions, listSessions } from "../services/authTokenService.js";
 import { sendEmailEvent } from "../services/emailService.js";
-import { buildGoogleAuthorizationUrl, exchangeGoogleCode, googleConfigured } from "../services/googleOidcService.js";
 import { hashIp, writeAudit } from "../utils/audit.js";
 
 const ACCESS_COOKIE_MS = 15 * 60 * 1000;
@@ -26,7 +25,7 @@ function publicUser(user) {
 }
 
 function providerSummary(user) {
-  return { password: Boolean(user.passwordHash), google: Boolean(user.googleSubject) };
+  return { password: Boolean(user.passwordHash) };
 }
 
 function setSessionCookies(res, accessToken, refreshToken) {
@@ -69,7 +68,7 @@ export const register = asyncHandler(async (req, res) => {
 
 export const login = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: req.body.email.trim().toLowerCase() })
-    .select("+passwordHash +googleSubject +authVersion");
+    .select("+passwordHash +authVersion");
   const validPassword = user?.passwordHash
     ? await user.comparePassword(req.body.password)
     : await bcrypt.compare(req.body.password, DUMMY_PASSWORD_HASH);
@@ -111,14 +110,14 @@ export const logout = asyncHandler(async (req, res) => {
 });
 
 export const me = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id).select("+passwordHash +googleSubject +authVersion")
+  const user = await User.findById(req.user.id).select("+passwordHash +authVersion")
     .populate("savedHospitals", "name slug city emergencyStatus");
   if (!user || user.accountStatus !== "active") return res.status(401).json({ error: "Authentication required" });
   res.json({ user: publicUser(user), providers: providerSummary(user) });
 });
 
 export const sessionStatus = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id).select("+passwordHash +googleSubject");
+  const user = await User.findById(req.user.id).select("+passwordHash");
   if (!user) return res.status(404).json({ error: "User not found" });
   res.json({ sessions: await listSessions(user._id), providers: providerSummary(user),
     emailVerified: Boolean(user.emailVerifiedAt) });
@@ -209,137 +208,6 @@ export const changePassword = asyncHandler(async (req, res) => {
   await sendEmailEvent({ eventKey: `password-change:${user._id}:${user.authVersion}`, to: user.email,
     template: "password_changed" });
   await audit(req, { user: user._id, action: "password_change", entityType: "UserPassword", entityId: user._id });
-  clearSessionCookies(res);
-  res.json({ ok: true, signedOut: true });
-});
-
-export const googleStart = asyncHandler(async (req, res) => {
-  if (!googleConfigured()) {
-    await audit(req, { user: req.user?.id, action: "oauth_failed", entityType: "GoogleIdentity",
-      after: { reason: "not_configured" } });
-    return res.status(503).json({ error: "Google sign-in is not configured" });
-  }
-  const flow = req.query.flow === "link" ? "link" : "login";
-  let user;
-  if (flow === "link") {
-    if (!req.user || req.query.confirm !== "link-google") {
-      await audit(req, { user: req.user?.id, action: "oauth_failed", entityType: "GoogleIdentity",
-        after: { reason: "link_not_confirmed" } });
-      return res.status(403).json({ error: "Confirm Google linking from your profile" });
-    }
-    user = await User.findById(req.user.id).select("+authVersion");
-    if (!user || user.accountStatus !== "active") return res.status(401).json({ error: "Authentication required" });
-  }
-  const returnTo = safeReturnTo(req.query.returnTo);
-  const state = await issueOAuthState({ flow, user, returnTo });
-  await audit(req, { user: user?._id, action: "oauth_started", entityType: "GoogleIdentity" });
-  res.redirect(302, buildGoogleAuthorizationUrl(state));
-});
-
-function safeReturnTo(value) {
-  return typeof value === "string" && value.length <= 500 && value.startsWith("/")
-    && !value.startsWith("//") && !/[\r\n]/.test(value) ? value : undefined;
-}
-
-function googleResult(res, status, returnTo, signals = {}) {
-  const url = new URL("/auth/google/callback", env.publicAppUrl);
-  url.searchParams.set("status", status);
-  const safeDestination = safeReturnTo(returnTo);
-  if (safeDestination) url.searchParams.set("returnTo", safeDestination);
-  if (typeof signals.accountCreated === "boolean") {
-    url.searchParams.set("accountCreated", String(signals.accountCreated));
-  }
-  if (typeof signals.regionOnboardingRequired === "boolean") {
-    url.searchParams.set("regionOnboardingRequired", String(signals.regionOnboardingRequired));
-  }
-  res.redirect(302, url.toString());
-}
-
-export const googleCallback = asyncHandler(async (req, res) => {
-  const state = await consumeOAuthState(req.query.state);
-  if (!state) {
-    await audit(req, { action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "invalid_state" } });
-    return googleResult(res, "invalid_state");
-  }
-  const returnTo = safeReturnTo(state.metadata?.returnTo);
-  if (req.query.error) {
-    await audit(req, { action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "denied" } });
-    return googleResult(res, "denied", returnTo);
-  }
-  try {
-    const identity = await exchangeGoogleCode(req.query.code, state.metadata.nonce);
-    if (state.metadata.flow === "link") {
-      const user = await User.findById(state.user).select("+googleSubject +passwordHash +authVersion");
-      if (!user || user.accountStatus !== "active" || Number(user.authVersion || 0) !== Number(state.metadata.authVersion || 0)) {
-        await audit(req, { user: state.user, action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "link_session_expired" } });
-        return googleResult(res, "link_session_expired", returnTo);
-      }
-      if (identity.email !== user.email) {
-        await audit(req, { user: user._id, action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "link_email_mismatch" } });
-        return googleResult(res, "link_email_mismatch", returnTo);
-      }
-      const collision = await User.exists({ googleSubject: identity.subject, _id: { $ne: user._id } });
-      if (collision) {
-        await audit(req, { user: user._id, action: "oauth_failed", entityType: "GoogleIdentity", after: { reason: "identity_in_use" } });
-        return googleResult(res, "identity_in_use", returnTo);
-      }
-      user.googleSubject = identity.subject;
-      user.emailVerifiedAt ||= new Date();
-      await user.save();
-      await sendEmailEvent({ eventKey: `google-linked:${user._id}:${Date.now()}`, to: user.email, template: "google_linked" });
-      await audit(req, { user: user._id, action: "provider_linked", entityType: "GoogleIdentity", entityId: user._id });
-      return googleResult(res, "linked", returnTo);
-    }
-    let accountCreated = false;
-    let user = await User.findOne({ googleSubject: identity.subject }).select("+googleSubject +passwordHash +authVersion");
-    if (!user) {
-      const emailOwner = await User.findOne({ email: identity.email }).select("+passwordHash +googleSubject");
-      if (emailOwner) {
-        await audit(req, { user: emailOwner._id, action: "oauth_failed", entityType: "GoogleIdentity" });
-        return googleResult(res, "email_exists", returnTo);
-      }
-      user = await User.create({ email: identity.email, name: identity.name, googleSubject: identity.subject,
-        emailVerifiedAt: new Date(), role: "user" });
-      accountCreated = true;
-    }
-    if (user.accountStatus !== "active") {
-      await audit(req, { user: user._id, action: "oauth_failed", entityType: "GoogleIdentity",
-        after: { reason: "account_unavailable" } });
-      return googleResult(res, "account_unavailable", returnTo);
-    }
-    user.lastLogin = new Date();
-    await user.save();
-    await establishSession(req, res, user);
-    await audit(req, { user: user._id, action: "oauth_login", entityType: "GoogleIdentity", entityId: user._id });
-    return googleResult(res, "success", returnTo, {
-      accountCreated,
-      regionOnboardingRequired: user.regionOnboardingRequired,
-    });
-  } catch {
-    await audit(req, { action: "oauth_failed", entityType: "GoogleIdentity" });
-    return googleResult(res, "provider_error", returnTo);
-  }
-});
-
-export const unlinkGoogle = asyncHandler(async (req, res) => {
-  if (req.body.confirm !== "UNLINK") return res.status(400).json({ error: "Type UNLINK to confirm" });
-  const user = await User.findById(req.user.id).select("+googleSubject +passwordHash +authVersion");
-  if (!user?.googleSubject) {
-    await audit(req, { user: req.user.id, action: "provider_unlinked", entityType: "GoogleIdentity",
-      after: { success: false, reason: "not_linked" } });
-    return res.status(404).json({ error: "Google is not linked" });
-  }
-  if (!user.passwordHash) {
-    await audit(req, { user: user._id, action: "provider_unlinked", entityType: "GoogleIdentity",
-      after: { success: false, reason: "only_auth_method" } });
-    return res.status(409).json({ error: "Set a password before removing your only sign-in method" });
-  }
-  user.googleSubject = undefined;
-  user.authVersion = Number(user.authVersion || 0) + 1;
-  await user.save();
-  await revokeAllSessions(user._id, "provider_unlinked");
-  await sendEmailEvent({ eventKey: `google-unlinked:${user._id}:${user.authVersion}`, to: user.email, template: "google_unlinked" });
-  await audit(req, { user: user._id, action: "provider_unlinked", entityType: "GoogleIdentity", entityId: user._id });
   clearSessionCookies(res);
   res.json({ ok: true, signedOut: true });
 });

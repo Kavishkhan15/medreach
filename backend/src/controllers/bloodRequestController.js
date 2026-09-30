@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { BloodRequest } from "../models/BloodRequest.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "../services/emailService.js";
-import { TRACKING_TOKEN_HEADER, generateTrackingToken, hashTrackingToken, verifyTrackingToken } from "../utils/trackingToken.js";
+import { TRACKING_TOKEN_HEADER, generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, verifyTrackingToken } from "../utils/trackingToken.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
@@ -15,9 +15,23 @@ function generateReference(type) {
 
 // POST /api/blood-requests — submit a blood requisition or donation pledge (public / authenticated)
 export const createBloodRequest = asyncHandler(async (req, res) => {
-  if (req.idempotencyKeyHash && await BloodRequest.exists({ idempotencyKeyHash: req.idempotencyKeyHash })) {
-    return res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+  async function replay() {
+    if (!req.idempotencyKeyHash) return false;
+    const previous = await BloodRequest.findOne({ idempotencyKeyHash: req.idempotencyKeyHash }).select("+trackingTokenHash");
+    if (!previous) return false;
+    const isOwner = previous.user && String(previous.user) === String(req.user?.id || req.user?._id);
+    const token = trackingTokenForIdempotency(req.idempotencyKeyHash);
+    const isGuest = !previous.user && verifyTrackingToken(token, previous.trackingTokenHash);
+    if (!isOwner && !isGuest) {
+      res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
+      return true;
+    }
+    res.status(200).json({ bloodRequest: previous, reference: previous.reference,
+      ...(isGuest ? { trackingToken: token } : {}),
+      message: "Blood request already recorded. Contact the blood bank to confirm inventory and fulfillment." });
+    return true;
   }
+  if (await replay()) return;
   const {
     type,
     providerId,
@@ -71,9 +85,11 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
 
   const reference = generateReference(type);
   const userId = req.user?._id || req.user?.id;
-  const trackingToken = userId ? undefined : generateTrackingToken();
+  const trackingToken = userId ? undefined : (trackingTokenForIdempotency(req.idempotencyKeyHash) || generateTrackingToken());
 
-  const bloodRequest = await BloodRequest.create({
+  let bloodRequest;
+  try {
+    bloodRequest = await BloodRequest.create({
     reference,
     type,
     provider: provider?._id,
@@ -95,7 +111,11 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
     trackingTokenHash: trackingToken ? hashTrackingToken(trackingToken) : undefined,
     idempotencyKeyHash: req.idempotencyKeyHash,
     status: "REQUESTED",
-  });
+    });
+  } catch (error) {
+    if (error?.code === 11000 && await replay()) return;
+    throw error;
+  }
 
   const effectiveEmail = bloodRequest.contactEmail;
 

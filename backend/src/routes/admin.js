@@ -6,7 +6,7 @@ import { overview, verifyHospital, listAudit, listFacilityClaims, listDataConfli
 import { adminOwnershipClaims, adminReviewOwnershipClaim } from "../controllers/ownershipController.js";
 import { VALID_DECISIONS } from "../services/verificationService.js";
 import { listUsers, getUser, setUserStatus, setUserRole, revokeUserSessions, triggerUserReset,
-  resendUserVerification, adminUnlinkGoogle } from "../controllers/adminUserController.js";
+  resendUserVerification } from "../controllers/adminUserController.js";
 
 const router = Router();
 const admin = [requireAuth, requireRole("admin", "system_admin", "hospital_admin")];
@@ -18,8 +18,6 @@ router.patch("/users/:id/role", ...systemAdmin, body("role").isIn(["user", "hosp
 router.post("/users/:id/revoke-sessions", ...systemAdmin, revokeUserSessions);
 router.post("/users/:id/trigger-reset", ...systemAdmin, triggerUserReset);
 router.post("/users/:id/resend-verification", ...systemAdmin, resendUserVerification);
-router.delete("/users/:id/providers/google", ...systemAdmin,
-  body("confirm").equals("UNLINK"), validate, adminUnlinkGoogle);
 router.get("/ownership-claims", ...systemAdmin, adminOwnershipClaims);
 router.post("/ownership-claims/:id/review", ...systemAdmin,
   body("decision").isIn(["approve", "reject"]), body("note").optional().isLength({ max: 500 }), validate,

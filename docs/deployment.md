@@ -10,24 +10,28 @@ MedReach deploys as **four independent pieces**:
 ## Environment
 
 ### Frontend
-- `NEXT_PUBLIC_API_URL`
+- `NEXT_PUBLIC_API_URL` — set to the public HTTPS backend origin **before each production build**. Next.js embeds this value in browser bundles. If omitted, clients target `http://localhost:4000`, which works only for local development.
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` — Google Maps JavaScript API key (optional; `/map` displays a setup fallback if unset). In Google Cloud Console, enable only the **Maps JavaScript API** and restrict key to your app's domain.
 - `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` — (optional) Map ID for custom cloud map styling; defaults to `DEMO_MAP_ID`.
 
 ### Backend
-- `MONGO_URI` / `DATABASE_URL`
+- `MONGO_URI` or `MONGODB_URI` — the backend does not read `DATABASE_URL`.
 - `JWT_SECRET` — **required in production**
 - `ACCESS_TOKEN_EXPIRES` (recommended `15m`; `JWT_EXPIRES` is a compatibility alias)
 - `REFRESH_TOKEN_EXPIRES_DAYS`
-- `OAUTH_STATE_EXPIRES_MINUTES`
-- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
-- `PUBLIC_APP_URL`
+- `PUBLIC_APP_URL` — HTTPS origin for password-reset and email-verification links.
 - `EMAIL_ENABLED`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`,
   `SMTP_PASSWORD`, `SMTP_FROM`, `SMTP_FROM_NAME`, `SMTP_CONNECTION_TIMEOUT_MS`,
   `COOKIE_SAME_SITE` (`none` for a cross-site HTTPS frontend/API, otherwise `lax`)
-- `CORS_ORIGINS`
+- `CORS_ORIGINS` — comma-separated, exact frontend origins, including every variant using the shared API. Cookie-authenticated browser requests reject an origin outside this list.
 - `PORT`
-- `NODE_ENV`
+- `NODE_ENV=production`
+
+Use Node.js **22.19.0 or newer** for the root, backend, and each frontend. CI tests Node.js 24. Set `COOKIE_SAME_SITE=none` for frontend and API on different HTTPS sites; cookies are then `Secure` and `httpOnly`. Same-site HTTPS deployments may use `lax`.
+
+Before rolling out password-only sign-in, confirm transactional email delivery. Existing accounts without a stored password can use **Forgot password** to establish one; the reset flow preserves the account and revokes its old sessions. Remove retired sign-in credentials from the hosting environment.
+
+The backend's `railway.json` assumes the service root directory is `backend/`, where `npm start` runs `node src/server.js`. Set the health check to `/health/ready`. Tailwind and Skeleton require the monorepo workspace build context for `@medreach/core`; Bootstrap bundles a local `_core` copy for its standalone tar deployment. Run the database migrations listed below before accepting traffic.
 
 No secrets are committed. Copy `.env` from `.env.example`.
 
@@ -66,13 +70,14 @@ Set `MEDREACH_E2E_MONGO_URI`, `MEDREACH_BACKUP_SOURCE_URI`, and `MEDREACH_RESTOR
 
 Override the hosts with `MEDREACH_BASE_TEST_MONGO_URI`, `MEDREACH_AUTH_TEST_MONGO_URI`, `MEDREACH_PRODUCT_TEST_MONGO_URI`, and `MEDREACH_TEST_MONGO_URI`. The database names must remain exact because the tests drop their databases. The runner also overrides `MONGO_URI` and `MONGODB_URI` so a developer's configured database cannot be used by accident. It fails when a database-gated test is skipped.
 
-The deterministic crawler gate excludes `crawler/tests/live.test.js` and prints that exclusion in its result. Run `npm run crawler:test:live` separately to probe approved external sources. External availability is not a release gate. The release check does require the local Playwright critical journeys for all three variants.
+The deterministic crawler gate excludes `crawler/tests/live.test.js` and prints that exclusion in its result. Run `npm run crawler:test:live` separately when live checks are authorized. That suite reports each source's `success`, `partial`, `failed`, or `blocked` status; a passing test means the crawler classified the outcome safely, not that every source supplied data. It honors robots, rate limits, and source allowlists. External availability is not a deterministic release gate. The release check does require local Playwright journeys for all three variants.
 
 ## Health checks
 
 - `/health/live` checks that the API process can respond.
 - `/health/ready` returns `200` only when Mongoose is connected and returns `503` otherwise. Use this endpoint for deployment readiness and traffic routing.
 - `/health` remains a compatibility liveness endpoint and includes the current database state.
+- After deployment, verify `/health/ready` on the **public backend URL**, plus `/track` and one backend-backed directory page on each public frontend URL. Local health or build success does not prove hosted readiness.
 
 ## MongoDB backup and restore drill
 
@@ -101,5 +106,7 @@ The Bootstrap variant is deployed via **tar upload**:
   alias in `next.config.mjs`, because the workspace dependency is not resolvable
   off-monorepo.
 - Its `package.json` **omits** the `@medreach/core` dependency for this reason.
-- Live at **https://medreach-bootstrap.antideploy.com**.
-- Set `NEXT_PUBLIC_API_URL` to the deployed backend URL before building. If it is unset, the client targets `http://localhost:4000`; API failures are shown to the user and are not replaced with fixture provider data.
+- Documented host: **https://medreach-bootstrap.antideploy.com**. Treat its current contents as a separate deployment to verify; local builds do not update it.
+- Set `NEXT_PUBLIC_API_URL` to the deployed backend URL before building the tar. If it is unset, the client targets `http://localhost:4000`; API failures are shown to the user and are not replaced with fixture provider data.
+
+See [release QA](release-qa.md) for the separate local, live-integration, and hosted-deployment evidence gates.

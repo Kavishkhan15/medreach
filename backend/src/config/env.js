@@ -27,13 +27,9 @@ export const env = {
       : "dev-only-insecure-secret"),
   accessTokenExpires: process.env.ACCESS_TOKEN_EXPIRES ?? process.env.JWT_EXPIRES ?? "15m",
   refreshTokenExpiresDays: Math.max(1, Number(process.env.REFRESH_TOKEN_EXPIRES_DAYS ?? 30)),
-  oauthStateExpiresMinutes: Math.max(1, Number(process.env.OAUTH_STATE_EXPIRES_MINUTES ?? 10)),
   cookieSameSite: ["lax", "strict", "none"].includes((process.env.COOKIE_SAME_SITE || "").toLowerCase())
     ? process.env.COOKIE_SAME_SITE.toLowerCase()
     : (process.env.NODE_ENV === "production" ? "none" : "lax"),
-  googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
-  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-  googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL ?? "http://localhost:4000/api/auth/google/callback",
   // Default allows all three variant dev ports so the shared backend serves
   // every framework variant identically out of the box (bootstrap :3000,
   // tailwind :3001, skeleton :3002). Override with CORS_ORIGINS in production.

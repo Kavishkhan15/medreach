@@ -17,6 +17,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
   const [contactPhone, setContactPhone] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [tracking, setTracking] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
   const validate = () => {
     if (!patientName.trim()) return "Patient Name is required";
     if (!patientAge || isNaN(patientAge) || Number(patientAge) <= 0) return "Valid Patient Age is required";
+    if (!contactPhone.trim() && !contactEmail.trim()) return "A contact phone or email is required";
     if (ambulanceRequired && !bookingPickup.trim()) return "Pickup address is required when ambulance is needed";
     return null;
   };
@@ -57,6 +59,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
       const providerMessage = res.delivery?.provider?.sent
         ? "The provider notification email was sent. Call to confirm dispatch."
         : "The provider notification email was not sent. Call the provider directly to confirm availability.";
+      setTracking({ reference: res.reference, token: res.trackingToken });
       setSuccessMsg(`Request ${res.reference} was recorded. ${providerMessage}`);
     } catch (err) {
       setErrorMsg(err.message || "Failed to submit ambulance booking. Please try again.");
@@ -79,12 +82,12 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        zIndex: 1000,
+        zIndex: 1060,
       }}
     >
       <div
         className="modal-content bg-white p-4 rounded shadow"
-        style={{ width: "90%", maxWidth: "500px" }}
+        style={{ width: "90%", maxWidth: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}
         onClick={(e) => e.stopPropagation()}
       >
         <h3 id="ambulance-booking-title" className="text-lg font-bold mb-1">
@@ -101,6 +104,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
         {successMsg && (
           <div className="alert alert-success" role="alert" style={{ marginBottom: "1rem" }}>
             {successMsg}
+            {tracking && <div className="mt-2"><a href={`/track?type=ambulance&reference=${encodeURIComponent(tracking.reference)}${tracking.token ? `#token=${encodeURIComponent(tracking.token)}` : ""}`} className="btn btn-sm btn-outline-danger">Track request</a></div>}
           </div>
         )}
         <form className="row g-3">

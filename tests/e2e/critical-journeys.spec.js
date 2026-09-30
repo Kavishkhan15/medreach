@@ -10,6 +10,9 @@ function attachRuntimeGuard(page) {
     if (message.type() === "error" && !message.text().includes("Failed to load resource")) {
       failures.push(`console: ${message.text()}`);
     }
+    if (message.type() === "warning" && /params is now a Promise|param property was accessed directly/i.test(message.text())) {
+      failures.push(`console: ${message.text()}`);
+    }
   });
   return () => expect(failures, failures.join("\n")).toEqual([]);
 }
@@ -33,6 +36,14 @@ async function fillJobApplication(page, { name, email, phone }) {
   );
 }
 
+test("password sign-in remains available and the retired callback route is absent", async ({ page }) => {
+  await page.goto("/login");
+  await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Google/i })).toHaveCount(0);
+  const callback = await page.goto("/auth/google/callback");
+  expect(callback.status()).toBe(404);
+});
+
 test("guest emergency request stays public while tracking and cancellation stay private", async ({ page }) => {
   const clean = attachRuntimeGuard(page);
   let createCalls = 0;
@@ -55,12 +66,16 @@ test("guest emergency request stays public while tracking and cancellation stay 
   await page.reload();
   await expect(page.getByText(/Emergency Bed Request/i).first()).toBeVisible();
 
+  await page.context().addCookies([{ name: "token", value: "expired-e2e-session", domain: "localhost", path: "/", httpOnly: true }]);
+  await page.reload();
+  await expect(page.getByText(/Emergency Bed Request/i).first()).toBeVisible();
+
   await page.evaluate(() => sessionStorage.clear());
   await page.reload();
-  await expect(page.getByText(/Tracking token required|Access denied|not found/i)).toBeVisible();
+  await expect(page.getByText(/Tracking token required|Access denied|not found|Invalid or expired token/i)).toBeVisible();
 
   await page.goto(requestUrl);
-  await expect(page.getByText(/Tracking token required|Access denied|not found/i)).toBeVisible();
+  await expect(page.getByText(/Tracking token required|Access denied|not found|Invalid or expired token/i)).toBeVisible();
 
   await page.evaluate(({ id, token }) => sessionStorage.setItem(`medreach:emergency-request-token:${id}`, token), {
     id: requestId,
@@ -140,9 +155,43 @@ test("urgent blood and ambulance submissions report recorded state without false
   clean();
 });
 
+test("mobile guest urgent blood and ambulance requests remain usable and their private tracking links open", async ({ page }) => {
+  const clean = attachRuntimeGuard(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  await page.goto("/urgent-blood");
+  await page.getByPlaceholder("e.g. Ramesh Patel").fill("E2E Mobile Blood Patient");
+  await page.getByPlaceholder(/Lilavati Hospital/i).fill("MedReach E2E Hospital");
+  await page.getByPlaceholder("e.g. +91 98200 11223").fill("+91 98765 40606");
+  await page.getByRole("button", { name: "Submit Urgent Blood Requirement" }).click();
+  await expect(page.locator('a[href^="/track?type=blood"]')).toBeVisible();
+  await page.locator('a[href^="/track?type=blood"]').click();
+  await expect(page).toHaveURL(/\/track\?type=blood&reference=BR-/);
+  await expect(page.getByRole("region", { name: "Request status" })).toBeVisible();
+
+  await page.goto("/ambulances");
+  await page.getByRole("button", { name: "Book Ambulance" }).first().click();
+  const bookingDialog = page.getByRole("dialog");
+  await expect(bookingDialog.locator("select")).toHaveValue("no");
+  await expect(bookingDialog.getByPlaceholder(/Enter address|Street address|Apartment, Street/)).toHaveCount(0);
+  await bookingDialog.getByPlaceholder(/Enter patient name|Rahul Sharma/).fill("E2E Mobile Ambulance Patient");
+  await bookingDialog.getByPlaceholder("Age in years").fill("42");
+  await bookingDialog.getByPlaceholder(/9876543210|98200 12345/).fill("9876540606");
+  await bookingDialog.getByRole("button", { name: /Submit Booking|Confirm Booking/ }).click();
+  await expect(bookingDialog.getByText(/Request AMB-[A-Z0-9-]+ was recorded/)).toBeVisible();
+  await bookingDialog.getByRole("link", { name: "Track request" }).click();
+  await expect(page).toHaveURL(/\/track\?type=ambulance&reference=AMB-/);
+  await expect(page.getByRole("region", { name: "Request status" })).toBeVisible();
+  clean();
+});
+
 test("map and directory keep recovery and direct contact actions usable", async ({ page, context }) => {
   const clean = attachRuntimeGuard(page);
   await context.clearPermissions();
+
+  await page.goto("/hospitals/medreach-e2e-hospital");
+  await expect(page.getByRole("heading", { name: "MedReach E2E Hospital" })).toBeVisible();
+
   await page.goto("/map");
   const usableMap = page.getByRole("region", { name: /^(Map|Map unavailable)$/ })
     .or(page.getByRole("img", { name: /Map of Mumbai/ }));
@@ -179,6 +228,10 @@ test("application sign-in preserves its destination and system admin reaches the
   await login(page, "admin.e2e@medreach.test", "/admin");
   await expect(page.getByRole("heading", { name: "Admin dashboard" })).toBeVisible();
   await expect(page.getByText("Hospitals tracked", { exact: true })).toBeVisible();
+  await page.goto("/admin/users");
+  await expect(page.getByRole("heading", { name: "User management" })).toBeVisible();
+  await expect(page.getByRole("columnheader", { name: "Sign-in" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Unlink Google" })).toHaveCount(0);
   clean();
 });
 
@@ -210,5 +263,6 @@ test("first-time sign-in requires a region and resumes the intended destination"
 
   await page.goto("/profile");
   await expect(page.locator("#region")).toHaveValue(regionName);
+  await expect(page.getByRole("link", { name: "Link Google account" })).toHaveCount(0);
   clean();
 });

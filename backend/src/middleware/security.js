@@ -62,7 +62,10 @@ export function applySecurity(app) {
   app.locals.loginLimiter = limiter(10);
   app.locals.registerLimiter = limiter(8, 60 * 60 * 1000);
   app.locals.recoveryLimiter = limiter(6, 60 * 60 * 1000);
-  app.locals.oauthLimiter = limiter(20);
   app.locals.trackingLimiter = limiter(60);
-  app.locals.publicSubmissionLimiter = limiter(20);
+  // The browser suite runs all three variants through one loopback IP. Keep
+  // the production limit while allowing its controlled, isolated E2E fixture.
+  app.locals.publicSubmissionLimiter = limiter(
+    env.nodeEnv === "test" && process.env.MEDREACH_E2E_MONGO_URI ? 100 : 20
+  );
 }

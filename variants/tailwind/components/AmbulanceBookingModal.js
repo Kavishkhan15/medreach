@@ -18,6 +18,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
   const [contactPhone, setContactPhone] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [tracking, setTracking] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
       const providerMessage = res.delivery?.provider?.sent
         ? "The provider notification email was sent. Call to confirm dispatch."
         : "The provider notification email was not sent. Call the provider directly to confirm availability.";
+      setTracking({ reference: res.reference, token: res.trackingToken });
       setSuccessMsg(`Request ${res.reference} was recorded. ${providerMessage}`);
     } catch (err) {
       setErrorMsg(err.message || "Failed to submit ambulance booking. Please try again.");
@@ -71,7 +73,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -121,6 +123,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
             </div>
             <h4 className="text-base font-bold text-gray-900 mb-2">Booking Request Recorded</h4>
             <p className="text-sm text-gray-600 mb-4">{successMsg}</p>
+            {tracking && <div className="mb-3"><a href={`/track?type=ambulance&reference=${encodeURIComponent(tracking.reference)}${tracking.token ? `#token=${encodeURIComponent(tracking.token)}` : ""}`} className="inline-flex items-center rounded-lg border border-red-600 px-4 py-2 text-sm font-semibold text-red-700">Track request</a></div>}
             <button
               type="button"
               onClick={onClose}

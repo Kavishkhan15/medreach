@@ -6,6 +6,7 @@ import { createApp } from "../src/app.js";
 import { connectDB, disconnectDB } from "../src/config/db.js";
 import { BloodRequest } from "../src/models/BloodRequest.js";
 import { User } from "../src/models/User.js";
+import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { signToken } from "../src/utils/token.js";
 
 const testDbUri =
@@ -17,6 +18,7 @@ test("Urgent Blood Requisition and Emergency Lifecycles Suite", async (t) => {
   let guestTrackingToken;
   let ownerToken;
   let adminToken;
+  let bloodBank;
 
   t.before(async () => {
     await connectDB(testDbUri);
@@ -36,6 +38,9 @@ test("Urgent Blood Requisition and Emergency Lifecycles Suite", async (t) => {
       phone: "+91-98200-10001",
     });
     adminToken = signToken(admin);
+    bloodBank = await ResourceProvider.create({
+      kind: "blood_bank", name: "Test Blood Bank", sourceName: "Test registry", active: true,
+    });
   });
 
   t.after(async () => {
@@ -128,6 +133,7 @@ test("Urgent Blood Requisition and Emergency Lifecycles Suite", async (t) => {
       .send({
         type: "REQUEST",
         bloodBankName: "Test Blood Bank",
+        providerId: bloodBank.id,
         bloodGroup: "A+",
         patientOrDonorName: "Blood Request Owner",
         contactPhone: "+91-98200-10000",

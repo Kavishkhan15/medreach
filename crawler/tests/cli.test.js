@@ -123,9 +123,44 @@ test("orchestrator: server error => FAILED (resilient, no throw)", async () => {
     if (url.endsWith("/robots.txt")) return { status: 200, text: async () => "User-agent: *\nAllow: /", headers: { get: () => "text/plain" } };
     return { status: 500, text: async () => "", headers: { get: () => "text/html" } };
   };
-  const job = await crawlHospitalSource(getSource("lilavati"), { deps: { fetchImpl: errMock }, repo: createMemoryRepo() });
+  const repo = createMemoryRepo();
+  const job = await crawlHospitalSource(getSource("lilavati"), { deps: { fetchImpl: errMock }, repo });
   assert.equal(job.status, CRAWL_STATUS.FAILED);
   assert.ok(job.errorMessages.length > 0);
+  assert.equal(job.record, undefined, "a failed fetch produces no fallback hospital record");
+  assert.equal(repo.store.hospitals.size, 0);
+  assert.equal(repo.store.observations.length, 0);
+});
+
+test("orchestrator: one failed page yields PARTIAL evidence, never inferred availability", async () => {
+  _clearCache();
+  const fetchImpl = async (url) => {
+    if (url.endsWith("/robots.txt")) return { status: 200, text: async () => "User-agent: *\nAllow: /",
+      headers: { get: () => "text/plain" } };
+    return { status: url.endsWith("/contact-us") ? 404 : 200, text: async () => FIXTURE,
+      headers: { get: () => "text/html" } };
+  };
+  const repo = createMemoryRepo();
+  const job = await crawlHospitalSource(getSource("lilavati"), { deps: { fetchImpl }, repo, dryRun: true });
+  assert.equal(job.status, CRAWL_STATUS.PARTIAL);
+  assert.ok(job.pagesVisited > 0);
+  assert.ok(job.errorMessages.some((message) => message.includes("/contact-us:http_error")));
+  assert.equal(job.record.provenance.sourceId, "lilavati");
+  assert.ok(job.record.facilities.every((facility) => facility.availability === "unknown" && facility.quantity == null));
+  assert.equal(repo.store.observations.length, 0);
+});
+
+test("orchestrator: HTTP 403 is BLOCKED and cannot create a fallback record", async () => {
+  _clearCache();
+  const fetchImpl = async (url) => url.endsWith("/robots.txt")
+    ? { status: 200, text: async () => "User-agent: *\nAllow: /", headers: { get: () => "text/plain" } }
+    : { status: 403, text: async () => "Forbidden", headers: { get: () => "text/html" } };
+  const repo = createMemoryRepo();
+  const job = await crawlHospitalSource(getSource("lilavati"), { deps: { fetchImpl }, repo });
+  assert.equal(job.status, CRAWL_STATUS.BLOCKED);
+  assert.equal(job.sourceState, "blocked");
+  assert.equal(job.record, undefined);
+  assert.equal(repo.store.hospitals.size, 0);
 });
 
 // ---- CLI ----

@@ -1,12 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useHospital, saveHospital, useAuth } from "@medreach/core";
 import { productApi } from "../../../lib/productApi";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
 
-export default function HospitalPage({ params }) {
-  const { slug } = params;
+export default function HospitalPage() {
+  const { slug } = useParams();
   const { hospital: baseHospital, loading: baseLoading, notFound, error, retry } = useHospital(slug);
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);

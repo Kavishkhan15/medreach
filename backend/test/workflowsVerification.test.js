@@ -132,6 +132,68 @@ test("MedReach Workflows Verification Suite", async (t) => {
     }
   });
 
+  await t.test("concurrent core and product requests share one browser session refresh", async () => {
+    const originalFetch = globalThis.fetch;
+    const originalWindow = globalThis.window;
+    globalThis.window = {};
+    let refreshCalls = 0;
+    const resourceCalls = new Map();
+    try {
+      globalThis.fetch = async (url) => {
+        const path = new URL(String(url)).pathname;
+        if (path === "/api/auth/refresh") {
+          refreshCalls += 1;
+          return { status: 200, ok: true, json: async () => ({ ok: true }) };
+        }
+        const count = (resourceCalls.get(path) || 0) + 1;
+        resourceCalls.set(path, count);
+        if (count === 1) return { status: 401, ok: false, json: async () => ({ error: "expired" }) };
+        return { status: 200, ok: true, json: async () => ({ path }) };
+      };
+      const [{ getSaved }, { productApi }] = await Promise.all([
+        import("../../packages/core/src/api.js"),
+        import("../../variants/bootstrap/lib/productApi.js"),
+      ]);
+      const results = await Promise.all([getSaved(), productApi("/api/notifications")]);
+      assert.equal(refreshCalls, 1);
+      assert.equal(results[0].path, "/api/users/me/saved");
+      assert.equal(results[1].path, "/api/notifications");
+    } finally {
+      globalThis.fetch = originalFetch;
+      if (originalWindow === undefined) delete globalThis.window;
+      else globalThis.window = originalWindow;
+    }
+  });
+
+  await t.test("guest tracking retries without an expired cookie after refresh fails", async () => {
+    const originalFetch = globalThis.fetch;
+    const originalWindow = globalThis.window;
+    globalThis.window = {};
+    const calls = [];
+    try {
+      globalThis.fetch = async (url, options) => {
+        calls.push({ path: new URL(String(url)).pathname, credentials: options.credentials });
+        if (String(url).endsWith("/api/auth/refresh")) {
+          return { status: 401, ok: false, json: async () => ({ error: "expired" }) };
+        }
+        if (options.credentials === "omit") {
+          return { status: 200, ok: true, json: async () => ({ request: { status: "REQUESTED" } }) };
+        }
+        return { status: 401, ok: false, json: async () => ({ error: "Invalid or expired token" }) };
+      };
+      const { productApi } = await import("../../variants/bootstrap/lib/productApi.js");
+      const result = await productApi("/api/emergency-requests/507f1f77bcf86cd799439011", {
+        headers: { "X-MedReach-Tracking-Token": "private-test-token" },
+      });
+      assert.equal(result.request.status, "REQUESTED");
+      assert.deepEqual(calls.map(({ credentials }) => credentials), ["include", "include", "omit"]);
+    } finally {
+      globalThis.fetch = originalFetch;
+      if (originalWindow === undefined) delete globalThis.window;
+      else globalThis.window = originalWindow;
+    }
+  });
+
   await t.test("Core hooks access rules (useAdminAccess in packages/core/src/hooks.js)", async () => {
     // Test useAdminAccess logic rule:
     // systemOnly: true -> user?.role === "system_admin"

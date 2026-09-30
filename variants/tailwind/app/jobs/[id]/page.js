@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@medreach/core";
 import { productApi, post } from "../../../lib/productApi";
@@ -29,7 +30,8 @@ function isValidHttpUrl(string) {
   }
 }
 
-export default function JobDetailPage({ params }) {
+export default function JobDetailPage() {
+  const { id } = useParams();
   const { user } = useAuth();
   const [job, setJob] = useState(null);
   const [loadingJob, setLoadingJob] = useState(true);
@@ -63,7 +65,7 @@ export default function JobDetailPage({ params }) {
     let active = true;
     setLoadingJob(true);
     setStatus("");
-    productApi(`/api/jobs/${params?.id}`)
+    productApi(`/api/jobs/${id}`)
       .then((res) => {
         if (active) {
           setJob(res.job);
@@ -83,7 +85,7 @@ export default function JobDetailPage({ params }) {
     return () => {
       active = false;
     };
-  }, [params?.id, jobRevision]);
+  }, [id, jobRevision]);
 
   // Pre-fill user details if logged in and form is untouched
   useEffect(() => {
@@ -199,7 +201,7 @@ export default function JobDetailPage({ params }) {
         resume: finalResume,
       };
 
-      const result = await post(`/api/jobs/${params.id}/apply`, payload);
+      const result = await post(`/api/jobs/${id}/apply`, payload);
 
       const refId = result.application?._id || null;
 
@@ -252,7 +254,7 @@ export default function JobDetailPage({ params }) {
         <div className="alert alert-warning mt-3" role="alert">
           {status === "Authentication required" ? "Login required" : (status || "Job listing not found or is no longer active.")}
           {(status === "Login required" || status === "Authentication required") && (
-            <> · <Link href={`/login?returnTo=${encodeURIComponent(`/jobs/${params.id}`)}`} className="alert-link">Sign in</Link></>
+            <> · <Link href={`/login?returnTo=${encodeURIComponent(`/jobs/${id}`)}`} className="alert-link">Sign in</Link></>
           )}
           {status && status !== "Login required" && status !== "Authentication required" && (
             <> · <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setJobRevision((value) => value + 1)}>Retry</button></>
@@ -663,7 +665,7 @@ export default function JobDetailPage({ params }) {
                   >
                     {status === "Authentication required" ? "Login required" : status}
                     {(status === "Login required" || status === "Authentication required") && (
-                      <> · <Link href={`/login?returnTo=${encodeURIComponent(`/jobs/${params.id}`)}`} className="alert-link">Sign in</Link></>
+                      <> · <Link href={`/login?returnTo=${encodeURIComponent(`/jobs/${id}`)}`} className="alert-link">Sign in</Link></>
                     )}
                   </div>
                 )}

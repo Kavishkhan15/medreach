@@ -8,6 +8,7 @@ import { Hospital } from "../src/models/Hospital.js";
 import { User } from "../src/models/User.js";
 import { BloodCampaign } from "../src/models/BloodCampaign.js";
 import { BloodRequest } from "../src/models/BloodRequest.js";
+import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { signToken } from "../src/utils/token.js";
 
 const testDbUri =
@@ -23,6 +24,7 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
   let regularUser;
   let otherUser;
   let testHospital;
+  let bloodBanks;
   let proposedCampaignId;
 
   t.before(async () => {
@@ -73,6 +75,9 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
       ],
       location: { type: "Point", coordinates: [72.8295, 19.0519] },
     });
+    bloodBanks = await ResourceProvider.insertMany([
+      "KEM Hospital Blood Bank", "Lilavati Blood Bank", "Saifee Hospital Blood Bank",
+    ].map((name) => ({ kind: "blood_bank", name, sourceName: "Test registry", active: true })));
   });
 
   t.after(async () => {
@@ -167,6 +172,7 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
       .post("/api/blood-requests/standard")
       .send({
         type: "REQUEST",
+        providerId: bloodBanks[0].id,
         bloodBankName: "KEM Hospital Blood Bank",
         bloodGroup: "O-",
         patientOrDonorName: "Ramesh Sharma",
@@ -190,6 +196,7 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
       .post("/api/blood-requests/standard")
       .send({
         type: "DONATION",
+        providerId: bloodBanks[1].id,
         bloodBankName: "Lilavati Blood Bank",
         bloodGroup: "A+",
         patientOrDonorName: "Pooja Patel",
@@ -233,6 +240,7 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
       .post("/api/blood-requests/standard")
       .send({
         type: "REQUEST",
+        providerId: bloodBanks[2].id,
         bloodBankName: "Saifee Hospital Blood Bank",
         bloodGroup: "AB+",
         patientOrDonorName: "Zainab Merchant",

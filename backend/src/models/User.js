@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
     },
     // select:false → never returned unless explicitly requested (login only).
     passwordHash: { type: String, select: false },
-    googleSubject: { type: String, unique: true, sparse: true, select: false },
     name: { type: String, required: true, trim: true, maxlength: 120 },
     role: { type: String, enum: ROLE_VALUES, default: ROLES.USER },
     accountStatus: { type: String, enum: ACCOUNT_STATUS, default: "active" },
@@ -45,7 +44,7 @@ userSchema.virtual("isAdmin").get(function () {
 });
 
 // Region is the only profile field required by the discovery experience. Keep
-// this derived so legacy and Google-created accounts become complete as soon as
+// this derived so existing accounts become complete as soon as
 // a region is saved, without a second flag that can drift out of sync.
 userSchema.virtual("regionOnboardingRequired").get(function () {
   return !String(this.region || "").trim();

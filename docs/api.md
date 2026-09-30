@@ -20,9 +20,6 @@ rate limited.
 - `POST /api/auth/logout`
 - `POST /api/auth/refresh` — one-time rotation; replay revokes the session family
 - `GET /api/auth/me` — current user (cookie or Bearer)
-- `GET /api/auth/google` and `GET /api/auth/google/callback` — Google OIDC
-- `GET /api/auth/google?flow=link&confirm=link-google` — authenticated provider link
-- `DELETE /api/auth/providers/google` — body `{confirm:"UNLINK"}`; denied if Google is the only method
 - `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`
 - `POST /api/auth/request-verification`, `POST /api/auth/verify-email`
 - `PUT /api/auth/profile`, `PUT /api/auth/password`
@@ -78,11 +75,10 @@ rate limited.
 - `POST /api/admin/hospitals/:id/verify` (audited) — body
   `{decision: approve | reject | override | mark_stale}`
 - `GET /api/admin/audit` — `system_admin` only
-- `GET /api/admin/users`, `GET /api/admin/users/:id` — safe user/provider metadata, system admin only
+- `GET /api/admin/users`, `GET /api/admin/users/:id` — safe user and sign-in metadata, system admin only
 - `PATCH /api/admin/users/:id/status`, `PATCH /api/admin/users/:id/role`
 - `POST /api/admin/users/:id/revoke-sessions`
 - `POST /api/admin/users/:id/trigger-reset`, `POST /api/admin/users/:id/resend-verification`
-- `DELETE /api/admin/users/:id/providers/google` — safe only when a password remains
 
 ## Alerts
 - `GET /api/alerts`

@@ -78,6 +78,7 @@ export default function UrgentBloodPage() {
       }
       setSubmittedData({
         reference,
+        trackingToken: res.trackingToken,
         bankName,
         details: payload,
       });
@@ -173,6 +174,7 @@ export default function UrgentBloodPage() {
             <button type="button" className="btn btn-outline-secondary" onClick={() => window.print()}>
               Print Confirmation Receipt
             </button>
+            <Link href={`/track?type=blood&reference=${encodeURIComponent(submittedData.reference)}${submittedData.trackingToken ? `#token=${encodeURIComponent(submittedData.trackingToken)}` : ""}`} className="btn btn-outline-danger">Track request</Link>
             <Link href="/blood-banks" className="btn btn-danger px-4">
               Return to Blood Banks
             </Link>

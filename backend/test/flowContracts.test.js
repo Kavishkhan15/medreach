@@ -32,6 +32,9 @@ test("explicit healthcare request flow contracts", async (t) => {
     slug: "flow-contract-hospital",
     city: "Mumbai",
   });
+  const bloodBank = await ResourceProvider.create({
+    kind: "blood_bank", name: "Test Blood Bank", sourceName: "Test registry", active: true,
+  });
 
   t.after(async () => {
     await mongoose.connection.dropDatabase();
@@ -76,6 +79,7 @@ test("explicit healthcare request flow contracts", async (t) => {
 
   const bloodPayload = {
     type: "REQUEST",
+    providerId: bloodBank.id,
     bloodGroup: "O+",
     patientOrDonorName: "Flow Test Patient",
     units: 2,

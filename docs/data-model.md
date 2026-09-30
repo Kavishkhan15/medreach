@@ -10,18 +10,17 @@ inspectable inputs.
 ## Models
 
 ### User
-- `email`, optional `passwordHash` (`select:false`, bcrypt cost 12), optional unique sparse `googleSubject` (`select:false`), `name`
+- `email`, optional `passwordHash` (`select:false`, bcrypt cost 12), `name`
 - `role` enum: `user | hospital_admin | system_admin | admin`
 - `accountStatus`, `lastLogin`, `savedHospitals`, `emailVerifiedAt`, internal `authVersion`
-- `isAdmin` virtual; `toJSON` strips the password hash, provider subject, and auth version
+- `isAdmin` virtual; `toJSON` strips the password hash and auth version
 
 ### AuthToken
-- One collection for hashed, expiring, single-use `verify_email`, `reset_password`, `oauth_state`, and `refresh_session` records.
-- Refresh rows have a random family ID, used/revoked/replaced timestamps and hashed IP/user-agent fingerprints. Raw refresh/state/reset tokens are never stored.
+- One collection for hashed, expiring, single-use `verify_email`, `reset_password`, and `refresh_session` records.
+- Refresh rows have a random family ID, used/revoked/replaced timestamps and hashed IP/user-agent fingerprints. Raw refresh/reset tokens are never stored.
 - TTL index on `expiresAt`; indexes on user/purpose/revocation and family/purpose support session and replay operations.
-- OAuth state metadata contains only nonce, flow, user reference/version; provider tokens and client secrets are never stored.
 
-For an existing database, run `npm --workspace @medreach/backend run migrate:auth-security` once. The idempotent migration initializes missing `authVersion` values and synchronizes the `User` and `AuthToken` indexes without changing passwords or provider credentials.
+For an existing database, rerun `npm --workspace @medreach/backend run migrate:auth-security` after deployment. The idempotent migration initializes missing `authVersion` values, removes retired sign-in identifiers and transient state records, and synchronizes the `User` and `AuthToken` indexes. It preserves user accounts and passwords.
 
 ### Hospital
 - `name`, `slug`, `description`

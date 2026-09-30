@@ -32,10 +32,14 @@ export const resourceRouter = (kind) => {
       body("patientName").trim().notEmpty().withMessage("Patient name is required"),
       body("patientAge").isInt({ min: 1, max: 130 }).withMessage("Patient age must be between 1 and 130"),
       body("ambulanceRequired").optional().isBoolean().toBoolean(),
-      body("bookingPickup").trim().isLength({ min: 2, max: 300 }),
+      body("bookingPickup").optional({ checkFalsy: true }).isString().trim().isLength({ min: 2, max: 300 }),
+      body("bookingPickup").custom((value, { req }) => !req.body.ambulanceRequired || (typeof value === "string" && value.trim().length >= 2))
+        .withMessage("Pickup address is required when ambulance is requested"),
       body("bookingDetails").optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
       body("contactEmail").optional({ checkFalsy: true }).trim().toLowerCase().isEmail(),
       body("contactPhone").optional({ checkFalsy: true }).trim().matches(PHONE_PATTERN),
+      body("contactPhone").custom((_value, { req }) => Boolean(req.body.contactPhone || req.body.contactEmail))
+        .withMessage("A contact phone or email is required"),
       validate,
       bookAmbulance
     );

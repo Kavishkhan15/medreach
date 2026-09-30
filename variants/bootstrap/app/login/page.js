@@ -82,11 +82,6 @@ export default function LoginPage() {
             </div>
             <button className="btn btn-primary btn-lg" type="submit">{mode === "login" ? "Sign in" : "Create account"}</button>
           </form>
-          <div className="d-flex align-items-center gap-2 my-3" aria-hidden="true"><hr className="flex-grow-1" /><span className="small text-secondary">or</span><hr className="flex-grow-1" /></div>
-          <a className="btn btn-outline-dark w-100" href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/auth/google?returnTo=${encodeURIComponent(returnTo)}`}>
-            Continue with Google
-          </a>
-          <p className="disclaimer mt-2 mb-0">Google never shares your password with MedReach. Existing password accounts are never linked automatically.</p>
           <div className="text-center mt-3">
             <button className="btn btn-link p-0" onClick={() => { setMode(mode === "login" ? "register" : "login"); setErrors({}); }}>
               {mode === "login" ? "Need an account? Register here" : "Have an account? Sign in"}

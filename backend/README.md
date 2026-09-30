@@ -24,8 +24,6 @@ Requires **MongoDB** (local `mongod` or Atlas). Most API tests exercise MongoDB 
 | POST | `/api/auth/login` | public | password login → short access + rotating refresh cookies |
 | POST | `/api/auth/refresh` | refresh cookie | rotate refresh session and renew access |
 | POST | `/api/auth/logout` | public | revoke refresh family and clear cookies |
-| GET | `/api/auth/google` | public / user for link | begin Google OIDC login or confirmed profile link |
-| GET | `/api/auth/google/callback` | one-use state | validate Google identity and finish login/link |
 | GET  | `/api/auth/me` | user | current user + saved hospitals |
 | GET/DELETE | `/api/auth/sessions[/:id]` | user | safe session metadata / revoke session |
 | GET  | `/api/hospitals` | public | search/filter/paginate (`q, region, city, status, specialty, lat, lng, page, limit`) |
@@ -45,7 +43,7 @@ Seed logins: `admin@medreach.test / Admin1234`, `user@medreach.test / User1234`.
 
 ## Security posture (held constant across variants)
 
-helmet CSP + HSTS + `no-referrer`, CORS/origin allow-list, bcrypt cost 12, 15-minute access JWTs, opaque hashed rotating refresh sessions, account-version invalidation, one-use hashed recovery/OAuth state, Google OIDC signature/issuer/audience/expiry/nonce checks, httpOnly cookies, RBAC (`requireRole`), purpose-specific rate limits, input validation, and generic errors. See `src/middleware/security.js` and `docs/security.md`.
+helmet CSP + HSTS + `no-referrer`, CORS/origin allow-list, bcrypt cost 12, 15-minute access JWTs, opaque hashed rotating refresh sessions, account-version invalidation, one-use hashed recovery tokens, httpOnly cookies, RBAC (`requireRole`), purpose-specific rate limits, input validation, and generic errors. See `src/middleware/security.js` and `docs/security.md`.
 
 ## Tests
 

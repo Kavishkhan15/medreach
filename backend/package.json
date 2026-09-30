@@ -5,6 +5,7 @@
   "description": "Shared Express + MongoDB API. Identical for all three CSS-framework variants — the constant in the experiment.",
   "type": "module",
   "main": "src/server.js",
+  "engines": { "node": ">=22.19.0" },
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
@@ -30,7 +31,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.0",
     "nodemailer": "^10.0.9",
-    "undici": "8.10.0"
+    "undici": "8.11.2"
   },
   "devDependencies": {
     "supertest": "^7.0.0"

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useHospital, availabilityMeta, saveHospital, useAuth } from "@medreach/core";
 import { toneClass } from "../../../lib/tone";
 import FacilityStatus from "../../../components/FacilityStatus";
@@ -10,8 +11,8 @@ function edStatus(h) {
   return (h.facilities || []).find((f) => f.facility === "Emergency Department")?.status ?? "unknown";
 }
 
-export default function HospitalPage({ params }) {
-  const { slug } = params;
+export default function HospitalPage() {
+  const { slug } = useParams();
   const { hospital, loading, notFound, error, retry } = useHospital(slug);
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);

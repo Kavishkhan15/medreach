@@ -8,8 +8,13 @@ import { AuthToken } from "../src/models/AuthToken.js";
 async function main() {
   await connectDB();
   const users = await User.updateMany({ authVersion: { $exists: false } }, { $set: { authVersion: 0 } });
+  // These fields belong to the retired sign-in flow. Keep user accounts intact;
+  // passwordless accounts can establish a password through email recovery.
+  const retiredSubjects = await User.collection.updateMany({ googleSubject: { $exists: true } },
+    { $unset: { googleSubject: "" } });
+  const retiredStates = await AuthToken.collection.deleteMany({ purpose: "oauth_state" });
   await Promise.all([User.syncIndexes(), AuthToken.syncIndexes()]);
-  console.log(`[medreach] auth migration complete; users initialized: ${users.modifiedCount || 0}`);
+  console.log(`[medreach] auth migration complete; users initialized: ${users.modifiedCount || 0}; retired subjects removed: ${retiredSubjects.modifiedCount || 0}; transient states removed: ${retiredStates.deletedCount || 0}`);
 }
 
 main().then(disconnectDB).catch(async (error) => {

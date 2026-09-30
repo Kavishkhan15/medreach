@@ -40,9 +40,9 @@ const hospitalSchema = new mongoose.Schema(
     // Backward-compat alias for specialties/departments used by legacy UI + text index.
     departments: [{ type: String, trim: true }],
     services: [{ type: String, trim: true }],
-    operatingHours: { type: String, trim: true, default: "24/7" },
+    operatingHours: { type: String, trim: true },
     // Legacy field kept so existing fixtures/UI keep rendering.
-    hours: { type: String, trim: true, default: "24/7" },
+    hours: { type: String, trim: true },
 
     // Derived/compat snapshot of emergency capability. Authoritative volatile data
     // now lives in AvailabilityObservation; these are convenience mirrors.
