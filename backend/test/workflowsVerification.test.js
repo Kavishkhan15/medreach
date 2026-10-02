@@ -493,7 +493,7 @@ test("MedReach Workflows Verification Suite", async (t) => {
       .set("Authorization", `Bearer ${patientToken}`)
       .send({ statement: "I have 5 years experience in critical care nursing and emergency response." });
     assert.equal(applyRes.status, 201);
-    applicationId = applyRes.body.application._id;
+    applicationId = (await JobApplication.findOne({ reference: applyRes.body.application.reference })).id;
     assert.equal(applyRes.body.application.status, "submitted");
 
     // Duplicate application blocked (409)

@@ -149,7 +149,7 @@ test("product workflow: register, ownership, request response, notifications, jo
     assert.equal(applied.status, 201);
     const listed = await request(app).get(`/api/jobs/${job.body.job._id}/applications`).set("Authorization", `Bearer ${staffRoleToken}`);
     assert.equal(listed.body.data.length, 1);
-    const shortlisted = await request(app).patch(`/api/applications/${applied.body.application._id}`).set("Authorization", `Bearer ${staffRoleToken}`).send({ status: "shortlisted" });
+    const shortlisted = await request(app).patch(`/api/applications/${listed.body.data[0]._id}`).set("Authorization", `Bearer ${staffRoleToken}`).send({ status: "shortlisted" });
     assert.equal(shortlisted.status, 200);
     const provider = await request(app).post("/api/admin/resources").set("Authorization", `Bearer ${adminToken}`)
       .send({ kind: "blood_bank", name: "Test Blood Bank", sourceName: "Integration fixture", demo: true });

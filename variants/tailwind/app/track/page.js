@@ -35,6 +35,7 @@ export default function TrackRequestPage() {
       const summary = await productApi(`/api/tracking/${kind}/${encodeURIComponent(cleanReference)}`, { credentials: "omit" });
       if (check !== sequence.current) return;
       setRecord(summary.record);
+      if (kind === "bed" || kind === "career") return;
       // Existing submission links supply their credentials automatically. The
       // form never asks the user to find, copy or enter a private token.
       let token = linkCredentials.current.get(tokenKey(kind, cleanReference)) || null;
@@ -66,7 +67,8 @@ export default function TrackRequestPage() {
     if (!initialized.current) {
       initialized.current = true;
       const params = new URLSearchParams(window.location.search);
-      const kind = params.get("type") === "ambulance" ? "ambulance" : "blood";
+      const requestedType = params.get("type");
+      const kind = ["blood", "bed", "career", "ambulance"].includes(requestedType) ? requestedType : "blood";
       const ref = (params.get("reference") || "").trim().toUpperCase();
       const token = new URLSearchParams(window.location.hash.slice(1)).get("token");
       if (token) {
@@ -103,7 +105,9 @@ export default function TrackRequestPage() {
           <label htmlFor="tracking-type" className="form-label">Request type</label>
           <select id="tracking-type" className="form-select" value={type} onChange={(event) => { resetResult(); setType(event.target.value); }}>
             <option value="blood">Blood request or donation pledge</option>
-            <option value="ambulance">Ambulance booking</option>
+            <option value="bed">Bed request</option>
+            <option value="career">Career request</option>
+            {type === "ambulance" && <option value="ambulance">Ambulance booking</option>}
           </select>
         </div>
         <div className="mb-3">
@@ -122,6 +126,12 @@ export default function TrackRequestPage() {
           {record.bloodGroup && <p><strong>Blood group:</strong> {record.bloodGroup}</p>}
           <p>Contact the blood bank directly to confirm inventory and fulfillment.</p>
           <Link href="/blood-banks">Blood bank directory</Link>
+        </> : type === "bed" ? <>
+          <p>Contact the hospital directly for further information about your bed request.</p>
+          <Link href="/hospitals">Hospital directory</Link>
+        </> : type === "career" ? <>
+          <p>Check here for updates to your career application.</p>
+          <Link href="/careers">Healthcare careers</Link>
         </> : <>
           {record.providerSnapshot?.name && <p><strong>Provider:</strong> {record.providerSnapshot.name}</p>}
           {delivery && <p><strong>Provider email:</strong> {delivery.provider?.sent ? "Notification email sent" : "Notification email not confirmed"}</p>}

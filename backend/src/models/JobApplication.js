@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+import { generateCareerReference } from "../utils/careerReference.js";
 
 const schema = new mongoose.Schema(
   {
+    reference: { type: String, immutable: true, match: /^CAR-J[A-F0-9]{14}$/, default: () => generateCareerReference("J") },
     job: { type: mongoose.Schema.Types.ObjectId, ref: "Job", required: true, index: true },
     applicant: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
     idempotencyKeyHash: { type: String, select: false },
@@ -31,6 +33,7 @@ const schema = new mongoose.Schema(
 );
 
 schema.index({ job: 1, applicant: 1 }, { unique: true });
+schema.index({ reference: 1 }, { unique: true, sparse: true });
 schema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
 schema.index({ job: 1, status: 1 });
 schema.set("toJSON", { transform: (_doc, result) => {

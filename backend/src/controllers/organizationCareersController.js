@@ -7,6 +7,7 @@ import { canManageHospital } from "../services/hospitalAccess.js";
 import { notifyUserSafely } from "../services/notificationService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
+import { careerSubmission, createCareerApplication } from "../utils/careerReference.js";
 
 export const listOrganizationsForCareers = asyncHandler(async (req, res) => {
   const q = req.query.q ? String(req.query.q) : "";
@@ -84,7 +85,7 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
   if (req.idempotencyKeyHash) {
     const previous = await OrganizationApplication.findOne({ idempotencyKeyHash: req.idempotencyKeyHash });
     if (previous) return String(previous.applicant) === String(req.user.id)
-      ? res.status(200).json({ application: previous })
+      ? res.status(200).json({ application: await careerSubmission(previous) })
       : res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
   }
   const { id } = req.params;
@@ -164,11 +165,11 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
 
   let application;
   try {
-    application = await OrganizationApplication.create(applicationData);
+    application = await createCareerApplication(OrganizationApplication, applicationData);
   } catch (error) {
     if (error?.code === 11000) {
       const previous = await OrganizationApplication.findOne(duplicateFilter);
-      if (previous) return res.status(200).json({ application: previous });
+      if (previous) return res.status(200).json({ application: await careerSubmission(previous) });
     }
     throw error;
   }
@@ -210,7 +211,7 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     }
   }
 
-  res.status(201).json({ application });
+  res.status(201).json({ application: await careerSubmission(application) });
 });
 
 export const organizationApplications = asyncHandler(async (req, res) => {

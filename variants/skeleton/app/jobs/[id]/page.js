@@ -203,7 +203,7 @@ export default function JobDetailPage() {
 
       const result = await post(`/api/jobs/${id}/apply`, payload);
 
-      const refId = result.application?._id || null;
+      const refId = result.application?.reference || null;
 
       const orgName = job?.hospital?.name || job?.provider?.name || job?.organizationName || "Healthcare Facility";
 
@@ -337,6 +337,9 @@ export default function JobDetailPage() {
                     <span className="text-muted small">Application recorded. No reference ID was returned.</span>
                   )}
                   <div className="text-muted small mt-1">Submitted on {submissionRecap.submittedAt}</div>
+                  {submissionRecap.referenceId && (
+                    <Link href={`/track?type=career&reference=${encodeURIComponent(submissionRecap.referenceId)}`} className="small">Track application</Link>
+                  )}
                 </div>
 
                 {/* Candidate Details Recap */}

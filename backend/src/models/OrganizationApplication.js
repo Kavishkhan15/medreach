@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+import { generateCareerReference } from "../utils/careerReference.js";
 
 const schema = new mongoose.Schema(
   {
+    reference: { type: String, immutable: true, match: /^CAR-O[A-F0-9]{14}$/, default: () => generateCareerReference("O") },
     organizationType: {
       type: String,
       enum: ["hospital", "blood_bank", "diagnostic", "ambulance"],
@@ -40,6 +42,7 @@ const schema = new mongoose.Schema(
 schema.index({ hospital: 1, applicant: 1 }, { unique: true, partialFilterExpression: { hospital: { $exists: true } } });
 schema.index({ provider: 1, applicant: 1 }, { unique: true, partialFilterExpression: { provider: { $exists: true } } });
 schema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
+schema.index({ reference: 1 }, { unique: true, sparse: true });
 schema.index({ organizationType: 1, status: 1 });
 schema.set("toJSON", { transform: (_doc, result) => {
   delete result.idempotencyKeyHash;

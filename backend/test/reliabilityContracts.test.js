@@ -260,7 +260,7 @@ test("backend reliability contracts", async (t) => {
       .send({ resume: { fileName: "resume.pdf", fileType: "application/pdf", fileSize, fileUrl },
         sop: "A sufficiently detailed statement of purpose for this role." });
     assert.equal(response.status, 201);
-    const stored = await JobApplication.findById(response.body.application._id);
+    const stored = await JobApplication.findOne({ reference: response.body.application.reference });
     assert.equal(stored.resume.fileSize, fileSize);
     assert.equal(stored.resume.fileUrl.length, fileUrl.length);
   });

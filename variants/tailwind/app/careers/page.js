@@ -302,9 +302,10 @@ export default function Careers() {
 
       setModalFeedback({
         type: "success",
-        message: response.demo
+        reference: response.application?.reference || null,
+        message: (response.demo
           ? "Demo application recorded. No healthcare organization was contacted."
-          : `Application recorded successfully.${response.application?._id ? ` Reference ID: ${response.application._id}.` : ""} Track its status from your dashboard.`,
+          : "Application recorded successfully.") + (response.application?.reference ? ` Reference: ${response.application.reference}.` : ""),
       });
       setSop("");
       setResumeFile(null);
@@ -627,6 +628,9 @@ export default function Careers() {
                   {modalFeedback && (
                     <div className={`alert alert-${modalFeedback.type} mb-4 small`} role="alert">
                       {modalFeedback.message === "Authentication required" ? "Login required" : modalFeedback.message}
+                      {modalFeedback.reference && (
+                        <> · <Link href={`/track?type=career&reference=${encodeURIComponent(modalFeedback.reference)}`} className="alert-link">Track application</Link></>
+                      )}
                       {(modalFeedback.message === "Login required" || modalFeedback.message === "Authentication required") && (
                         <> · <Link href="/login?returnTo=%2Fcareers" className="alert-link">Sign in</Link></>
                       )}

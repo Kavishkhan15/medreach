@@ -3,6 +3,13 @@ import { expect, test } from "@playwright/test";
 const API = "http://localhost:4000";
 const PASSWORD = "E2E_SafePassword_123!";
 
+// Isolate browser clients so separate journeys do not share rate-limit budgets.
+test.beforeEach(async ({ context }, testInfo) => {
+  const variant = ["bootstrap", "tailwind", "skeleton"].indexOf(testInfo.project.name) + 1;
+  const journey = [...testInfo.title].reduce((hash, character) => (hash * 31 + character.charCodeAt(0)) % 253, 0) + 1;
+  await context.setExtraHTTPHeaders({ "X-Forwarded-For": `198.19.${variant}.${journey}` });
+});
+
 function attachRuntimeGuard(page) {
   const failures = [];
   page.on("pageerror", (error) => failures.push(`pageerror: ${error.message}`));
@@ -125,9 +132,56 @@ test("standard request, normal blood request, login return path, and careers app
     email,
     phone: "+91 98765 40202",
   });
+  const applicationResponse = page.waitForResponse((response) => response.request().method() === "POST" && response.url().endsWith(`/api/jobs/${job._id}/apply`));
   await page.getByRole("button", { name: "Submit Application" }).click();
   await expect(page.getByText("Application Submitted Successfully", { exact: true })).toBeVisible();
-  await expect(page.locator("code")).toHaveText(/^[a-f0-9]{24}$/);
+  const application = (await (await applicationResponse).json()).application;
+  expect(application.reference).toMatch(/^CAR-J[A-F0-9]{14}$/);
+  await expect(page.locator("code")).toHaveText(application.reference);
+  await page.goto("/track");
+  await page.locator("#tracking-type").selectOption("career");
+  await page.getByLabel("Reference", { exact: true }).fill(application.reference.toLowerCase());
+  const careerSummary = page.waitForResponse((response) => response.url().includes(`/api/tracking/career/${application.reference}`) && response.status() === 200);
+  await page.getByRole("button", { name: "Check status", exact: true }).click();
+  expect(Object.keys((await (await careerSummary).json()).record).sort()).toEqual(["reference", "status", "updatedAt"]);
+  const status = page.getByRole("region", { name: "Request status" });
+  await expect(status.getByRole("heading", { name: application.reference })).toBeVisible();
+  await expect(status).toContainText(application.status);
+  await expect(status).not.toContainText(email);
+  clean();
+});
+
+test("organization career application displays its public reference and tracks from the same reference field", async ({ page }, testInfo) => {
+  const clean = attachRuntimeGuard(page);
+  const email = `${testInfo.project.name}.e2e@medreach.test`;
+  await login(page, email, "/careers");
+  await page.getByRole("button", { name: "Apply Now for roles at MedReach E2E Hospital", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.locator("#modalRoleInterested").selectOption("Nurse / Nursing Staff");
+  await dialog.locator("#modalCandidateName").fill(`E2E ${testInfo.project.name} Organization Candidate`);
+  await dialog.locator("#modalCandidateEmail").fill(email);
+  await dialog.locator("#modalCandidatePhone").fill("+91 98765 40202");
+  await dialog.getByRole("button", { name: "Online URL Link" }).click();
+  await dialog.locator("#resumeUrlInput").fill("https://example.test/e2e-organization-resume.pdf");
+  await dialog.locator("#sopTextarea").fill("I am a registered nurse with emergency care experience and strong clinical communication skills. I can support triage, patient safety, accurate records, and collaborative care during demanding hospital shifts.");
+  const submitted = page.waitForResponse((response) => response.request().method() === "POST" && /\/api\/organizations\/[a-f0-9]{24}\/apply$/.test(response.url()));
+  await dialog.getByRole("button", { name: "Submit Application", exact: true }).click();
+  const response = await submitted;
+  expect(response.status()).toBe(201);
+  const application = (await response.json()).application;
+  expect(application.reference).toMatch(/^CAR-O[A-F0-9]{14}$/);
+  await expect(dialog.getByRole("alert")).toContainText(application.reference);
+  expect(await dialog.getByRole("alert").innerText()).not.toMatch(/\b[a-f0-9]{24}\b/i);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/track");
+  await page.locator("#tracking-type").selectOption("career");
+  await page.getByLabel("Reference", { exact: true }).fill(application.reference);
+  await page.getByRole("button", { name: "Check status", exact: true }).click();
+  const status = page.getByRole("region", { name: "Request status" });
+  await expect(status.getByRole("heading", { name: application.reference })).toBeVisible();
+  await expect(status).toContainText(application.status);
+  await expect(status).not.toContainText(email);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
   clean();
 });
 
@@ -287,9 +341,21 @@ test("tracking needs only a reference and public results exclude personal detail
   const ambulance = await ambulanceResponse.json();
 
   await page.goto("/track");
+  await expect(page.locator("#tracking-type option")).toHaveText([
+    "Blood request or donation pledge", "Bed request", "Career request",
+  ]);
   await expect(page.locator("#tracking-token")).toHaveCount(0);
   await expect(page.getByText(/Private tracking token|Guest tokens are included/)).toHaveCount(0);
-  for (const [type, reference] of [["blood", blood.reference], ["ambulance", ambulance.reference]]) {
+  const hospitals = await (await request.get(`${API}/api/hospitals`)).json();
+  const hospital = hospitals.data.find((item) => item.slug === "medreach-e2e-hospital");
+  const bedResponse = await request.post(`${API}/api/emergency-requests/emergency`, { data: {
+    hospitalId: hospital._id, emergencyType: "Medical emergency", requiredFacility: "ICU",
+    contactPhone: "+91 98765 40909", patientSummary: "Private bed tracking medical notes",
+  } });
+  expect(bedResponse.status()).toBe(201);
+  const bed = await bedResponse.json();
+  for (const [type, reference] of [["blood", blood.reference], ["bed", bed.request.requestId], ["ambulance", ambulance.reference]]) {
+    if (type === "ambulance") await page.goto(`/track?type=ambulance&reference=${reference}`);
     await page.locator("#tracking-type").selectOption(type);
     await page.getByLabel("Reference", { exact: true }).fill(reference.toLowerCase());
     const summaryResponse = page.waitForResponse((response) => response.url().includes(`/api/tracking/${type}/`) && response.status() === 200);
@@ -301,6 +367,16 @@ test("tracking needs only a reference and public results exclude personal detail
     await expect(status).not.toContainText("Private tracking");
     await expect(status).not.toContainText("Blood group:");
     await expect(status).not.toContainText("Provider:");
+  }
+  await page.goto("/track");
+  for (const [type, reference] of [["blood", "BR-20000101-FFFFFF"], ["bed", "MR-AAAAAA-FFFFFF"], ["career", "CAR-JFFFFFFFFFFFFFF"]]) {
+    await page.locator("#tracking-type").selectOption(type);
+    await page.getByLabel("Reference", { exact: true }).fill("invalid-reference");
+    await page.getByRole("button", { name: "Check status", exact: true }).click();
+    await expect(page.locator(".alert[role=alert]")).toContainText(/Check the request type and reference/i);
+    await page.getByLabel("Reference", { exact: true }).fill(reference);
+    await page.getByRole("button", { name: "Check status", exact: true }).click();
+    await expect(page.locator(".alert[role=alert]")).toContainText(/Request not found/i);
   }
   await page.goto(`/track?type=blood&reference=${blood.reference}#token=${encodeURIComponent(blood.trackingToken)}`);
   await expect(page.getByRole("region", { name: "Request status" })).toContainText("Blood group: AB-");

@@ -9,6 +9,7 @@ import { canManageHospital } from "../services/hospitalAccess.js";
 import { notifyUserSafely } from "../services/notificationService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
+import { careerSubmission, createCareerApplication } from "../utils/careerReference.js";
 
 const jobFields = [
   "hospital",
@@ -308,7 +309,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
   if (req.idempotencyKeyHash) {
     const previous = await JobApplication.findOne({ idempotencyKeyHash: req.idempotencyKeyHash });
     if (previous) return String(previous.applicant) === String(req.user.id)
-      ? res.status(200).json({ application: previous })
+      ? res.status(200).json({ application: await careerSubmission(previous) })
       : res.status(409).json({ error: IDEMPOTENCY_REPLAY_ERROR, code: "IDEMPOTENCY_KEY_REUSED" });
   }
   const job = await Job.findById(req.params.id);
@@ -358,7 +359,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
 
   let application;
   try {
-    application = await JobApplication.create({
+    application = await createCareerApplication(JobApplication, {
     job: job._id,
     applicant: req.user.id,
     candidateName,
@@ -375,7 +376,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
   } catch (error) {
     if (error?.code === 11000) {
       const previous = await JobApplication.findOne({ job: job._id, applicant: req.user.id });
-      if (previous) return res.status(200).json({ application: previous, demo: job.demo });
+      if (previous) return res.status(200).json({ application: await careerSubmission(previous), demo: job.demo });
     }
     throw error;
   }
@@ -420,7 +421,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
     }
   }
 
-  res.status(201).json({ application, demo: job.demo });
+  res.status(201).json({ application: await careerSubmission(application), demo: job.demo });
 });
 
 export const myApplications = asyncHandler(async (req, res) => {

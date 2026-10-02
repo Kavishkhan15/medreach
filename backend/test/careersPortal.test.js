@@ -295,7 +295,7 @@ describe("Careers Portal & Healthcare Job Application System", () => {
       .set("Authorization", `Bearer ${candidateToken}`);
     assert.equal(mineRes.status, 200);
     assert.ok(Array.isArray(mineRes.body.data));
-    const myApp = mineRes.body.data.find((a) => String(a._id) === String(appDoc._id));
+    const myApp = mineRes.body.data.find((a) => a.reference === appDoc.reference);
     assert.ok(myApp, "Application must appear in applicant's list");
     assert.equal(myApp.job.title, "Careers Test - Senior Trauma Surgeon");
   });
