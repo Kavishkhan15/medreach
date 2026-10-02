@@ -1,481 +1,214 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import EmergencyIcon from "./EmergencyIcons";
+import EmergencyIcon from "./AssistantIcon";
 import {
-  useAssistant,
-  useLocation,
-  ASSISTANT_CHAT_TITLE,
-  ASSISTANT_DISCLAIMER,
-  ASSISTANT_CATEGORIES,
-  ASSISTANT_QUICK_ACTIONS,
-  MUMBAI_LOCALITIES,
+  useAssistant, useLocation, ASSISTANT_CHAT_TITLE, ASSISTANT_DISCLAIMER,
+  ASSISTANT_CATEGORIES, ASSISTANT_QUICK_ACTIONS, MUMBAI_LOCALITIES,
 } from "@medreach/core";
 import {
-  AssistantHospitalCard,
-  AssistantBloodBankCard,
-  AssistantAmbulanceCard,
-  AssistantDiagnosticCard,
-  AssistantJobCard,
+  AssistantHospitalCard, AssistantBloodBankCard, AssistantAmbulanceCard,
+  AssistantDiagnosticCard, AssistantJobCard,
 } from "./assistant";
 import AmbulanceBookingModal from "./AmbulanceBookingModal";
 import BloodBankActionModal from "./BloodBankActionModal";
+import styles from "./HealthcareAssistant.module.css";
+
+const initialQuestions = [
+  "Cardiac emergency hospital in Andheri",
+  "Maternity hospitals in Bandra",
+  "Trauma centers near Dadar",
+];
 
 export default function HealthcareAssistant({ initialOpen = false, onCloseModal }) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [input, setInput] = useState("");
-  const [showLocalityMenu, setShowLocalityMenu] = useState(false);
-
   const {
-    messages,
-    sending,
-    unavailable,
-    send,
-    reset,
-    activeModal,
-    modalData,
-    openAmbulanceModal,
-    openBloodModal,
-    closeModals,
+    messages, sending, unavailable, send, reset, activeModal, modalData,
+    openAmbulanceModal, openBloodModal, closeModals,
   } = useAssistant();
-
   const { origin, label, useLocality } = useLocation();
-
-  const messagesEndRef = useRef(null);
+  const conversationRef = useRef(null);
   const inputRef = useRef(null);
+  const actionModalRef = useRef(null);
+  const actionTriggerRef = useRef(null);
 
-  // Auto-scroll on new message or sending
   useEffect(() => {
-    if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (isOpen && !isMinimized) {
+      const body = conversationRef.current;
+      if (!body) return;
+      const latestMessage = body.querySelector("[data-message]:last-child");
+      const top = sending ? body.scrollHeight : latestMessage
+        ? body.scrollTop + latestMessage.getBoundingClientRect().top - body.getBoundingClientRect().top - 16
+        : 0;
+      body.scrollTo({ top, behavior: "smooth" });
     }
-  }, [messages, sending, isOpen]);
+  }, [messages, sending, isOpen, isMinimized]);
 
-  // Focus input when opened
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
-  }, [isOpen]);
+    if (!isOpen || isMinimized) return;
+    const timer = setTimeout(() => {
+      if (!actionModalRef.current?.childElementCount) inputRef.current?.focus({ preventScroll: true });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [isOpen, isMinimized]);
 
+  useEffect(() => {
+    if (!activeModal) return;
+    actionTriggerRef.current = document.activeElement;
+    const timer = setTimeout(() => {
+      actionModalRef.current?.querySelector("button, input, select, textarea, a[href]")?.focus({ preventScroll: true });
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      actionTriggerRef.current?.focus({ preventScroll: true });
+    };
+  }, [activeModal]);
+
+  useEffect(() => {
+    const handleOpen = (event) => {
+      setIsOpen(true);
+      setIsMinimized(false);
+      if (event?.detail?.query) send(event.detail.query, { locality: label, origin });
+    };
+    window.addEventListener("medreach:open-assistant", handleOpen);
+    return () => window.removeEventListener("medreach:open-assistant", handleOpen);
+  }, [label, origin, send]);
+
+  const close = () => { setIsOpen(false); onCloseModal?.(); };
   const handleSend = (textToSend) => {
-    const message = typeof textToSend === "string" ? textToSend : input;
-    if (!message || !message.trim() || sending) return;
-
-    send(message.trim(), { locality: label, coordinates: origin?.coordinates });
+    const text = (textToSend ?? input).trim();
+    if (!text || sending) return;
+    send(text, { locality: label, origin });
     setInput("");
   };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       handleSend();
-    } else if (e.key === "Escape") {
-      setIsOpen(false);
-      onCloseModal?.();
     }
   };
 
-  return (
-    <>
-      {/* Floating Assistant Launcher Button (Bottom Right) */}
-      {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-50">
-          <button
-            type="button"
-            className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white font-semibold text-sm shadow-xl hover:shadow-2xl transition-all duration-200 hover:-translate-y-0.5 group focus:outline-none focus:ring-4 focus:ring-red-200"
-            onClick={() => setIsOpen(true)}
-            aria-label="Open MedReach Healthcare Assistant"
-          >
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-200 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
-            </span>
-            <EmergencyIcon name="bot" size={18} className="text-white" />
-            <span className="hidden sm:inline font-semibold">MedReach Assistant</span>
-          </button>
-        </div>
-      )}
-
-      {/* Expandable Chat Window */}
-      {isOpen && (
-        <div
-          className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transition-all duration-300 ${
-            isExpanded
-              ? "w-[calc(100vw-32px)] sm:w-[640px] h-[calc(100vh-48px)] sm:h-[760px] max-h-[880px]"
-              : "w-[calc(100vw-32px)] sm:w-[410px] h-[calc(100vh-48px)] sm:h-[620px] max-h-[700px]"
-          }`}
-        >
-          {/* Header */}
-          <div className="p-3.5 bg-gradient-to-r from-gray-50 via-white to-gray-50 border-b border-gray-200 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 shadow-sm">
-                <EmergencyIcon name="bot" size={20} />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                  {ASSISTANT_CHAT_TITLE}
-                  <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    Online
-                  </span>
-                </h3>
-                <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                  <span>Mumbai Care Network</span>
-                  {label && (
-                    <>
-                      <span>·</span>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-1 text-gray-600 hover:text-red-600 font-medium transition-colors"
-                        onClick={() => setShowLocalityMenu((v) => !v)}
-                      >
-                        <EmergencyIcon name="pin" size={11} className="text-red-500" /> {label}
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                className="p-1.5 rounded-lg text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
-                onClick={() => setIsExpanded((v) => !v)}
-                title={isExpanded ? "Collapse" : "Expand"}
-                aria-label={isExpanded ? "Collapse panel" : "Expand panel"}
-              >
-                {isExpanded ? "🗗" : "🗖"}
-              </button>
-              {messages.length > 0 && (
-                <button
-                  type="button"
-                  className="p-1.5 rounded-lg text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
-                  onClick={reset}
-                  title="Clear conversation"
-                  aria-label="Clear chat"
-                >
-                  <EmergencyIcon name="refresh" size={14} />
-                </button>
-              )}
-              <button
-                type="button"
-                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors ml-1"
-                aria-label="Close Assistant"
-                onClick={() => {
-                  setIsOpen(false);
-                  onCloseModal?.();
-                }}
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-
-          {/* Locality Dropdown Selector */}
-          {showLocalityMenu && (
-            <div className="p-3 border-b border-gray-200 bg-white shadow-sm max-h-36 overflow-y-auto shrink-0">
-              <div className="text-xs font-semibold text-gray-500 mb-1.5">Select your Mumbai locality:</div>
-              <div className="flex flex-wrap gap-1.5">
-                {MUMBAI_LOCALITIES.map((loc) => (
-                  <button
-                    key={loc}
-                    type="button"
-                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
-                      label === loc
-                        ? "bg-red-600 text-white"
-                        : "bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
-                    }`}
-                    onClick={() => {
-                      useLocality(loc);
-                      setShowLocalityMenu(false);
-                    }}
-                  >
-                    {loc}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Quick Category Launchers */}
-          <div className="p-2 border-b border-gray-200 bg-gray-50/70 flex gap-1.5 overflow-x-auto shrink-0 scrollbar-none">
-            {ASSISTANT_CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                className="px-3 py-1 rounded-full text-xs font-medium bg-white hover:bg-gray-100 border border-gray-200 text-gray-700 shadow-2xs shrink-0 transition-colors"
-                onClick={() => handleSend(cat.prompt)}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Message List */}
-          <div className="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-3.5">
-            {messages.length === 0 ? (
-              <div className="text-center py-6">
-                <div className="mb-4">
-                  <div className="inline-flex p-3 rounded-2xl bg-red-50 text-red-600 mb-2 border border-red-100 shadow-sm">
-                    <EmergencyIcon name="bot" size={30} />
-                  </div>
-                  <h4 className="text-sm font-bold text-gray-900 mb-1">How can MedReach help you today?</h4>
-                  <p className="text-xs text-gray-500 px-4 max-w-sm mx-auto">
-                    Ask about emergency care, hospital beds, urgent blood requirements, ambulances, diagnostics, or jobs.
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-1.5 text-left max-w-sm mx-auto">
-                  <div className="text-xs font-semibold text-gray-400 px-1 uppercase tracking-wider">Suggested inquiries:</div>
-                  {ASSISTANT_QUICK_ACTIONS.map((q) => (
-                    <button
-                      key={q}
-                      type="button"
-                      className="w-full text-left text-xs font-medium p-2.5 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 shadow-2xs hover:border-gray-300 transition-colors"
-                      onClick={() => handleSend(q)}
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col space-y-3.5">
-                {messages.map((msg) => (
-                  <div
-                    key={msg.id || Math.random()}
-                    className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                  >
-                    <div
-                      className={`p-3.5 shadow-sm text-sm ${
-                        msg.role === "user"
-                          ? "rounded-2xl rounded-tr-xs bg-red-600 text-white max-w-[85%]"
-                          : "rounded-2xl rounded-tl-xs bg-white text-gray-900 border border-gray-200 max-w-[92%]"
-                      }`}
-                    >
-                      {/* Message Content */}
-                      <div className="text-xs leading-relaxed whitespace-pre-wrap">
-                        {msg.text}
-                      </div>
-
-                      {/* Code Red Emergency Dialers if intent is emergency or unavailable */}
-                      {(msg.intent === "emergency" || msg.intent === "unavailable") && (
-                        <div className="mt-3 p-3 rounded-xl bg-red-50 border border-red-200">
-                          <div className="font-bold text-red-700 text-xs mb-1.5 flex items-center gap-1.5">
-                            <EmergencyIcon name="siren" size={14} /> Immediate Emergency Contacts:
-                          </div>
-                          <div className="flex flex-wrap gap-1.5 mt-2">
-                            <a
-                              href="tel:112"
-                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-sm transition-colors"
-                            >
-                              <EmergencyIcon name="phone" size={12} /> Call 112 (Emergency)
-                            </a>
-                            <a
-                              href="tel:108"
-                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-lg border border-red-300 bg-white text-red-700 hover:bg-red-50 transition-colors"
-                            >
-                              <EmergencyIcon name="ambulance" size={12} /> Call 108 (Ambulance)
-                            </a>
-                            <Link
-                              href="/emergency"
-                              className="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors"
-                            >
-                              Emergency Mode ›
-                            </Link>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Render Hospital Result Cards */}
-                      {msg.hospitals?.length > 0 && (
-                        <div className="mt-3">
-                          <div className="text-xs font-semibold text-gray-500 mb-2">Verified Hospital Matches:</div>
-                          {msg.hospitals.map((h) => (
-                            <AssistantHospitalCard
-                              key={h.id || h.slug}
-                              hospital={h}
-                              emergency={msg.intent === "emergency"}
-                            />
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Render Blood Bank Result Cards */}
-                      {msg.bloodBanks?.length > 0 && (
-                        <div className="mt-3">
-                          <div className="text-xs font-semibold text-gray-500 mb-2">Verified Blood Banks:</div>
-                          {msg.bloodBanks.map((b) => (
-                            <AssistantBloodBankCard
-                              key={b.id || b.name}
-                              bloodBank={b}
-                              onRequestBlood={openBloodModal}
-                            />
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Render Ambulance Result Cards */}
-                      {msg.ambulances?.length > 0 && (
-                        <div className="mt-3">
-                          <div className="text-xs font-semibold text-gray-500 mb-2">Verified Ambulance Providers:</div>
-                          {msg.ambulances.map((a) => (
-                            <AssistantAmbulanceCard
-                              key={a.id || a.name}
-                              ambulance={a}
-                              onBookAmbulance={openAmbulanceModal}
-                            />
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Render Diagnostic Result Cards */}
-                      {msg.diagnostics?.length > 0 && (
-                        <div className="mt-3">
-                          <div className="text-xs font-semibold text-gray-500 mb-2">Diagnostic & Scan Centers:</div>
-                          {msg.diagnostics.map((d) => (
-                            <AssistantDiagnosticCard key={d.id || d.name} diagnostic={d} />
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Render Job Result Cards */}
-                      {msg.jobs?.length > 0 && (
-                        <div className="mt-3">
-                          <div className="text-xs font-semibold text-gray-500 mb-2">Active Clinical Openings:</div>
-                          {msg.jobs.map((j) => (
-                            <AssistantJobCard key={j.id} job={j} />
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Suggested Actions Buttons */}
-                      {msg.suggestedActions?.length > 0 && (
-                        <div className="mt-2.5 pt-2 border-t border-gray-100 flex flex-wrap gap-1.5">
-                          {msg.suggestedActions.map((act, idx) => {
-                            if (act.type === "call") {
-                              return (
-                                <a
-                                  key={idx}
-                                  href={`tel:${act.phone}`}
-                                  className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${
-                                    act.primary
-                                      ? "bg-red-600 hover:bg-red-700 text-white"
-                                      : "border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
-                                  }`}
-                                >
-                                  <EmergencyIcon name="phone" size={12} /> {act.label}
-                                </a>
-                              );
-                            }
-                            if (act.url) {
-                              return (
-                                <Link
-                                  key={idx}
-                                  href={act.url}
-                                  className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors ${
-                                    act.primary
-                                      ? "bg-red-600 hover:bg-red-700 text-white"
-                                      : "border border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100"
-                                  }`}
-                                >
-                                  {act.label}
-                                </Link>
-                              );
-                            }
-                            return null;
-                          })}
-                        </div>
-                      )}
-
-                      {/* Follow-up Prompts */}
-                      {msg.suggestedPrompts?.length > 0 && (
-                        <div className="mt-2.5 pt-2 border-t border-gray-100">
-                          <div className="text-gray-400 text-[11px] mb-1">Suggested follow-ups:</div>
-                          <div className="flex flex-wrap gap-1.5">
-                            {msg.suggestedPrompts.map((p) => (
-                              <button
-                                key={p}
-                                type="button"
-                                className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                                onClick={() => handleSend(p)}
-                              >
-                                {p}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-
-                {/* Animated Typing Indicator */}
-                {sending && (
-                  <div className="flex justify-start">
-                    <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-xs p-3.5 shadow-sm">
-                      <div className="flex items-center gap-2 text-gray-500 text-xs">
-                        <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                        <span>Consulting verified MedReach records…</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-            )}
-          </div>
-
-          {/* Input Form & Footer */}
-          <div className="p-3.5 bg-white border-t border-gray-200 shrink-0">
-            <form
-              className="flex gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSend();
-              }}
-            >
-              <input
-                ref={inputRef}
-                type="text"
-                className="flex-1 px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition-all"
-                placeholder="Ask about hospitals, urgent blood, ambulances…"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                maxLength={500}
-                disabled={sending}
-              />
-              <button
-                type="submit"
-                className="inline-flex items-center gap-1 px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white shadow-sm transition-colors shrink-0"
-                disabled={sending || !input.trim()}
-              >
-                <span>Send</span> <EmergencyIcon name="navigate" size={14} />
-              </button>
-            </form>
-            <div className="text-gray-400 mt-2 text-center text-[10px] sm:text-[11px] leading-tight">
-              {ASSISTANT_DISCLAIMER}
-            </div>
+  return <>
+    {isOpen && <section className={styles.panel} data-expanded={isExpanded} data-minimized={isMinimized} data-action-open={Boolean(activeModal)}
+      aria-hidden={Boolean(activeModal)}
+      role="dialog" aria-label={ASSISTANT_CHAT_TITLE}
+      onKeyDown={(event) => { if (event.key === "Escape") close(); }}>
+      <header className={styles.header}>
+        <div className={styles.avatar}><EmergencyIcon name="bot" size={21} /></div>
+        <div className={styles.identity}>
+          <h2>{ASSISTANT_CHAT_TITLE}</h2>
+          <div className={styles.meta}>
+            <span>Mumbai Care Network</span>
+            <span className={styles.status} data-unavailable={unavailable}><i />{unavailable ? "Unavailable" : "Online"}</span>
           </div>
         </div>
-      )}
+        <div className={styles.controls}>
+          <button type="button" className={styles.windowControl} aria-label={isMinimized ? "Restore Assistant" : "Minimize Assistant"}
+            onClick={() => setIsMinimized(value => !value)}><span aria-hidden="true">{isMinimized ? "+" : "−"}</span></button>
+          <button type="button" className={styles.windowControl} aria-label="Close Assistant" onClick={close}><span aria-hidden="true">×</span></button>
+        </div>
+      </header>
+      {!isMinimized && <>
+        <div className={styles.conversation} ref={conversationRef} aria-label="Conversation" role="log" aria-live="polite">
+          {messages.length === 0 ? <div className={styles.welcome}>
+            <h3>How can I help you today?</h3>
+            <p>Find healthcare providers, explore care options, or get help with a request in Mumbai.</p>
+            <nav className={styles.actionRow} aria-label="Healthcare directories">
+              <Link className={styles.action} href="/hospitals"><EmergencyIcon name="hospital" size={14} />Browse All Mumbai Hospitals</Link>
+              <Link className={styles.action} href="/map"><EmergencyIcon name="pin" size={14} />Open Interactive Care Map</Link>
+            </nav>
+            <div className={styles.followups}>
+              <p className={styles.sectionLabel}>You could ask</p>
+              <div className={styles.chips}>{initialQuestions.map(question => <button type="button" className={styles.chip}
+                key={question} onClick={() => handleSend(question)} disabled={sending}>{question}</button>)}</div>
+            </div>
 
-      {/* Embedded Modals triggered from in-chat card actions */}
-      {activeModal === "ambulance" && (
-        <AmbulanceBookingModal
-          provider={modalData}
-          onClose={closeModals}
-        />
-      )}
-      {activeModal === "blood" && (
-        <BloodBankActionModal
-          bloodBank={modalData}
-          onClose={closeModals}
-        />
-      )}
-    </>
-  );
+          </div> : <div className={styles.messages}>
+            {messages.map((message, index) => <article key={message.id || `${message.role}-${index}`}
+              className={message.role === "user" ? styles.userMessage : styles.assistantMessage} data-message={message.role}>
+              <p className={styles.messageText}>{message.text}</p>
+              {(message.intent === "emergency" || message.intent === "unavailable") && <div className={styles.emergency}>
+                <p className={styles.sectionLabel}><EmergencyIcon name="siren" size={14} />Immediate emergency contacts</p>
+                <div className={styles.actionRow}>
+                  <a className={styles.primaryAction} href="tel:112"><EmergencyIcon name="phone" size={13} />Call 112 (Emergency)</a>
+                  <a className={styles.action} href="tel:108"><EmergencyIcon name="ambulance" size={13} />Call 108 (Ambulance)</a>
+                  <Link className={styles.action} href="/emergency">Emergency Mode ›</Link>
+                </div>
+              </div>}
+              {message.hospitals?.length > 0 && <section className={styles.results} aria-label="Hospital matches">
+                <p className={styles.sectionLabel}>Hospital matches</p>
+                {message.hospitals.map(hospital => <AssistantHospitalCard key={hospital.id || hospital.slug} hospital={hospital} emergency={message.intent === "emergency"} />)}
+              </section>}
+              {message.bloodBanks?.length > 0 && <section className={styles.results} aria-label="Blood banks">
+                <p className={styles.sectionLabel}>Blood banks</p>
+                {message.bloodBanks.map(bank => <AssistantBloodBankCard key={bank.id || bank.name} bloodBank={bank} onRequestBlood={openBloodModal} />)}
+              </section>}
+              {message.ambulances?.length > 0 && <section className={styles.results} aria-label="Ambulance providers">
+                <p className={styles.sectionLabel}>Ambulance providers</p>
+                {message.ambulances.map(ambulance => <AssistantAmbulanceCard key={ambulance.id || ambulance.name} ambulance={ambulance} onBookAmbulance={openAmbulanceModal} />)}
+              </section>}
+              {message.diagnostics?.length > 0 && <section className={styles.results} aria-label="Diagnostics">
+                <p className={styles.sectionLabel}>Diagnostic & scan centers</p>
+                {message.diagnostics.map(diagnostic => <AssistantDiagnosticCard key={diagnostic.id || diagnostic.name} diagnostic={diagnostic} />)}
+              </section>}
+              {message.jobs?.length > 0 && <section className={styles.results} aria-label="Healthcare jobs">
+                <p className={styles.sectionLabel}>Clinical openings</p>
+                {message.jobs.map(job => <AssistantJobCard key={job.id} job={job} />)}
+              </section>}
+              {message.suggestedActions?.length > 0 && <div className={styles.actionRow}>
+                {message.suggestedActions.map((action, index) => action.type === "call"
+                  ? <a key={index} className={action.primary ? styles.primaryAction : styles.action} href={`tel:${action.phone}`}><EmergencyIcon name="phone" size={13} />{action.label}</a>
+                  : action.url ? <Link key={index} className={action.primary ? styles.primaryAction : styles.action} href={action.url}>{action.label}</Link> : null)}
+              </div>}
+              {message.suggestedPrompts?.length > 0 && <div className={styles.followups}>
+                <p className={styles.sectionLabel}>Suggested follow-ups</p>
+                <div className={styles.chips}>{message.suggestedPrompts.map(prompt => <button type="button" key={prompt} className={styles.chip}
+                  onClick={() => handleSend(prompt)} disabled={sending}>{prompt}</button>)}</div>
+              </div>}
+            </article>)}
+          </div>}
+          {sending && <p className={styles.typing} role="status"><span />Consulting MedReach records…</p>}
+            <details className={styles.options}>
+              <summary>More ways to ask</summary>
+              <div className={styles.chips}>
+                {ASSISTANT_QUICK_ACTIONS.map(question => <button type="button" className={styles.chip} key={question}
+                  onClick={() => handleSend(question)} disabled={sending}>{question}</button>)}
+                {ASSISTANT_CATEGORIES.map(category => <button type="button" className={styles.chip} key={category.id}
+                  onClick={() => handleSend(category.prompt)} disabled={sending}>{category.label}</button>)}
+              </div>
+            </details>
+          <details className={styles.options}>
+            <summary>Conversation options</summary>
+            <label className={styles.locality}>Mumbai locality
+              <select aria-label="Mumbai locality" value={MUMBAI_LOCALITIES.includes(label) ? label : ""}
+                onChange={(event) => { if (event.target.value) useLocality(event.target.value); }}>
+                <option value="" disabled>{label || "Choose an area"}</option>
+                {MUMBAI_LOCALITIES.map(locality => <option key={locality} value={locality}>{locality}</option>)}
+              </select>
+            </label>
+            <div className={styles.actionRow}>
+              <button type="button" className={styles.action} onClick={() => setIsExpanded(value => !value)}>{isExpanded ? "Compact view" : "Expand view"}</button>
+              {messages.length > 0 && <button type="button" className={styles.action} onClick={reset} disabled={sending} aria-label="Clear chat">Clear conversation</button>}
+            </div>
+          </details>
+        </div>
+        <footer className={styles.footer}>
+          <form className={styles.inputRow} onSubmit={(event) => { event.preventDefault(); handleSend(); }}>
+            <input ref={inputRef} type="text" className={styles.input} aria-label="Message MedReach Healthcare Assistant"
+              placeholder="Ask about hospitals, urgent blood, ambulances..." value={input} onChange={(event) => setInput(event.target.value)}
+              onKeyDown={handleKeyDown} maxLength={500} disabled={sending} />
+            <button type="submit" className={styles.send} disabled={sending || !input.trim()}>Send<EmergencyIcon name="navigate" size={13} /></button>
+          </form>
+          <p className={styles.disclaimer}>{ASSISTANT_DISCLAIMER}</p>
+        </footer>
+      </>}
+    </section>}
+    <div ref={actionModalRef}>
+    {activeModal === "ambulance" && <AmbulanceBookingModal provider={modalData} onClose={closeModals} />}
+    {activeModal === "blood" && <BloodBankActionModal bloodBank={modalData} onClose={closeModals} />}
+    </div>
+  </>;
 }
