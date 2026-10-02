@@ -43,7 +43,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
     setSubmitting(true);
     try {
       const res = await post("/api/ambulances/book", {
-        providerId: provider?._id,
+        providerId: provider?._id || provider?.id,
         providerName: provider?.name,
         patientName,
         patientAge: Number(patientAge),

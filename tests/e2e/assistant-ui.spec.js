@@ -197,3 +197,49 @@ test("outage recovery, location selection, conversation reset and minimized hist
   await expect(panelFor(page)).toHaveCount(0);
   clean();
 });
+
+
+test("assistant ambulance booking records the selected provider and opens private tracking", async ({ page, request }, testInfo) => {
+  const clean = runtimeGuard(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openAssistant(page);
+  const reply = await ask(page, "Find ambulances");
+  const provider = reply.ambulances[0];
+  expect(provider.id).toBeTruthy();
+  expect(provider._id).toBeUndefined();
+  await panelFor(page).getByRole("region", { name: "Ambulance providers", exact: true })
+    .getByRole("button", { name: "Book Ambulance", exact: true }).click();
+  const modal = page.getByRole("dialog").filter({ has: page.getByRole("heading", { name: /Book Ambulance/ }) });
+  const patientName = `Assistant ${testInfo.project.name} Patient`;
+  await modal.getByPlaceholder(/Enter patient name|e.g. Rahul Sharma/).fill(patientName);
+  await modal.getByPlaceholder("Age in years").fill("30");
+  await modal.locator('input[type="tel"]').fill("+91 98765 40707");
+  await modal.locator('input[type="email"]').fill(`assistant.${testInfo.project.name}@medreach.test`);
+  await modal.getByRole("combobox").selectOption("yes");
+  const pickup = "E2E Test Campus, Bandra West, Mumbai";
+  await modal.getByPlaceholder(/Enter address|Apartment, Street|Street address, landmark/).fill(pickup);
+  const savedResponse = page.waitForResponse(response => response.url().endsWith("/api/ambulances/book") && response.request().method() === "POST");
+  await modal.getByRole("button", { name: /Submit Booking|Confirm Booking/i }).click();
+  const response = await savedResponse;
+  expect(response.request().postDataJSON().providerId).toBe(provider.id);
+  expect(response.status()).toBe(201);
+  const saved = await response.json();
+  expect(saved.recorded).toBe(true);
+  expect(saved.delivery.provider.sent).toBe(false);
+  await expect(modal.getByText(`Request ${saved.reference} was recorded.`, { exact: false })).toBeVisible();
+  await expect(modal.getByText(/provider notification email was not sent/i)).toBeVisible();
+  const bookingUrl = `http://localhost:4000/api/ambulances/bookings/${saved.reference}`;
+  expect((await request.get(bookingUrl)).status()).toBe(403);
+  const trackedResponse = await request.get(bookingUrl, { headers: { "X-MedReach-Tracking-Token": saved.trackingToken } });
+  expect(trackedResponse.status()).toBe(200);
+  const { booking } = await trackedResponse.json();
+  expect(booking.provider).toBe(provider.id);
+  expect(booking.providerSnapshot.name).toBe(provider.name);
+  expect(booking.requestSnapshot.patientName).toBe(patientName);
+  expect(booking.requestSnapshot.pickupAddress).toBe(pickup);
+  expect(booking.status).toBe("RECORDED");
+  await modal.getByRole("link", { name: "Track request", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Request status" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Request status" }).getByText(saved.reference, { exact: false })).toBeVisible();
+  clean();
+});
