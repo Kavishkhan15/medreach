@@ -8,6 +8,8 @@ const timeline = new mongoose.Schema({
   actor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   at: { type: Date, required: true, default: Date.now },
   note: { type: String, maxlength: 500 },
+  hospitalResponse: { type: String, maxlength: 500 },
+  actorRole: { type: String, enum: ["patient", "hospital_staff", "system"] },
 }, { _id: false });
 
 const schema = new mongoose.Schema({

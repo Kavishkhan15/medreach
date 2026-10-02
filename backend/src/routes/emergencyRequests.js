@@ -90,8 +90,10 @@ router.patch(
   optionalAuth,
   param("id").isMongoId(),
   body("status").isIn(REQUEST_STATES),
-  body("note").optional().isLength({ max: 500 }),
-  body("hospitalResponse").optional().isLength({ max: 500 }),
+  body("expectedStatus").optional().isIn(REQUEST_STATES),
+  body("expectedTimelineLength").optional().isInt({ min: 1 }).toInt(),
+  body("note").optional().isString().bail().trim().isLength({ max: 500 }),
+  body("hospitalResponse").optional().isString().bail().trim().isLength({ max: 500 }),
   validate,
   updateRequest
 );

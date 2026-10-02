@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { bedRequestLabel } from "@medreach/core";
 import { useEffect, useState } from "react";
 import { productApi } from "../../lib/productApi";
 export default function Requests() {
@@ -14,7 +15,7 @@ export default function Requests() {
     {state === "ready" && !items.length && <div className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5">No requests yet. Start from a hospital profile or create one above.</div>}
     <div className="space-y-3">{items.map((r) => <Link href={`/requests/${r._id}`} key={r._id} className="block bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-4 no-underline hover:shadow-md transition-shadow flex justify-between items-center">
       <div><strong className="text-[var(--color-text)]">{r.requestId}</strong><div className="text-sm text-gray-500">{r.hospital?.name} · {r.emergencyType} · {new Date(r.createdAt).toLocaleString()}</div></div>
-      <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full">{r.status.replaceAll("_", " ")}</span>
+      <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full">{bedRequestLabel(r.status)}</span>
     </Link>)}</div>
   </>;
 }

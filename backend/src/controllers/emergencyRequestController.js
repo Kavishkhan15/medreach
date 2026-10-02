@@ -2,6 +2,7 @@ import { EmergencyRequest } from "../models/EmergencyRequest.js";
 import { Hospital } from "../models/Hospital.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
 import { createEmergencyRequest, changeEmergencyRequest, listVisibleEmergencyRequests } from "../services/emergencyRequestService.js";
+import { requestNotificationHistory } from "../services/bedRequestNotifications.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { TRACKING_TOKEN_HEADER, verifyTrackingToken } from "../utils/trackingToken.js";
 
@@ -15,7 +16,7 @@ export const listRequests = asyncHandler(async (req, res) => res.json({ data: aw
 export const getRequest = asyncHandler(async (req, res) => {
   const request = await EmergencyRequest.findById(req.params.id)
     .select("+trackingTokenHash")
-    .populate("hospital", "name slug admins");
+    .populate("hospital", "name slug admins phone emergencyPhone address location");
   if (!request) return res.status(404).json({ error: "Request not found" });
   if (request.user) {
     if (!req.user || (String(request.user) !== req.user.id && !canManageHospital(req.user, request.hospital) && !["admin", "system_admin"].includes(req.user.role))) {
@@ -29,11 +30,14 @@ export const getRequest = asyncHandler(async (req, res) => {
   if (safeRequest.hospital && typeof safeRequest.hospital === "object") {
     delete safeRequest.hospital.admins;
   }
-  res.json({ request: safeRequest });
+  res.json({ request: safeRequest, notifications: await requestNotificationHistory(request),
+    permissions: { canRespond: canManageHospital(req.user, request.hospital),
+      canReply: !canManageHospital(req.user, request.hospital) && request.status === "INFORMATION_REQUESTED" } });
 });
 export const updateRequest = asyncHandler(async (req, res) => {
   const result = await changeEmergencyRequest({ requestId: req.params.id, actor: req.user,
     trackingToken: req.get(TRACKING_TOKEN_HEADER),
-    nextStatus: req.body.status, note: req.body.note, hospitalResponse: req.body.hospitalResponse });
+    nextStatus: req.body.status, expectedStatus: req.body.expectedStatus,
+    expectedTimelineLength: req.body.expectedTimelineLength, note: req.body.note, hospitalResponse: req.body.hospitalResponse });
   res.status(result.status || 200).json(result.error ? { error: result.error } : { request: result.request });
 });

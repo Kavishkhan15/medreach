@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { productApi, patch } from "../../lib/productApi";
 export default function Notifications() {
@@ -12,7 +13,7 @@ export default function Notifications() {
     {status !== "ready" && status !== "loading" && <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-3 text-sm">{status}</div>}
     {status === "ready" && !items.length && <div className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5">No notifications yet.</div>}
     <div className="space-y-3">{items.map((n) => <div className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-4 flex justify-between gap-3" key={n._id}>
-      <div><h2 className="text-base font-bold mb-1">{n.title} {!n.readAt && <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full ml-2">New</span>}</h2><p className="text-sm text-gray-700 mb-1">{n.message}</p><time className="text-xs text-gray-400">{new Date(n.createdAt).toLocaleString()}</time></div>
+      <div><h2 className="text-base font-bold mb-1">{n.title} {!n.readAt && <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full ml-2">New</span>}</h2><p className="text-sm text-gray-700 mb-1">{n.message}</p>{n.relatedType === "EmergencyRequest" && n.relatedId && <Link href={`/requests/${n.relatedId}`}>Open bed request</Link>}<time className="text-xs text-gray-400">{new Date(n.createdAt).toLocaleString()}</time></div>
       {!n.readAt && <button className="self-start border border-gray-300 rounded-md px-3 py-1 text-xs font-semibold hover:bg-gray-50" onClick={() => read(n._id)}>Mark read</button>}
     </div>)}</div>
   </>;

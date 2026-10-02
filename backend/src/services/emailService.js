@@ -13,11 +13,12 @@ const templates = {
   account_status: (d) => ["MedReach account security update", `Your MedReach account was ${d.status}. ${d.note || "Contact a system administrator if you have questions."}`],
   role_changed: (d) => ["MedReach access changed", `Your MedReach role is now ${d.role}. Sign in again to refresh your access.`],
   admin_security: (d) => ["MedReach security notification", `${d.message || "A security-sensitive account action occurred."}`],
-  emergency_submitted: (d) => ["Emergency request submitted", `Request ${d.reference} was created for ${d.hospital}. ${d.connected ? "Connected hospital staff can review it in MedReach." : "No hospital staff account is connected; call the hospital directly."} Hospital confirmation is pending. For an immediate emergency call 112.`],
-  emergency_accepted: (d) => ["Emergency request response", `Request ${d.reference} was accepted by ${d.hospital}. Contact the hospital to confirm next steps; this is not a bed reservation.`],
-  emergency_rejected: (d) => ["Emergency request response", `Request ${d.reference} was declined by ${d.hospital}. Please contact another provider or call 112 in an immediate emergency.`],
-  emergency_updated: (d) => ["Emergency request updated", `Request ${d.reference} is now ${d.status}. Open MedReach for details.`],
-  emergency_staff: (d) => ["New emergency request needs review", `${d.reference} for ${d.hospital} needs review in MedReach. This is not a confirmed bed reservation.`],
+  emergency_submitted: (d) => [d.isEmergency === false ? "Hospital bed request submitted" : "Emergency request submitted", `Request ${d.reference} was created for ${d.hospital}. ${d.connected ? "Connected hospital staff can review it in MedReach." : "No hospital staff account is connected; call the hospital directly."} Hospital confirmation is pending. For an immediate emergency call 112.`],
+  emergency_accepted: (d) => [d.isEmergency === false ? "Hospital bed request response" : "Emergency request response", `Request ${d.reference} was accepted by ${d.hospital}. Contact the hospital to confirm next steps; this is not a bed reservation.`],
+  emergency_rejected: (d) => [d.isEmergency === false ? "Hospital bed request response" : "Emergency request response", `Request ${d.reference} was declined by ${d.hospital}. Please contact another provider or call 112 in an immediate emergency.`],
+  emergency_updated: (d) => [d.isEmergency === false ? "Hospital bed request updated" : "Emergency request updated", `Request ${d.reference} is now ${d.status}. Open MedReach for details.`],
+  emergency_staff: (d) => ["Hospital bed request needs review", `${d.reference} for ${d.hospital} needs review in MedReach. This is not a confirmed bed reservation.`],
+  bed_request_staff_updated: (d) => ["Patient updated a hospital bed request", `Request ${d.reference} for ${d.hospital} is now ${d.status}. Open MedReach to review the patient's update. This is not a confirmed bed reservation.`],
   job_application_received: (d) => ["New job application", `A new application for ${d.title} is ready for review in MedReach.`],
   job_applied: (d) => [d.demo ? "Demo application recorded" : "Application submitted", d.demo
     ? `Your simulation application for ${d.title} was recorded in MedReach. It was not delivered as a real job application.`

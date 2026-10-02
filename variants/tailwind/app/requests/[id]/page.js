@@ -1,59 +1,17 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useAuth } from "@medreach/core";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
-import { productApi } from "../../../lib/productApi";
+import { useBedRequest } from "../../../lib/useBedRequest";
+import RequestLifecycle from "../../../components/RequestLifecycle";
+import RequestRefresh from "../../../components/RequestRefresh";
 
 export default function RequestDetail() {
   const { id } = useParams();
   const { user } = useAuth();
-  const [request, setRequest] = useState(null);
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  const trackingHeaders = () => {
-    if (typeof window === "undefined") return {};
-    const token = window.sessionStorage.getItem(`medreach:emergency-request-token:${id}`);
-    return token ? { "X-MedReach-Tracking-Token": token } : {};
-  };
-
-  const refresh = async () => {
-    try {
-      const data = await productApi(`/api/emergency-requests/${id}`, { headers: trackingHeaders() });
-      setRequest(data.request);
-      setError("");
-    } catch (e) {
-      setError(e.message);
-    }
-  };
-
-  useEffect(() => {
-    const fragmentToken = new URLSearchParams(window.location.hash.slice(1)).get("token");
-    if (fragmentToken) {
-      window.sessionStorage.setItem(`medreach:emergency-request-token:${id}`, fragmentToken);
-      window.history.replaceState(null, "", window.location.pathname + window.location.search);
-    }
-    refresh();
-  }, [id]);
-
-  const cancel = async () => {
-    if (!window.confirm("Cancel this bed request?")) return;
-    setBusy(true);
-    try {
-      await productApi(`/api/emergency-requests/${id}`, {
-        method: "PATCH",
-        headers: trackingHeaders(),
-        body: { status: "CANCELLED" },
-      });
-      refresh();
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setBusy(false);
-    }
-  };
+  const model = useBedRequest(id);
+  const { request, error, busy, cancel } = model;
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
@@ -69,11 +27,7 @@ export default function RequestDetail() {
         )}
       </div>
 
-      {error && (
-        <div className="p-4 mb-4 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm">
-          {error}
-        </div>
-      )}
+      <RequestRefresh model={model} />
       {!request && !error && (
         <p className="text-gray-500 py-8 text-center" role="status">
           Loading request details…
@@ -146,17 +100,7 @@ export default function RequestDetail() {
               MedReach facilitates direct hospital coordination. Submitting an emergency request does not guarantee a reserved bed. For immediate life-critical emergencies, dial 112.
             </p>
 
-            <h2 className="text-base font-bold pt-4 border-t border-gray-200 mb-3">Status Timeline</h2>
-            <ol className="relative border-l border-gray-200 ml-3 space-y-4">
-              {request.timeline?.map((step, idx) => (
-                <li key={idx} className="ml-4">
-                  <div className="absolute -left-1.5 mt-1.5 w-3 h-3 rounded-full border border-white bg-blue-600" />
-                  <div className="font-semibold text-sm text-gray-900">{step.status.replaceAll("_", " ")}</div>
-                  <div className="text-xs text-gray-400">{new Date(step.at).toLocaleString()}</div>
-                  {step.note && <p className="text-xs text-gray-600 mt-1">{step.note}</p>}
-                </li>
-              ))}
-            </ol>
+            <RequestLifecycle model={model} />
           </div>
 
           <aside className="space-y-4">
@@ -168,11 +112,12 @@ export default function RequestDetail() {
               >
                 <EmergencyIcon name="phone" size={16} /> Call 112
               </a>
-              {!["REJECTED", "CANCELLED", "EXPIRED", "COMPLETED"].includes(request.status) && (
+              {!model.permissions.canRespond && !["REJECTED", "CANCELLED", "EXPIRED", "COMPLETED"].includes(request.status) && (
                 <button
                   className="w-full mt-3 inline-flex items-center justify-center font-medium text-sm rounded-[var(--radius)] border border-gray-300 bg-white text-gray-700 px-3 py-2 hover:bg-gray-50"
+                  style={{ minHeight: 44 }}
                   onClick={cancel}
-                  disabled={busy}
+                  disabled={busy || Boolean(error) || model.refreshing}
                 >
                   {busy ? "Cancelling…" : "Cancel request"}
                 </button>

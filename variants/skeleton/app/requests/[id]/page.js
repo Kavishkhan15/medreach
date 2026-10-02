@@ -1,59 +1,17 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useAuth } from "@medreach/core";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
-import { productApi } from "../../../lib/productApi";
+import { useBedRequest } from "../../../lib/useBedRequest";
+import RequestLifecycle from "../../../components/RequestLifecycle";
+import RequestRefresh from "../../../components/RequestRefresh";
 
 export default function RequestDetail() {
   const { id } = useParams();
   const { user } = useAuth();
-  const [request, setRequest] = useState(null);
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  const trackingHeaders = () => {
-    if (typeof window === "undefined") return {};
-    const token = window.sessionStorage.getItem(`medreach:emergency-request-token:${id}`);
-    return token ? { "X-MedReach-Tracking-Token": token } : {};
-  };
-
-  const refresh = async () => {
-    try {
-      const data = await productApi(`/api/emergency-requests/${id}`, { headers: trackingHeaders() });
-      setRequest(data.request);
-      setError("");
-    } catch (e) {
-      setError(e.message);
-    }
-  };
-
-  useEffect(() => {
-    const fragmentToken = new URLSearchParams(window.location.hash.slice(1)).get("token");
-    if (fragmentToken) {
-      window.sessionStorage.setItem(`medreach:emergency-request-token:${id}`, fragmentToken);
-      window.history.replaceState(null, "", window.location.pathname + window.location.search);
-    }
-    refresh();
-  }, [id]);
-
-  const cancel = async () => {
-    if (!window.confirm("Cancel this bed request?")) return;
-    setBusy(true);
-    try {
-      await productApi(`/api/emergency-requests/${id}`, {
-        method: "PATCH",
-        headers: trackingHeaders(),
-        body: { status: "CANCELLED" },
-      });
-      refresh();
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setBusy(false);
-    }
-  };
+  const model = useBedRequest(id);
+  const { request, error, busy, cancel } = model;
 
   return (
     <div className="container py-4">
@@ -69,7 +27,7 @@ export default function RequestDetail() {
         )}
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      <RequestRefresh model={model} />
       {!request && !error && <p role="status">Loading request details…</p>}
 
       {request && (
@@ -138,16 +96,7 @@ export default function RequestDetail() {
                 MedReach facilitates direct hospital coordination. Submitting an emergency request does not guarantee a reserved bed. For immediate life-critical emergencies, dial 112.
               </p>
 
-              <h2 className="h5 border-top pt-3 mb-3">Status Timeline</h2>
-              <ol className="timeline-list">
-                {request.timeline?.map((step, idx) => (
-                  <li key={idx} className="mb-2">
-                    <strong>{step.status.replaceAll("_", " ")}</strong>
-                    <div className="small text-muted">{new Date(step.at).toLocaleString()}</div>
-                    {step.note && <p className="small mb-0 text-secondary">{step.note}</p>}
-                  </li>
-                ))}
-              </ol>
+              <RequestLifecycle model={model} />
             </div>
           </div>
 
@@ -160,11 +109,12 @@ export default function RequestDetail() {
               >
                 <EmergencyIcon name="phone" size={16} /> Call 112
               </a>
-              {!["REJECTED", "CANCELLED", "EXPIRED", "COMPLETED"].includes(request.status) && (
+              {!model.permissions.canRespond && !["REJECTED", "CANCELLED", "EXPIRED", "COMPLETED"].includes(request.status) && (
                 <button
                   className="btn btn-outline-secondary w-100 mt-2"
+                  style={{ minHeight: 44 }}
                   onClick={cancel}
-                  disabled={busy}
+                  disabled={busy || Boolean(error) || model.refreshing}
                 >
                   {busy ? "Cancelling…" : "Cancel request"}
                 </button>

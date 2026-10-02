@@ -8,6 +8,7 @@ import { notifyUserSafely } from "./notificationService.js";
 import { generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, verifyTrackingToken } from "../utils/trackingToken.js";
 
 import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "./emailService.js";
+import { auditRequestUpdate, notifyRequestUpdate } from "./bedRequestNotifications.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 const transitions = {
@@ -61,7 +62,7 @@ export async function createEmergencyRequest(data, actor) {
     ambulancePickupAddress: data.ambulanceRequired ? (data.ambulancePickupAddress?.trim() || "") : undefined,
     locality: data.locality,
     expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
-    timeline: [{ status: "REQUESTED", actor: userId, note: userId ? undefined : "Guest emergency request" }],
+    timeline: [{ status: "REQUESTED", actor: userId, actorRole: "patient", note: userId ? undefined : "Guest emergency request" }],
     });
   } catch (error) {
     if (error?.code === 11000) {
@@ -78,7 +79,7 @@ export async function createEmergencyRequest(data, actor) {
     hasHospitalStaff = connectedStaff.length > 0;
     if (hasHospitalStaff) {
       request.status = "SENT";
-      request.timeline.push({ status: "SENT", at: new Date() });
+      request.timeline.push({ status: "SENT", at: new Date(), actorRole: "system" });
       await request.save();
     }
   } catch (error) {
@@ -105,7 +106,7 @@ export async function createEmergencyRequest(data, actor) {
         eventKey: `mail:emergency:${request._id}:user_confirm`,
         to: userRecipient,
         template: "emergency_submitted",
-        data: { reference: request.requestId, hospital: hospital.name, connected: hasHospitalStaff },
+        data: { reference: request.requestId, hospital: hospital.name, connected: hasHospitalStaff, isEmergency },
       });
     } catch (err) {
       console.warn("Failed to dispatch emergency request user confirmation email:", err.message);
@@ -118,7 +119,7 @@ export async function createEmergencyRequest(data, actor) {
       recipient: userId,
       eventKey: `emergency:${request._id}:created`,
       type: "emergency_request",
-      title: "Emergency request submitted",
+      title: isEmergency ? "Emergency request submitted" : "Hospital bed request submitted",
       message: hasHospitalStaff
         ? `${request.requestId} is available to connected hospital staff. No bed is reserved.`
         : `${request.requestId} was recorded, but this hospital is not connected to MedReach staff. Call the hospital directly. No bed is reserved.`,
@@ -155,61 +156,66 @@ export async function createEmergencyRequest(data, actor) {
 
   for (const { _id: adminId } of connectedStaff) {
     await notifyUserSafely({ recipient: adminId, eventKey: `emergency:${request._id}:hospital:${adminId}`,
-      type: "emergency_request", title: "New emergency request", message: `${request.requestId} needs review.`,
+      type: "emergency_request", title: isEmergency ? "New emergency request" : "New hospital bed request", message: `${request.requestId} needs review.`,
       relatedType: "EmergencyRequest", relatedId: request._id,
       emailTemplate: "emergency_staff", emailData: { reference: request.requestId, hospital: hospital.name } });
   }
   return { request, trackingToken };
 }
 
-export async function changeEmergencyRequest({ requestId, actor, trackingToken, nextStatus, note = "", hospitalResponse = "" }) {
+export async function changeEmergencyRequest({ requestId, actor, trackingToken, nextStatus, expectedStatus, expectedTimelineLength, note = "", hospitalResponse = "" }) {
   const request = await EmergencyRequest.findById(requestId).select("+trackingTokenHash");
   if (!request) return { error: "Request not found", status: 404 };
   const hospital = await Hospital.findById(request.hospital);
   const isStaff = actor ? canManageHospital(actor, hospital) : false;
-  const isAuthenticatedOwner = Boolean(request.user && actor && String(request.user) === String(actor.id));
-  const isGuestOwner = Boolean(!request.user && nextStatus === "CANCELLED"
-    && verifyTrackingToken(trackingToken, request.trackingTokenHash));
-  const isOwner = isAuthenticatedOwner || isGuestOwner;
+  const isOwner = Boolean(request.user && actor && String(request.user) === String(actor.id))
+    || Boolean(!request.user && verifyTrackingToken(trackingToken, request.trackingTokenHash));
   if (!isOwner && !isStaff) return { error: "Access denied", status: 403 };
-  if (request.expiresAt < new Date() && !["ACCEPTED", "REJECTED", "CANCELLED", "COMPLETED"].includes(request.status)) {
-    request.status = "EXPIRED";
-    request.timeline.push({ status: "EXPIRED", at: new Date() });
-    await request.save();
-    return { error: "Request expired", status: 409 };
+  if (isStaff && nextStatus === "INFORMATION_REQUESTED" && !hospitalResponse.trim() && !note.trim()) {
+    return { error: "Explain what information the patient should provide", status: 400 };
   }
-  if (!transitions[request.status]?.includes(nextStatus)) return { error: "Invalid status transition", status: 409 };
-  if (isOwner && !isStaff && nextStatus !== "CANCELLED") return { error: "Only hospital staff can respond", status: 403 };
-  if (nextStatus === "CANCELLED" && !isOwner && !isStaff) return { error: "Access denied", status: 403 };
-  const previousStatus = request.status;
-  request.status = nextStatus;
-  if (hospitalResponse && isStaff) request.hospitalResponse = hospitalResponse;
-  if (isStaff) request.respondedAt = new Date();
-  request.timeline.push({ status: nextStatus, actor: actor?.id || undefined, note });
-  await request.save();
-  try {
-    await AuditLog.create({ user: actor?.id || undefined, action: "update", entityType: "EmergencyRequest", entityId: request._id,
-      before: { status: previousStatus }, after: { status: nextStatus } });
-  } catch (error) {
-    console.warn("Emergency request updated but audit logging failed:", error.message);
-  }
+  const patientReply = isOwner && !isStaff && nextStatus === "UNDER_REVIEW";
+  if (!isStaff && nextStatus !== "CANCELLED" && !patientReply) return { error: "Only hospital staff can respond", status: 403 };
+  if (!isStaff && hospitalResponse) return { error: "Only hospital staff can send a hospital response", status: 403 };
+  if (patientReply && !note.trim()) return { error: "Please provide the requested information", status: 400 };
 
-  if (request.user) {
-    await notifyUserSafely({ recipient: request.user, eventKey: `emergency:${request._id}:${request.timeline.length}`,
-      type: "emergency_request", title: "Emergency request updated",
-      message: `${request.requestId}: ${nextStatus.replaceAll("_", " ")}. This is not a confirmed bed reservation.`,
-      relatedType: "EmergencyRequest", relatedId: request._id,
-      emailTemplate: nextStatus === "ACCEPTED" ? "emergency_accepted" : nextStatus === "REJECTED" ? "emergency_rejected" : "emergency_updated",
-      emailData: { reference: request.requestId, hospital: hospital.name, status: nextStatus } });
-  } else if (request.contactEmail) {
-    await sendEmailEvent({
-      eventKey: `mail:emergency:${request._id}:${request.timeline.length}`,
-      to: request.contactEmail,
-      template: nextStatus === "ACCEPTED" ? "emergency_accepted" : nextStatus === "REJECTED" ? "emergency_rejected" : "emergency_updated",
-      data: { reference: request.requestId, hospital: hospital.name, status: nextStatus }
-    });
+  // A lost response can be retried without duplicating the timeline, audit or
+  // notifications. Authorization is checked before looking for this replay.
+  const latest = request.timeline.at(-1);
+  const actorRole = isStaff ? "hospital_staff" : "patient";
+  if (request.status === nextStatus && latest?.actorRole === actorRole
+    && String(latest.actor || "") === String(actor?.id || "")
+    && (latest.note || "") === note && (latest.hospitalResponse || "") === hospitalResponse) {
+    return { request };
   }
-  return { request };
+  if ((expectedStatus && request.status !== expectedStatus)
+    || (expectedTimelineLength !== undefined && request.timeline.length !== expectedTimelineLength)) {
+    return { error: "Request changed. Refresh its status before trying again.", status: 409 };
+  }
+  if (patientReply && request.status !== "INFORMATION_REQUESTED") return { error: "The hospital has not requested more information", status: 409 };
+  const active = ["REQUESTED", "SENT", "UNDER_REVIEW", "INFORMATION_REQUESTED"];
+  const previousStatus = request.status;
+  const now = new Date();
+  const expired = active.includes(previousStatus) && request.expiresAt <= now;
+  if (!expired && !transitions[previousStatus]?.includes(nextStatus)) return { error: "Invalid status transition", status: 409 };
+  const status = expired ? "EXPIRED" : nextStatus;
+  const step = expired ? { status, at: now, actorRole: "system" }
+    : { status, at: now, actor: actor?.id, actorRole, note, hospitalResponse: isStaff ? hospitalResponse : undefined };
+  const set = { status };
+  if (!expired && isStaff) {
+    set.respondedAt = now;
+    if (hospitalResponse) set.hospitalResponse = hospitalResponse;
+  }
+  // Compare both state and history length: concurrent staff/patient actions
+  // cannot overwrite each other's response or revive an expired request.
+  const updated = await EmergencyRequest.findOneAndUpdate({ _id: request._id, status: previousStatus,
+    [`timeline.${request.timeline.length}`]: { $exists: false },
+    ...(!expired && active.includes(previousStatus) ? { expiresAt: { $gt: now } } : {}) },
+    { $set: set, $push: { timeline: step } }, { new: true, runValidators: true });
+  if (!updated) return { error: "Request changed. Refresh its status before trying again.", status: 409 };
+  await auditRequestUpdate(updated, previousStatus, actor);
+  await notifyRequestUpdate(updated, hospital);
+  return expired ? { error: "Request expired", status: 409 } : { request: updated };
 }
 
 export async function listVisibleEmergencyRequests(actor) {

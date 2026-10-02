@@ -34,3 +34,5 @@ export {
 export {
   SOURCE_RELIABILITY, confidenceLevel, confidenceMeta,
 } from "./confidence.js";
+
+export * from "./bedRequests.js";
