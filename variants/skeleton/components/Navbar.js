@@ -32,7 +32,6 @@ export default function Navbar() {
           <li className="nav-item"><Link className="nav-link" href="/ambulances" onClick={() => setOpen(false)}>Ambulances</Link></li>
           <li className="nav-item"><Link className="nav-link" href="/careers" onClick={() => setOpen(false)}>Careers</Link></li>
           <li className="nav-item"><Link className="nav-link" href="/track" onClick={() => setOpen(false)}>Track request</Link></li>
-          <li className="nav-item"><Link className="nav-link" href="/map" onClick={() => setOpen(false)}>Map</Link></li>
           <li className="nav-item"><Link className="nav-link" href="/about" onClick={() => setOpen(false)}>About</Link></li>
           {user && <li className="nav-item"><Link className="nav-link" href="/dashboard" onClick={() => setOpen(false)}>Dashboard</Link></li>}
           {user && <li className="nav-item"><Link className="nav-link" href="/profile" onClick={() => setOpen(false)}>Profile</Link></li>}
