@@ -29,6 +29,7 @@ import emailRouter from "./routes/email.js";
 import refinementRouter from "./routes/refinement.js";
 import bloodCampaignRoutes from "./routes/bloodCampaignRoutes.js";
 import bloodRequestRoutes from "./routes/bloodRequestRoutes.js";
+import trackingRouter from "./routes/tracking.js";
 
 export function createApp() {
   const app = express();
@@ -56,6 +57,7 @@ export function createApp() {
   app.use("/api/notifications", notificationRoutes);
   app.use("/api/hospital-admin", hospitalAdminRoutes);
   app.use("/api/emergency-requests", emergencyRequestRoutes);
+  app.use("/api/tracking", trackingRouter);
   app.use("/api/blood-banks/campaigns", bloodCampaignRoutes);
   app.use("/api/blood-campaigns", bloodCampaignRoutes);
   app.use("/api/blood-requests", bloodRequestRoutes);

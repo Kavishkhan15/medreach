@@ -266,3 +266,61 @@ test("first-time sign-in requires a region and resumes the intended destination"
   await expect(page.getByRole("link", { name: "Link Google account" })).toHaveCount(0);
   clean();
 });
+
+test("tracking needs only a reference and public results exclude personal details", async ({ page, context, request }, testInfo) => {
+  const clean = attachRuntimeGuard(page);
+  const client = ["bootstrap", "tailwind", "skeleton"].indexOf(testInfo.project.name) + 1;
+  await context.setExtraHTTPHeaders({ "X-Forwarded-For": `198.19.0.${client}` });
+  const bloodResponse = await request.post(`${API}/api/blood-requests/urgent`, { data: {
+    type: "REQUEST", patientOrDonorName: "Private tracking test patient", bloodGroup: "AB-",
+    urgency: "within 6 hours", units: 1,
+    contactPhone: "+91 98765 40909", doctorNotes: "Private tracking test medical notes",
+  } });
+  expect(bloodResponse.status()).toBe(201);
+  const blood = await bloodResponse.json();
+  const providers = await (await request.get(`${API}/api/ambulances`)).json();
+  const ambulanceResponse = await request.post(`${API}/api/ambulances/book`, { data: {
+    providerId: providers.data[0]._id, patientName: "Private tracking ambulance patient", patientAge: 42,
+    contactPhone: "+91 98765 40909", ambulanceRequired: false,
+  } });
+  expect(ambulanceResponse.status()).toBe(201);
+  const ambulance = await ambulanceResponse.json();
+
+  await page.goto("/track");
+  await expect(page.locator("#tracking-token")).toHaveCount(0);
+  await expect(page.getByText(/Private tracking token|Guest tokens are included/)).toHaveCount(0);
+  for (const [type, reference] of [["blood", blood.reference], ["ambulance", ambulance.reference]]) {
+    await page.locator("#tracking-type").selectOption(type);
+    await page.getByLabel("Reference", { exact: true }).fill(reference.toLowerCase());
+    const summaryResponse = page.waitForResponse((response) => response.url().includes(`/api/tracking/${type}/`) && response.status() === 200);
+    await page.getByRole("button", { name: "Check status", exact: true }).click();
+    const summary = await (await summaryResponse).json();
+    expect(Object.keys(summary.record).sort()).toEqual(["reference", "status", "updatedAt"]);
+    const status = page.getByRole("region", { name: "Request status" });
+    await expect(status.getByRole("heading", { name: reference })).toBeVisible();
+    await expect(status).not.toContainText("Private tracking");
+    await expect(status).not.toContainText("Blood group:");
+    await expect(status).not.toContainText("Provider:");
+  }
+  await page.goto(`/track?type=blood&reference=${blood.reference}#token=${encodeURIComponent(blood.trackingToken)}`);
+  await expect(page.getByRole("region", { name: "Request status" })).toContainText("Blood group: AB-");
+  expect(new URL(page.url()).hash).toBe("");
+  await expect(page.locator("#tracking-token")).toHaveCount(0);
+
+  await page.goto(`/track?type=ambulance&reference=${ambulance.reference}#token=${encodeURIComponent(ambulance.trackingToken)}`);
+  await expect(page.getByRole("region", { name: "Request status" })).toContainText(`Provider: ${providers.data[0].name}`);
+  expect(new URL(page.url()).hash).toBe("");
+  await expect(page.locator("#tracking-token")).toHaveCount(0);
+
+  await page.evaluate(() => window.sessionStorage.clear());
+  await page.addInitScript(() => {
+    Storage.prototype.setItem = function () {
+      throw new DOMException("Storage quota exceeded", "QuotaExceededError");
+    };
+  });
+  await page.goto(`/track?type=blood&reference=${blood.reference}#token=${encodeURIComponent(blood.trackingToken)}`);
+  await expect(page.getByRole("region", { name: "Request status" })).toContainText("Blood group: AB-");
+  expect(new URL(page.url()).hash).toBe("");
+  await expect(page.locator("#tracking-token")).toHaveCount(0);
+  clean();
+});
