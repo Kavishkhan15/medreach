@@ -25,7 +25,7 @@ export default function SosButton() {
       {open && (
         <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sosTitle"
           onClick={() => setOpen(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content sos-dialog" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="h5 modal-title" id="sosTitle">Emergency help</h2>
               <button type="button" className="btn-close" aria-label="Close" onClick={() => setOpen(false)}>×</button>
