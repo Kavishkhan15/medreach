@@ -342,7 +342,7 @@ test("tracking needs only a reference and public results exclude personal detail
 
   await page.goto("/track");
   await expect(page.locator("#tracking-type option")).toHaveText([
-    "Blood request or donation pledge", "Bed request", "Career request",
+    "Blood request or donation pledge", "Bed request", "Career request", "Ambulance booking",
   ]);
   await expect(page.locator("#tracking-token")).toHaveCount(0);
   await expect(page.getByText(/Private tracking token|Guest tokens are included/)).toHaveCount(0);
@@ -355,7 +355,6 @@ test("tracking needs only a reference and public results exclude personal detail
   expect(bedResponse.status()).toBe(201);
   const bed = await bedResponse.json();
   for (const [type, reference] of [["blood", blood.reference], ["bed", bed.request.requestId], ["ambulance", ambulance.reference]]) {
-    if (type === "ambulance") await page.goto(`/track?type=ambulance&reference=${reference}`);
     await page.locator("#tracking-type").selectOption(type);
     await page.getByLabel("Reference", { exact: true }).fill(reference.toLowerCase());
     const summaryResponse = page.waitForResponse((response) => response.url().includes(`/api/tracking/${type}/`) && response.status() === 200);

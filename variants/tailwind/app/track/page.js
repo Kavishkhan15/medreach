@@ -107,7 +107,7 @@ export default function TrackRequestPage() {
             <option value="blood">Blood request or donation pledge</option>
             <option value="bed">Bed request</option>
             <option value="career">Career request</option>
-            {type === "ambulance" && <option value="ambulance">Ambulance booking</option>}
+            <option value="ambulance">Ambulance booking</option>
           </select>
         </div>
         <div className="mb-3">
