@@ -7,6 +7,7 @@ import { AuditLog } from "../models/AuditLog.js";
 import { User } from "../models/User.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
 import { sendUserEmailSafely } from "../services/userEmailService.js";
+import { runEmailBatch } from "../services/emailBatch.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 import { careerSubmission, createCareerApplication } from "../utils/careerReference.js";
@@ -390,25 +391,29 @@ export const applyToJob = asyncHandler(async (req, res) => {
     requestId: req.id,
   }); } catch (error) { console.warn("Job application recorded but audit logging failed:", error.message); }
 
-  await sendUserEmailSafely({
+  const emails = [() => sendUserEmailSafely({
     recipient: req.user.id,
     eventKey: `application:${application._id}:submitted`,
     emailTemplate: "job_applied",
     emailData: { title: job.title, demo: job.demo, reference: application.reference },
-  });
+  })];
 
   if (job.hospital) {
-    const hospital = await Hospital.findById(job.hospital).select("admins").lean();
-    for (const recipient of hospital?.admins || []) {
-      await sendUserEmailSafely({
-        recipient,
-        eventKey: `application:${application._id}:received:${recipient}`,
-        emailTemplate: "job_application_received",
-        emailData: { title: job.title },
-      });
+    try {
+      const hospital = await Hospital.findById(job.hospital).select("admins").lean();
+      for (const recipient of hospital?.admins || []) {
+        emails.push(() => sendUserEmailSafely({
+          recipient,
+          eventKey: `application:${application._id}:received:${recipient}`,
+          emailTemplate: "job_application_received",
+          emailData: { title: job.title },
+        }));
+      }
+    } catch {
+      console.warn("[medreach] Application saved; hospital email routing unavailable.");
     }
   }
-
+  await runEmailBatch(emails);
   res.status(201).json({ application: await careerSubmission(application), demo: job.demo });
 });
 

@@ -5,6 +5,7 @@ import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "../services/emailServ
 import { TRACKING_TOKEN_HEADER, generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, verifyTrackingToken } from "../utils/trackingToken.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
+import { runEmailBatch } from "../services/emailBatch.js";
 
 function generateReference(type) {
   const prefix = type === "DONATION" ? "BDP" : "BR";
@@ -118,14 +119,42 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
   }
 
   const effectiveEmail = bloodRequest.contactEmail;
+  const emails = [];
 
   // 1. User confirmation email (if email provided)
   if (effectiveEmail) {
+    emails.push(async () => {
+      try {
+        await sendEmailEvent({
+          eventKey: `blood_request_user_${bloodRequest.reference}`,
+          to: effectiveEmail,
+          template: "blood_request_confirmation",
+          data: {
+            type: bloodRequest.type,
+            name: bloodRequest.patientOrDonorName,
+            bloodGroup: bloodRequest.bloodGroup,
+            bloodBankName: bloodRequest.bloodBankName,
+            reference: bloodRequest.reference,
+            units: bloodRequest.units,
+            urgency: bloodRequest.urgency,
+            hospitalName: bloodRequest.hospitalName,
+            preferredDate: bloodRequest.preferredDate ? bloodRequest.preferredDate.toDateString() : undefined,
+            contactPhone: bloodRequest.contactPhone,
+          },
+        });
+      } catch (err) {
+        console.warn("Failed to dispatch blood request user confirmation email:", err.message);
+      }
+    });
+  }
+
+  // 2. MedReach admin notification to medreachforyou@gmail.com
+  emails.push(async () => {
     try {
       await sendEmailEvent({
-        eventKey: `blood_request_user_${bloodRequest.reference}`,
-        to: effectiveEmail,
-        template: "blood_request_confirmation",
+        eventKey: `blood_request_admin_${bloodRequest.reference}`,
+        to: SYSTEM_NOTIFICATION_EMAIL,
+        template: "blood_request_admin_notification",
         data: {
           type: bloodRequest.type,
           name: bloodRequest.patientOrDonorName,
@@ -137,37 +166,15 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
           hospitalName: bloodRequest.hospitalName,
           preferredDate: bloodRequest.preferredDate ? bloodRequest.preferredDate.toDateString() : undefined,
           contactPhone: bloodRequest.contactPhone,
+          contactEmail: effectiveEmail || "Not provided",
+          notes: bloodRequest.notes,
         },
       });
     } catch (err) {
-      console.warn("Failed to dispatch blood request user confirmation email:", err.message);
+      console.warn("Failed to dispatch blood request admin notification email:", err.message);
     }
-  }
-
-  // 2. MedReach admin notification to medreachforyou@gmail.com
-  try {
-    await sendEmailEvent({
-      eventKey: `blood_request_admin_${bloodRequest.reference}`,
-      to: SYSTEM_NOTIFICATION_EMAIL,
-      template: "blood_request_admin_notification",
-      data: {
-        type: bloodRequest.type,
-        name: bloodRequest.patientOrDonorName,
-        bloodGroup: bloodRequest.bloodGroup,
-        bloodBankName: bloodRequest.bloodBankName,
-        reference: bloodRequest.reference,
-        units: bloodRequest.units,
-        urgency: bloodRequest.urgency,
-        hospitalName: bloodRequest.hospitalName,
-        preferredDate: bloodRequest.preferredDate ? bloodRequest.preferredDate.toDateString() : undefined,
-        contactPhone: bloodRequest.contactPhone,
-        contactEmail: effectiveEmail || "Not provided",
-        notes: bloodRequest.notes,
-      },
-    });
-  } catch (err) {
-    console.warn("Failed to dispatch blood request admin notification email:", err.message);
-  }
+  });
+  await runEmailBatch(emails);
 
   res.status(201).json({
     bloodRequest,

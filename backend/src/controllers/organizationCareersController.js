@@ -5,6 +5,7 @@ import { AuditLog } from "../models/AuditLog.js";
 import { User } from "../models/User.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
 import { sendUserEmailSafely } from "../services/userEmailService.js";
+import { runEmailBatch } from "../services/emailBatch.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 import { careerSubmission, createCareerApplication } from "../utils/careerReference.js";
@@ -183,24 +184,24 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     requestId: req.id,
   }); } catch (error) { console.warn("Organization application recorded but audit logging failed:", error.message); }
 
-  await sendUserEmailSafely({
+  const emails = [() => sendUserEmailSafely({
     recipient: req.user.id,
     eventKey: `org_application:${application._id}:submitted`,
     emailTemplate: "org_applied",
     emailData: { organizationName: organization.name, reference: application.reference },
-  });
+  })];
 
   if (organizationType === "hospital" && organization.admins && organization.admins.length > 0) {
     for (const adminId of organization.admins) {
-      await sendUserEmailSafely({
+      emails.push(() => sendUserEmailSafely({
         recipient: adminId,
         eventKey: `org_application:${application._id}:received:${adminId}`,
         emailTemplate: "org_application_received",
         emailData: { organizationName: organization.name },
-      });
+      }));
     }
   }
-
+  await runEmailBatch(emails);
   res.status(201).json({ application: await careerSubmission(application) });
 });
 

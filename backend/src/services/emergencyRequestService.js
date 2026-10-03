@@ -5,6 +5,7 @@ import { User } from "../models/User.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { canManageHospital } from "./hospitalAccess.js";
 import { sendUserEmailSafely } from "./userEmailService.js";
+import { runEmailBatch } from "./emailBatch.js";
 import { generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, verifyTrackingToken } from "../utils/trackingToken.js";
 
 import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "./emailService.js";
@@ -98,51 +99,57 @@ export async function createEmergencyRequest(data, actor) {
   }
 
   const userRecipient = (data.contactEmail?.trim() || actor?.email || "").toLowerCase();
+  const emails = [];
 
   // 1. User confirmation email - strictly to provided email or authenticated user email
   if (userRecipient) {
-    try {
-      await sendEmailEvent({
-        eventKey: `mail:emergency:${request._id}:user_confirm`,
-        to: userRecipient,
-        template: "emergency_submitted",
-        data: { reference: request.requestId, hospital: hospital.name, connected: hasHospitalStaff, isEmergency },
-      });
-    } catch (err) {
-      console.warn("Failed to dispatch emergency request user confirmation email:", err.message);
-    }
+    emails.push(async () => {
+      try {
+        await sendEmailEvent({
+          eventKey: `mail:emergency:${request._id}:user_confirm`,
+          to: userRecipient,
+          template: "emergency_submitted",
+          data: { reference: request.requestId, hospital: hospital.name, connected: hasHospitalStaff, isEmergency },
+        });
+      } catch (err) {
+        console.warn("Failed to dispatch emergency request user confirmation email:", err.message);
+      }
+    });
   }
 
   // 3. MedReach admin notification to medreachforyou@gmail.com
-  try {
-    await sendEmailEvent({
-      eventKey: `mail:emergency:${request._id}:admin_system`,
-      to: SYSTEM_NOTIFICATION_EMAIL,
-      template: "bed_request_admin_notification",
-      data: {
-        reference: request.requestId,
-        hospital: hospital.name,
-        isEmergency: request.isEmergency,
-        emergencyType: request.emergencyType,
-        requiredFacility: request.requiredFacility,
-        contactPhone: request.contactPhone,
-        contactEmail: userRecipient || "Not provided",
-        ambulanceRequired: request.ambulanceRequired,
-        ambulancePickupAddress: request.ambulancePickupAddress,
-        patientAgeGroup: request.patientAgeGroup,
-        patientReference: request.patientReference,
-        patientSummary: request.patientSummary,
-        locality: request.locality,
-      },
-    });
-  } catch (err) {
-    console.warn("Failed to dispatch emergency request admin notification email:", err.message);
-  }
+  emails.push(async () => {
+    try {
+      await sendEmailEvent({
+        eventKey: `mail:emergency:${request._id}:admin_system`,
+        to: SYSTEM_NOTIFICATION_EMAIL,
+        template: "bed_request_admin_notification",
+        data: {
+          reference: request.requestId,
+          hospital: hospital.name,
+          isEmergency: request.isEmergency,
+          emergencyType: request.emergencyType,
+          requiredFacility: request.requiredFacility,
+          contactPhone: request.contactPhone,
+          contactEmail: userRecipient || "Not provided",
+          ambulanceRequired: request.ambulanceRequired,
+          ambulancePickupAddress: request.ambulancePickupAddress,
+          patientAgeGroup: request.patientAgeGroup,
+          patientReference: request.patientReference,
+          patientSummary: request.patientSummary,
+          locality: request.locality,
+        },
+      });
+    } catch (err) {
+      console.warn("Failed to dispatch emergency request admin notification email:", err.message);
+    }
+  });
 
   for (const { _id: adminId } of connectedStaff) {
-    await sendUserEmailSafely({ recipient: adminId, eventKey: `emergency:${request._id}:hospital:${adminId}`,
-      emailTemplate: "emergency_staff", emailData: { reference: request.requestId, hospital: hospital.name } });
+    emails.push(() => sendUserEmailSafely({ recipient: adminId, eventKey: `emergency:${request._id}:hospital:${adminId}`,
+      emailTemplate: "emergency_staff", emailData: { reference: request.requestId, hospital: hospital.name } }));
   }
+  await runEmailBatch(emails);
   return { request, trackingToken };
 }
 
