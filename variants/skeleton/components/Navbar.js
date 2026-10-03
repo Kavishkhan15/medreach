@@ -12,7 +12,7 @@ export default function Navbar() {
     <nav className="app-navbar" aria-label="Primary">
       <div className="container navbar-inner">
         <Link className="navbar-brand" href="/" onClick={() => setOpen(false)}>
-          <Image src="/logo.png" alt="MedReach" width={145} height={39} priority />
+          <Image src="/brand-word-mark.png" alt="MedReach" width={144} height={48} priority />
         </Link>
         <button
           className="btn btn-sm btn-outline-secondary navbar-toggler"

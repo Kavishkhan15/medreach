@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="variants/bootstrap/public/logo.png" alt="MedReach logo" width="280" />
+  <img src="brand-word-mark.png" alt="MedReach" width="280" />
 </p>
 
 <h1 align="center">MedReach</h1>
@@ -7,6 +7,8 @@
 Healthcare discovery and request coordination for Mumbai. Bootstrap, Tailwind
 and Skeleton are active frontends for one Express/MongoDB backend. Bootstrap is
 the functional reference; each variant keeps its own design system.
+
+The shared wordmark and shield symbol are documented in [Brand assets](docs/branding.md).
 
 A request is coordination, not a confirmed bed reservation, blood inventory or
 ambulance dispatch. Unknown information stays unknown. API failures show errors

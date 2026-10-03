@@ -15,7 +15,7 @@ export default function Navbar() {
     <nav className="sticky top-0 z-30 bg-[var(--color-surface)] border-b border-[var(--color-border)] shadow-[var(--shadow-sm)]" aria-label="Primary">
       <div className="mx-auto w-full max-w-[1240px] px-3 flex flex-wrap items-center justify-between py-2">
         <Link className="mr-auto xl:mr-4 shrink-0" href="/" onClick={() => setOpen(false)}>
-          <Image src="/logo.png" alt="MedReach" width={145} height={39} priority />
+          <Image src="/brand-word-mark.png" alt="MedReach" width={144} height={48} priority />
         </Link>
         <button
           className="xl:hidden inline-flex items-center justify-center rounded border border-[var(--color-border)] p-2 text-[var(--color-text)] hover:bg-[#f1f3f5]"

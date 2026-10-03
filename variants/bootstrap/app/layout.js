@@ -10,7 +10,7 @@ export const metadata = {
   title: "MedReach — Emergency care, when every second matters",
   description:
     "Find and contact emergency hospitals in Mumbai. Deterministic, transparent hospital discovery with verified data, freshness, and rule-based ranking.",
-  icons: { icon: "/favicon.ico" },
+  icons: { icon: "/favicon.ico", apple: "/logo.png" },
 };
 
 export default function RootLayout({ children }) {
@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
         <HealthcareAssistant />
         <footer className="app-footer py-4 mt-5">
           <div className="container d-flex flex-wrap justify-content-between gap-2">
-            <span className="fw-semibold"><Image src="/logo.png" alt="MedReach" width={109} height={29} /></span>
+            <span className="fw-semibold"><Image src="/brand-word-mark.png" alt="MedReach" width={108} height={36} /></span>
             <span>Emergency hospital discovery · Mumbai · Bootstrap variant</span>
             <span className="disclaimer">Not an official emergency service. In danger, call 112.</span>
           </div>

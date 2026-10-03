@@ -21,6 +21,8 @@ In-app notifications and Google OAuth are intentionally removed. Transactional e
 
 ## Verification and development
 
+All three variants use the supplied `brand-word-mark.png` in navigation and footers, and the supplied `logo.png` shield symbol for browser icons. See [Brand assets](../docs/branding.md) for the source files and deployment copies.
+
 From the repository root, run `npm run build:variants` and `npm run test:e2e` with the isolated database configuration in [Release QA](../docs/release-qa.md). Development commands are `npm --workspace @medreach/variant-bootstrap run dev` (3000), `@medreach/variant-tailwind` (3001) and `@medreach/variant-skeleton` (3002). Set `NEXT_PUBLIC_API_URL` before production builds.
 
 See [parity scope](../docs/PARITY_VERIFICATION.md), [deployment configuration](../docs/deployment.md), [latency measurements](../docs/latency-verification.md) and the [proposed research plan](../docs/MedReach_Corrected_Plan.md).

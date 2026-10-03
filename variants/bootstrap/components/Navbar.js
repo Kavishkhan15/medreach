@@ -11,7 +11,7 @@ export default function Navbar() {
     <nav className="navbar navbar-expand-xl app-navbar sticky-top" aria-label="Primary">
       <div className="container">
         <Link className="navbar-brand" href="/">
-          <Image src="/logo.png" alt="MedReach" width={145} height={39} priority />
+          <Image src="/brand-word-mark.png" alt="MedReach" width={144} height={48} priority />
         </Link>
         <button className="navbar-toggler" type="button" onClick={() => setOpen(!open)}
           aria-controls="nav" aria-expanded={open} aria-label="Toggle navigation">
