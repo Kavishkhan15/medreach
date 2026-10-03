@@ -29,7 +29,7 @@ export const listOrganizationsForCareers = asyncHandler(async (req, res) => {
   let hospitals = [];
   if (!typeFilter || typeFilter === "hospital") {
     hospitals = await Hospital.find(query)
-      .select("name slug locality city address phone website hospitalType verificationStatus specialties departments admins operatingHours")
+      .select("name slug locality city address phone website hospitalType verificationStatus specialties departments operatingHours")
       .lean();
     
     hospitals = hospitals.map(h => ({

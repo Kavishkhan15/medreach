@@ -17,7 +17,7 @@ export const listHospitals = asyncHandler(async (req, res) => {
   if (specialty) filter.departments = specialty;
   if (q) filter.$text = { $search: q };
 
-  const perPage = Math.min(Number(limit) || 12, 50);
+  const perPage = Math.min(Math.max(Number(limit) || 12, 1), 50);
   const skip = (Math.max(Number(page), 1) - 1) * perPage;
 
   let query;
@@ -30,9 +30,9 @@ export const listHospitals = asyncHandler(async (req, res) => {
           $geometry: { type: "Point", coordinates: [Number(lng), Number(lat)] },
         },
       },
-    });
+    }).select("-admins");
   } else {
-    query = Hospital.find(filter).sort(q ? { score: { $meta: "textScore" } } : { name: 1 });
+    query = Hospital.find(filter).select("-admins").sort(q ? { score: { $meta: "textScore" } } : { name: 1 });
   }
 
   // A status filter must use verified observations, never the legacy stored
@@ -52,7 +52,7 @@ export const listHospitals = asyncHandler(async (req, res) => {
 });
 
 export const getHospital = asyncHandler(async (req, res) => {
-  const hospital = await Hospital.findOne({ slug: req.params.slug }).lean();
+  const hospital = await Hospital.findOne({ slug: req.params.slug }).select("-admins").lean();
   if (!hospital) return res.status(404).json({ error: "Hospital not found" });
   const [view] = await withHospitalData([hospital]);
   res.json({ hospital: view });

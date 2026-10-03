@@ -1,7 +1,7 @@
 // Central error handling. Normalizes Mongoose/JWT errors to clean JSON.
 
 export function notFound(req, res) {
-  res.status(404).json({ error: `Not found: ${req.method} ${req.originalUrl}` });
+  res.status(404).json({ error: "Not found" });
 }
 
 // eslint-disable-next-line no-unused-vars

@@ -56,6 +56,19 @@ export function applySecurity(app) {
 
   app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
   app.use(csrfOriginGuard);
+  // Filters in this API are scalars. Reject parsed Mongo operators and repeated/nested values.
+  app.use((req, res, next) => {
+    if (Object.entries(req.query).some(([key, value]) => typeof value !== "string" || /[.$\[\]]/.test(key))) {
+      return res.status(400).json({ error: "Query parameters must be plain values" });
+    }
+    if (req.headers.authorization || req.cookies?.token || req.get("X-MedReach-Tracking-Token") ||
+        req.path.startsWith("/api/auth/") || /^\/api\/(emergency-requests|blood-requests|tracking)(?:\/|$)/.test(req.path) ||
+        /^\/api\/ambulances\/(?:book|bookings)(?:\/|$)/.test(req.path)) {
+      res.set("Cache-Control", "no-store");
+    }
+    next();
+  });
+
 
   // Brute-force protection on auth endpoints (attach to /api/auth router).
   app.locals.authLimiter = limiter(20);

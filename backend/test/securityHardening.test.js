@@ -17,6 +17,18 @@ for (const path of ["/api/email/status", "/api/blood-banks/campaigns"]) {
   });
 }
 
+test("missing routes do not reflect a sensitive query token", async () => {
+  const res = await request(app).get("/missing?token=private-test-token");
+  assert.equal(res.status, 404);
+  assert.equal(JSON.stringify(res.body).includes("private-test-token"), false);
+});
+
+for (const path of ["/api/hospitals?city[$ne]=Mumbai", "/api/jobs?category[$regex]=.*", "/api/alerts?region[$ne]=private", "/api/blood-requests?status[$ne]=REQUESTED"]) {
+  test(`reject structured query injection ${path.split("?")[0]}`, async () => {
+    assert.equal((await request(app).get(path)).status, 400);
+  });
+}
+
 test("forged forwarded IPs cannot evade login rate limits on direct connections", async () => {
   const localApp = createApp();
   for (let index = 0; index < 10; index++) {
@@ -27,3 +39,16 @@ test("forged forwarded IPs cannot evade login rate limits on direct connections"
   assert.equal((await request(localApp).post("/api/auth/login").set("X-Forwarded-For", "93.184.216.11")
     .send({ email: "invalid", password: "invalid" })).status, 429);
 });
+
+test("private request responses disable caching even on authorization failures", async () => {
+  for (const path of ["/api/auth/me", "/api/blood-requests/BR-20261003-AABBCC", "/api/ambulances/bookings/AMB-20261003-AABBCC"]) {
+    const response = await request(app).get(path).set("Authorization", "Bearer invalid");
+    assert.equal(response.headers["cache-control"], "no-store");
+  }
+});
+
+for (const query of ["limit=-1000000", "limit=garbage", "page=-1", "page=1.5", "lat=91&lng=72", "lat=19&lng=181"]) {
+  test(`hospital query refuses unsafe pagination/coordinates: ${query}`, async () => {
+    assert.equal((await request(app).get(`/api/hospitals?${query}`)).status, 400);
+  });
+}

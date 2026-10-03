@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import { validate } from "../middleware/validate.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import {
@@ -15,7 +15,11 @@ import {
 const router = Router();
 
 // Public
-router.get("/", listHospitals);
+router.get("/",
+  query(["page", "limit"]).optional().isInt({ min: 1, max: Number.MAX_SAFE_INTEGER }),
+  query("lat").optional().isFloat({ min: -90, max: 90 }),
+  query("lng").optional().isFloat({ min: -180, max: 180 }),
+  validate, listHospitals);
 router.get("/:idOrSlug/enriched", getEnrichedHospital);
 router.get("/:slug", getHospital);
 

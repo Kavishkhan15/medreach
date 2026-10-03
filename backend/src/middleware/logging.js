@@ -8,7 +8,7 @@ export function requestLogger(req, res, next) {
       t: new Date().toISOString(),
       reqId: req.id,
       method: req.method,
-      route: req.route?.path || req.path,
+      route: req.route?.path || "<unmatched>",
       status: res.statusCode,
       durationMs: +durationMs.toFixed(1),
     };

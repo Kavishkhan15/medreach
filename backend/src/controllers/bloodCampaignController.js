@@ -1,17 +1,25 @@
 import { BloodCampaign } from "../models/BloodCampaign.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+const PUBLIC_STATUSES = ["active", "upcoming", "completed"];
+const VALID_STATUSES = ["pending", ...PUBLIC_STATUSES, "cancelled", "rejected"];
+const isAdministrator = (user) => !!user && ["admin", "system_admin"].includes(user.role);
+
 // GET /api/blood-banks/campaigns — list campaigns (public shows active/upcoming; admin can view pending)
 export const listCampaigns = asyncHandler(async (req, res) => {
   const { status, bloodGroup, q } = req.query;
   const isAdmin = req.user && ["admin", "system_admin"].includes(req.user.role);
   const filter = {};
 
-  if (status === "pending") {
+  if ((status !== undefined && (typeof status !== "string" || ![...VALID_STATUSES, "all"].includes(status))) ||
+      (bloodGroup !== undefined && typeof bloodGroup !== "string") || (q !== undefined && typeof q !== "string")) {
+    return res.status(400).json({ error: "Invalid campaign filters" });
+  }
+  if (status && ![...PUBLIC_STATUSES, "all"].includes(status)) {
     if (!isAdmin) {
-      return res.status(403).json({ error: "Only administrators can view pending campaigns" });
+      return res.status(403).json({ error: "Only administrators can view unpublished campaigns" });
     }
-    filter.status = "pending";
+    filter.status = status;
   } else if (status && status !== "all") {
     filter.status = status;
   } else if (status === "all") {
@@ -42,6 +50,7 @@ export const listCampaigns = asyncHandler(async (req, res) => {
     .populate("createdBy", "name email role")
     .lean();
 
+  if (!isAdmin) for (const campaign of campaigns) delete campaign.createdBy;
   res.json({ data: campaigns, total: campaigns.length });
 });
 
@@ -83,7 +92,7 @@ export const createCampaign = asyncHandler(async (req, res) => {
     endDate: endDate ? new Date(endDate) : undefined,
     bloodGroups: Array.isArray(bloodGroups) ? bloodGroups : [bloodGroups],
     contact: contact.trim(),
-    email: email ? email.trim() : req.user?.email,
+    email: email ? email.trim() : undefined,
     description: description ? description.trim() : "",
     targetDonors: targetDonors ? Number(targetDonors) : undefined,
     status: initialStatus,
@@ -108,6 +117,12 @@ export const getCampaign = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: "Campaign not found" });
   }
 
+  const isAdmin = isAdministrator(req.user);
+  const isCreator = req.user && String(campaign.createdBy?._id || campaign.createdBy) === String(req.user.id);
+  if (!PUBLIC_STATUSES.includes(campaign.status) && !isAdmin && !isCreator) {
+    return res.status(404).json({ error: "Campaign not found" });
+  }
+  if (!isAdmin && !isCreator) delete campaign.createdBy;
   res.json({ campaign });
 });
 
@@ -150,6 +165,8 @@ export const updateCampaign = asyncHandler(async (req, res) => {
     }
   }
 
+  // Changing published content needs a fresh review; creators cannot inherit approval.
+  if (!isAdmin && allowedFields.some((field) => req.body[field] !== undefined)) campaign.status = "pending";
   await campaign.save();
   res.json({ campaign });
 });
