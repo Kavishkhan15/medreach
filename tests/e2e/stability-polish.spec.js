@@ -55,3 +55,32 @@ test("SOS has one label and retains emergency contact and hospital actions", asy
   await dialog.getByRole("button", { name: "Close", exact: true }).click();
   await expect(dialog).toHaveCount(0);
 });
+
+test("career tracking copies in Skeleton and leaves the other tracking cards unchanged", async ({ page }, testInfo) => {
+  const reference = "CAR-OFFFFFFFFFFFFFF";
+  await page.route(`${API}/api/tracking/career/${reference}`, (route) => route.fulfill({ json: { record: { reference, status: "submitted", updatedAt: "2026-10-03T00:00:00.000Z" } } }));
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto(`/track?type=career&reference=${reference}`);
+  const result = page.getByRole("region", { name: "Request status" });
+  await expect(result.getByRole("heading", { name: reference, exact: true })).toBeVisible();
+  if (testInfo.project.name !== "skeleton") {
+    await expect(result.getByRole("button", { name: "Copy reference", exact: true })).toHaveCount(0);
+    return;
+  }
+  for (const width of [320, 375, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect(result.getByRole("heading", { name: reference, exact: true })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+  await result.getByRole("button", { name: "Copy reference", exact: true }).click();
+  await expect(result.getByRole("status")).toHaveText("Reference copied.");
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(reference);
+  await page.evaluate(() => Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText: async () => { throw new Error("Clipboard denied"); } } }));
+  await page.setViewportSize({ width: 320, height: 900 });
+  await result.getByRole("button", { name: "Copy reference", exact: true }).click();
+  const fallback = result.getByRole("textbox", { name: "Application reference to copy" });
+  await expect(fallback).toHaveValue(reference);
+  await fallback.focus();
+  expect(await fallback.evaluate((element) => element.selectionEnd - element.selectionStart)).toBe(reference.length);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

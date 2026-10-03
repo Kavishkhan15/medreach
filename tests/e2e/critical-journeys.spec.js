@@ -140,6 +140,29 @@ test("mobile and tablet navigation opens, closes and preserves directory actions
   clean();
 });
 
+test("long tracking references fit mobile, tablet and desktop without clipping", async ({ page }) => {
+  const clean = attachRuntimeGuard(page);
+  // Fixed wide-character fixtures prevent random career references from hiding overflow.
+  const references = { blood: "BR-20261003-FFFFFF", bed: "MR-MFFFFFFFF-FFFFFF", career: "CAR-OFFFFFFFFFFFFFF", ambulance: "AMB-MFFFFFFFF-FFFF" };
+  await page.route(`${API}/api/tracking/**`, (route) => {
+    const reference = decodeURIComponent(new URL(route.request().url()).pathname.split("/").at(-1));
+    return route.fulfill({ json: { record: { reference, status: "submitted", updatedAt: "2026-10-03T00:00:00.000Z" } } });
+  });
+  await page.goto("/track");
+  for (const width of [375, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const [kind, reference] of Object.entries(references)) {
+      await page.locator("#tracking-type").selectOption(kind);
+      await page.getByLabel("Reference", { exact: true }).fill(reference);
+      await page.getByRole("button", { name: "Check status", exact: true }).click();
+      const result = page.getByRole("region", { name: "Request status" });
+      await expect(result.getByRole("heading", { name: reference, exact: true })).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${kind} at ${width}px`).toBeTruthy();
+    }
+  }
+  clean();
+});
+
 test("guest emergency request stays public while tracking and cancellation stay private", async ({ page }) => {
   const clean = attachRuntimeGuard(page);
   let createCalls = 0;

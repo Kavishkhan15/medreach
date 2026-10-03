@@ -118,7 +118,7 @@ export default function TrackRequestPage() {
       </form>
       {error && <div role="alert" className="alert alert-danger">{error}</div>}
       {record && <section className="surface" aria-label="Request status">
-        <h2 className="h5">{record.reference}</h2>
+        <h2 className="text-lg font-bold" style={{ overflowWrap: "anywhere" }}>{record.reference}</h2>
         <p><strong>Status:</strong> {record.status}</p>
         {record.updatedAt && <p className="small text-muted">Last updated {new Date(record.updatedAt).toLocaleString()}</p>}
         {type === "blood" ? <>

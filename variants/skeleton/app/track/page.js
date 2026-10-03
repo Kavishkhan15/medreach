@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@medreach/core";
 import { productApi } from "../../lib/productApi";
+import CareerReference from "../../components/CareerReference";
 
 const tokenKey = (kind, reference) => kind === "ambulance"
   ? `medreach:ambulance-booking-token:${reference}`
@@ -118,7 +119,8 @@ export default function TrackRequestPage() {
       </form>
       {error && <div role="alert" className="alert alert-danger">{error}</div>}
       {record && <section className="surface" aria-label="Request status">
-        <h2 className="h5">{record.reference}</h2>
+        <h2 className="h5" style={{ fontSize: "2rem", overflowWrap: "anywhere" }}>{record.reference}</h2>
+        {type === "career" && <CareerReference key={record.reference} reference={record.reference} track={false} showReference={false} />}
         <p><strong>Status:</strong> {record.status}</p>
         {record.updatedAt && <p className="small text-muted">Last updated {new Date(record.updatedAt).toLocaleString()}</p>}
         {type === "blood" ? <>
