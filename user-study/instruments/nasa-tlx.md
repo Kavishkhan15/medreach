@@ -1,5 +1,7 @@
 # NASA-TLX (Task Load Index)
 
+Draft instrument for the [proposed study](../README.md); no participant workload measurements are recorded here.
+
 Self-reported cognitive workload across six dimensions. Administer after SUS. Each rated 0–100 (low→high; Performance is good→poor).
 
 | Dimension | Prompt |
@@ -16,4 +18,4 @@ Self-reported cognitive workload across six dimensions. Administer after SUS. Ea
 - Optional **weighted TLX**: 15 pairwise comparisons to weight dimensions, then weighted average.
 
 ## Analysis
-Per-variant mean raw-TLX (and per-dimension breakdown). Compare across variants with ANOVA/Kruskal–Wallis, alongside SUS and task time/error rate. Cross-reference frustration/effort spikes with the axe-core accessibility findings for the same variant.
+Report per-variant raw-TLX and per-dimension summaries with sample size and uncertainty. Specify comparisons before collection and check their assumptions. Interpret alongside observed task outcomes and separately collected accessibility findings; the repository does not establish an axe audit or participant study result.

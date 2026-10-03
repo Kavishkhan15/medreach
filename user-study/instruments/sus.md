@@ -1,5 +1,7 @@
 # System Usability Scale (SUS)
 
+Draft instrument for the [proposed study](../README.md); no completed participant responses or measured scores are recorded here.
+
 Standard 10-item instrument (Brooke, 1996). Administer immediately after tasks, before the interview. 5-point scale: 1 = Strongly disagree … 5 = Strongly agree.
 
 1. I think that I would like to use this system frequently.
@@ -17,7 +19,7 @@ Standard 10-item instrument (Brooke, 1996). Administer immediately after tasks, 
 - Odd items (1,3,5,7,9): score = (response − 1).
 - Even items (2,4,6,8,10): score = (5 − response).
 - SUS = (sum of the 10 adjusted scores) × 2.5 → range 0–100.
-- Interpretation anchor: ~68 = average; > 80 = excellent; < 50 = poor.
+- SUS is a scale score, not a percentage or accessibility certification. Any interpretation thresholds need a cited benchmark appropriate to the study population.
 
 ## Analysis
-Compare mean SUS across the three variants with one-way ANOVA (or Kruskal–Wallis if non-normal). Report means ± SD and the omnibus p-value; post-hoc pairwise if significant.
+Specify comparisons before collecting data. Check the assumptions of the chosen method, report sample size, dispersion and uncertainty, and account for multiple comparisons. Variant implementation differences and participant needs may affect scores.

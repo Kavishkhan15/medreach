@@ -1,34 +1,33 @@
-# Preliminary Results (captured during scaffolding)
+# Archived preliminary results — initial scaffolding
 
-These are **real measurements** produced by the repo's own tooling on the initial build — not placeholders. They seed §4 of the paper and demonstrate the pipeline works. Full runs (ZAP, axe, Lighthouse, user study) remain to be executed per the plan.
+**Historical record, not current release evidence.** The earlier scaffold report recorded the figures below without a retained collection timestamp/commit in this document. They have not been remeasured during the documentation update. Current verification belongs in [Release QA](release-qa.md); current local submission timings belong in [Latency verification](latency-verification.md).
 
-## Backend (the experimental constant) — verified
-- `npm --workspace @medreach/backend test` → **7/7 pass** (health, 404, helmet CSP header present, register validation 400, unauthenticated 401, RBAC 403, JWT roundtrip).
-- Live end-to-end against local MongoDB: list (6 hospitals), full-text search (`q=trauma`), geo "nearest" (`$near`), admin JWT login, **RBAC blocks non-admin bed update (403)**, admin bed update persists, public alerts. All behaved correctly.
+## Historical backend checks
 
-## Responsiveness — CSS/JS bundle size (`node evaluation/measure/bundles.mjs`)
+The initial report recorded 7/7 backend tests and a local six-hospital smoke check covering list/search/geo, admin login, legacy bed updates and public alerts. These are early scope only. They do not describe current database-suite counts, provider coverage or current availability authorization. Legacy direct bed writes have been replaced in current workflows with timestamped assigned-staff observations.
+
+## Historical aggregate build sizes
+
+Reported command: `node evaluation/measure/bundles.mjs`.
 
 | Variant | CSS raw | CSS gzip | JS raw | JS gzip |
-|---|---|---|---|---|
+| --- | ---: | ---: | ---: | ---: |
 | Bootstrap 5 | 223.0 kB | 30.0 kB | 693.4 kB | 214.9 kB |
 | Tailwind CSS 4 | 13.9 kB | 3.8 kB | 694.2 kB | 215.4 kB |
 | Skeleton | 8.7 kB | 2.5 kB | 692.0 kB | 214.6 kB |
 
-**Finding:** CSS (the framework-attributable delta) spans **~25×** (Bootstrap 30 kB gz vs Skeleton 2.5 kB gz), while JS is effectively constant (~215 kB gz) because logic is shared via `@medreach/core`. This validates that the design isolates the CSS framework as the variable.
+Correction: the reported raw CSS ratio is about 25.6× (223.0/8.7); the gzip ratio is 12× (30.0/2.5). The earlier text conflated these ratios. Similar aggregate JavaScript sizes do not demonstrate identical implementation or isolate CSS as the sole variable. These totals span build artifacts, not the bytes downloaded by a particular page.
 
-## Security — dependency CVEs (`node evaluation/security/audit.mjs`)
-- **1 critical + 1 high** across the shared toolchain: `next@14.2.5` (critical: *Authorization Bypass in Next.js Middleware*; multiple DoS/SSRF/cache-poisoning advisories) and `postcss` (high: path traversal / XSS via `sourceMappingURL`).
-- **Two paper-relevant observations:**
-  1. `postcss` is **Tailwind v4's build dependency** → concrete evidence for the paper's claim that *utility-first frameworks shift security to the build pipeline/toolchain* ("P" rating).
-  2. The `next` advisories hit **all three variants equally** (shared stack) → supports the source paper's "governance/shared-stack dominates framework choice" thesis.
-- **Gap finding:** source-level framework bugs (e.g. CVE-2019-8331, Bootstrap tooltip XSS on <4.3.1) do **not** appear in `npm audit` — it only sees the dependency graph. This is itself a Security-axis result (plan §4): dependency scanners alone under-report RWD-framework risk.
+## Historical dependency report
 
-## Limitation-2 probe — reactive framework XSS surface (`node probe-react/probe.mjs`)
-Same payload `<img src=x onerror=…>` rendered two ways via React SSR:
-- JSX interpolation → `&lt;img src=x onerror=…&gt;` (escaped, inert). **PASS.**
-- `dangerouslySetInnerHTML` → raw `<img …>` injected (only when the dev opts out of escaping).
+The scaffold report recorded one critical and one high vulnerability in an earlier shared toolchain, including Next.js 14.2.5 and PostCSS. It did not retain complete raw advisory evidence in this document. Do not attribute those findings to the current Next.js 15.5.24/React 18.3.1 build or infer a framework-specific causal result from the shared dependency graph.
 
-**Finding:** reactive frameworks make XSS **opt-in to danger**, whereas classic RWD-framework tooltip/template sinks were **opt-out of safety**. The security model differs by *default posture*, not by CSS — the Limitation-2 contribution the paper explicitly requested.
+Current audit evidence is linked from [Release QA](release-qa.md). A fresh raw audit must be checked for registry/report failures and advisory coverage. Dependency scans detect known package advisories; a source-level vulnerability can be reported when its affected package/version is in the advisory database. The historical claim that such bugs categorically cannot appear in `npm audit` was too broad.
 
-## Still to run
-OWASP ZAP active scan · Mozilla Observatory header grades · axe-core/WAVE/Lighthouse (a11y + Core Web Vitals) · privacy request/cookie capture · manual CSS-exfil + supply-chain PoCs · the N≥30 user study (IRB first).
+## React rendering probe
+
+The initial probe reported escaped text interpolation and raw output from `dangerouslySetInnerHTML`. [The probe](../probe-react/README.md) remains a server-rendered string comparison. It does not execute browser code or establish that all reactive frameworks have a safer security model than classic frameworks.
+
+## Research work still requiring evidence
+
+The repository's proposed ZAP/header/privacy/accessibility/Core Web Vitals measurements and participant study require separate traceable collection. Institutional ethics review/exemption and participant recruitment are not established by this report. [Evaluation limits](../evaluation/README.md), [research plan](MedReach_Corrected_Plan.md) and [paper outline](../paper/outline.md) distinguish implemented tools from future research.

@@ -1,22 +1,29 @@
-# User study (usability + accessibility)
+# Proposed usability and accessibility study
 
-Between-subjects: each participant tests **one** variant (avoids learning effects). N ≥ 30 (≈10/variant), mixed tech-savvy/non-tech, ages 18–60, including 3–5 participants with visual impairments.
+This folder contains planning materials and draft questionnaires. No participant study or institutional ethics approval is established by the repository. Automated browser journeys in [Release QA](../docs/release-qa.md) are separate from human usability evidence.
 
-## ⚠️ IRB / ethics is on the critical path — file in Week 1
+Proposed design: between subjects, one assigned Bootstrap/Tailwind/Skeleton variant per participant to reduce learning effects. A target of at least 30 participants (about 10 per variant), mixed experience and accessibility needs is a recruitment proposal; determine the final sample through a documented study design and feasibility review.
 
-This involves **human subjects**, so unlike the qualitative source paper (whose IRB statement was "Not applicable"), this study is **not exempt**. You need ethics-committee approval + informed consent **before** recruiting. If approval is slow, build everything IRB-ready and run the moment it lands — do **not** cut the study; it is the human-centered novelty the paper lacks.
+## Before recruitment
 
-- `protocol/` — IRB application, informed-consent form, recruitment script, the 5 standardized task flows
-- `instruments/` — SUS (10-item) + NASA-TLX questionnaires
-- **participant data is gitignored** (see repo `.gitignore`) — never commit recordings or raw PII
+- Obtain the institution's ethics review or documented exemption determination; do not assume either outcome.
+- Complete the draft [consent form](protocol/consent-form.md), data-retention policy, researcher contacts and accommodations.
+- Use an isolated study database with clearly identified study fixtures. Disable outbound production emails and never enter real patient information or publish invented hospital availability.
+- Pilot all [task flows](protocol/task-flows.md) in every variant. Record functional differences, including Skeleton's career-reference copy control, rather than calling the interfaces identical.
+- Keep participant records and recordings out of Git. Verify storage permissions, exclusions and deletion procedures before collection.
 
-## Tasks (all variants identical)
-1. Find nearest hospital via search + filters
-2. Open a hospital profile, find the emergency contact number
-3. Register + save a hospital to Quick Access
-4. Find + read a first-aid guide
-5. (Admin) update bed availability
+## Proposed tasks
 
-## Metrics
-Task completion time · error rate · SUS · NASA-TLX · post-test interview themes.
-Analysis: ANOVA / Kruskal–Wallis across the three variants (plan §8).
+1. Find a hospital matching a supplied locality and emergency capability.
+2. Find its listed emergency contact or identify unavailable contact information.
+3. Sign in to a prepared study account and save the hospital to Quick Access.
+4. Look up a supplied public career application reference on `/track`.
+5. As assigned hospital staff, record a timestamped facility availability observation in the isolated study environment.
+
+First-aid guide navigation was removed from this draft because no current first-aid route/content was found. Legacy admin bed-count updates are not the current availability workflow. Do not change real provider data for study tasks.
+
+## Proposed metrics and analysis
+
+Record task completion time, errors, outcomes, SUS, raw NASA-TLX and interview themes. Specify success criteria, missing-data treatment, exclusions and analysis before collection. Choose comparisons based on the final design and observed assumptions; report uncertainty and sample limitations. The questionnaires contain no completed participant results.
+
+See the [research plan](../docs/MedReach_Corrected_Plan.md) and [paper outline](../paper/outline.md).

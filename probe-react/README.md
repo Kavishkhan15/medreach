@@ -1,13 +1,20 @@
-# React probe — Limitation 2 (reactive-component frameworks)
+# React rendering probe
 
-The paper excludes reactive frameworks, noting their "security model may differ substantially." This probe answers that with evidence.
+This focused probe compares React server-side text escaping with explicit raw HTML insertion. It is not a fourth MedReach frontend or an end-to-end XSS audit.
 
-```bash
-node probe-react/probe.mjs
+From the repository root with dependencies installed:
+
+```sh
+npm run probe:react
 ```
 
-**Finding (reproducible):** given the identical payload `<img src=x onerror=…>`, JSX interpolation auto-escapes it (`&lt;img…`, inert), while `dangerouslySetInnerHTML` injects it raw. So in reactive frameworks XSS is **opt-in to danger**, whereas the classic RWD-framework sinks (Bootstrap/Foundation tooltip `data-template` → `innerHTML`, CVE-2019-8331 class) were **opt-out of safety**.
+`probe.mjs` renders the same `<img src=x onerror=...>` payload twice using `renderToStaticMarkup`:
 
-That default-posture inversion — not anything about CSS — is the security-model difference the paper anticipated. Fold it into the Discussion as the reactive-framework data point.
+- Text interpolation escapes the markup, so this sample is rendered as text.
+- `dangerouslySetInnerHTML` emits the sample as raw HTML.
 
-> Scope note: this is a focused probe, not a 4th full MedReach variant (plan §3, §6). Keeping it small was a deliberate cost/novelty trade.
+The script checks output strings. It does not open a browser, execute the handler, exercise CSP, test other sinks, or measure real application vulnerabilities. Its broad printed statement about all reactive versus classic framework security is an interpretation beyond this test's evidence. React applications still need input handling, safe URL/HTML policies and backend authorization.
+
+Use this example to explain a specific rendering boundary in the [proposed research plan](../docs/MedReach_Corrected_Plan.md). Historical Bootstrap tooltip CVEs require independent version-specific reproduction and should not be attributed to the current Bootstrap 5.3.3 build from this probe.
+
+See [Release QA](../docs/release-qa.md) for current application checks and [evaluation limits](../evaluation/README.md) for planned measurements.

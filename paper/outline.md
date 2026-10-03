@@ -1,35 +1,51 @@
-# Paper Outline — MedReach
+# Paper outline — proposed MedReach study
 
-**Working title:** *Does the CSS Framework Matter? An Empirical, Multi-Axis Evaluation of Responsive Web Design Frameworks in a Controlled Application* — an empirical extension of Almeida & Sousa (2026).
+**Working title:** *An Empirical Evaluation of Responsive Web Design Frameworks in MedReach.* This is an outline, not a completed empirical paper.
 
-Target: see plan §11. Format: IMRaD, ~15–20 pp. Every claim traces to an artifact in `evaluation/` or `data/`.
+The inherited research framing references Almeida & Sousa (2026), *Security Risks in Responsive Web Design Frameworks*. Verify the bibliography, source claims and venue requirements before submission. Distinguish implemented tools, local product QA, archival measurements and future research results throughout.
 
-## Abstract (draft)
-Almeida & Sousa (2026) qualitatively classified security risks across five responsive web design (RWD) frameworks and concluded that frontend security depends less on framework choice than on governance and maintenance. We test that conclusion **empirically**. We build MedReach, a hospital-services portal, as three functionally-identical variants (Bootstrap 5, Tailwind CSS 4, Skeleton) over a single shared backend and security configuration, so the CSS framework is the sole controlled variable. We evaluate each variant across four axes — security, privacy, accessibility, responsiveness — using automated scanners, manual penetration testing, and a composite **RWD Security Risk Score**, and run a between-subjects usability study (N=[..]). We find that app-level security is [≈ identical / …] across variants — consistent with the source paper's thesis — while measurable differences concentrate in dependency/supply-chain, maintenance, CSS attack surface, and CSS bundle size (a 25× range in our build). We contribute a reproducible measurement pipeline, the scoring instrument, and an open dataset.
+## Abstract guidance
+
+Describe three active Next.js frontends (Bootstrap, Tailwind, Skeleton) using a shared Express/MongoDB backend. State the measured axes and actual sample only after collection. Do not call CSS the sole controlled variable: component implementations, Bootstrap's local core copy, responsive behavior and intentional UI differences require disclosure. Omit uncollected participant results, placeholder risk grades and unsupported security conclusions.
 
 ## 1. Introduction
-Problem, the gap Almeida & Sousa name (qualitative-only; excludes reactive frameworks), our RQ (plan §2), contributions (plan §3).
+
+Research question, healthcare-directory context and motivation. Treat similarity of shared-backend security as a hypothesis to test. Define each contribution supported by an available artifact.
 
 ## 2. Related work
-RWD frameworks; frontend security (XSS, CSP, SRI, supply chain); the source paper positioned as the direct predecessor; DevSecOps. Skills: `scientific-thinking-literature-review`, `scientific-thinking-scholar-evaluation`.
+
+Responsive frameworks, frontend/backend security, dependencies, privacy, accessibility and usability. Verify cited primary sources and distinguish historical vulnerabilities from currently patched dependencies.
 
 ## 3. Methodology
-- 3.1 Controlled application (shared backend = the constant; §6 architecture + the parity threat and how it's controlled).
-- 3.2 The three variants and the reactive-framework probe.
-- 3.3 Four-axis measurement pipeline (§7).
-- 3.4 RWD Security Risk Score instrument (§5): dimensions, fixed-anchor normalization, weights + sensitivity analysis.
-- 3.5 User study design (between-subjects, N, tasks, SUS/NASA-TLX, ANOVA/Kruskal–Wallis).
-- 3.6 Threats to validity (patched versions, n=3, added-JS confound, single app).
 
-## 4. Results
-- 4.1 Security: ZAP, dependency CVEs, header grades, manual pen-test vs. Table 5 cells.
-- 4.2 Privacy: third-party requests, cookies, CDN leakage.
-- 4.3 Accessibility: axe/Lighthouse/WAVE + AT walkthrough.
-- 4.4 Responsiveness: Core Web Vitals + **CSS/JS bundle size** (data captured — see `docs/RESULTS-prelim.md`).
-- 4.5 Composite Risk Scores + sensitivity analysis.
-- 4.6 Usability study outcomes.
+- Pin commit, lockfile, Node/Next/React/framework versions and build-time public configuration.
+- Document the shared backend, datasets, provenance rules, authorization and distinct frontend implementations.
+- Define route/task equivalence using [parity scope](../docs/PARITY_VERIFICATION.md), not just route names or successful builds.
+- Describe implemented [evaluation tools](../evaluation/README.md) and any separately executed scans.
+- Present the proposed risk formula with measured input provenance, normalization, weights, missing-data policy and sensitivity analysis. Current inputs are placeholders.
+- Specify the [proposed participant study](../user-study/README.md), ethics determination, sample rationale and analysis before recruitment.
+- Explain the limited React SSR [probe](../probe-react/README.md).
+
+## 4. Results — populate from evidence
+
+- Security: actual scan/audit/authorization evidence, exact versions and limits.
+- Privacy: per-route third-party traffic and cookie behavior, including hosted configuration.
+- Accessibility: automated findings and manual assistive-technology observations.
+- Performance: current per-route timings and aggregate bundle sizes reported separately. [Historical figures](../docs/RESULTS-prelim.md) are not current release measurements.
+- Submission latency: [local benchmark](../docs/latency-verification.md) uses simulated SMTP waits; it is a backend concurrency result, not a framework ranking or hosted latency guarantee.
+- Composite scores: include only after measured inputs replace placeholders.
+- Usability: include only after actual approved participant collection.
+
+[Release QA](../docs/release-qa.md) is product regression evidence, not a substitute for these research results.
 
 ## 5. Discussion
-Does framework choice move the needle? Where the variance actually lives (deps/supply-chain/maintenance/CSS-surface, not app XSS). Reactive-framework probe → Limitation 2. Restate/qualify the source paper's governance thesis with numbers.
 
-## 6. Threats to validity · 7. Conclusion & future work · Acknowledgements · References · Appendices (raw data, scoring formula, IRB materials)
+Interpret measured effects with uncertainty. Discuss shared-stack effects, implementation confounders and differences between provider capability and verified current availability. Avoid inferring framework security or causality from bundle ratios or zero known audit vulnerabilities.
+
+## 6. Threats to validity
+
+Single application, three framework variants, shared backend, uncontrolled component differences, patched versions, data/source freshness, incomplete live integration verification, synthetic SMTP timings and limited sample size.
+
+## 7. Conclusion and future work
+
+Summarize only established findings. List remaining scans, hosted tests and participant study separately. Append reproducibility details, scoring inputs and approved study materials; never publish credentials, private tracking tokens or identifiable participant data.

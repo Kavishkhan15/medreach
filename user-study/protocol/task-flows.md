@@ -1,24 +1,29 @@
-# Task Flows — MedReach Usability Study
+# Draft task flows — MedReach usability study
 
-Between-subjects: each participant is randomly assigned **one** variant (Bootstrap / Tailwind / Skeleton) and never sees the others (avoids learning effects). Facilitator reads each task verbatim; do not hint. Record start/stop time, errors (wrong clicks, dead-ends, backtracks), and completion (success / partial / fail).
+For a proposed between-subjects study, randomly assign each participant one frontend. Complete ethics review, consent and piloting before collection. The variants share major workflows but are not identical implementations; record differences and use equivalent task inputs.
 
-All variants are **functionally identical**, so every task is valid on every variant. Target site: the assigned variant's deployed URL.
+Use a dedicated study instance with approved isolated fixtures, prepared accounts and a known `CAR-...` reference. No real patient details, production data mutations or external mail are required. Facilitators should read agreed prompts without hints and record time, errors, path and success/partial/failure.
 
-| # | Task (read to participant) | Success criterion | Data captured |
-|---|---|---|---|
-| 1 | "Find the nearest hospital to your current location that has an **Emergency** department." | Reaches a hospital profile with Emergency listed, via search/filter or 📍 Nearest | time, errors, path |
-| 2 | "On that hospital's page, find and read out the **emergency contact number**." | Reads the correct `emergencyPhone` | time, errors |
-| 3 | "Create an account, then **save** this hospital to your Quick Access list." | Registers + save confirms | time, errors, form friction |
-| 4 | "Find the **first-aid guide** for [assigned emergency] and read the first step." | Reaches the guide content | time, errors |
-| 5 | *(admin credentials provided)* "Log in as staff and **update the bed availability** for [hospital] to 5." | Bed value persists to 5 | time, errors |
+| # | Draft prompt | Success criterion |
+| --- | --- | --- |
+| 1 | "Find a hospital in [assigned locality] that lists an emergency department." | Opens the intended study provider and identifies source-backed capability. Does not equate capability with a free bed. |
+| 2 | "Find that hospital's emergency contact number. If none is listed, tell us that." | Identifies the displayed emergency contact or correctly reports unknown/missing information. |
+| 3 | "Sign in using this study account and save the hospital to Quick Access." | Save persists and appears in dashboard saved hospitals. |
+| 4 | "Check the career application's status using the supplied reference." | Opens `/track`, selects Career request, enters `CAR-...` and reads the correct public status. No MongoDB document ID is used. |
+| 5 | "As staff assigned to [study hospital], record ICU availability as limited, quantity 5." | Hospital workspace submits an append-only timestamped observation and the isolated API returns it. No legacy direct bed-count write or real availability claim. |
 
-## Facilitator notes
-- Randomise variant assignment; aim for ~10 participants/variant (N ≥ 30).
-- Encourage think-aloud ("tell me what you're looking at / expecting").
-- If a participant is stuck > 3 min, mark partial and move on.
-- After tasks: administer SUS then NASA-TLX (`../instruments/`), then the 5-min interview.
+The earlier draft's first-aid task has no current implementation. Its direct admin bed-count task has been replaced with the existing assigned-staff observation flow. Task 5 uses synthetic study information only within the isolated study instance, never product directories.
 
-## Interview prompts (semi-structured)
-1. What was easiest / hardest?
-2. Did anything look untrustworthy or confusing? (probes perceived security/privacy)
-3. For AT users: where did navigation break down?
+## Facilitator preparation
+
+- Verify the supplied provider has the required capability/contact evidence, and the staff account is assigned to it.
+- Check permission-denied location behavior; the locality task remains possible without GPS.
+- Choose a consistent stopping rule and think-aloud instruction before piloting; document partial outcomes rather than silently dropping them.
+- After tasks, administer [SUS](../instruments/sus.md), [raw NASA-TLX](../instruments/nasa-tlx.md) and an interview.
+- Review mobile widths and assistive technology accommodations in the pilot. Avoid reading clipboard data or recording credentials/private request links.
+
+## Proposed interview prompts
+
+1. What was easiest or hardest?
+2. Which status, contact or privacy details were confusing?
+3. Where did navigation or assistive technology prevent completion?
