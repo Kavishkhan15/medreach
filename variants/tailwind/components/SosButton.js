@@ -24,7 +24,7 @@ export default function SosButton() {
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
       >
-        <span className="font-bold mr-1">SOS</span>SOS
+        <span className="font-bold">SOS</span>
       </button>
 
       {open && (

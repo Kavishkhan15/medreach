@@ -42,3 +42,16 @@ test("dashboard failures stay in their section and retries target only that sect
     for (const other of Object.keys(titles).filter((value) => value !== path)) expect(counts[other]).toBe(before[other]);
   }
 });
+
+test("SOS has one label and retains emergency contact and hospital actions", async ({ page }) => {
+  await page.goto("/track");
+  const sos = page.locator('button[aria-haspopup="dialog"]').filter({ hasText: "SOS" });
+  await expect(sos).toHaveText("SOS");
+  await sos.click();
+  const dialog = page.getByRole("dialog", { name: "Emergency help" });
+  await expect(dialog.getByRole("link", { name: /Call 112/ })).toHaveAttribute("href", "tel:112");
+  await expect(dialog.getByRole("link", { name: /Call 102/ })).toHaveAttribute("href", "tel:102");
+  await expect(dialog.getByRole("link", { name: "Find nearest emergency hospital" })).toHaveAttribute("href", "/emergency");
+  await dialog.getByRole("button", { name: "Close", exact: true }).click();
+  await expect(dialog).toHaveCount(0);
+});
