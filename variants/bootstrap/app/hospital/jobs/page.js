@@ -19,7 +19,8 @@ function isSafeUrl(url) {
   if (!url) return false;
   try {
     const parsed = new URL(url, typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
-    return parsed.protocol === "http:" || parsed.protocol === "https:" || url.startsWith("data:");
+    return (["http:", "https:"].includes(parsed.protocol) && !parsed.username && !parsed.password) ||
+      /^data:application\/(?:pdf|msword|vnd\.openxmlformats-officedocument\.wordprocessingml\.document);base64,[A-Za-z0-9+/]+={0,2}$/i.test(url);
   } catch {
     return false;
   }

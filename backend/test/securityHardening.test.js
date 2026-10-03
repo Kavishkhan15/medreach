@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import request from "supertest";
 import { createApp } from "../src/app.js";
 import { signToken } from "../src/utils/token.js";
+import { validateResume } from "../src/validation/healthcare.js";
 const app = createApp();
 const user = { _id: "507f1f77bcf86cd799439011", role: "system_admin", email: "admin@example.test", name: "Admin" };
 
@@ -21,6 +22,21 @@ test("missing routes do not reflect a sensitive query token", async () => {
   const res = await request(app).get("/missing?token=private-test-token");
   assert.equal(res.status, 404);
   assert.equal(JSON.stringify(res.body).includes("private-test-token"), false);
+});
+
+for (const url of ["javascript:alert(1)", "data:text/html;base64,PHNjcmlwdD4=", "data:image/svg+xml;base64,PHN2Zz4=", "file:///etc/passwd", "https://user:secret@example.test/cv.pdf", "data:application/pdf;base64,broken..."]) {
+  test(`reject unsafe resume ${url.split(':')[0]} content`, () => {
+    assert.equal(validateResume(url), false);
+    for (const field of ["fileUrl", "url", "dataUrl", "data"]) assert.equal(validateResume({ [field]: url }), false);
+  });
+}
+
+test("valid resume links and PDF/Word uploads retain support", () => {
+  for (const url of ["https://example.test/cv.pdf", "http://example.test/cv.docx", "data:application/pdf;base64,JVBERi0xLjQK", "data:application/msword;base64,Y3Y=", "data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,Y3Y="]) {
+    assert.equal(validateResume(url), true);
+  }
+  assert.equal(validateResume({ fileUrl: { $ne: null } }), false);
+  assert.equal(validateResume(["https://example.test/cv.pdf"]), false);
 });
 
 for (const path of ["/api/hospitals?city[$ne]=Mumbai", "/api/jobs?category[$regex]=.*", "/api/alerts?region[$ne]=private", "/api/blood-requests?status[$ne]=REQUESTED"]) {

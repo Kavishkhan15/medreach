@@ -86,7 +86,7 @@ Lilavati Hospital is renowned for its clinical excellence and compassionate heal
     const resumePayload = {
       fileName: "Priya_Sharma_Resume.pdf",
       fileType: "application/pdf",
-      fileUrl: "data:application/pdf;base64,JVBERi0xLjQKJcTl8uXr...",
+      fileUrl: "data:application/pdf;base64,JVBERi0xLjQK",
       fileSize: 245600,
     };
 
