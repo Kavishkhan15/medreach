@@ -11,6 +11,8 @@ The supplied artwork is shared by Bootstrap, Tailwind and Skeleton.
 
 Each frontend serves unchanged copies of both PNG files from its `public/` directory. The wordmark has a 3:1 aspect ratio; preserve that ratio when displaying it. The shield symbol is square. Keep the supplied artwork and background intact.
 
-The root `favicon.ico` and each frontend’s `app/favicon.ico` are derived from the shield symbol, with 16, 32 and 48 pixel sizes. Next.js serves the frontend ICO at `/favicon.ico`; root layout metadata also points Apple touch icons to `/logo.png`.
+Root layout metadata uses `/logo.png` directly for browser, shortcut and Apple touch icons. Its `v` query parameter is the first 12 characters of the canonical PNG’s SHA-256 hash, so replacing the artwork can refresh cached browser icons when that value is updated.
 
-When replacing branding, update the canonical files, all three public copies and all four ICO files together. Check the README image, navigation, footer and browser icons, including narrow-screen navigation.
+The root `favicon.ico` and each frontend’s `public/favicon.ico` are derived from the shield symbol, with 16, 32 and 48 pixel sizes. The public ICO remains available at `/favicon.ico` for browsers that request that path automatically. It lives in `public/` rather than `app/` so Next.js does not add an additional ICO link alongside the explicit PNG favicon.
+
+When replacing branding, update the canonical files, all three public copies, all four ICO files and the icon version in all three root layouts together. Check the README image, navigation, footer and browser icons, including narrow-screen navigation.
