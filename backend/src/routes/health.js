@@ -14,14 +14,15 @@ router.get("/live", (_req, res) => {
   res.json({ ok: true, service: "medreach-api", check: "liveness", ts: new Date().toISOString() });
 });
 
-router.get("/ready", (_req, res) => {
+router.get("/ready", (req, res) => {
   const mongodb = dbState();
-  const ready = mongodb === "connected";
+  const ready = mongodb === "connected" && !req.app.locals.shuttingDown;
   res.status(ready ? 200 : 503).json({
     ok: ready,
     service: "medreach-api",
     check: "readiness",
     dependencies: { mongodb },
+    ...(req.app.locals.shuttingDown ? { shuttingDown: true } : {}),
     ts: new Date().toISOString(),
   });
 });

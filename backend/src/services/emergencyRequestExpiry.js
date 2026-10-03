@@ -3,6 +3,8 @@ import { Hospital } from "../models/Hospital.js";
 import { auditRequestUpdate, emailRequestUpdate } from "./bedRequestEmails.js";
 
 const active = ["REQUESTED", "SENT", "UNDER_REVIEW", "INFORMATION_REQUESTED"];
+let timer = null;
+let running = null;
 export async function expireEmergencyRequests(now = new Date()) {
   const due = await EmergencyRequest.find({ status: { $in: active }, expiresAt: { $lte: now } }).select("_id status").limit(100).lean();
   let expired = 0;
@@ -19,8 +21,19 @@ export async function expireEmergencyRequests(now = new Date()) {
 }
 
 export function startEmergencyRequestExpiryWorker() {
-  const timer = setInterval(() => expireEmergencyRequests().catch((error) =>
-    console.error("[medreach] Request expiry check failed:", error.message)), 60000);
+  if (timer) return timer;
+  timer = setInterval(() => {
+    if (running) return;
+    running = expireEmergencyRequests().catch((error) =>
+      console.error("[medreach] Request expiry check failed:", error.message))
+      .finally(() => { running = null; });
+  }, 60000);
   timer.unref?.();
   return timer;
+}
+
+export function stopEmergencyRequestExpiryWorker() {
+  if (timer) clearInterval(timer);
+  timer = null;
+  return running || Promise.resolve();
 }

@@ -7,6 +7,8 @@ import { runOne } from "../controllers/crawlerController.js";
 import { randomUUID } from "node:crypto";
 
 let timer = null;
+let activeTick = null;
+let stopping = false;
 let busy = false;
 let lastTick = null;
 let lastError = null;
@@ -30,7 +32,7 @@ export function schedulerState() {
     tickMs: env.schedulerTickMs };
 }
 
-export async function tickCrawlerScheduler(now = new Date()) {
+async function runTick(now) {
   if (busy) return { skipped: "busy" };
   busy = true;
   lastTick = now;
@@ -42,6 +44,7 @@ export async function tickCrawlerScheduler(now = new Date()) {
     const sources = await DataSource.find({ sourceKey: { $exists: true }, enabled: true,
       healthStatus: { $ne: "blocked" } }).lean();
     for (const source of sources) {
+      if (stopping) break;
       const registry = getSource(source.sourceKey);
       if (!registry || registry.enabled === false || registry.status === "blocked" || registry.sourceState === "blocked") continue;
       const interval = source.crawlFrequencyMs ?? registry.crawlFrequencyMs;
@@ -64,8 +67,16 @@ export async function tickCrawlerScheduler(now = new Date()) {
   }
 }
 
+export function tickCrawlerScheduler(now = new Date()) {
+  if (stopping) return Promise.resolve({ skipped: "stopping" });
+  if (activeTick) return Promise.resolve({ skipped: "busy" });
+  activeTick = runTick(now).finally(() => { activeTick = null; });
+  return activeTick;
+}
+
 export function startCrawlerScheduler() {
   if (!env.schedulerEnabled || timer) return schedulerState();
+  stopping = false;
   const delay = Math.max(60000, env.schedulerTickMs);
   timer = setInterval(() => tickCrawlerScheduler().catch((error) => {
     lastError = String(error.message).slice(0, 200);
@@ -75,6 +86,8 @@ export function startCrawlerScheduler() {
 }
 
 export function stopCrawlerScheduler() {
+  stopping = true;
   if (timer) clearInterval(timer);
   timer = null;
+  return activeTick || Promise.resolve();
 }
