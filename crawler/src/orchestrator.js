@@ -21,7 +21,7 @@ const CRAWL_STATUS = {
 
 // Map an adapter/fetch failure reason onto a CrawlJob status + source state.
 function statusForReason(reason) {
-  if (reason === "access_blocked") return { status: CRAWL_STATUS.BLOCKED, sourceState: "blocked" };
+  if (["access_blocked", "unsafe_dns_destination", "unsafe_redirect", "offsite_blocked", "path_not_allowed", "private_or_local_host"].includes(reason)) return { status: CRAWL_STATUS.BLOCKED, sourceState: "blocked" };
   if (reason === "robots_disallowed") return { status: CRAWL_STATUS.BLOCKED, sourceState: "robots_disallowed" };
   if (reason === "rate_limited") return { status: CRAWL_STATUS.RATE_LIMITED, sourceState: "rate_limited" };
   if (reason === "parse_error" || reason === "parsing_error") return { status: CRAWL_STATUS.PARSING_ERROR, sourceState: "parsing_error" };

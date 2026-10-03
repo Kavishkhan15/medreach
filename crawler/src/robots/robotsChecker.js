@@ -1,36 +1,29 @@
-// robots.txt compliance — dependency-free parser + checker with per-host cache.
-// Implements the standard longest-match rule: the most specific (longest) matching
-// Allow/Disallow rule wins; ties go to Allow. We honor the "*" user-agent group
-// (our bot does not seek a more permissive named group). On fetch failure we
-// FAIL CLOSED for disallowed-looking hosts only where robots explicitly blocks;
-// a missing/unreadable robots.txt (404/empty) is treated as "allow" per convention.
-
+// robots.txt policy is cached per origin. Unreadable policies fail closed.
 import { httpFetch } from "../fetchers/httpFetcher.js";
 
 const cache = new Map(); // host -> { rules: [{type, path}], fetchedAt }
 const TTL_MS = 60 * 60 * 1000; // re-fetch robots at most hourly
 
 function parseRobots(txt) {
-  const lines = String(txt).split(/\r?\n/);
   const groups = [];
-  let current = null;
-  let applies = false;
-  const rules = [];
-  for (let raw of lines) {
+  let group = { agents: [], rules: [] };
+  for (const raw of String(txt).split(/\r?\n/)) {
     const line = raw.replace(/#.*$/, "").trim();
-    if (!line) continue;
     const idx = line.indexOf(":");
-    if (idx === -1) continue;
+    if (idx < 0) continue;
     const field = line.slice(0, idx).trim().toLowerCase();
     const value = line.slice(idx + 1).trim();
     if (field === "user-agent") {
-      // Start/extend a group. We only collect rules for the "*" group.
-      applies = value === "*";
-    } else if ((field === "disallow" || field === "allow") && applies) {
-      rules.push({ type: field, path: value });
+      if (group.rules.length) { groups.push(group); group = { agents: [], rules: [] }; }
+      group.agents.push(value.toLowerCase());
+    } else if ((field === "allow" || field === "disallow") && group.agents.length) {
+      group.rules.push({ type: field, path: value });
     }
   }
-  return rules;
+  groups.push(group);
+  // Apply general restrictions as well as our named group; never seek a bypass group.
+  return groups.filter(({ agents }) => agents.some((agent) => agent === "*" ||
+    (agent && "medreachbot".startsWith(agent)))).map(({ rules }) => rules);
 }
 
 // Longest-match evaluation. Empty Disallow means "allow all".
@@ -54,16 +47,27 @@ function evaluate(rules, pathname) {
 function matchesRobots(pattern, pathname) {
   const hasEnd = pattern.endsWith("$");
   const pat = hasEnd ? pattern.slice(0, -1) : pattern;
-  if (!pat.includes("*")) {
-    return hasEnd ? pathname === pat : pathname.startsWith(pat);
+  // Iterative glob matching avoids exponential RegExp backtracking on hostile robots files.
+  let input = 0, token = 0, star = -1, restart = 0;
+  while (input < pathname.length) {
+    if (token === pat.length && !hasEnd) return true;
+    if (pat[token] === "*") {
+      star = token++;
+      restart = input;
+    } else if (pat[token] === pathname[input]) {
+      token++;
+      input++;
+    } else if (star >= 0) {
+      token = star + 1;
+      input = ++restart;
+    } else return false;
   }
-  const parts = pat.split("*").map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-  const re = new RegExp("^" + parts.join(".*") + (hasEnd ? "$" : ""));
-  return re.test(pathname);
+  while (pat[token] === "*") token++;
+  return token === pat.length;
 }
 
 export async function loadRobots(baseUrl, deps = {}) {
-  const host = new URL(baseUrl).host;
+  const host = new URL(baseUrl).origin;
   const cached = cache.get(host);
   if (cached && Date.now() - cached.fetchedAt < TTL_MS) return cached;
   const robotsUrl = new URL("/robots.txt", baseUrl).href;
@@ -80,9 +84,10 @@ export async function loadRobots(baseUrl, deps = {}) {
     },
   });
   // A robots 401/403 is an explicit access refusal, not a missing file.
-  const rules = res.ok && res.body ? parseRobots(res.body) : [];
-  const entry = { rules, fetchedAt: Date.now(), missing: !res.ok,
-    denied: res.status === 401 || res.status === 403 || res.reason === "robots_redirect_not_allowed" };
+  const ruleGroups = res.ok && res.body ? parseRobots(res.body) : [];
+  const rules = ruleGroups.flat();
+  const entry = { rules, ruleGroups, fetchedAt: Date.now(), missing: !res.ok,
+    denied: !res.ok && !(res.reason === "http_error" && [404, 410].includes(res.status)) };
   cache.set(host, entry);
   return entry;
 }
@@ -94,7 +99,7 @@ export async function isAllowedByRobots(url, deps = {}) {
   const entry = await loadRobots(`${u.protocol}//${u.host}`, deps);
   if (entry.denied) return { allowed: false, reason: "robots_disallow" };
   if (entry.missing) return { allowed: true, reason: "no_robots" };
-  const allowed = evaluate(entry.rules, u.pathname + (u.search || ""));
+  const allowed = entry.ruleGroups.every((rules) => evaluate(rules, u.pathname + (u.search || "")));
   return { allowed, reason: allowed ? "robots_allow" : "robots_disallow" };
 }
 

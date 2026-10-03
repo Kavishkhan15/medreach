@@ -20,7 +20,8 @@ export async function crawlSource(source, deps = {}) {
   const outcome = await adapter.run();
 
   if (!outcome.ok) {
-    const statusByStage = { fetch: outcome.reason === "rate_limited" ? "rate_limited" : "failed",
+    const blocked = ["robots_disallowed", "unsafe_dns_destination", "unsafe_redirect", "offsite_blocked", "path_not_allowed", "private_or_local_host"].includes(outcome.reason);
+    const statusByStage = { fetch: blocked ? "blocked" : outcome.reason === "rate_limited" ? "rate_limited" : "failed",
       parse: "parsing_error", validate: "partial" };
     return {
       source: source._id, status: statusByStage[outcome.stage] || "failed",

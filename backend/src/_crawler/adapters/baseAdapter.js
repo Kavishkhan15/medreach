@@ -4,6 +4,8 @@
 // uniform and testable. Adapters receive their DataSource config (url, format,
 // field maps) so no selectors are hardcoded across the app.
 
+import { assertSafeUrl } from "../ssrf.js";
+import { isAllowedByRobots } from "../robots/robotsChecker.js";
 import { httpFetch } from "../fetchers/httpFetcher.js";
 import { validateResult } from "../validation/validateResult.js";
 import { isPathAllowed } from "../registry/sources.js";
@@ -19,9 +21,17 @@ export class BaseAdapter {
     let initial;
     try { initial = new URL(this.source.url); }
     catch { return { ok: false, status: 0, reason: "invalid_url", body: null }; }
+    const safe = assertSafeUrl(initial.href);
+    if (!safe.ok) return { ok: false, status: 0, reason: safe.reason, body: null };
+    const checkRobots = async (url) => {
+      const result = await isAllowedByRobots(url, { fetchImpl: this.fetchImpl });
+      return result.allowed ? { ok: true } : { ok: false, reason: "robots_disallowed" };
+    };
+    const policy = await checkRobots(initial.href);
+    if (!policy.ok) return { ok: false, status: 0, reason: policy.reason, body: null };
     return httpFetch(initial.href, {
       fetchImpl: this.fetchImpl,
-      validateRedirect: (next) => {
+      validateRedirect: async (next) => {
         const target = new URL(next);
         if (target.origin !== initial.origin) return { ok: false, reason: "offsite_blocked" };
         // Config-driven feeds have one explicitly approved URL. Registry-backed
@@ -29,7 +39,7 @@ export class BaseAdapter {
         const pathAllowed = this.source.allowedPaths?.length
           ? isPathAllowed(this.source, target.pathname)
           : target.pathname === initial.pathname && target.search === initial.search;
-        return pathAllowed ? { ok: true } : { ok: false, reason: "path_not_allowed" };
+        return pathAllowed ? checkRobots(next) : { ok: false, reason: "path_not_allowed" };
       },
     });
   }

@@ -10,5 +10,8 @@
     "test:live": "MEDREACH_LIVE=1 node --test tests/live.test.js",
     "crawl": "node src/cli.js",
     "crawl:list": "node src/cli.js --list"
+  },
+  "dependencies": {
+    "undici": "8.11.2"
   }
 }

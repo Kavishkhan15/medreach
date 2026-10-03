@@ -165,38 +165,44 @@ test("guardedFetch: approved same-origin, allowlisted redirect succeeds", async 
 });
 
 test("legacy adapter blocks redirect to another host before requesting it", async () => {
+  _clearCache();
   const visits = [];
   const adapter = new BaseAdapter({ url: "https://approved.example/feed" }, {
     fetchImpl: async (url) => {
       visits.push(url);
+      if (url.endsWith("/robots.txt")) return res(200, "User-agent: *\nAllow: /", "text/plain");
       return { status: 302, headers: { get: (key) => key === "location" ? "https://other.example/feed" : null } };
     },
   });
   const result = await adapter.fetchRaw();
   assert.equal(result.reason, "offsite_blocked");
-  assert.deepEqual(visits, ["https://approved.example/feed"]);
+  assert.deepEqual(visits.filter((url) => !url.endsWith("/robots.txt")), ["https://approved.example/feed"]);
 });
 
 test("legacy adapter blocks unapproved same-host path before requesting it", async () => {
+  _clearCache();
   const visits = [];
   const adapter = new BaseAdapter({ url: "https://approved.example/feed" }, {
     fetchImpl: async (url) => {
       visits.push(url);
+      if (url.endsWith("/robots.txt")) return res(200, "User-agent: *\nAllow: /", "text/plain");
       return { status: 302, headers: { get: (key) => key === "location" ? "/private" : null } };
     },
   });
   const result = await adapter.fetchRaw();
   assert.equal(result.reason, "path_not_allowed");
-  assert.deepEqual(visits, ["https://approved.example/feed"]);
+  assert.deepEqual(visits.filter((url) => !url.endsWith("/robots.txt")), ["https://approved.example/feed"]);
 });
 
 test("legacy adapter follows a registered same-host path", async () => {
+  _clearCache();
   const visits = [];
   const adapter = new BaseAdapter({
     url: "https://approved.example/", allowedPaths: ["/", "/contact-us"],
   }, {
     fetchImpl: async (url) => {
       visits.push(url);
+      if (url.endsWith("/robots.txt")) return res(200, "User-agent: *\nAllow: /", "text/plain");
       return url.endsWith("/contact-us") ? res(200, "Contact")
         : { status: 302, headers: { get: (key) => key === "location" ? "/contact-us" : null } };
     },
@@ -204,7 +210,7 @@ test("legacy adapter follows a registered same-host path", async () => {
   const result = await adapter.fetchRaw();
   assert.equal(result.ok, true);
   assert.equal(result.finalUrl, "https://approved.example/contact-us");
-  assert.deepEqual(visits, ["https://approved.example/", "https://approved.example/contact-us"]);
+  assert.deepEqual(visits.filter((url) => !url.endsWith("/robots.txt")), ["https://approved.example/", "https://approved.example/contact-us"]);
 });
 
 test("httpFetch: caps redirect chains", async () => {
