@@ -1,152 +1,145 @@
-# MedReach AI Assistant
+# MedReach Healthcare Assistant
 
-A chat entry point inside the existing Emergency Help modal that helps a user
-find hospitals, understand facility capability, and reach emergency services
-faster. **No diagnosis, no prescriptions, no claim to dispatch an ambulance.**
-It never invents a hospital, a bed count, or an availability status — every
-fact it states comes from the same MongoDB data the rest of the app uses.
+Current implementation reference, reviewed 2026-10-03. The assistant helps users
+find healthcare resources and open existing request flows. It is not a diagnosis,
+prescribing or emergency dispatch service. For executed checks and remaining
+live-provider verification, see [Release QA](release-qa.md).
 
-> **Experiment rule:** the assistant is business logic, not styling. It lives
-> in `packages/core` + `backend/`, identically for all three frontends. No
-> variant contains assistant logic of its own — only the CSS classes on an
-> otherwise-identical component differ.
+## Entry and layout
 
-## Where it lives
+**SOS is the only persistent bottom-right floating button.** The separate
+“MedReach Assistant” launcher has been removed. The assistant remains available
+from the Emergency Help/SOS interface; Bootstrap can open the globally mounted
+panel through `medreach:open-assistant`, while the compatibility
+`AiAssistantModal` wrapper opens the same panel component for existing callers.
 
-```
-User taps "🤖 Ask MedReach AI Assistant" (4th action, Emergency Help modal)
-  → AiAssistantModal (variants/*/components — same JSX/behavior, only classNames differ)
-    → useAssistant() (packages/core/src/hooks.js — headless, zero markup)
-      → sendAssistantMessage() (packages/core/src/api.js)
-        → POST /api/assistant/message (rate-limited, validated)
-          → assistantController.js → assistantService.js
-             ├─ classifyIntent()        deterministic, keyword-based, no ML
-             ├─ buildContext()          real Hospital/HospitalFacility/AvailabilityObservation data
-             └─ getAiProvider().generateReply(context)
-                ├─ ruleBasedProvider.js  default, zero external config
-                └─ openAiProvider.js     optional, server-side only, never in the bundle
-```
+All variants contain `HealthcareAssistant.js` and its scoped CSS module. The
+panel has an opaque 70px header, assistant identity and network subtitle,
+status indicator, minimize/restore and close controls. Conversation content
+scrolls independently of the input/footer. It contains result cards, compact
+actions, directory/map links and suggested-question chips. The 390px by 580px
+desktop panel is bounded by viewport dimensions; the mobile layout preserves
+access to SOS. The disclaimer remains visible as secondary text.
 
-## Intent classification (`assistantService.js`)
+“Online” is a UI availability indicator, not an independently verified health
+probe of Google/OpenAI, providers or emergency services.
 
-Every message is classified into exactly one of three intents, in this order,
-before any hospital lookup runs:
+## Request path
 
-1. **`emergency`** — keyword match against a fixed list (`unconscious`,
-   `not breathing`, `chest pain`, `severe bleeding`, `cardiac arrest`, …).
-   **Always checked first and always wins.** A reply with this intent leads
-   with prominent `CALL 112` / `CALL 102` / `FIND NEAREST HOSPITAL` actions,
-   rendered directly in the chat — never buried behind a paragraph.
-2. **`hospital_search`** — phrasing like "find", "near", "nearest", or a match
-   against the same category keywords the existing `EmergencyCategorySelector`
-   UI uses (cardiac, stroke, trauma, burns, respiratory, pediatric, maternity,
-   ICU). Triggers a real hospital lookup.
-3. **`general`** — anything else. Returns short guidance and example prompts.
-
-This is the same category vocabulary as `packages/core/src/emergency.js`
-(`EMERGENCY_CATEGORIES`) — a deterministic specialty/facility mapping used for
-*ranking*, not diagnosis. The assistant reuses that mapping; it does not add a
-second, competing one.
-
-## Hospital data (never fabricated)
-
-`buildContext()` queries the same `Hospital` / `HospitalFacility` /
-`AvailabilityObservation` collections, through the same `rankHospitals()` used
-by `GET /api/hospitals`, and returns:
-
-| Field | Source | Guarantee |
-|---|---|---|
-| `name`, `locality`, `specialties` | `Hospital` | verbatim from the DB |
-| `matchedFacilities` | `HospitalFacility` | only facilities that actually exist for that hospital |
-| `facilityDetail.status` | latest `AvailabilityObservation` | `"unknown"` passes through as `"unknown"` — never guessed |
-| `facilityDetail.confidence` | latest observation's `confidence` | `HIGH/MEDIUM/LOW/UNKNOWN`, never invented |
-| `facilityDetail.retrievedAtRelative` | observation's `retrievedAt` | omitted, not fabricated, when there's no observation |
-| `phone`, `coordinates` | `Hospital.emergencyPhone/phone`, `Hospital.location` | omitted (not null-filled) when the hospital has no real value, so Call/Navigate buttons only render when they'd work |
-
-If a query has no locality match and no category match, the reply asks
-"Which Mumbai area are you in?" instead of guessing — matching
-`ASSISTANT_LOCALITY_PROMPT` in `packages/core/src/assistant.js`.
-
-## Provider abstraction (swap without touching the UI)
-
-`backend/src/services/aiProviders/` defines one contract:
-
-```js
-async function generateReply(context) -> { text: string, source: "ai" | "rule_based" }
+```text
+HealthcareAssistant / AiAssistantModal
+  → shared useAssistant() state and API client (@medreach/core)
+  → POST /api/assistant/message
+  → assistantController → assistantService
+     → deterministic classifyIntent()
+     → assistantTools queries MongoDB
+     → rule_based / openai / gemini reply provider
+  → real provider cards, suggested actions and follow-up prompts
 ```
 
-- **`ruleBasedProvider.js`** — the default. Deterministic templates built only
-  from the real `hospitals` array in `context`. Requires zero configuration
-  and zero external network calls; this is also the **guaranteed-safe
-  fallback** if any other provider throws.
-- **`openAiProvider.js`** — optional. Only reachable when `AI_PROVIDER=openai`
-  **and** `AI_API_KEY` is set. Server-side only — this module is never
-  imported by any frontend and `AI_API_KEY` never reaches the browser. Its
-  system prompt explicitly forbids inventing hospital data, diagnosing, or
-  claiming to dispatch emergency services, and instructs the model to say
-  availability is unknown whenever the supplied data says so.
+Shared API and hook logic lives in `packages/core/src/`; Bootstrap resolves its
+bundled core copy. Frontend presentation components are per variant. This is a
+shared behavior contract, not a claim that all JSX/markup is byte-identical.
+The backend determines intents and queries; frontends render cards, navigation
+and the existing blood/ambulance action forms.
 
-`getAiProvider()` reads `env.aiProvider` at call time and selects the module.
-Switching providers is an environment-variable change only:
+## Intent order
 
-```bash
-# .env — all optional; unset = rule_based, zero config
-AI_PROVIDER=openai
-AI_API_KEY=sk-...
-AI_MODEL=gpt-4o-mini
-```
+`backend/src/services/assistantService.js` checks these intents in order:
 
-## Fallback (hospital discovery never breaks)
+| Priority | Intent | Existing flow |
+| --- | --- | --- |
+| 1 | `emergency` | Emergency contact actions, emergency-capable hospitals and `/emergency` |
+| 2 | `urgent_blood` / `blood_bank_search` | Blood banks; urgent requirements use `/urgent-blood` |
+| 3 | `ambulance_search` | Ambulance providers, contact/navigation and booking form |
+| 4 | `diagnostic_search` | Diagnostic providers and `/diagnostics` |
+| 5 | `bed_request` | Hospital matches and separate standard/emergency request links |
+| 6 | `career_search` | Published healthcare jobs and `/careers` |
+| 7 | `hospital_search` | Hospital matches, `/hospitals` and `/map` |
+| 8 | `general` | Short guidance and suggested queries |
 
-`getAssistantReply()` always tries the configured provider first and falls
-back to `ruleBasedProvider` on **any** error (network failure, bad API key,
-provider outage). The HTTP controller additionally catches any remaining
-unexpected failure and returns a clean
-`{ reply: "AI assistant is temporarily unavailable.", unavailable: true }`
-instead of a `500`. The frontend's `useAssistant()` hook mirrors this on the
-client side: a network error to the backend itself produces the same
-`unavailable` state.
+Emergency keyword matching wins over other matches. Blood-test/lab-test language
+is routed to diagnostics rather than blood supply. Locality and blood-group
+extraction are deterministic. The backend's emergency assistant actions use
+112/108; the SOS interface also preserves its existing 112/102 actions.
+These are contact actions, not promises of provider availability or dispatch.
 
-When `unavailable` is true, every variant's `AiAssistantModal` renders the
-same `EmergencyActions` block (`CALL 112` / `CALL 102` / `FIND NEAREST
-HOSPITAL`) in place of the chat — never a broken or empty chat window.
+Urgent blood stays in its dedicated flow. Standard requests and emergency bed
+requests retain their existing routes and authentication rules. Selecting an
+action does not itself submit a request; the existing forms and backend
+validation still apply. Hospital bed requests leave ambulance arrangement to
+the hospital, separately from standalone ambulance booking.
 
-## Rate limiting & input handling
+## Real data and uncertainty
 
-- `POST /api/assistant/message` is public (same trust tier as
-  `GET /api/hospitals`) but has its **own** `express-rate-limit` instance
-  (20 requests / 5 minutes per IP), separate from the auth limiter.
-- `backend/src/utils/sanitize.js` strips control characters and hard-caps
-  messages at 500 characters; `express-validator` enforces the same cap at the
-  route layer as defense in depth.
-- The controller never echoes provider config, system prompts, or raw
-  internal errors back to the client.
+`assistantTools.js` queries `Hospital`, `HospitalFacility`,
+`AvailabilityObservation`, `ResourceProvider` and `Job` collections. It returns
+hospital/resource summaries and published jobs, not generated replacement
+providers. Hospital summaries include source verification status. A listed
+result does not become verified merely because it appears in chat.
 
-See [`docs/security.md`](security.md) for the full security posture and
-[`docs/api.md`](api.md) for the request/response shape.
+Hospital availability is composed through `composeHospitalDataView()`:
+unverified/stale observations do not establish current beds. Missing availability
+remains `unknown`; unavailable contact/coordinate values remain absent.
+Resource blood groups are listed services, not inventory counts. Directions and
+Call controls depend on available contact/location data. Where both coordinates
+are supplied, distance is a straight-line calculation, not a road ETA.
 
-## Frontend (identical across variants)
+Backend search tools catch query failures and return empty result arrays. An
+empty assistant result therefore does not prove that no provider exists outside
+the current database or that its underlying database query succeeded.
 
-- `packages/core/src/assistant.js` — all copy (`ASSISTANT_ENTRY_LABEL`,
-  `ASSISTANT_DISCLAIMER`, `ASSISTANT_QUICK_ACTIONS`, …) and zero framework
-  classes, per the existing `packages/core` rule.
-- `packages/core/src/hooks.js` → `useAssistant()` — headless chat state
-  (messages, sending, unavailable), identical in every variant.
-- `variants/{bootstrap,tailwind,skeleton}/components/{SosButton,
-  AiAssistantModal}.js` — same structure and behavior; only `className` values
-  differ, matching every other component in the app.
-- The AI entry button is deliberately styled at the **same visual weight** as
-  "Find nearest emergency hospital" (an outline/secondary button) — never as
-  prominent as `CALL 112` or `CALL 102`.
-- Accessibility: focus trap + focus restore on open/close, `aria-live` on the
-  message list and typing indicator, `role="group"` on quick-action chips,
-  44px minimum touch targets on mobile (WCAG 2.5.5), never color-only status
-  (availability always paired with a text label/symbol).
+## Reply providers
 
-## Tests
+`backend/src/services/aiProviders/index.js` selects `AI_PROVIDER`, defaulting to
+`rule_based` (also used for unknown settings):
 
-`backend/test/assistant.test.js` — intent classification (including the
-"my father is unconscious" → emergency example), sanitization, request
-validation (`400` on empty/oversized/invalid input), public access (no
-`401`), and rate limiting (`429` past the ceiling). No live AI provider or
-network access is required to run the suite.
+- `rule_based`: deterministic templates, no external API configuration or calls.
+- `openai`: optional server-side provider using `AI_API_KEY` and `AI_MODEL`.
+- `gemini`: optional server-side provider using the same assistant `AI_*` settings.
+
+API keys never belong in `NEXT_PUBLIC_*` settings or frontend bundles. Configure
+a provider/model available to the deployment; local rule-based tests do not prove
+external account credentials, model availability or hosted connectivity.
+
+External providers receive bounded context with real result summaries and a
+system prompt prohibiting invented providers, quantities, clinical diagnoses,
+dosages and dispatch claims. Those instructions are not a clinical correctness
+certification; optional generated reply text still requires live review.
+Provider exceptions fall back to the deterministic provider. Unexpected service
+failures return the unavailable state with emergency contact actions; backend
+network failures also produce an unavailable UI instead of hiding emergency
+contacts.
+
+These settings are separate from optional crawler refinement
+`GEMINI_ENABLED`/`GEMINI_API_KEY`/`GEMINI_MODEL`; see [crawler](crawler.md).
+
+## API and security
+
+`POST /api/assistant/message` is public and has a separate limiter: 20 requests
+per five minutes per IP. It validates a nonempty string of at most 500 characters,
+optional locality (at most 100 characters) and coordinate ranges. Sanitization
+strips control characters and caps messages. Raw credentials/provider errors are
+not included in the response.
+
+The response includes `reply`, `intent`, `source`, result arrays, suggested
+actions/prompts and detected locality/category/blood group. It does not create
+beds, blood inventory, jobs, bookings or applications. Follow-on submission
+routes enforce their own access, validation, idempotency and private tracking.
+See [API reference](api.md) and [security](security.md).
+
+## Verification and manual smoke checks
+
+- `backend/test/assistant.test.js`: intent priority across all supported domains,
+  blood-group/locality extraction, sanitization, public access, validation and
+  rate limiting.
+- `tests/e2e/assistant-ui.spec.js`: opaque header and viewport bounds, preserved
+  hospital actions, blood/ambulance/diagnostic/career actions, unavailable states
+  and durable ambulance booking/private tracking across all three variants.
+- [test-bot](../test-bot/README.md): a manual API reply smoke test, with deliberately
+  narrower assertions than the automated suite.
+
+Run the deterministic release commands in [Release QA](release-qa.md). No live
+OpenAI/Gemini requests were performed for this documentation update. The full
+browser suite's recorded pass is functional evidence for the tested fixtures;
+it is not a complete accessibility, visual or medical-content certification.

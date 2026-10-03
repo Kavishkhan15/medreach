@@ -1,156 +1,115 @@
-# MedReach — Architecture Map & Gap Analysis
+# MedReach architecture
 
-> Step 1–2 deliverable. Written **before** any restructuring, from a full read of the
-> working repository. It records what exists, what is kept, what is refactored, what is
-> missing, and what would violate the CSS-framework experiment if done carelessly.
+Current repository map, reviewed 2026-10-03. Use [Release QA](release-qa.md) for
+verification/deployment status and [inventory](MedReach_Implementation_Inventory.md)
+for remaining gaps. Target milestones are planning context, not release evidence.
 
-## 0. The one invariant that governs everything
+## System boundaries
 
-MedReach is simultaneously (a) an emergency hospital discovery platform and (b) a
-controlled experiment comparing **Bootstrap 5 / Tailwind 4 / Skeleton CSS**. The
-experiment is only valid if **the CSS framework and its presentation layer are the ONLY
-difference between the three variants**. Everything else — backend, API, database, shared
-core logic, HTML information architecture, accessibility semantics, content, business
-rules, data — must be byte-for-byte equivalent.
+```text
+Approved sources → crawler adapters → validated source claims
+                                      ↓
+Hospital staff → observations → MongoDB ← review/conflict/audit records
+                                      ↓
+                          Shared Express API
+                          ↙       ↓       ↘
+                     Bootstrap Tailwind Skeleton
+                                      ↓
+                         discovery, requests, tracking
+```
 
-Practical rule enforced throughout this restructure:
-- Logic, data, hooks, ranking, search, validation → `packages/core` (zero framework classes).
-- Only tone→class mapping and markup styling live in each `variants/*/lib/tone.js` + components.
+One backend/dataset serves three active frontends. Bootstrap is the functional
+reference. Designs and component markup differ; behavior is checked with actual
+API/browser journeys, not a byte-identical JSX claim. Shared client modules in
+`packages/core` contain no CSS framework classes.
 
----
+## Find the implementation
 
-## 1. Current state (audited, verified working)
+Backend paths below are relative to `backend/src` unless otherwise stated.
 
-**Baseline verified this session:** `npm run backend:test` → **7/7 pass**. `mongod`
-present at `/usr/bin/mongod`. No git repository. Node v24, npm v11.
+| Concern | Code | Guide |
+| --- | --- | --- |
+| API/startup | `app.js`, `server.js` | [API](api.md), [deployment](deployment.md) |
+| Auth/sessions/RBAC | `middleware/auth.js`, `controllers/authController.js`, `models/AuthToken.js` | [Security](security.md) |
+| Public hospital views | `services/hospitalDataLoader.js`, `hospitalDataView.js` | [Data model](data-model.md) |
+| Evidence/conflicts | `services/hospitalFieldFusion.js`, `facilityClaimFusion.js` | [Crawler](crawler.md) |
+| Bed lifecycle | `services/emergencyRequestService.js`, `emergencyRequestExpiry.js`, `bedRequestEmails.js` | [Lifecycle](bed-request-lifecycle.md) |
+| Blood/donation | `controllers/bloodRequestController.js`, `models/BloodRequest.js` | [Services](SERVICES_AND_MAP_GUIDE.md) |
+| Ambulance records | `controllers/resourceController.js`, `models/AmbulanceBooking.js` | [Services](SERVICES_AND_MAP_GUIDE.md) |
+| Applications | careers/organization controllers, `utils/careerReference.js` | [API](api.md) |
+| Public tracking | `routes/tracking.js`, frontend `app/track/page.js` | [Services](SERVICES_AND_MAP_GUIDE.md) |
+| Emails/retries | `services/emailService.js`, `emailBatch.js`, `userEmailService.js`, `routes/email.js` | [Latency](latency-verification.md) |
+| Scheduling/shutdown | `services/crawlerScheduler.js`, `gracefulShutdown.js` | [Deployment](deployment.md) |
+| Assistant/providers | `services/assistantService.js`, `aiProviders/` | [Assistant](ai-assistant.md) |
+| Optional refinement | `services/refinementService.js`, `models/RefinementCandidate.js` | [Crawler](crawler.md) |
+| Client/hook/ranking logic | `packages/core/src/` | [Variants](../variants/README.md) |
+| Independent dashboards | `variants/*/lib/useDashboard.js`, `app/dashboard/page.js` | [Parity](PARITY_VERIFICATION.md) |
+| Release tooling | `scripts/verify-*.mjs`, `release-check.mjs`, `tests/e2e/` | [QA](release-qa.md) |
 
-### Monorepo (npm workspaces)
-`backend`, `packages/core`, `variants/{bootstrap,tailwind,skeleton}`. Root scripts wire
-backend dev/seed/test, variant builds, and evaluation (`score`, `bundles`, `audit:deps`,
-`probe:react`).
+## Backend and persistence
 
-### backend/ (`@medreach/backend`) — Express 4 + Mongoose 8
-- `app.js` builds app (testable, no DB/listen); `server.js` connects DB + listens.
-- **config/** `env.js` (typed env w/ prod JWT guard), `db.js` (mongoose connect).
-- **middleware/** `auth.js` (JWT cookie/bearer + `requireRole` RBAC), `error.js`
-  (normalizes Mongoose/JWT/dup-key), `security.js` (helmet + strict CSP + CORS +
-  cookie-parser + auth rate-limiter — *the experimental constant*), `validate.js`.
-- **models/** `User` (bcrypt, `select:false` hash, roles `user|admin`, no medical data),
-  `Hospital` (GeoJSON 2dsphere, text index, slug hook, `emergencyStatus`, beds),
-  `Alert` (severity, region, expiry).
-- **routes/** `auth`, `hospitals`, `alerts`, `users`. **controllers/** matching.
-  **utils/** `asyncHandler`, `token` (sign/verify). **data/** `seedData.js`.
-- **tests/** 7 supertest/node:test cases (health, 404, helmet headers, validation, auth,
-  RBAC, token roundtrip). No DB required.
+`createApp()` mounts the Express routes without connecting/listening so Supertest
+uses the actual app. `server.js` connects MongoDB, starts HTTP and expiry/crawler
+workers, and registers graceful SIGTERM/SIGINT cleanup. Readiness becomes
+unavailable during shutdown; HTTP/workers drain before MongoDB disconnects.
 
-### packages/core (`@medreach/core`, ESM, `type:module`)
-- `api.js` isomorphic client (`NEXT_PUBLIC_API_URL` → localhost:4000).
-- `hooks.js` `useHospitals` (with **fixture fallback on API failure**), `useAuth`.
-- `format.js` **semantic tones** (`statusMeta`→success/warning/danger/neutral),
-  `severityMeta`, `distanceKm` (haversine), `SPECIALTIES`.
-- `fixtures.js` 6 sample hospitals + `filterFixtures`. `index.js` barrel.
-- **Contains zero framework classes today. This boundary is correct — preserve it.**
+Models separate accounts/sessions, hospitals, source claims and observations
+from requests, bookings, applications, audit and delivery records. Static
+capability never becomes current availability. Verified recent evidence is
+required; unknown quantities remain `null`. See [data model](data-model.md).
 
-### variants/{bootstrap,tailwind,skeleton} — Next.js 14 App Router
-- Identical route set: `/`, `/hospitals/[slug]`, `/login`, `/admin`. Each has
-  `components/{Navbar,HospitalCard}`, `lib/tone.js` (tone→framework class map),
-  `app/globals.css`. Bootstrap variant was recently restyled + is deployed.
-- tailwind adds tailwind/postcss devdeps; skeleton adds `skeleton-css`.
+Emergency submission is guest-accessible; standard bed requests require login.
+Both use the durable hospital-scoped lifecycle. Blood and ambulance have
+separate records; careers use public server-generated references rather than
+MongoDB IDs. Public tracking exposes status only; private details and mutations
+retain authorization requirements.
 
-### evaluation/
-- `scoring/risk-score.js` RWD Security Risk Score (8 fixed-anchor dims, weights, runnable
-  stub). `measure/bundles.mjs` (CSS/JS raw+gzip per variant). `security/audit.mjs`
-  (`npm audit --json` summary). Empty axis dirs: accessibility/privacy/responsiveness.
+Primary saves precede delivery attempts. Bed/blood/career submission emails use
+at most three concurrent tasks per request and await every outcome. The email
+service preserves unique event keys, send leases and encrypted eligible retry
+payloads. This is not a transactional outbox or a global SMTP concurrency limit.
 
-### Others
-`probe-react/probe.mjs` (XSS-surface probe), `docs/` (plan, results), `paper/outline.md`,
-`user-study/` (protocol/consent/instruments), `.github/workflows/evaluate.yml`,
-`run.sh` (backend + 3 variants). Bootstrap deployed at
-`https://medreach-bootstrap.antideploy.com` (fixture mode, `NEXT_PUBLIC_API_URL` unset).
+## Frontends
 
----
+All variants use Next.js 15.5.24 and React 18.3.1. Bootstrap aliases
+`@medreach/core` to `variants/bootstrap/_core/index.js` for standalone context;
+Tailwind/Skeleton resolve the workspace package. Shared changes must update
+both copies. Builds do not provide automatic vendoring synchronization.
 
-## 2. Retain / Refactor / Missing / Incorrect
+Routes cover hospitals/maps, requests, resources, urgent blood, careers, tracking,
+accounts, hospital operations and administration. The navbar omits Map; homepage
+**Full Map View →** opens `/map`. SOS is the only bottom floating action button;
+the assistant remains available through its existing entry actions.
 
-### KEEP AS-IS (good, correct boundaries)
-- Shared-security-as-constant design in `middleware/security.js` (the experiment's spine).
-- Semantic-tone boundary in `core/format.js` + per-variant `lib/tone.js`.
-- Fixture-fallback pattern in `useHospitals` (basis for demo/live mode).
-- JWT httpOnly-cookie auth, RBAC, `asyncHandler`, error normalization.
-- Evaluation instrument shape (fixed-anchor normalization is methodologically sound).
+Dashboard saved/profile, requests and applications fetch independently with
+section retries. Career history exposes public references, copy and tracking;
+Skeleton tracking also provides wrapping/copy and a manual clipboard fallback.
+This intentional presentation difference is recorded in [parity](PARITY_VERIFICATION.md).
 
-### REFACTOR (extend without breaking)
-- `config/db.js` → `config/database.js`; add `config/constants.js` (enums, thresholds).
-- `User.role` enum `user|admin` → `user|hospital_admin|system_admin` (+ `accountStatus`,
-  `lastLogin`). Keep `admin` acceptance via mapping so existing tests/seed stay green.
-- `Hospital`: split volatile availability OUT into `AvailabilityObservation`; add
-  `hospitalType`, `locality`, `pincode`, `verificationStatus`, `sourceIds`, structured
-  `facilities`. Keep `emergencyStatus`/beds as derived/compat fields.
-- Introduce **services/** layer (search/ranking/freshness/verification/availability) so
-  controllers stay thin — currently logic sits in controllers.
-- Move framework-independent search/filter/rank/emergency/location logic INTO `core`.
+API outages show errors/retry instead of substitute product data. Google Maps
+requires configured browser credentials; directory/contact actions stay usable
+when the map cannot load. GPS is opt-in; manual locality selection remains.
 
-### MISSING (must build)
-- Models: `HospitalFacility`, `AvailabilityObservation`, `DataSource`, `CrawlJob`,
-  `CrawlResult`, `AuditLog`.
-- Routes/controllers: `facilities`, `availability`, `sources`, `crawler`, `admin`,
-  `health` (as router).
-- **crawler/** subsystem (scheduler→registry→fetcher→adapter→parser→normalizer→validator
-  →confidence→freshness→db) with SSRF-safe fetch + robots/rate-limit/backoff.
-- **freshness + confidence + provenance** engines (deterministic, documented).
-- core modules: `constants.js`, `validation.js`, `ranking.js`, `emergency.js`,
-  `location.js`, `search.js`, `types.js`.
-- Frontend: `/map`, `/emergency`, `/admin/{hospitals,sources,crawler,verification,alerts,
-  audit}`; components EmergencyHero/Search/CategorySelector, HospitalMap, FacilityStatus,
-  DataFreshness, EmergencyMode, SOS, dashboards, verification queue.
-- Demo/live **system-state banner** (visible fixture labeling).
-- evaluation `performance/` + machine-readable `results/`.
-- docs: crawler/api/data-model/security/privacy/deployment.
+## Crawler, verification and research
 
-### INCORRECT / RISKS TO THE EXPERIMENT (guardrails)
-- Do NOT give one variant a feature another lacks. Every component/route added to
-  Bootstrap must be ported identically to Tailwind + Skeleton (Steps 9–10, 36, 37).
-- Do NOT let Bootstrap/Tailwind/Skeleton class names leak into `packages/core`.
-- Do NOT present fixture data as live (Steps 32–33). Banner required.
-- Do NOT add any AI/ML/LLM/recommendation/diagnosis (Step 17). Ranking is transparent,
-  rule-based, and inspectable.
-- Do NOT crawl user-supplied URLs — only approved `DataSource` registry entries; block
-  localhost/private ranges/non-http(s) (SSRF).
-- Keep `middleware/security.js` policy identical across variants or the comparison breaks.
+`crawler/` owns approved sources, adapters, robots/guarded fetch, parsing,
+normalization and persistence. The backend's `_crawler` copy supports server
+execution; changes must remain consistent. Scheduled work honors due times,
+pause state and blocked sources. It does not run inside Next.js.
 
----
+Optional Gemini ingestion refinement creates review candidates without
+publishing verified hospital facts automatically. See [crawler](crawler.md) for
+source policy and remaining fetch limitations. Seeds are not verification.
 
-## 3. Target module ownership (who owns what)
+[Release QA](release-qa.md) records disposable-database tests, mocked/disabled
+email, production builds and Chromium journeys. Live integrations, inbox receipt,
+hosted cookies/CORS and public health require separate evidence. Research tooling
+and proposed participant tasks live in `evaluation/`, `paper/`, `user-study/`;
+see [evaluation](../evaluation/README.md) for measurement limits.
 
-| Concern | Home | Shared? |
-|---|---|---|
-| Auth, RBAC, JWT, cookies | backend/middleware+controllers | ✅ constant |
-| DB models & persistence | backend/models | ✅ constant |
-| Search / filter / sort / rank / freshness / confidence | backend/services **+** packages/core (pure fns) | ✅ constant |
-| Crawler (fetch→normalize→validate→score) | crawler/ | ✅ constant |
-| API client, hooks, formatting, validation, constants, emergency, location | packages/core | ✅ constant |
-| Semantic design tokens (names) | packages/core (values only, no classes) | ✅ constant |
-| tone→class mapping, markup, CSS | variants/*/lib/tone.js + components + globals.css | ❌ varies (the IV) |
+## Intentional removals
 
----
-
-## 4. Execution plan (maps to spec Steps 3–18)
-
-1. **Backend + DB (Step 3):** config/constants, 6 new models, User role upgrade, services
-   skeleton, new routes/controllers, keep 7 tests green + add model/service tests.
-2. **Crawler (Step 4):** modular pipeline, SSRF-safe httpFetcher, base+generic adapter,
-   parsers, normalizers, validator; unit tests with fixture HTML/JSON (no live network).
-3. **Freshness/Confidence/Provenance (Step 5):** pure deterministic modules + tests + docs.
-4. **Core upgrade (Step 6):** constants/validation/ranking/emergency/location/search/types.
-5. **UX architecture + tokens (Step 7):** shared semantic token spec + component contract.
-6. **Bootstrap variant (Step 8):** all components + new routes.
-7. **Port to Tailwind + Skeleton (Steps 9–10):** strict behavioral parity.
-8. **Dashboards + verification + audit views (Step 11).**
-9. **Security/privacy/accessibility hardening (Step 12).**
-10. **Evaluation + performance axis + machine-readable results (Step 13).**
-11. **Tests + builds + parity verification (Steps 14–16).**
-12. **No-AI/ML audit (Step 17).**
-13. **Docs + README + deploy Bootstrap (Step 18).**
-
-**Method (Step 49):** incremental, tests+build after each stage, no half-migrated state.
-Verification runs against live MongoDB (available) where integration is claimed.
+Google OAuth and the in-app notification inbox, route, model and services are
+removed. Password authentication, email verification/recovery, request/status
+emails, delivery history and retries remain. Reintroducing removed features is
+a new product decision, not a documentation correction.

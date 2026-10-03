@@ -1,43 +1,62 @@
 # MedReach implementation inventory
 
-Status: Hospital Data Fusion & Verification milestone verified locally on 2026-09-14. This document separates running features from the target vision. It does not represent fixture data as live hospital data.
+Current repository state, reviewed 2026-10-03. This is a capability/gap inventory,
+not proof of live deployment or provider participation. [Release QA](release-qa.md)
+is the canonical owner of current test counts, commands and verification limits.
 
-## Already working
+## Implemented
 
-| Area | Current implementation |
+| Area | Implementation |
 | --- | --- |
-| Shared architecture | Express/Mongoose API, one MongoDB dataset, `packages/core` search/ranking/hooks, and matching Next.js route lists in Bootstrap, Tailwind, and Skeleton. |
-| Hospital discovery | Public search/profile/map, deterministic emergency categories and ranking, saved hospitals, contact/navigation links. |
-| Ingestion | Approved source registry; separate site and directory adapters; robots/redirect checks; parsing, validation, normalization, confidence/freshness, change detection, CrawlResult history. |
-| Data quality | Facility capability separated from current availability; per-source facility and hospital-field claims; verified recent observations only for public current status. Legacy hospital-wide bed writes are retired. |
-| Admin | Crawler overview, source/job controls, data quality, verification queue, facility and field claim review with evidence, audit log, and persistent conflict history. |
-| Security baseline | Auth/RBAC, scoped hospital edits and observations, HTTP security middleware, crawler redirect regression tests. Global crawler controls and conflict evidence are system-admin only; hospital staff cannot create a hospital and self-assign ownership. |
-| Research baseline | Three framework variants; bundle/security/performance scripts, SUS/NASA-TLX protocol. |
+| Architecture | Shared Express/Mongoose backend, MongoDB, shared core client/ranking/hooks, three active Next.js frontends with distinct designs |
+| Discovery | Hospitals/details, search, geo directories/maps, source/freshness/verification, saved hospitals and contact/directions |
+| Provenance | Per-source facility and hospital-field claims, evidence, conflicts/review history, verified recent observations for current availability |
+| Bed coordination | Guest emergency and signed-in standard requests, assigned staff review/information/accept/reject/complete, patient reply/cancel, expiry and timeline |
+| Resources | Blood-bank/diagnostic/ambulance listings, separate standard/urgent blood and donation records, durable ambulance bookings and delivery state |
+| Careers | Moderated jobs and organization applications, persisted unique public references, dashboard/confirmation tracking and staff review |
+| Tracking | Public reference-only status for blood, bed, career and ambulance; private detail/mutation authorization retained |
+| Accounts | Password login, region onboarding, recovery/verification, rotating/revocable sessions and system-only account administration |
+| Staff ownership | Evidence submission and manual ownership review before hospital access is assigned |
+| Email | Delivery records, safe failure metadata, eligible encrypted retries, patient status history and bounded submission email concurrency |
+| Dashboard resilience | Independent saved/profile, request and application fetching with targeted retry |
+| Ingestion | Registry-bound adapters, source schedules/pause controls, jobs/results, evidence normalization and blocked-source classification |
+| Operations | Scoped hospital staff, verification/conflicts, source/crawler/resource/job controls, analytics and audit |
+| Shutdown | HTTP and worker drain before MongoDB disconnect, unready state, repeated-signal handling and deadline |
+| Assistant | Compact responsive panel, real backend resource actions, deterministic default and optional server-side providers |
+| QA | Strict database gate, separate offline/live crawler checks, three production builds, browser journeys and backup/restore tooling |
 
-## Incomplete or fragile
+## Remaining limits
 
-| Area | Gap |
-| --- | --- |
-| Data fusion | Facility and identity/contact/specialty fields have distinct per-source claims and conflict review. Cross-source hospital identity uses unique exact canonical name, pincode, and compatible address; records with incomplete identity stay separate for review. |
-| Evidence | Every claim has source, page/reference URL, timestamp, parser marker, confidence, verification state, and evidence text. New crawls retain bounded source excerpts when available and track the page that supplied a field. Historical records without excerpts are explicitly labelled as normalized crawl evidence or internal legacy snapshots; the original page URL is retained when known. Keyword excerpts still require human interpretation and can contain negation. |
-| Conflicts | Facility and hospital-field disagreements retain both claims and durable review/resolution history, including after resolution. The admin view shows resolved as well as open conflicts. A separate merge/override decision remains future work. |
-| Hospital ownership | Hospital staff can edit assigned hospitals, but assignment has no documented ownership-proof workflow. Staff hospital creation is denied until one exists. Manual field edits have per-hospital manual-verification claims and AuditLog entries. Cross-document atomic audit guarantees require MongoDB transactions on a replica set. |
-| Scheduler | No automatic worker is started by `server.js`. The dashboard and API now explicitly report automatic scheduling as unavailable; manual Run/Run all still work. |
-| Crawler hardening | The legacy `BaseAdapter` redirect path now checks the original host and approved path on every hop. DNS resolution pinning and streaming response-size enforcement remain open. |
-| Experimental parity | Route lists, shared logic, and crawler admin actions match, but rendered markup is not literally identical. Evaluation CI is mostly a stub. |
+- **Live deployment:** hosted API/public URLs, CORS, cookies, health, `/track`,
+  real SMTP mailbox receipt, permitted live crawling and remote CI require their
+  own verification. Local tests do not prove these integrations.
+- **Care coordination:** requests do not reserve beds, establish blood inventory,
+  prove hospital participation or confirm ambulance dispatch.
+- **Evidence:** historical records can lack verbatim excerpts; keyword extraction
+  needs human interpretation. Unreviewed conflicts stay visible and unknown.
+- **Crawler fetch hardening:** DNS resolution/pinning, streaming download limits,
+  full-body timeout and some unreadable-robots policy cases remain limitations
+  described in [crawler](crawler.md); offline passes do not remove them.
+- **Recovery:** saved primary state survives secondary failures, but there is no
+  transactional outbox replay for an audit/email intent lost before it could be
+  stored. The email concurrency cap is per request, not global SMTP rate control.
+- **Research/accessibility:** placeholder scoring and preliminary bundle numbers
+  are not current empirical results. Controlled datasets, broad assistive-tech
+  testing and participant studies remain separate work.
 
-## Missing target modules
+## Intentional removals and retained behavior
 
-Emergency request lifecycle and hospital acknowledgement; hospital portal and ownership verification; resource/provider records and discovery for blood banks, diagnostics and ambulances; careers; notifications; a routing-backed ETA; optional evidence-gated Gemini ingestion refinement; richer analytics; and expanded research/user-study instrumentation.
+Google OAuth and in-app notifications are removed. Password login and all emails
+remain. Map was removed from the navbar only; `/map`, the homepage Full Map View
+link and integration remain. SOS is the only floating launcher; assistant
+functionality remains through its existing entry actions. Recreating removed
+features requires a new product decision.
 
-## Implementation order
+## Historical evidence
 
-1. Add a hospital ownership-proof workflow, scoped staff APIs, and transactional audit writes on a MongoDB replica set. Field-level source claims and conflict review are implemented; facility and hospital-field migrations were backed up, applied, and checked for idempotence locally.
-2. Add the minimal emergency bed-request model, state machine, privacy controls, hospital acknowledgement, and tracking UI in all three variants. A request is never a reservation.
-3. Add sourced service listings and careers with separate verification rules; show unknown availability where no current feed exists.
-4. Add optional Gemini candidate extraction after deterministic validation and human review; provider failure must not block ingestion.
-5. Expand operational analytics, map layers, automated evaluation, accessibility/security checks, and user-study tasks; run cross-variant parity checks at each slice.
-
-## Verification baseline
-
-At this milestone: backend 64 passed with 4 opt-in tests skipped in the ordinary suite; 4 isolated Mongo integration tests passed separately. Crawler 100 passed with 10 live-network tests skipped. Bootstrap, Tailwind and Skeleton production builds passed. A pre-migration facility backup is at `/tmp/medreach-fusion-backup-20260914`, and a field-claim backup is at `/tmp/medreach-field-fusion-backup-20260914`. The local database has 44 facility claims and 107 hospital-field claims across 18 hospitals. Thirty hospital fields without a supported historical source are labelled internal legacy snapshots; 76 historical claims have an explicit `unknown_historical` parser marker. Eight conflicting hospital fields remain open for admin review. Ten hospitals retain government-directory links and 59 historical directory listings remain. The public API returned consistent list/detail/facility views for all 18 hospitals, 87 selected field-provenance summaries, no public bed counts without observations, and matching CORS access for all three variant origins. The field migration's repeat dry-run planned zero new claims and zero metadata repairs. Full evidence and limitations: `docs/Hospital_Data_Fusion_Verification_Report.md`.
+The 2026-09-14 fusion milestone had 64 ordinary backend passes/four opt-in skips,
+four separate Mongo integration checks and 100 crawler passes/ten live skips.
+Those numbers and database-specific observations describe that historical
+snapshot only. See [fusion report](Hospital_Data_Fusion_Verification_Report.md)
+and [current release QA](release-qa.md) rather than treating old local backups or
+provider counts as current product state.

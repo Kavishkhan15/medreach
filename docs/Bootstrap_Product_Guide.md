@@ -1,45 +1,115 @@
-# MedReach Bootstrap product guide
+# MedReach product guide
+
+Reviewed 2026-10-03. The filename retains the Bootstrap reference, but workflows
+below apply to all three active variants. Their design systems remain distinct.
+See [Release QA](release-qa.md) for exact current verification and live gaps.
 
 ## Run locally
 
-Use Node.js 22.19 or newer and a local MongoDB on port 27017. From the repository root, install dependencies with `npm install`, copy `backend/.env.example` to `backend/.env`, and run `./run.sh`. The Bootstrap app is at `http://localhost:3000`; the shared API is at `http://localhost:4000`. `run.sh` starts only Bootstrap and the backend for this product phase. Tailwind and Skeleton remain in the repository for the later research comparison.
+Use Node.js ≥22.19.0 and a running MongoDB. From the repository root, run `npm ci`,
+copy `backend/.env.example` to `backend/.env`, and configure the development
+MongoDB and JWT secret. `./run.sh` starts the API on 4000, Bootstrap on 3000,
+Tailwind on 3001 and Skeleton on 3002. `./run.sh bootstrap`, `tailwind` or
+`skeleton` starts just that frontend and the API.
 
-To populate a safe local demo, run `npm run seed --workspace @medreach/backend`, `npm run sync:hospital-resources --workspace @medreach/backend`, then `npm run seed:product-demo --workspace @medreach/backend`. The resource sync derives listings only from persisted hospital claims; the product seed marks its additional providers and job as **demo**. It does not seed live availability or claim a hospital has accepted requests. Seed commands are additive and should be run against a development database.
+Set `CRAWLER_SCHEDULER_ENABLED=false` when local work must remain offline.
+Otherwise the launcher enables scheduling when the variable is unset.
+Provider data comes from the backend and approved-source ingestion. API errors
+never substitute fake providers, jobs, statistics, availability or ETA.
 
-## Working flows
+Seed scripts are development tools. The main seed **deletes and replaces**
+selected collections; do not run it against product or production data. Optional
+product-demo fixtures are explicitly demo data. Predefined jobs remain drafts
+awaiting verification, not evidence-backed published vacancies. See
+[backend setup](../backend/README.md) and [crawler](crawler.md).
 
-Users can register, sign in with a password, verify email, reset and change a password, inspect and revoke sessions, search hospitals, inspect provenance, save hospitals, submit and track emergency bed requests, receive in-app notifications, search care resources, and apply for moderated jobs. An emergency request is a coordination message, never a confirmed bed reservation. A request is marked **SENT** only when that hospital has an assigned administrator; otherwise it remains **REQUESTED** until reviewed or expired. A background worker expires unattended requests.
+## Patient journeys
 
-Hospital staff see only assigned hospitals. They can update permitted contact fields, submit source-specific facility capability statements with a supporting statement for review, submit timestamped availability observations, review requests, and manage jobs. Staff capability statements are audited and remain unverified until system-admin review; they cannot set current availability or bed counts. Prospective staff submit an ownership claim; a system administrator must manually approve it before hospital access is assigned. After approval, the user should sign in again to refresh their role token. System administrators review ownership, jobs, source claims, conflicts, crawler state, resources, analytics, audit logs, safe authentication events, and user accounts. They can enable or disable accounts, revoke sessions, trigger reset/verification email, and perform guarded role changes. Hospital administrators never receive system user/security access. Public hospital data retains source-level claims and never treats static capability as live availability.
+- **Hospitals:** search/filter, inspect source/verification/freshness, contact,
+  directions, save a hospital, and submit a signed-in standard bed request.
+- **Emergency:** `/emergency` submits only emergency bed requests and permits
+  guests. Ambulance assistance inside bed requests is arranged by the hospital;
+  users do not select an ambulance provider there.
+- **Hospital response:** connected active staff receive the request in their
+  portal; review, information exchange, acceptance/rejection and completion
+  update the durable timestamped timeline. Patients may cancel and track.
+  `SENT` means routed to connected staff, not proof of email receipt or review.
+- **Blood:** normal requests/donation pledges use the blood-bank flow. Urgent
+  requests use `/urgent-blood`, separate from emergency beds, with separate
+  urgency choices. No live blood inventory is implied.
+- **Ambulance:** call/navigate or record a booking for the selected provider.
+  The record/reference and email outcomes persist; dispatch is not guaranteed.
+- **Careers:** apply to a job or organization and receive a public `CAR-...`
+  reference. Confirmation emails and dashboard history include tracking.
+- **Track request:** `/track` supports blood/donation, bed, career and ambulance.
+  Enter type/reference for public status only. No private token field is needed
+  there. Authorized detail links retain guest credentials for private data and
+  changes; reference-only access cannot reveal contact or medical details.
 
-The public resource endpoints are `/api/blood-banks`, `/api/diagnostics`, and `/api/ambulances`. Their cards show source, freshness, and demo status. A listed blood bank does not imply current inventory; an ambulance listing does not imply live dispatch. The `/map` route offers location-aware list filtering and an interactive Google Maps view with real facility markers and Google Maps navigation links; when `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is unset, it displays an informative setup fallback while preserving full list search and filtering.
+Read the [bed lifecycle](bed-request-lifecycle.md), [services/maps](SERVICES_AND_MAP_GUIDE.md)
+and [API contracts](api.md) for exact state/access rules.
 
-## Optional services
+## Accounts and dashboards
 
-`EMAIL_ENABLED=false` is the default. Registration verification, password reset/change, emergency request/response, job/application, hospital ownership, and admin security events create delivery intent records without attempting SMTP. Raw verification/reset tokens are never returned by the API or stored in delivery records. SMTP failures are categorized without storing provider messages that may echo credentials and never abort the related product flow.
+Password registration/login, region onboarding, verification, reset/change and
+session inspection/revocation are available. Login redirects preserve the
+intended application/request destination. Google OAuth is removed.
 
-### Google Maps JavaScript API setup
+The patient dashboard loads saved/profile, bed requests and career applications
+independently. An outage shows a targeted retry in that section. Application
+references have copy/tracking actions; Skeleton's tracking card also offers copy
+and a manual fallback when clipboard permission is denied.
 
-1. In Google Cloud Console, navigate to **APIs & Services → Library**.
-2. Enable **Maps JavaScript API** (only this single API is required; directions open directly via Google Maps navigation URLs without requiring billing for server-side routing APIs).
-3. Under **APIs & Services → Credentials**, create an API key. Restrict it to HTTP referrers (e.g., `http://localhost:3000/*` and your production origin).
-4. Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `variants/bootstrap/.env.local`.
-5. If the key is missing or empty, the map page gracefully displays a setup notice without crashing, keeping the resource search list fully accessible.
+In-app notification pages, API and storage writes are removed. All emails,
+patient-facing delivery history and controlled eligible retries remain.
 
-### Gmail App Password SMTP setup
+## Hospital staff and administrators
 
-1. Enable 2-Step Verification on the sending Google account. In **Google Account → Security → App passwords**, create an app password named `MedReach SMTP` (a Workspace administrator may need to permit app passwords).
-2. Set `EMAIL_ENABLED=true`, `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`, `SMTP_SECURE=false`, `SMTP_USER` to the full Gmail address, `SMTP_PASSWORD` to the 16-character app password with spaces removed, `SMTP_FROM` to the same authorized address, and `SMTP_FROM_NAME=MedReach`. Port 465 instead requires `SMTP_SECURE=true`.
-3. Keep `SMTP_CONNECTION_TIMEOUT_MS=8000` or tune it for the deployment, restart the backend, and verify a delivery changes from `pending` to `sent` in the system-admin view. Never use the normal Google account password.
+Assigned hospital staff can edit allowed fields, submit evidence-backed capability
+claims for review, enter timestamped availability observations, review requests
+and manage applications/jobs within their scope. Unassigned staff cannot access
+another hospital's records. Ownership requests require manual system-admin review.
+Capability claims never establish current availability by themselves.
 
-`ROUTING_PROVIDER=none` returns an unknown travel time. A configured OSRM-compatible routing endpoint can provide route distance and duration through `/api/routing/hospital/:id`; when unavailable, the UI shows straight-line distance only and says travel time is unavailable. No travel-time estimate is invented.
+System administrators review ownership, jobs, source claims/conflicts, crawler
+state, resources, analytics, audit and safe account/security metadata. Email
+configuration/history/retry and user/session administration are system-admin-only.
+No verification is granted just because data was seeded.
 
-`CRAWLER_SCHEDULER_ENABLED=true` starts a worker with a three-minute due-source check (`CRAWLER_SCHEDULER_TICK_MS=180000`). Each registered source keeps its own interval; blocked sources are skipped. Admin pause/resume and manual crawl controls remain available. The scheduler requires a running backend and MongoDB. It does not bypass source access controls.
+## Maps, SOS and assistant
 
-`GEMINI_ENABLED=false` leaves the optional evidence refinement disabled. With a key configured, refinement considers only exact stored source excerpts and validates suggestions against a fixed facility schema. Suggestions enter a separate admin review queue; they do **not** automatically modify a hospital's canonical record. Deterministic extraction continues when Gemini is unavailable. This is distinct from the legacy optional AI assistant.
+The homepage's **Full Map View →** opens the existing `/map` route. Map is removed
+only from the top navbar. Backend provider markers and map/list selection remain;
+contact/directory actions remain usable if Maps credentials or location fail.
+Manual locality selection is available when GPS is denied/unavailable.
 
-## Validation and honest boundaries
+SOS is the single bottom-right floating action button. The healthcare assistant
+still opens through its existing emergency-help actions and event entry points.
+Its opaque header, scrollable conversation, compact actions and sticky input
+preserve backend integration. See [assistant](ai-assistant.md).
 
-The product workflow has MongoDB integration tests in `backend/test/product.mongo.test.js` and `backend/test/authSecurity.mongo.test.js`; set `MEDREACH_PRODUCT_TEST_MONGO_URI` / `MEDREACH_AUTH_TEST_MONGO_URI` to isolated test database names to run them. SMTP is mocked, so no live credentials are needed. The deterministic backend and crawler suites run without network access. Live crawler probes run separately with `npm run crawler:test:live`; their passing contract checks do not mean every external source is reachable.
+## Email and optional integrations
 
-Current limitations: no real hospital bed reservation or dispatch integration, no current blood inventory feed, no live SMTP or routing provider configured by default, no street-map tiles, no automatic proof of hospital ownership, and no automatic promotion of Gemini suggestions. Only Bootstrap is actively developed for this phase; Tailwind/Skeleton parity is future research work. Historical source records may lack a verbatim excerpt, and unsupported availability remains unknown.
+Email delivery is configured once on the shared backend, not per frontend.
+With `EMAIL_ENABLED=false`, intent records are stored without SMTP traffic.
+With SMTP enabled, records distinguish attempted/sent/failed outcomes. `sent`
+means mail-server acceptance, not confirmed inbox receipt. Auth tokens are not
+returned by the API or stored in replayable email payloads.
+
+Bed, blood and career submissions attempt up to three independent emails at
+once, save the primary record first and await all delivery attempts. Eligible
+failed messages can be retried through system-admin email controls. See
+[latency verification](latency-verification.md) and [deployment](deployment.md).
+
+Google Maps uses optional public browser credentials. Routing defaults to
+unknown duration unless a real provider is configured. The assistant defaults
+to deterministic rules; optional AI keys remain on the backend. Optional Gemini
+ingestion refinement produces cited review candidates, never automatic facts.
+
+## Verification limits
+
+Automated local tests use isolated accounts/providers/databases and disabled or
+mocked outbound email. Production builds and browser journeys do not prove live
+hospital participation, dispatch, inventory, mailbox receipt, hosted health or
+physical-device accessibility. Known crawler fetch limitations and proposed
+research work remain documented; use [Release QA](release-qa.md) before rollout.

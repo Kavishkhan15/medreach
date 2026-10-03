@@ -1,23 +1,32 @@
-# MedReach Three-Variant Full Parity Verification
+# MedReach frontend parity
 
-> Historical snapshot. Its route and test counts describe an earlier checkout. Use [release QA](release-qa.md) for the current local gates and separate hosted verification requirements.
+Bootstrap is the functional reference. Tailwind and Skeleton preserve their own
+design systems while using the same backend APIs and authorization contracts.
+Matching routes or successful builds do not prove complete functional parity.
 
-## Overview
-All three frontend variants in the MedReach monorepo have reached 100% functional parity with 36 application routes, connecting to the live backend service and real Mumbai healthcare database.
+## Shared journeys
 
-## Variants Covered
-1. **@medreach/variant-bootstrap** (Port 3000) — Bootstrap 5 reference implementation
-2. **@medreach/variant-tailwind** (Port 3001) — Tailwind CSS v4 design system
-3. **@medreach/variant-skeleton** (Port 3002) — Skeleton CSS custom design system
+- Hospital discovery/details, maps and contact/navigation actions.
+- Guest emergency and signed-in standard bed requests, hospital review,
+  information exchange, acceptance/rejection, completion, cancellation and expiry.
+- Blood requests/donations, urgent blood, ambulance booking and tracking.
+- Job and organization applications with public `CAR-...` references.
+- Authentication, profile onboarding, recovery, verification and administration.
+- Assistant actions, private detailed tracking and independent dashboard retries.
 
-## Verified 36 Application Routes
-- **Care Discovery**: `/`, `/hospitals`, `/hospitals/[slug]`, `/emergency`, `/map`
-- **Network Services**: `/blood-banks`, `/urgent-blood`, `/diagnostics`, `/ambulances`, `/careers`, `/jobs/[id]`
-- **Coordination & Staff**: `/requests`, `/requests/new`, `/requests/[id]`, `/hospital`, `/hospital/jobs`
-- **Account & Security**: `/login`, `/register`, `/forgot-password`, `/reset-password`, `/verify-email`, `/profile`, `/dashboard`, `/notifications`
-- **Admin Management**: `/admin`, `/admin/hospitals`, `/admin/sources`, `/admin/crawler`, `/admin/verification`, `/admin/alerts`, `/admin/audit`, `/admin/users`, `/admin/security`, `/admin/operations`
+Career dashboard history exposes the reference with copy and tracking actions.
+Skeleton's career tracking card also provides a copy action and manual-copy
+fallback. Bootstrap and Tailwind tracking cards keep their existing behavior.
+In-app notifications and Google OAuth are removed; all transactional emails,
+email delivery history and controlled retries remain supported.
 
-## Quality Gates Passed
-- **Next.js Production Builds**: 37/37 static and dynamic pages generated in all 3 variants.
-- **Backend Test Suite**: 156/156 passing tests with zero regressions.
-- **Evaluation Scoring**: Security Risk Score, performance, and accessibility verified.
+## Verification — 2026-10-03
+
+All 247 backend tests, 112 offline crawler tests, three production builds and 87
+Chromium journeys passed. The browser suite includes the former 66 journeys and
+later regression coverage for failures, responsive navigation, references and
+clipboard denial. No tests in the local backend/browser suites were skipped.
+
+See [release QA](release-qa.md) for test scope, repeatable commands and live
+deployment requirements. These results do not claim exhaustive interaction,
+accessibility, production SMTP, remote CI or hosted-deployment verification.

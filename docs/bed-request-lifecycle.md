@@ -1,8 +1,8 @@
-# Hospital response and private patient tracking
+# Hospital response and request tracking
 
 This milestone covers emergency and standard bed requests in Bootstrap, Tailwind
 and Skeleton. It uses the existing request API, MongoDB state, audit records,
-in-app notifications and durable email delivery records.
+durable email delivery records. In-app notifications have been removed.
 
 ## State and access contracts
 
@@ -39,13 +39,20 @@ without an email address as well as signed-in patients.
 
 Updates compare the current state and timeline length. Stale actions are rejected
 with 409; identical retries of the most recent action return its saved result
-without creating another timeline entry, audit record or notification.
+without creating another timeline entry, audit record or email delivery.
 
 ## Tracking UI
 
+Public `/track` asks only for type/reference and supports blood/donation, bed,
+career and ambulance summaries. It does not display a private token field.
+`GET /api/tracking/bed/:reference` returns only reference, status and update time;
+it cannot retrieve patient details or change state. The private detail page
+below is a separate access-controlled flow reached through submission links or
+signed-in ownership.
+
 The detail page shows hospital contact/navigation actions, response messages,
-timestamps and patient-facing notification history. Delivery labels distinguish
-recorded in-app notifications, disabled email, queued email, failed email and
+timestamps and patient-facing email delivery history. Delivery labels distinguish
+disabled email, queued email, failed email and
 email accepted by the mail server. SMTP acceptance does not prove inbox receipt.
 Internal staff recipients, SMTP errors and encrypted retry payloads are not
 included in the tracking response.
@@ -53,7 +60,8 @@ included in the tracking response.
 Status refreshes every 20 seconds while the page is visible, and a manual refresh
 is available. Outages preserve the last checked status with a warning and disable
 mutation controls until status can be refreshed. Access failures clear the record.
-Guest tracking includes manual token entry and a selectable private tracking link.
+The private guest detail view includes credential recovery and a selectable
+private tracking link. This does not add token entry to public `/track`.
 New request controls have at least 44-pixel touch targets; reply/token fields use
 16-pixel text. Every design keeps its own styles.
 
@@ -62,13 +70,13 @@ New request controls have at least 44-pixel touch targets; reply/token fields us
 ```sh
 npm run backend:test:db
 npm run build:variants
-MEDREACH_E2E_MONGO_URI=mongodb://127.0.0.1:27017/medreach_lifecycle_e2e npm run test:e2e
+MEDREACH_E2E_MONGO_URI=mongodb://127.0.0.1:27017/medreach_lifecycle_e2e MONGODB_URI=mongodb://127.0.0.1:27017/medreach_lifecycle_e2e AI_PROVIDER=rule_based npm run test:e2e
 
 git diff --check
 ```
 
 `backend/test/bedRequestLifecycle.mongo.test.js` covers routing, permissions,
-notifications, full response/reply/completion, guest tracking and cancellation,
+emails, full response/reply/completion, guest tracking and cancellation,
 immutable message history, concurrent responses, stale updates, repeated
 transitions, expiry, malformed updates and saved responses despite audit/email
 failures. Its database gate is explicitly enabled by `backend:test:db`.
@@ -82,7 +90,11 @@ and databases; no production hospital response is simulated in public data.
 Client IPs in these journeys are isolated using the configured proxy header;
 production rate limits remain enabled.
 
-## Local verification evidence — 2026-10-02
+## Historical lifecycle verification — 2026-10-02
+
+The table records the original lifecycle pass. The expanded current backend and
+browser suites are recorded in [Release QA](release-qa.md); these older counts
+are not the current release totals.
 
 | Check | Result |
 | --- | --- |
@@ -100,13 +112,17 @@ No dependencies or environment files were changed. No commit or push was made.
 
 ## Remaining operational limits
 
+Bed submission email attempts now use bounded concurrent batches; all outcomes
+are awaited, and status-update emails retain their existing behavior. See
+[latency verification](latency-verification.md) for measurements and limits.
+
 - Live SMTP receipt and real staff participation require live verification.
 - A disconnected hospital cannot receive requests through a staff inbox. The UI
   says receipt is unconfirmed and preserves direct contact actions.
 - Tracking uses polling; background or closed tabs do not receive browser push.
 - Guest callers without email receive updates on their private tracking page.
-- Audit/notification-store failures are logged and do not undo saved state.
+- Audit/email-store failures are logged and do not undo saved state.
   Failed email deliveries retain the existing controlled retry mechanism when
   a delivery record could be stored. There is no transactional outbox that can
-  replay an audit or in-app notification lost during a database write failure.
+  replay an audit or email delivery intent lost during a database write failure.
 - Coordination does not reserve a bed, prove inventory, or confirm dispatch.

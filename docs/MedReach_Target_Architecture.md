@@ -1,6 +1,18 @@
 # MedReach target architecture
 
-**Status:** product direction and implementation plan, not a claim that every module below exists today. Updated 2026-09-14.
+**Status:** product direction and milestone context, reviewed 2026-10-03. Use the
+[architecture map](architecture.md), [current inventory](MedReach_Implementation_Inventory.md)
+and [Release QA](release-qa.md) for implementation and verification status.
+
+Since the original 2026-09-14 plan, field fusion, hospital ownership review,
+standard/emergency bed coordination, resource requests/bookings, careers and
+public-reference tracking have been implemented across all three variants.
+Email delivery/history/retry remains; in-app notifications and Google OAuth
+are intentionally removed. Submission email batching improves local latency
+without making hospital participation or dispatch claims.
+
+**Historical first-slice evidence — 2026-09-14:** the next two paragraphs retain
+the scope and gaps recorded at that milestone; they are not current status.
 
 **First implemented slice:** facility capability now has a separate field and
 per-source claims. Newly crawled facility claims retain a bounded source-text
@@ -47,31 +59,31 @@ Crawler and source adapters → normalized, evidence-backed claims
 
 The emergency response branch provides guidance to call local emergency services and helps find and contact suitable hospitals. A bed request is a request for a hospital to review; it is **not** a reservation, ambulance dispatch, or guarantee of care until that hospital explicitly accepts it. Blood bank, ambulance, diagnostics, and careers are separate services with their own source, verification, and update rules. A listing of a service does not imply live availability.
 
-## Current foundation and gaps
+## Foundation and remaining target work — 2026-10-03
 
 | Area | Present in repository | Needed for target |
 | --- | --- | --- |
-| Hospital discovery | Shared search/ranking, three frontends, hospital and observation models | Public API must return a resolved, provenance-aware view; ranking must distinguish capability from current availability. |
-| Ingestion | Nine registered sources, site and directory adapters, validation, change detection, CrawlResult history, admin controls | Close the legacy redirect gap and other fetch limits; add claim-level fusion, conflict handling, and source-specific freshness. |
-| Verification | Admin queue and hospital/admin roles | Hospital ownership proof, scoped staff permissions, field-level decisions and audit trail. |
-| Emergency workflow | Emergency pages, category matching, contact/navigation | Request lifecycle, hospital acknowledgement, expiry, privacy rules, and explicit failure states. |
-| Gemini | Existing optional assistant/provider code | Separate, opt-in **ingestion refinement** pipeline that creates cited suggestions for human review; no diagnosis or unsourced facts. |
-| Services | Blood Bank, Ambulance, CT, MRI exist as facility labels | Service records, source/partner relationships, public directory pages, and verified current-status contracts where applicable. |
-| Research | Security/performance scripts and user-study protocol | Repeatable accessibility/responsiveness/usability measurement, fixed datasets, and automated cross-variant parity checks. |
+| Hospital discovery | Resolved provenance-aware views, capability/current-availability separation and three frontends | Expand controlled accessibility/performance evidence; verify hosted Maps and contact behavior. |
+| Ingestion | Approved registry, site/directory adapters, claim fusion, conflict review, schedules and history | Remaining DNS, streaming/body timeout and unreadable-robots limitations are documented in [crawler](crawler.md). |
+| Verification | Manual ownership review, scoped staff, field-level decisions and audit | Real organizational participation and deployment operating procedures. |
+| Emergency workflow | Full durable standard/emergency lifecycle, expiry, private detail access and reference-only summaries | Live hospital review and operational response testing; no bed reservation guarantee. |
+| Gemini | Separate opt-in ingestion review candidates and optional assistant provider | Authorized live-provider verification; never automatically promote suggestions into verified facts. |
+| Services | Resource directories, blood/urgent/donation flows, ambulance records, job/organization applications and tracking | Real feeds/partners if inventory or dispatch confirmation is ever introduced. |
+| Research | Release browser journeys, bundle/scoring tools and proposed study protocol | Controlled datasets, measured scoring inputs, broad accessibility and participant results. |
 
-## Data contracts to implement first
+## Original milestone contracts and continued constraints
 
 1. **Source claim:** `hospitalId`, `field`, typed `value`, `sourceId`, exact `sourceUrl`, evidence excerpt/hash, collection method, observed/retrieved timestamps, confidence inputs, verification status, and parser version. Keep conflicting claims rather than overwriting them.
 2. **Resolved field:** selected claim ID, resolution rule, effective timestamp, freshness, confidence, and conflict flag. An administrator can resolve a conflict with an audited reason; source priority alone must not silently convert an old claim into a current one.
 3. **Facility capability:** `yes | no | unknown`, backed by a source claim. **Current availability:** `available | limited | unavailable | unknown`, with `asOf`, source, and optional quantity. A static page saying “42 ICU beds” is capacity evidence only; it cannot set available beds to 42.
-4. **Emergency request:** hospital ID, request category, minimal contact details, status, expiry, hospital acknowledgement/decision timestamps, and audit events. Do not store diagnosis or detailed medical history in the first version. The API and UI must show pending, declined, expired, and unavailable states honestly.
+4. **Emergency request:** hospital ID, request category, contact details, status, expiry, response timestamps and audit events. The implementation permits bounded patient summaries and notes, so these records contain sensitive information; see [privacy](privacy.md). The API/UI must show pending, declined, expired and unavailable states honestly.
 5. **Service listing:** service type, provider, geography, contact or booking link, source evidence, verification, freshness, and an explicit availability basis. Careers are not emergency services and use a distinct workflow.
 
 ## Implementation milestones and acceptance gates
 
 ### 0. Make existing data safe to compose
 
-- Keep the current site/directory pipeline. The legacy `BaseAdapter` redirect path now rejects unapproved hosts/paths; review DNS resolution, streaming size limits, and robots failure handling before expanding source volume.
+- Keep the current site/directory pipeline. The legacy redirect origin/path gap is fixed. DNS resolution, streaming size limits, full-body timeout and some robots failure handling remain limitations; see [crawler](crawler.md).
 - Separate facility capability from availability in the schema and API. Remove or clearly label legacy defaults that imply an emergency department is open or beds are available when no observation exists.
 - Ensure the hospital finder receives facilities, latest observations, provenance, and freshness from the shared API. A static-site crawl must render availability as **unknown** in all three variants.
 - Gate: local mock tests, MongoDB integration checks, backend suite, crawler suite, three builds, and a cross-variant fixture assertion.

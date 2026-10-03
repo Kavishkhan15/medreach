@@ -1,67 +1,119 @@
-# MedReach Services, Emergency Blood & Map Integration Guide
+# Services, maps and request tracking
 
-## Overview
-This document outlines the architectural enhancements for Mumbai healthcare care networks, multi-category map parity, ambulance booking, and emergency blood dispatch workflows across all frontend variants (Bootstrap, Tailwind, Skeleton).
+Current contracts, reviewed 2026-10-03. Applies to Bootstrap, Tailwind and
+Skeleton with their own designs. See [parity](PARITY_VERIFICATION.md) and
+[Release QA](release-qa.md) for tested coverage and live limitations.
 
----
+## Healthcare map
 
-## 1. Multi-Category Nearby Care Map Parity
+Hospitals, blood banks, diagnostics and ambulance providers use backend records.
+Providers with usable stored coordinates can appear as category markers;
+coordinates do not automatically imply the listing is verified. Map/list
+selection, provider details, contact and directions use actual record fields.
+Unknown availability and hours stay unknown.
 
-All four provider categories (Hospitals, Blood Banks, Diagnostics, Ambulances) share identical functional and visual parity with the primary hospital experience:
-- **Interactive Marker Map**: Providers with verified geographical coordinates are plotted on Google Maps with distinct category pins.
-- **Provider Popup**: Marker clicks open an interactive popup displaying provider name, category badge, address/locality, contact phone, operating hours, and direct navigation links.
-- **Synchronized Directory List**: Selecting a provider from the directory list centers and highlights the marker on the map.
-- **Rich Detail Card Below Map**: Displays complete provider data, contact actions, operational status, and verification source evidence.
+The top navbar intentionally omits Map. The homepage **Full Map View →** button
+continues to open `/map`. Maps integration, markers and the complete map route
+remain. Without map loading or GPS permission, directory search, manual locality
+and available contact/navigation actions stay usable.
 
----
+Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` for each frontend at build time; Maps browser
+configuration is separate from backend routing duration. See
+[deployment](deployment.md). No ETA is inferred from a static listing.
 
-## 2. Ambulance Booking & Fleet Management
+## Bed flow separation
 
-### Actions Available on Every Listing:
-1. **Call Provider**: Direct `tel:` link to verified dispatch lines.
-2. **Navigate**: Google Maps turn-by-turn routing with exact latitude and longitude coordinates.
-3. **Book Ambulance**: Launches `AmbulanceBookingModal` pre-associated with the selected ambulance provider.
+Hospital detail pages submit signed-in **standard bed requests**. `/emergency`
+submits **emergency bed requests** without requiring login. Blood emergencies
+use `/urgent-blood`; they never submit emergency bed records. Ambulance assistance
+within a bed request is arranged by hospital staff, with pickup information if
+required; it does not ask the patient to choose an ambulance provider.
 
-### Booking Modal Specifications:
-- **Patient Name \***: Required field.
-- **Patient Age \***: Required numeric field (> 0).
-- **Ambulance Required?**: Yes/No toggle. When 'Yes', pickup location input is dynamically displayed and validated.
-- **Notes / Clinical Information**: Optional input for medical handoff instructions.
-- **Direct Emergency Fallback**: Prominent callouts to dial 108 or 112 for acute life-threatening situations.
+Both bed types use the real hospital-scoped lifecycle and private detail view.
+See [bed lifecycle](bed-request-lifecycle.md).
 
----
+## Ambulance booking
 
-## 3. Blood Services & Emergency Requisition
+A provider listing offers call/navigation when the corresponding real contact or
+location is present, plus the existing booking modal. It collects patient name,
+age (1–130), ambulance requirement, pickup information when required, contact
+phone/email and optional notes. Server validation checks the provider type and
+active status; at least one contact method is required.
 
-### A. Specific Blood Bank Page (`/blood-banks`)
-- **Login Required**: Requisitioning blood units or pledging blood donations requires user authentication. Unauthenticated users are directed to the login/registration gateway.
-- **Normal Requirement Timing**: Options restricted to routine clinical schedules:
-  - `3 days`
-  - `1 week`
-  - `2 weeks`
-  - `1 month`
+`POST /api/ambulances/book` saves an `AmbulanceBooking` with its public `AMB-...`
+reference, request/provider snapshots and per-channel delivery status before
+attempting emails. A recorded request is not confirmed dispatch. The response
+and authorized history distinguish user/admin/provider email outcomes. Failed
+eligible deliveries retain controlled retries.
 
-### B. Dedicated Urgent Blood Flow (`/urgent-blood`)
-- **Separate from Bed Requests**: Bypasses the emergency bed admission triage form, dispatching directly to the blood management system (`/api/blood-requests`).
-- **Urgency Options**:
-  - `within 6 hours`
-  - `12 hours`
-  - `18 hours`
-  - `24 hours`
-  - `up to 2 days`
-- **Rapid Unit Presets**: Quick buttons for 1, 2, and 4 unit selections.
-- **Dispatch Tracking**: Issues immediate reference code (`BR-YYYYMMDD-XXX`) with tracking details and printable confirmation.
+## Blood requests and donation pledges
 
-## 4. Reference-only request tracking
+The blood-bank modal preserves sign-in handling and its intended destination.
+Backend standard submission uses optional authentication with validation/access
+rules; urgent submission remains guest-accessible. API permission and frontend
+entry behavior are different contracts; see [API](api.md).
 
-Across Bootstrap, Tailwind and Skeleton, `/track` asks for the request type and
-reference. Users do not need to enter a private token. The public, rate-limited
-`GET /api/tracking/:type/:reference` endpoint returns only the reference, current
-status and last update time for blood requests/donation pledges and ambulance
-bookings. It does not return patient/donor names, contact details, blood groups,
-medical notes, pickup addresses or provider choices, and cannot change a request.
+Normal requests and donation pledges use `POST /api/blood-requests/standard`;
+urgent requests use `POST /api/blood-requests/urgent`. A standard request requires
+a listed active blood bank. Routine urgency choices are:
 
-Submission links continue to open authorized details automatically using their
-embedded credential; signed-in owners can also access their own details. The
-private credential is removed from the address bar after opening a link. The
-existing detailed retrieval endpoints retain their access controls.
+- `3 days`
+- `1 week`
+- `2 weeks`
+- `1 month`
+
+Urgent choices are:
+
+- `within 6 hours`
+- `12 hours`
+- `18 hours`
+- `24 hours`
+- `up to 2 days`
+
+Saved references use `BR-YYYYMMDD-XXXXXX` for requests or
+`BDP-YYYYMMDD-XXXXXX` for donation pledges. Confirmation/status does not prove
+inventory or fulfillment. Urgent requests can remain unassigned to a bank;
+contact a real provider to confirm availability.
+
+## Career application references
+
+Job applications receive server-generated `CAR-J...` references; organization
+applications receive `CAR-O...` references. Each includes 14 random hexadecimal
+characters after its namespace and is protected by a unique database index.
+MongoDB document IDs are not public tracking references. Submission responses,
+dashboard history and confirmation emails expose the persisted reference and
+tracking link. Staff application review retains its protected internal endpoints.
+
+## Reference-only tracking
+
+All three `/track` dropdowns retain four choices:
+
+1. Blood request or donation pledge
+2. Bed request
+3. Career request
+4. Ambulance booking
+
+`GET /api/tracking/:type/:reference` accepts `blood`, `bed`, `career` or
+`ambulance`, validates the reference pattern and returns only
+`{record: {reference, status, updatedAt}}`. Lookup is public, rate-limited,
+case-normalized and marked `Cache-Control: no-store`. Wrong type/malformed input
+returns 400; an unknown valid reference returns 404. No contact, clinical,
+resume, pickup or provider-choice fields are exposed; public lookup cannot
+cancel or modify a record.
+
+A signed-in owner or saved private guest link may open authorized detail views.
+Embedded guest credentials are removed from the address bar after opening and
+kept in memory/session storage as supported. Preserve those links for private
+access; removing the public token field did not remove detail authorization.
+
+Skeleton career references wrap and provide copy/manual-copy fallback. Dashboard
+copy/tracking works across all variants. Bootstrap/Tailwind public tracking
+presentation retains its existing behavior.
+
+## Email reliability
+
+In-app notifications are removed; all emails remain. Bed/blood/career submission
+email attempts now overlap in batches of at most three per request, preserving
+saved records, event-key deduplication and eligible retries. Responses await
+all attempts; successful SMTP acceptance is distinct from mailbox receipt and
+provider participation. See [latency verification](latency-verification.md).

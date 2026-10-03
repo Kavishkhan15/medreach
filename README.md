@@ -1,168 +1,166 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="MedReach logo" width="280" />
+  <img src="variants/bootstrap/public/logo.png" alt="MedReach logo" width="280" />
 </p>
 
 <h1 align="center">MedReach</h1>
 
-<p align="center">
-  <strong>A source-aware healthcare discovery and emergency-request coordination platform for Mumbai.</strong>
-</p>
+Healthcare discovery and request coordination for Mumbai. Bootstrap, Tailwind
+and Skeleton are active frontends for one Express/MongoDB backend. Bootstrap is
+the functional reference; each variant keeps its own design system.
 
-<p align="center">
-  Deterministic ranking · Honest freshness &amp; confidence · No fabricated data · No diagnosis
-</p>
+A request is coordination, not a confirmed bed reservation, blood inventory or
+ambulance dispatch. Unknown information stays unknown. API failures show errors
+and recovery actions instead of fallback providers, jobs or availability.
 
----
+## Current verification
 
-MedReach helps a person find hospitals and other healthcare resources, inspect the evidence behind a listing, send an emergency bed request to connected hospital staff, and track the response. A request is not a reservation; static capability is not live availability.
+Local backend database tests, offline crawler tests, all three production builds,
+browser journeys, the dependency audit and diff check passed. Exact counts,
+scope, commands and remaining live checks are maintained in
+[Release QA](docs/release-qa.md). Local success does not establish hosted
+readiness, inbox receipt, live source availability or remote CI status.
 
-The [Bootstrap product guide](docs/Bootstrap_Product_Guide.md) describes the working product, local setup, APIs, external configuration, and limitations. Earlier [target architecture](docs/MedReach_Target_Architecture.md) and [implementation inventory](docs/MedReach_Implementation_Inventory.md) remain planning snapshots.
+Security hardening now covers persisted sessions, public campaign privacy, safe
+resume links, explicit proxy trust and DNS/stream/robots crawler protections.
+See [security verification](docs/security-verification.md) for tested scope.
 
-It is deliberately **deterministic and transparent**: rule-based ranking with inspectable reasons, honest data freshness and confidence, verified sources with provenance. The core discovery/ranking engine is **NO AI/ML, no LLM, no diagnosis, no prediction** — it never implies it is an official emergency service. The one place a large-language-model provider *may* optionally sit is the AI Assistant chat, and even there it defaults to a fully deterministic rule-based provider with zero external calls and is contractually forbidden from fabricating hospital data or diagnosing anyone. → [AI Assistant docs](docs/ai-assistant.md)
+Submission emails now run in batches of up to three independent deliveries per
+request. The API still waits for every attempt; saved records, delivery outcomes,
+retries and tracking remain intact. See the
+[latency measurements and benchmark](docs/latency-verification.md). These local
+measurements use simulated SMTP delays, not production timings.
 
-It is also an empirical extension of **Almeida & Sousa (2026)**, *"Security Risks in Responsive Web Design Frameworks,"* *Digital* **6**(1), 26. DOI: [10.3390/digital6010026](https://doi.org/10.3390/digital6010026). → [Research plan](docs/MedReach_Corrected_Plan.md)
+## Product flows
 
-## Core research constraint
+- **Discovery:** hospital search/details, provenance, specialties, capability,
+  maps and contact/directions. Current availability requires verified evidence.
+- **Bed requests:** hospital pages submit standard requests; `/emergency`
+  submits emergency requests without requiring login. Assigned staff review,
+  request information, accept/reject and complete; patients track or cancel.
+  Ambulance assistance inside a bed request is arranged by the hospital.
+- **Blood:** normal requests/donation pledges and a dedicated `/urgent-blood`
+  flow with distinct urgency choices.
+- **Ambulance:** contact/navigation and durable bookings with delivery status;
+  recording a booking does not confirm dispatch.
+- **Careers:** job/organization applications, staff review and server-generated
+  public `CAR-...` references in confirmations and dashboard history.
+- **Tracking:** `/track` supports blood/donation, bed, career and ambulance
+  references. Public lookup returns only reference/status/update time. Private
+  details and changes remain protected by ownership, staff authorization or a
+  guest tracking credential.
+- **Accounts:** password login, region onboarding, email verification,
+  password recovery, rotating sessions and session revocation.
+- **Assistant:** healthcare chat with real backend results and existing actions.
+  SOS is the only bottom floating action button.
+- **Operations:** hospital ownership review, scoped staff, verification/conflicts,
+  crawler/source controls, analytics, audit and email administration.
 
-The **current implementation phase uses Bootstrap as the sole active product frontend**. Tailwind and Skeleton remain in the repository for the later controlled CSS-framework study. Do not use the present expanded application for a three-way comparison until frontend parity is restored and reverified.
+Google OAuth and the in-app notification inbox/API are intentionally removed.
+All transactional emails and controlled delivery retries remain. `/map` opens
+through **Full Map View →** on the homepage; Map is absent from the top navbar.
 
-Hospital search, ranking, freshness/confidence, data fusion, and workflow rules live in `packages/core` and `backend/`. Bootstrap currently contains presentation and API-connected forms for the new product modules; the other variants have not yet received those screens.
+## Technology and layout
 
-## Built with
+| Layer | Repository configuration |
+| --- | --- |
+| Frontends | Next.js 15.5.24; React/React DOM 18.3.1 |
+| Designs | Bootstrap 5.3.3, Tailwind CSS 4, Skeleton CSS 2 |
+| Backend | Express 4, Mongoose 8, Node.js ≥22.19.0; CI uses Node 24 |
+| Database | MongoDB with geo/text indexes, evidence and workflow records |
+| Authentication | Short access JWTs and hashed rotating refresh sessions |
+| Tests | Node test runner, Supertest, Playwright/Chromium |
 
-| Layer | Technology |
-|---|---|
-| Frontend framework | [Next.js](https://nextjs.org) 14 (App Router), React 18 |
-| CSS (the variable under test) | [Bootstrap](https://getbootstrap.com) 5 · [Tailwind CSS](https://tailwindcss.com) 4 · [Skeleton CSS](http://getskeleton.com) |
-| Backend | [Express](https://expressjs.com) 4, Node.js ≥22.19 (ESM) |
-| Database | [MongoDB](https://www.mongodb.com) + [Mongoose](https://mongoosejs.com) 8 (2dsphere geo index, text search) |
-| Auth | [JSON Web Tokens](https://jwt.io) (httpOnly cookie or Bearer), [bcrypt](https://www.npmjs.com/package/bcryptjs) |
-| Security middleware | [Helmet](https://helmetjs.github.io), [express-rate-limit](https://www.npmjs.com/package/express-rate-limit), [express-validator](https://express-validator.github.io) |
-| AI Assistant provider (optional) | [OpenAI](https://platform.openai.com) API — swappable, off by default, deterministic rule-based provider otherwise |
-| Testing | Node.js built-in [`node:test`](https://nodejs.org/api/test.html) + [Supertest](https://www.npmjs.com/package/supertest) |
-| Monorepo | npm [workspaces](https://docs.npmjs.com/cli/v10/using-npm/workspaces) |
-| Deployment | [Vercel](https://vercel.com) (frontend) / [Railway](https://railway.app) (API + MongoDB) |
-| CI | [GitHub Actions](https://github.com/features/actions) |
-
-## Layout
-
-```
-medreach/
-├── docs/            all subsystem docs + this README's logo
-├── backend/         Express + MongoDB API — the shared brain, identical for every variant
-├── crawler/         SSRF-safe modular crawler for public hospital data
-├── packages/core/   framework-agnostic client logic — zero CSS classes
-├── variants/
-│   ├── bootstrap/   Next.js + Bootstrap 5   (reference; deployed)
-│   ├── tailwind/    Next.js + Tailwind CSS 4
-│   └── skeleton/    Next.js + Skeleton CSS
-├── evaluation/      4-axis pipeline + RWD Security Risk Score
-├── user-study/      IRB protocol, consent, SUS + NASA-TLX
-├── run.sh           launches backend + Bootstrap only for this product phase
-└── .github/workflows/  CI: build + evaluation
-```
-
-Bootstrap includes the expanded routes for requests, hospital operations, resources, careers, notifications, analytics and account recovery. Tailwind and Skeleton still reflect the earlier research baseline.
-
-## What's inside
-
-Each piece below is intentionally kept short here — click through for the full picture.
-
-| Piece | What it does | Read more |
-|---|---|---|
-| 🏥 **Emergency discovery** | Pick an emergency category, get hospitals ranked by a transparent weighted score, call or navigate in one tap. GPS is opt-in and never stored. | [`docs/data-model.md`](docs/data-model.md) (ranking formula) |
-| 🤖 **AI Assistant** | A 4th action in the Emergency Help modal opens a chat that finds hospitals and explains capability — never fabricates data, never diagnoses, always keeps Call 112/102 one tap away, provider is swappable via env var. | [`docs/ai-assistant.md`](docs/ai-assistant.md) |
-| 🕷️ **Crawler** | Registry-bound pipeline with nine approved sources, including government directories. A server worker checks source-specific schedules; blocked sources stay blocked. | [`docs/crawler.md`](docs/crawler.md) |
-| 🚑 **Emergency requests** | Users submit a request; connected hospital staff can review and respond; the timeline and in-app notifications track changes. No bed is booked automatically. | [`docs/Bootstrap_Product_Guide.md`](docs/Bootstrap_Product_Guide.md) |
-| 🩸 **Care resources** | Source-backed blood-bank, diagnostic and ambulance listings, plus optional clearly labeled demo fixtures. | [`docs/Bootstrap_Product_Guide.md`](docs/Bootstrap_Product_Guide.md) |
-| 💼 **Careers** | Hospital job drafts, admin moderation, applications and status tracking. | [`docs/Bootstrap_Product_Guide.md`](docs/Bootstrap_Product_Guide.md) |
-| 🛠️ **Admin** | Role-gated dashboards for hospital verification, data sources, crawler job history, alerts, and an audited log with hashed IPs. | [`docs/api.md`](docs/api.md#admin) |
-| 🧩 **Shared API** | Every REST endpoint the frontends and admin dashboards call. | [`docs/api.md`](docs/api.md) |
-| 🗄️ **Data model** | Provenance and conflict claims plus request, ownership, provider, job, notification, email and refinement records. | [`docs/data-model.md`](docs/data-model.md) |
-| 🔒 **Security** | Helmet CSP, rate limiting, RBAC, input validation, secret handling — identical across all 3 variants. | [`docs/security.md`](docs/security.md) |
-| 🕵️ **Privacy** | What's stored, what's never stored, and why. | [`docs/privacy.md`](docs/privacy.md) |
-| 🚀 **Deployment** | Env vars, per-piece deploy steps, and the Bootstrap variant's standalone-build vendoring. | [`docs/deployment.md`](docs/deployment.md) |
-| 🗺️ **System architecture** | The full module map and how the pieces connect. | [`docs/architecture.md`](docs/architecture.md) |
-| 📊 **Research plan** | The RWD Security Risk Score instrument and the study design this whole app supports. | [`docs/MedReach_Corrected_Plan.md`](docs/MedReach_Corrected_Plan.md) |
-| 📈 **Preliminary results** | Early evaluation output. | [`docs/RESULTS-prelim.md`](docs/RESULTS-prelim.md) |
-
-## Run it
-
-```bash
-npm install                        # from repo root (installs all workspaces)
-
-# Backend (needs MongoDB, e.g. mongod --dbpath /tmp/medreach-mongo --fork --logpath /tmp/medreach-mongo/m.log)
-cp backend/.env.example backend/.env   # then edit; never commit the real .env
-npm --workspace @medreach/backend run seed:product-demo   # additive, clearly labeled product fixtures
-npm --workspace @medreach/backend run sync:hospital-resources # derive listings from real hospital claims
-npm run backend:dev                # API on :4000
-
-# Crawler (runs standalone, never inside the frontend)
-npm run crawler:test               # offline crawler suite; live-network cases are opt-in
-npm run crawl:list                 # list approved sources
-npm run crawl -- --source lilavati --dry-run   # dry-run a single source, no writes
-
-# Seed the crawler's DataSource entries (once, after backend:seed)
-npm --workspace @medreach/backend run seed:crawler-sources
-
-# Tests
-npm test                           # backend + crawler suites
-
-# Active Bootstrap product frontend (reads NEXT_PUBLIC_API_URL, default http://localhost:4000)
-npm --workspace @medreach/variant-bootstrap run dev   # :3000
-# ...or launch backend + all three variants together (one Ctrl+C stops all):
-./run.sh
-
-# Evaluation (machine-readable JSON → evaluation/results/)
-npm run build:variants
-npm run eval:performance           # CSS/JS bundle sizes per variant
-npm run eval:results               # combined security + performance summary.json
-npm run score                      # RWD Security Risk Score
+```text
+backend/          API, models, services, workers, tests and migrations
+crawler/          approved-source ingestion and deterministic/live tests
+packages/core/    shared API client, hooks, ranking, location and formatting
+variants/         bootstrap/, tailwind/, skeleton/
+docs/             current guides, release evidence and dated history
+scripts/          release, database/browser and backup checks
+evaluation/       research measurement and scoring tools
+user-study/       proposed protocol and questionnaires
+paper/            research outline
 ```
 
-Authentication uses a short-lived access JWT plus an opaque, hashed, rotating
-refresh session in httpOnly cookies. Password, recovery, verification, session,
-and SMTP setup are documented in the [Bootstrap product guide](docs/Bootstrap_Product_Guide.md).
-All backend variable names are in `backend/.env.example`; SMTP secrets must never
-be placed in `NEXT_PUBLIC_*` variables.
+Bootstrap resolves `@medreach/core` to its bundled `_core` copy; Tailwind and
+Skeleton use the workspace package. Keep shared changes synchronized and check
+behavior, not only route names. See [architecture](docs/architecture.md) and
+[frontend parity](docs/PARITY_VERIFICATION.md).
 
-**AI Assistant is optional and off by default.** No extra setup is required to try it — it works immediately after `backend:dev` using the zero-config rule-based provider. To connect a real LLM instead, add to `backend/.env`:
+## Run locally
 
-```bash
-AI_PROVIDER=openai
-AI_API_KEY=sk-...
-AI_MODEL=gpt-4o-mini   # optional, this is the default
+Start MongoDB separately, then from the repository root:
+
+```sh
+npm ci
+cp backend/.env.example backend/.env
+# Edit MongoDB, JWT_SECRET, email and crawler settings.
+./run.sh                         # API :4000; all three frontends
+# Or choose one:
+./run.sh bootstrap               # :3000
+./run.sh tailwind                # :3001
+./run.sh skeleton                # :3002
 ```
-→ full details in [`docs/ai-assistant.md`](docs/ai-assistant.md#provider-abstraction-swap-without-touching-the-ui)
 
-## Data and release status
+Set `CRAWLER_SCHEDULER_ENABLED=false` before launching if local work must avoid
+external crawler requests. The launcher otherwise enables it when unset. The
+worker honors source schedules, access policy and pause controls.
 
-The product frontends require the backend for provider and request data. When the API is unavailable, they show an error or recovery state rather than substitute fixture providers. Set `NEXT_PUBLIC_API_URL` to the public backend origin **before building** a hosted frontend. Local test fixtures are used only by isolated tests. See [deployment](docs/deployment.md) and [release QA](docs/release-qa.md) for the separate local and hosted checks.
+Use the [crawler guide](docs/crawler.md) for approved-source ingestion. Seed/demo
+commands are development tools, not production verification. Seeds do not
+establish current availability or automatically verify predefined jobs. Never
+run database tests against product data. Credentials and real `.env` files stay
+outside Git.
 
-## Status
+## Verify locally
 
-| Piece | State |
-|-------|-------|
-| `backend/` | ✅ models, rotating-session auth, recovery/email, RBAC, availability time-series, verification+audit, crawler API, AI Assistant API |
-| `crawler/` | ✅ SSRF-safe modular pipeline; deterministic tests and live-network probes run separately |
-| `packages/core/` | ✅ deterministic brain (ranking/search/freshness/confidence/emergency/location/assistant), zero framework classes |
-| `variants/{bootstrap,tailwind,skeleton}/` | ✅ shared API journeys with three separate design systems; use release QA for current build and browser results |
-| AI Assistant | ✅ chat UI in all 3 variants, deterministic by default, optional swappable LLM provider, fails safe |
-| `evaluation/` | ✅ security + performance axes → machine-readable `results/` |
-| Core ranking/discovery AI/ML | 🚫 none — deterministic rules only, by design |
+```sh
+npm run backend:test:db           # all database suites; fails on skips
+npm run crawler:test:offline      # deterministic; live sources excluded
+NEXT_PUBLIC_API_URL=http://localhost:4000 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY='' npm run build:variants
+npx playwright install --with-deps chromium
+MEDREACH_E2E_MONGO_URI=mongodb://127.0.0.1:27017/medreach_e2e MONGODB_URI=mongodb://127.0.0.1:27017/medreach_e2e AI_PROVIDER=rule_based npm run test:e2e
+npm audit --audit-level=high
+git diff --check
+```
+
+Tests use disposable databases and mocked/disabled email. Maps loading is
+excluded from deterministic QA builds; directory/contact fallbacks are checked.
+`npm run release:check` additionally requires backup/restore and explicit
+prerequisites; see [deployment](docs/deployment.md).
+
+## Configuration and deployment
+
+Set `NEXT_PUBLIC_API_URL` before building every hosted frontend. Configure MongoDB,
+`PUBLIC_APP_URL`, exact CORS origins, production cookies and SMTP on the backend.
+Public variables must never contain backend secrets. The assistant defaults to
+a rule-based provider; optional OpenAI/Gemini configuration stays server-side.
+Gemini ingestion refinement is a separate review queue, not automatic publishing.
+
+[Deployment](docs/deployment.md) covers commands, migrations, health, shutdown and
+backup/restore. [Release QA](docs/release-qa.md) distinguishes local evidence,
+live checks and deployment blockers. This documentation does not imply deployment.
 
 ## Documentation index
 
-| Doc | Covers |
-|---|---|
-| [`docs/architecture.md`](docs/architecture.md) | System map and module boundaries |
-| [`docs/ai-assistant.md`](docs/ai-assistant.md) | AI Assistant design, provider swap, safety guarantees |
-| [`docs/crawler.md`](docs/crawler.md) | Crawler pipeline, SSRF/robots safety, capability vs. availability |
-| [`docs/api.md`](docs/api.md) | Full REST API reference |
-| [`docs/data-model.md`](docs/data-model.md) | Mongoose schemas, freshness/confidence/ranking formulas |
-| [`docs/security.md`](docs/security.md) | Security posture, rate limits, secrets, test coverage |
-| [`docs/privacy.md`](docs/privacy.md) | Location handling, IP hashing, data retention |
-| [`docs/deployment.md`](docs/deployment.md) | Environment variables, per-piece deployment, Bootstrap vendoring |
-| [`docs/SERVICES_AND_MAP_GUIDE.md`](docs/SERVICES_AND_MAP_GUIDE.md) | Services, ambulance booking, urgent blood dispatch & map parity |
-| [`docs/MedReach_Corrected_Plan.md`](docs/MedReach_Corrected_Plan.md) | Research design and RWD Security Risk Score instrument |
-| [`docs/RESULTS-prelim.md`](docs/RESULTS-prelim.md) | Preliminary evaluation results |
+| Guide | Purpose |
+| --- | --- |
+| [Architecture](docs/architecture.md) | Current system map and boundaries |
+| [Product guide](docs/Bootstrap_Product_Guide.md) | User/staff/admin workflows |
+| [API](docs/api.md) · [Data model](docs/data-model.md) | Routes, access and persistence |
+| [Security](docs/security.md) · [Privacy](docs/privacy.md) | Protections and limits |
+| [Services/maps](docs/SERVICES_AND_MAP_GUIDE.md) | Booking, blood and tracking |
+| [Bed lifecycle](docs/bed-request-lifecycle.md) | State transitions and private details |
+| [Crawler](docs/crawler.md) · [Assistant](docs/ai-assistant.md) | Integration contracts |
+| [Deployment](docs/deployment.md) | Production configuration and operations |
+| [Release QA](docs/release-qa.md) · [Parity](docs/PARITY_VERIFICATION.md) | Current evidence and scope |
+| [Latency](docs/latency-verification.md) | Benchmark and concurrency limits |
+| [Implementation inventory](docs/MedReach_Implementation_Inventory.md) | Capabilities and remaining gaps |
+| [Target architecture](docs/MedReach_Target_Architecture.md) | Direction and milestone context |
+| [Research plan](docs/MedReach_Corrected_Plan.md) · [Evaluation](evaluation/README.md) | Proposed comparison and tools |
+| [Historical results](docs/RESULTS-prelim.md) | Scaffolding measurements, not current results |
+
+The research direction extends Almeida & Sousa (2026), *Security Risks in
+Responsive Web Design Frameworks*, DOI
+[10.3390/digital6010026](https://doi.org/10.3390/digital6010026). Local functional
+checks do not establish a controlled research comparison or participant results.
