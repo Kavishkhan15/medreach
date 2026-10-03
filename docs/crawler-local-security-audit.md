@@ -1,5 +1,53 @@
 # MedReach local crawler redirect audit — 2026-09-14
 
+## Security fix update — 2026-10-03
+
+The earlier DNS, full-body timeout/size and unreadable-robots findings below are
+superseded by tested fixes in both crawler copies. Actual connections pin public
+DNS answers, bodies stream under a byte cap, and the timeout includes DNS and
+body reads. Unreadable robots policies deny crawling; only genuine HTTP 404/410
+permits a missing policy. Legacy feeds now check robots on initial/redirect URLs.
+See [security verification](security-verification.md) and [current crawler](crawler.md).
+The dated audit evidence below is preserved as history.
+
+
+## Source correction before the security fix — 2026-10-03
+
+The sections below preserve the **2026-09-14 audit**, including its original
+counts and unresolved findings at that time. They are historical evidence, not
+a statement of current release health. The latest executed local gate is in
+[Release QA](release-qa.md); current crawler operation is in [crawler](crawler.md).
+No external website was contacted for this documentation update.
+
+Current code inspection confirms:
+
+- The legacy `BaseAdapter.fetchRaw()` in both crawler copies now supplies
+  `validateRedirect`: cross-origin and unapproved same-origin paths are refused
+  before fetch. Config-only sources remain restricted to their original path and
+  query. `crawler/tests/layers.test.js` contains legacy blocked/allowed redirect
+  regressions. The earlier “Open” legacy redirect finding is superseded.
+- Robots 401/403 responses and off-origin/unapproved robots redirects now set
+  `denied`, and `isAllowedByRobots()` rejects page crawling. The earlier claim
+  that a rejected robots redirect becomes a permissive missing file is superseded.
+  Other unreadable robots failures still produce `no_robots` and allow pages.
+- `server.js` now starts the optional `crawlerScheduler` and drains active
+  crawler/expiry work on shutdown before disconnecting MongoDB. The prior claim
+  that no automatic scheduler is wired is superseded; it requires
+  `CRAWLER_SCHEDULER_ENABLED=true`.
+- DNS resolution/pinning is still absent from `httpFetcher.js`/`ssrf.js`.
+  `res.text()` still buffers the body before the size check; its timeout is
+  cleared after headers. These limitations are **not resolved** by redirect
+  boundary validation.
+- Backend dry-run still records a CrawlJob while avoiding provider data writes.
+  Do not interpret it as zero writes to every collection. The standalone CLI
+  defaults to an in-memory repository.
+
+`cmp` confirmed the current BaseAdapter, HTTP fetcher and robots checker match
+between `crawler/src` and `backend/src/_crawler` during this docs review. This
+review does not establish whole-repository byte parity or a new live-source run.
+
+## Original audit — 2026-09-14
+
 Scope: local repository inspection, injected-fetch mocks, test suites, and frontend builds. No hospital or government website was contacted for exploit testing. This audit does not establish data leakage or a vulnerability in any external website.
 
 ## A–E. Findings, severity, reproduction, evidence, and fix status

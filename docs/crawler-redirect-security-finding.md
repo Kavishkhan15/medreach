@@ -1,5 +1,38 @@
 # Crawler redirect crosses the approved-source boundary
 
+## Security fix update — 2026-10-03
+
+The earlier DNS, full-body timeout/size and unreadable-robots findings below are
+superseded by tested fixes in both crawler copies. Actual connections pin public
+DNS answers, bodies stream under a byte cap, and the timeout includes DNS and
+body reads. Unreadable robots policies deny crawling; only genuine HTTP 404/410
+permits a missing policy. Legacy feeds now check robots on initial/redirect URLs.
+See [security verification](security-verification.md) and [current crawler](crawler.md).
+The dated audit evidence below is preserved as history.
+
+
+## Source correction before the security fix — 2026-10-03
+
+This document preserves the original local finding and reproduction. The legacy
+redirect gap described below has since been addressed: current
+`BaseAdapter.fetchRaw()` validates the original origin and approved paths on
+redirects, with legacy cross-origin, disallowed-path and allowed-path cases in
+`crawler/tests/layers.test.js`. Both runtime copies match for this file.
+
+Current robots handling also denies pages after a robots 401/403 or a rejected
+robots redirect. Other unreadable robots outcomes still allow crawling. DNS
+resolution/pinning and streamed response limits remain absent; responses are
+buffered before length validation and the fetch timeout stops at headers. These
+are separate remaining limitations, not resolved redirect findings.
+
+No external site was contacted for this correction. For current implementation
+and executed local verification, see [crawler](crawler.md) and
+[Release QA](release-qa.md). Read the following “remaining legacy path” section
+as the original audit's finding, rather than a claim that its redirect gap is
+still open today.
+
+## Original finding and reproduction — 2026-09-14
+
 Status: reproduced locally with an injected fetch implementation. The current
 hospital-site and directory pipeline is fixed and covered by regression tests.
 The legacy adapter path remains exposed as described below. No external site

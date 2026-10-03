@@ -1,5 +1,33 @@
 # Hospital Data Fusion & Verification — evidence report
 
+## Current status note — 2026-10-03
+
+This is a **historical evidence report from 2026-09-14**. The database counts,
+conflict counts, backup path, skipped-suite counts and parity limitations below
+belong to that audit; none was remeasured for this documentation update. The
+latest executed backend/database, crawler, browser and build results belong in
+[Release QA](release-qa.md), with [parity coverage](PARITY_VERIFICATION.md) and
+[deployment requirements](deployment.md) maintained separately.
+
+Later source inspection confirms an ownership-request/review implementation in
+`backend/src/services/ownershipService.js` and an optional scheduler started by
+`backend/src/server.js`. Accordingly, the original statement that ownership
+onboarding is absent is historical, not a description of all current code.
+Ownership requests still need evidence and authorized review; they do not prove
+ownership automatically. Browser journey coverage now exists under `tests/e2e/`;
+the original absence of browser parity assertions does not describe the current
+release gate, and passing journeys still do not prove identical rendered markup.
+
+Provenance and verification safeguards remain requirements: seeded/crawled
+records do not automatically become verified, static capability does not prove
+available beds, missing evidence is not reconstructed, and conflicts require
+review. Optional Gemini refinement creates evidence-bound review candidates; its
+approval alone does not change canonical claims. See [crawler](crawler.md).
+No live provider, production deployment or new MongoDB dataset audit is claimed
+by this status note. Historical counts must not be used as current statistics.
+
+## Original evidence report — 2026-09-14
+
 Date: 2026-09-14. Scope: existing hospital ingestion, claim fusion, review, public API, and the three CSS variants. No later MedReach module was started. All live API and MongoDB checks below used the local MedReach database; crawler tests used local mocks. No hospital website was contacted during this verification.
 
 ## 1. Identity matching
