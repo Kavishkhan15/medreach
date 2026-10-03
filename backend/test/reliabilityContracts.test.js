@@ -20,7 +20,7 @@ import { HospitalFacility } from "../src/models/HospitalFacility.js";
 import { AvailabilityObservation } from "../src/models/AvailabilityObservation.js";
 import { searchHospitals, searchBloodBanks, searchAmbulances, getHospitalDetails } from "../src/services/assistantTools.js";
 import { setEmailTransportFactoryForTests, sendEmailEvent } from "../src/services/emailService.js";
-import { notifyUserSafely } from "../src/services/notificationService.js";
+import { sendUserEmailSafely } from "../src/services/userEmailService.js";
 import { signToken } from "../src/utils/token.js";
 
 const uri = "mongodb://127.0.0.1:27017/medreach_reliability_contracts_test";
@@ -265,17 +265,14 @@ test("backend reliability contracts", async (t) => {
     assert.equal(stored.resume.fileUrl.length, fileUrl.length);
   });
 
-  await t.test("a post-save notification failure leaves the primary record recoverable", async () => {
+  await t.test("a post-save recipient email failure leaves the primary record recoverable", async () => {
     const existing = await EmergencyRequest.findOne();
     assert.ok(existing);
-    const result = await notifyUserSafely({
-      eventKey: `invalid-notification:${existing._id}`,
-      recipient: user._id,
-      type: "emergency_request",
-      title: "x".repeat(141),
-      message: "This exercises the failure boundary after the request is saved.",
-      relatedType: "EmergencyRequest",
-      relatedId: existing._id,
+    const result = await sendUserEmailSafely({
+      eventKey: `invalid-email:${existing._id}`,
+      recipient: "invalid-user-id",
+      emailTemplate: "emergency_updated",
+      emailData: { reference: existing.requestId, status: existing.status },
     });
     assert.equal(result.status, "failed");
     assert.ok(await EmergencyRequest.exists({ _id: existing._id }));

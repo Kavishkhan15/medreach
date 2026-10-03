@@ -6,7 +6,7 @@ import { ResourceProvider } from "../models/ResourceProvider.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { User } from "../models/User.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
-import { notifyUserSafely } from "../services/notificationService.js";
+import { sendUserEmailSafely } from "../services/userEmailService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 import { careerSubmission, createCareerApplication } from "../utils/careerReference.js";
@@ -390,16 +390,9 @@ export const applyToJob = asyncHandler(async (req, res) => {
     requestId: req.id,
   }); } catch (error) { console.warn("Job application recorded but audit logging failed:", error.message); }
 
-  await notifyUserSafely({
+  await sendUserEmailSafely({
     recipient: req.user.id,
     eventKey: `application:${application._id}:submitted`,
-    type: "job_application",
-    title: job.demo ? "Demo application recorded" : "Application submitted",
-    message: job.demo
-      ? `Your simulation application for ${job.title} was recorded; it was not delivered as a real job application.`
-      : `Your application for ${job.title} was submitted.`,
-    relatedType: "JobApplication",
-    relatedId: application._id,
     emailTemplate: "job_applied",
     emailData: { title: job.title, demo: job.demo },
   });
@@ -407,14 +400,9 @@ export const applyToJob = asyncHandler(async (req, res) => {
   if (job.hospital) {
     const hospital = await Hospital.findById(job.hospital).select("admins").lean();
     for (const recipient of hospital?.admins || []) {
-      await notifyUserSafely({
+      await sendUserEmailSafely({
         recipient,
         eventKey: `application:${application._id}:received:${recipient}`,
-        type: "job_application",
-        title: "New job application",
-        message: `${job.title} has a new application.`,
-        relatedType: "JobApplication",
-        relatedId: application._id,
         emailTemplate: "job_application_received",
         emailData: { title: job.title },
       });
@@ -500,14 +488,9 @@ export const reviewApplication = asyncHandler(async (req, res) => {
     requestId: req.id,
   });
 
-  await notifyUserSafely({
+  await sendUserEmailSafely({
     recipient: application.applicant,
     eventKey: `application:${application._id}:${application.status}`,
-    type: "job_application",
-    title: "Application status updated",
-    message: `${job.title}: ${application.status}.`,
-    relatedType: "JobApplication",
-    relatedId: application._id,
     emailTemplate: "job_updated",
     emailData: { title: job.title, status: application.status },
   });

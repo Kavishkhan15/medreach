@@ -11,7 +11,6 @@ import { Job } from "../src/models/Job.js";
 import { JobApplication } from "../src/models/JobApplication.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
-import { Notification } from "../src/models/Notification.js";
 import { AuditLog } from "../src/models/AuditLog.js";
 import { signToken } from "../src/utils/token.js";
 import { expireEmergencyRequests } from "../src/services/emergencyRequestExpiry.js";
@@ -154,10 +153,10 @@ test("MedReach Workflows Verification Suite", async (t) => {
         import("../../packages/core/src/api.js"),
         import("../../variants/bootstrap/lib/productApi.js"),
       ]);
-      const results = await Promise.all([getSaved(), productApi("/api/notifications")]);
+      const results = await Promise.all([getSaved(), productApi("/api/applications/mine")]);
       assert.equal(refreshCalls, 1);
       assert.equal(results[0].path, "/api/users/me/saved");
-      assert.equal(results[1].path, "/api/notifications");
+      assert.equal(results[1].path, "/api/applications/mine");
     } finally {
       globalThis.fetch = originalFetch;
       if (originalWindow === undefined) delete globalThis.window;
@@ -582,9 +581,7 @@ test("MedReach Workflows Verification Suite", async (t) => {
     assert.equal(emergency.status, "SENT");
     assert.equal(emergency.timeline.length, 2); // REQUESTED, SENT
 
-    // Notification was dispatched to patient and staff
-    const staffNotifs = await Notification.find({ recipient: hospitalStaff._id });
-    assert.ok(staffNotifs.some((n) => n.relatedId.toString() === emergencyRequestId.toString()));
+    assert.equal(await mongoose.connection.collection("notifications").countDocuments(), 0);
 
     // Patient lists their requests
     const patientList = await request(app)

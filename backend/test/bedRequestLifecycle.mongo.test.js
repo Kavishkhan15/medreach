@@ -8,7 +8,6 @@ import { env } from "../src/config/env.js";
 import { User } from "../src/models/User.js";
 import { Hospital } from "../src/models/Hospital.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
-import { Notification } from "../src/models/Notification.js";
 import { EmailDelivery } from "../src/models/EmailDelivery.js";
 import { AuditLog } from "../src/models/AuditLog.js";
 import { expireEmergencyRequests } from "../src/services/emergencyRequestExpiry.js";
@@ -47,15 +46,16 @@ test("bed request lifecycle: real database, staff, patient, guest, history and f
       assert.equal(result.request.isEmergency, false);
       assert.equal(result.request.status, "SENT");
       assert.deepEqual(result.request.timeline.map((s) => s.status), ["REQUESTED", "SENT"]);
-      assert.equal(await Notification.countDocuments({ recipient: staff._id, relatedId: result.request._id }), 1);
+      assert.equal(await mongoose.connection.collection("notifications").countDocuments(), 0);
+      assert.ok(await EmailDelivery.findOne({ eventKey: `mail:emergency:${result.request._id}:hospital:${staff.id}` }));
       const view = await request(app).get(`/api/emergency-requests/${result.request._id}`).set("Authorization", `Bearer ${tokens.patient}`);
       assert.equal(view.status, 200);
       assert.equal(view.body.request.hospital.phone, hospital.phone);
       assert.equal(view.body.request.hospital.admins, undefined);
       assert.equal(view.body.permissions.canRespond, false);
-      assert.equal(view.body.notifications.available, true);
-      assert.ok(view.body.notifications.items.some((item) => item.status === "disabled" && item.title === "Hospital bed request submitted"));
-      assert.ok(view.body.notifications.items.every((item) => !item.recipient && !item.eventKey && !item.retryEnvelope && !item.lastError));
+      assert.equal(view.body.emailHistory.available, true);
+      assert.ok(view.body.emailHistory.items.some((item) => item.status === "disabled" && item.title === "Hospital bed request submitted"));
+      assert.ok(view.body.emailHistory.items.every((item) => !item.recipient && !item.eventKey && !item.retryEnvelope && !item.lastError));
       const denied = await request(app).get(`/api/emergency-requests/${result.request._id}`).set("Authorization", `Bearer ${tokens.outsider}`);
       assert.equal(denied.status, 403);
     });
@@ -72,7 +72,6 @@ test("bed request lifecycle: real database, staff, patient, guest, history and f
       const reply = await update(record._id, tokens.patient, { status: "UNDER_REVIEW", expectedStatus: "INFORMATION_REQUESTED", note: "Needs wheelchair" });
       assert.equal(reply.status, 200);
       assert.equal(reply.body.request.timeline.at(-1).actorRole, "patient");
-      assert.ok(await Notification.findOne({ recipient: staff._id, relatedId: record._id, title: "Patient supplied information" }));
       assert.equal((await EmailDelivery.findOne({ eventKey: `mail:emergency:${record._id}:5:hospital:${staff.id}` })).template, "bed_request_staff_updated");
       assert.equal((await update(record._id, tokens.staff, { status: "ACCEPTED", expectedStatus: "UNDER_REVIEW", expectedTimelineLength: 3 })).status, 409);
       const accepted = await update(record._id, tokens.staff, { status: "ACCEPTED", hospitalResponse: "Please call reception for next steps" });
@@ -95,19 +94,18 @@ test("bed request lifecycle: real database, staff, patient, guest, history and f
       assert.equal((await update(record._id, null, { status: "UNDER_REVIEW", note: "Available now" }, trackingToken)).status, 200);
       const view = await request(app).get(`/api/emergency-requests/${record._id}`).set("X-MedReach-Tracking-Token", trackingToken);
       assert.equal(view.status, 200);
-      assert.ok(view.body.notifications.items.some((item) => item.channel === "email" && item.status === "disabled"));
-      assert.ok(view.body.notifications.items.every((item) => item.channel !== "in_app"));
+      assert.ok(view.body.emailHistory.items.some((item) => item.channel === "email" && item.status === "disabled"));
+      assert.ok(view.body.emailHistory.items.every((item) => item.channel === "email"));
       assert.equal((await request(app).get(`/api/emergency-requests/${record._id}`)).status, 403);
       assert.equal((await update(record._id, null, { status: "CANCELLED" }, trackingToken)).status, 200);
-      assert.ok(await Notification.findOne({ recipient: staff._id, relatedId: record._id, title: "Patient cancelled request" }));
     });
     await t.test("lost transition responses are replayable; competing staff responses cannot overwrite history", async () => {
       const { request: record } = await create();
       const review = { status: "UNDER_REVIEW", expectedStatus: "SENT", hospitalResponse: "Review started" };
       assert.equal((await update(record._id, tokens.staff, review)).status, 200);
-      const count = await Notification.countDocuments({ relatedId: record._id });
+      const count = await EmailDelivery.countDocuments();
       assert.equal((await update(record._id, tokens.staff, review)).status, 200);
-      assert.equal(await Notification.countDocuments({ relatedId: record._id }), count);
+      assert.equal(await EmailDelivery.countDocuments(), count);
       assert.equal((await EmergencyRequest.findById(record._id)).timeline.length, 3);
       const responses = await Promise.all([
         update(record._id, tokens.staff, { status: "ACCEPTED", expectedStatus: "UNDER_REVIEW", hospitalResponse: "Accepted" }),
@@ -128,7 +126,7 @@ test("bed request lifecycle: real database, staff, patient, guest, history and f
         assert.equal((await update(saved.id, tokens.staff, { status: "UNDER_REVIEW" })).status, 409);
       }
       assert.ok(await EmailDelivery.findOne({ recipient: "expiry@lifecycle.test", eventKey: `mail:emergency:${records[1].request._id}:3` }));
-      assert.ok(await Notification.findOne({ recipient: patient._id, relatedId: records[2].request._id, title: "Hospital bed request updated" }));
+      assert.ok(await EmailDelivery.findOne({ recipient: patient.email, eventKey: `mail:emergency:${records[2].request._id}:3` }));
     });
     await t.test("email and audit failures preserve a saved guest response and failed delivery for retry", async () => {
       const { request: record } = await create(true, { contactEmail: "failure@lifecycle.test" });
@@ -146,7 +144,7 @@ test("bed request lifecycle: real database, staff, patient, guest, history and f
         assert.equal(delivery.retryable, true);
       } finally { AuditLog.create = auditCreate; Object.assign(env, previous); setEmailTransportFactoryForTests(); }
     });
-    await t.test("notification history failure does not hide the primary request; malformed updates are rejected", async () => {
+    await t.test("email delivery history failure does not hide the primary request; malformed updates are rejected", async () => {
       const { request: record } = await create();
       const find = EmailDelivery.find;
       try {
@@ -154,7 +152,7 @@ test("bed request lifecycle: real database, staff, patient, guest, history and f
         const view = await request(app).get(`/api/emergency-requests/${record._id}`).set("Authorization", `Bearer ${tokens.patient}`);
         assert.equal(view.status, 200);
         assert.equal(view.body.request._id, record._id);
-        assert.equal(view.body.notifications.available, false);
+        assert.equal(view.body.emailHistory.available, false);
       } finally { EmailDelivery.find = find; }
       assert.equal((await update(record._id, tokens.staff, { status: "FAKE" })).status, 400);
       assert.equal((await update(record._id, tokens.staff, { status: "UNDER_REVIEW", note: {} })).status, 400);

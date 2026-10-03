@@ -24,6 +24,24 @@ function attachRuntimeGuard(page) {
   return () => expect(failures, failures.join("\n")).toEqual([]);
 }
 
+test("in-app notifications are removed while dashboard and email delivery remain available", async ({ page }, testInfo) => {
+  const clean = attachRuntimeGuard(page);
+  const notificationCalls = [];
+  page.on("request", (call) => {
+    if (call.url().includes("/api/notifications")) notificationCalls.push(call.url());
+  });
+  await login(page, `${testInfo.project.name}.e2e@medreach.test`, "/dashboard");
+  await expect(page.getByRole("heading", { name: "Applications", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Saved hospitals", exact: true })).toBeVisible();
+  await expect(page.getByText("Recent notifications", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Open notifications", exact: true })).toHaveCount(0);
+  expect(notificationCalls).toEqual([]);
+  expect((await page.request.get(`${API}/api/notifications`)).status()).toBe(404);
+  expect((await page.request.patch(`${API}/api/notifications/000000000000000000000000/read`)).status()).toBe(404);
+  expect((await page.goto("/notifications")).status()).toBe(404);
+  clean();
+});
+
 async function login(page, email, returnTo = "/") {
   await page.goto(`/login?returnTo=${encodeURIComponent(returnTo)}`);
   await page.locator("#email").fill(email);

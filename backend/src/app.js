@@ -17,7 +17,6 @@ import adminRoutes from "./routes/admin.js";
 import alertRoutes from "./routes/alertRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import assistantRoutes from "./routes/assistantRoutes.js";
-import notificationRoutes from "./routes/notifications.js";
 import hospitalAdminRoutes from "./routes/hospitalAdmin.js";
 import emergencyRequestRoutes from "./routes/emergencyRequests.js";
 import { resourceRouter, resourceAdminRouter } from "./routes/resources.js";
@@ -54,7 +53,6 @@ export function createApp() {
   app.use("/api/alerts", alertRoutes);
   app.use("/api/users", userRoutes);
   app.use("/api/assistant", assistantRoutes);
-  app.use("/api/notifications", notificationRoutes);
   app.use("/api/hospital-admin", hospitalAdminRoutes);
   app.use("/api/emergency-requests", emergencyRequestRoutes);
   app.use("/api/tracking", trackingRouter);

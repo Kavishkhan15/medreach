@@ -19,7 +19,7 @@ export default function StaffBedRequest({ request, refresh }) {
     locked.current = true; setBusy(true);
     try {
       await patch(`/api/emergency-requests/${request._id}`, { status, expectedStatus: request.status, expectedTimelineLength: request.timeline.length, hospitalResponse: response.trim() });
-      setResponse(""); setSaved("Response recorded. Check notification history for delivery status.");
+      setResponse(""); setSaved("Response recorded. Check email delivery history for delivery status.");
       await refresh();
     } catch (e) { setError(e.message || "Could not save the response."); }
     finally { locked.current = false; setBusy(false); }

@@ -7,7 +7,7 @@ const emailLabels = { disabled: "Email delivery disabled", pending: "Email queue
 export default function RequestLifecycle({ model }) {
   const [note, setNote] = useState("");
   const [privateLink, setPrivateLink] = useState("");
-  const { request, notifications, permissions, busy, error, change } = model;
+  const { request, emailHistory, permissions, busy, error, change } = model;
   const hospital = request.hospital;
   const phone = request.isEmergency ? hospital?.emergencyPhone || hospital?.phone : hospital?.phone || hospital?.emergencyPhone;
   const coords = hospital?.location?.coordinates;
@@ -43,11 +43,11 @@ export default function RequestLifecycle({ model }) {
         {step.note && <p style={{ whiteSpace: "pre-wrap" }}>{step.actorRole === "patient" ? "Patient: " : ""}{step.note}</p>}
       </li>)}
     </ol>
-    <h2 className="h5 mt-4 mb-3">Notification history</h2>
-    {!notifications.available && <p role="status">Notification history is unavailable. Refresh status to retry.</p>}
-    {notifications.available && !notifications.items.length && <p>No notification delivery has been recorded. Track updates on this page.</p>}
+    <h2 className="h5 mt-4 mb-3">Email delivery history</h2>
+    {!emailHistory.available && <p role="status">Email delivery history is unavailable. Refresh status to retry.</p>}
+    {emailHistory.available && !emailHistory.items.length && <p>No email delivery has been recorded. Track updates on this page.</p>}
     <ul>
-      {notifications.items.map((item) => <li key={item.id} className="small text-secondary">{item.title} · {item.channel === "email" ? emailLabels[item.status] || item.status : item.status === "read" ? "In-app notification read" : "In-app notification recorded"} · {new Date(item.sentAt || item.at).toLocaleString()}</li>)}
+      {emailHistory.items.map((item) => <li key={item.id} className="small text-secondary">{item.title} · {emailLabels[item.status] || item.status} · {new Date(item.sentAt || item.at).toLocaleString()}</li>)}
     </ul>
     {!request.user && <div className="mt-3">
       <button style={{ minHeight: 44 }} className="btn btn-outline-secondary py-2" onClick={() => {

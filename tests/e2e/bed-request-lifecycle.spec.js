@@ -64,7 +64,7 @@ async function staffAction(page, reference, label, response) {
   await expect(card).toBeVisible();
   await card.getByLabel("Message to patient").fill(response);
   await card.getByRole("button", { name: label, exact: true }).click();
-  await expect(card.getByRole("status")).toHaveText("Response recorded. Check notification history for delivery status.");
+  await expect(card.getByRole("status")).toHaveText("Response recorded. Check email delivery history for delivery status.");
 }
 
 for (const guest of [false, true]) {
@@ -75,9 +75,7 @@ for (const guest of [false, true]) {
     const staff = await staffPage(browser, new URL(page.url()).origin);
     const staffClean = runtimeGuard(staff.page);
     try {
-      const notifications = await staff.page.request.get(`${API}/api/notifications`);
-      const inbox = await notifications.json();
-      expect(inbox.data.some((item) => item.relatedId === id)).toBeTruthy();
+      expect((await staff.page.request.get(`${API}/api/notifications`)).status()).toBe(404);
       await staffAction(staff.page, reference, "Start review", "Review started by the hospital");
       await refresh(page, "Under review");
       await staffAction(staff.page, reference, "Request information", "Please describe mobility requirements");
@@ -119,12 +117,6 @@ for (const guest of [false, true]) {
         expect(new URL(privatePage.url()).hash).toBe("");
         await privateContext.close();
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
-      } else {
-        const response = await page.request.get(`${API}/api/notifications`);
-        const updates = await response.json();
-        expect(updates.data.filter((item) => item.relatedId === id).length).toBe(6);
-        await page.goto("/notifications");
-        await expect(page.getByRole("link", { name: "Open bed request" }).first()).toBeVisible();
       }
       clean(); staffClean();
     } finally { await staff.context.close(); }
@@ -187,7 +179,7 @@ test("staff lost response retry records one transition; patient status outage re
   } finally { await staff.context.close(); }
 });
 
-test("expired guest request shows a closed timeline and recorded notification history", async ({ page }, testInfo) => {
+test("expired guest request shows a closed timeline and recorded email delivery history", async ({ page }, testInfo) => {
   const clean = runtimeGuard(page);
   const { id } = await submit(page, true, testInfo.project.name);
   const uri = process.env.MEDREACH_E2E_MONGO_URI;

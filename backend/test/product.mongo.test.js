@@ -9,7 +9,6 @@ import { Hospital } from "../src/models/Hospital.js";
 import { Job } from "../src/models/Job.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { EmailDelivery } from "../src/models/EmailDelivery.js";
-import { Notification } from "../src/models/Notification.js";
 import { AuditLog } from "../src/models/AuditLog.js";
 import { DataSource } from "../src/models/DataSource.js";
 import { DataConflict } from "../src/models/DataConflict.js";
@@ -24,7 +23,7 @@ import { digestToken } from "../src/services/authTokenService.js";
 
 const uri = process.env.MEDREACH_PRODUCT_TEST_MONGO_URI;
 const isolated = Boolean(uri && /\/medreach_product_integration(?:\?|$)/.test(uri));
-test("product workflow: register, ownership, request response, notifications, jobs, resources, analytics", {
+test("product workflow: register, ownership, request response, emails, jobs, resources, analytics", {
   skip: !isolated,
   timeout: 60000,
 }, async () => {
@@ -133,11 +132,8 @@ test("product workflow: register, ownership, request response, notifications, jo
     assert.equal(accepted.status, 200);
     const ownerView = await request(app).get(`/api/emergency-requests/${reqId}`).set("Authorization", `Bearer ${patientToken}`);
     assert.equal(ownerView.body.request.status, "ACCEPTED"); assert.equal(ownerView.body.request.timeline.length, 4);
-    assert.equal(await Notification.countDocuments({ recipient: user._id }) >= 3, true);
-    const notifications = await request(app).get("/api/notifications").set("Authorization", `Bearer ${patientToken}`);
-    assert.equal(notifications.status, 200);
-    const marked = await request(app).patch(`/api/notifications/${notifications.body.data[0]._id}/read`).set("Authorization", `Bearer ${patientToken}`);
-    assert.equal(marked.status, 200);
+    assert.equal(await mongoose.connection.collection("notifications").countDocuments(), 0);
+    assert.equal((await request(app).get("/api/notifications").set("Authorization", `Bearer ${patientToken}`)).status, 404);
     const job = await request(app).post("/api/jobs").set("Authorization", `Bearer ${staffRoleToken}`)
       .send({ hospital: hospital.id, title: "Emergency Nurse", category: "Nurse", description: "Support emergency care delivery", employmentType: "full_time" });
     assert.equal(job.status, 201);

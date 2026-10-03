@@ -2,7 +2,7 @@ import { OwnershipClaim } from "../models/OwnershipClaim.js";
 import { Hospital } from "../models/Hospital.js";
 import { User } from "../models/User.js";
 import { AuditLog } from "../models/AuditLog.js";
-import { notifyUser } from "./notificationService.js";
+import { sendUserEmail } from "./userEmailService.js";
 
 export async function requestHospitalOwnership({ hospitalId, requesterId, hospitalEmail, officialDomain, documentReference, explanation }) {
   const hospital = await Hospital.findById(hospitalId);
@@ -14,11 +14,8 @@ export async function requestHospitalOwnership({ hospitalId, requesterId, hospit
   await AuditLog.create({ user: requesterId, action: "create", entityType: "OwnershipClaim", entityId: claim._id,
     after: { hospital: hospitalId, status: "pending" } });
   const admins = await User.find({ role: { $in: ["admin", "system_admin"] }, accountStatus: "active" }).select("_id").lean();
-  await Promise.all(admins.map((admin) => notifyUser({ recipient: admin._id,
-    eventKey: `ownership:${claim._id}:requested:${admin._id}`, type: "ownership_requested",
-    title: "Hospital access request", message: `${hospital.name} has a new access request.`,
-    relatedType: "OwnershipClaim", relatedId: claim._id,
-    emailTemplate: "ownership_requested", emailData: { hospital: hospital.name } })));
+  await Promise.all(admins.map((admin) => sendUserEmail({ recipient: admin._id,
+    eventKey: `ownership:${claim._id}:requested:${admin._id}`, emailTemplate: "ownership_requested", emailData: { hospital: hospital.name } })));
   return { claim };
 }
 
@@ -41,10 +38,7 @@ export async function reviewHospitalOwnership({ claimId, reviewerId, decision, n
   await AuditLog.create({ user: reviewerId, action: decision === "approve" ? "verify" : "reject",
     entityType: "OwnershipClaim", entityId: claim._id,
     before: { status: "pending" }, after: { status: claim.status, hospital: hospital._id, requester: user._id } });
-  await notifyUser({ recipient: user._id, eventKey: `ownership:${claim._id}:${claim.status}`,
-    type: "ownership_updated", title: "Hospital access request updated",
-    message: `Your request for ${hospital.name} was ${claim.status}.`,
-    relatedType: "OwnershipClaim", relatedId: claim._id,
+  await sendUserEmail({ recipient: user._id, eventKey: `ownership:${claim._id}:${claim.status}`,
     emailTemplate: "ownership_updated", emailData: { hospital: hospital.name, status: claim.status } });
   return { claim };
 }

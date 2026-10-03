@@ -2,7 +2,7 @@ import { EmergencyRequest } from "../models/EmergencyRequest.js";
 import { Hospital } from "../models/Hospital.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
 import { createEmergencyRequest, changeEmergencyRequest, listVisibleEmergencyRequests } from "../services/emergencyRequestService.js";
-import { requestNotificationHistory } from "../services/bedRequestNotifications.js";
+import { requestEmailHistory } from "../services/bedRequestEmails.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { TRACKING_TOKEN_HEADER, verifyTrackingToken } from "../utils/trackingToken.js";
 
@@ -30,7 +30,7 @@ export const getRequest = asyncHandler(async (req, res) => {
   if (safeRequest.hospital && typeof safeRequest.hospital === "object") {
     delete safeRequest.hospital.admins;
   }
-  res.json({ request: safeRequest, notifications: await requestNotificationHistory(request),
+  res.json({ request: safeRequest, emailHistory: await requestEmailHistory(request),
     permissions: { canRespond: canManageHospital(req.user, request.hospital),
       canReply: !canManageHospital(req.user, request.hospital) && request.status === "INFORMATION_REQUESTED" } });
 });

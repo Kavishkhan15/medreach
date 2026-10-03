@@ -4,7 +4,7 @@ import { productApi } from "./productApi";
 
 export function useBedRequest(id) {
   const [request, setRequest] = useState(null);
-  const [notifications, setNotifications] = useState({ available: true, items: [] });
+  const [emailHistory, setEmailHistory] = useState({ available: true, items: [] });
   const [permissions, setPermissions] = useState({});
   const [error, setError] = useState("");
   const [actionError, setActionError] = useState("");
@@ -26,13 +26,13 @@ export function useBedRequest(id) {
       const result = await productApi(`/api/emergency-requests/${id}`, { headers: trackingHeaders() });
       if (current !== generation.current || check !== sequence.current) return;
       setRequest(result.request);
-      setNotifications(result.notifications || { available: false, items: [] });
+      setEmailHistory(result.emailHistory || { available: false, items: [] });
       setPermissions(result.permissions || {});
       setCheckedAt(new Date());
       setError("");
     } catch (e) {
       if (current !== generation.current || check !== sequence.current) return;
-      if ([401, 403, 404].includes(e.status)) { setRequest(null); setNotifications({ available: false, items: [] }); }
+      if ([401, 403, 404].includes(e.status)) { setRequest(null); setEmailHistory({ available: false, items: [] }); }
       setError(e.message || "Could not load this request.");
     } finally {
       if (current === generation.current && check === sequence.current) setRefreshing(false);
@@ -78,5 +78,5 @@ export function useBedRequest(id) {
     window.sessionStorage.setItem(`medreach:emergency-request-token:${id}`, token.trim());
     await refresh();
   };
-  return { request, notifications, permissions, error, actionError, busy, refreshing, checkedAt, refresh, change, cancel, unlock };
+  return { request, emailHistory, permissions, error, actionError, busy, refreshing, checkedAt, refresh, change, cancel, unlock };
 }

@@ -1,6 +1,6 @@
 import { EmergencyRequest } from "../models/EmergencyRequest.js";
 import { Hospital } from "../models/Hospital.js";
-import { auditRequestUpdate, notifyRequestUpdate } from "./bedRequestNotifications.js";
+import { auditRequestUpdate, emailRequestUpdate } from "./bedRequestEmails.js";
 
 const active = ["REQUESTED", "SENT", "UNDER_REVIEW", "INFORMATION_REQUESTED"];
 export async function expireEmergencyRequests(now = new Date()) {
@@ -13,7 +13,7 @@ export async function expireEmergencyRequests(now = new Date()) {
     expired++;
     await auditRequestUpdate(request, row.status);
     const hospital = await Hospital.findById(request.hospital);
-    await notifyRequestUpdate(request, hospital);
+    await emailRequestUpdate(request, hospital);
   }
   return { expired };
 }

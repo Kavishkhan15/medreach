@@ -4,11 +4,11 @@ import { Hospital } from "../models/Hospital.js";
 import { User } from "../models/User.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { canManageHospital } from "./hospitalAccess.js";
-import { notifyUserSafely } from "./notificationService.js";
+import { sendUserEmailSafely } from "./userEmailService.js";
 import { generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, verifyTrackingToken } from "../utils/trackingToken.js";
 
 import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "./emailService.js";
-import { auditRequestUpdate, notifyRequestUpdate } from "./bedRequestNotifications.js";
+import { auditRequestUpdate, emailRequestUpdate } from "./bedRequestEmails.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 const transitions = {
@@ -113,21 +113,6 @@ export async function createEmergencyRequest(data, actor) {
     }
   }
 
-  // 2. In-app notification for authenticated users
-  if (userId) {
-    await notifyUserSafely({
-      recipient: userId,
-      eventKey: `emergency:${request._id}:created`,
-      type: "emergency_request",
-      title: isEmergency ? "Emergency request submitted" : "Hospital bed request submitted",
-      message: hasHospitalStaff
-        ? `${request.requestId} is available to connected hospital staff. No bed is reserved.`
-        : `${request.requestId} was recorded, but this hospital is not connected to MedReach staff. Call the hospital directly. No bed is reserved.`,
-      relatedType: "EmergencyRequest",
-      relatedId: request._id,
-    });
-  }
-
   // 3. MedReach admin notification to medreachforyou@gmail.com
   try {
     await sendEmailEvent({
@@ -155,9 +140,7 @@ export async function createEmergencyRequest(data, actor) {
   }
 
   for (const { _id: adminId } of connectedStaff) {
-    await notifyUserSafely({ recipient: adminId, eventKey: `emergency:${request._id}:hospital:${adminId}`,
-      type: "emergency_request", title: isEmergency ? "New emergency request" : "New hospital bed request", message: `${request.requestId} needs review.`,
-      relatedType: "EmergencyRequest", relatedId: request._id,
+    await sendUserEmailSafely({ recipient: adminId, eventKey: `emergency:${request._id}:hospital:${adminId}`,
       emailTemplate: "emergency_staff", emailData: { reference: request.requestId, hospital: hospital.name } });
   }
   return { request, trackingToken };
@@ -214,7 +197,7 @@ export async function changeEmergencyRequest({ requestId, actor, trackingToken, 
     { $set: set, $push: { timeline: step } }, { new: true, runValidators: true });
   if (!updated) return { error: "Request changed. Refresh its status before trying again.", status: 409 };
   await auditRequestUpdate(updated, previousStatus, actor);
-  await notifyRequestUpdate(updated, hospital);
+  await emailRequestUpdate(updated, hospital);
   return expired ? { error: "Request expired", status: 409 } : { request: updated };
 }
 
