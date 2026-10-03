@@ -444,11 +444,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   font-variant-numeric: tabular-nums;
 }
 
-.hero-information {
-  background: #8f111b;
-  border: 1px solid #ca5b61;
-}
-
 .emergency-icon-surface {
   background: var(--color-surface);
   color: var(--color-emergency-dark);
@@ -456,4 +451,3 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 .hero-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .hero-actions > a, .hero-actions > button { min-height: 44px; }
-.hero-information h3 { color: inherit; font-size: 1rem; }

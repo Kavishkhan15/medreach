@@ -223,7 +223,7 @@ export default function HomePage() {
       {/* 2. HERO SECTION */}
       <section className="hero-premium mb-4">
         <div className="row align-items-center g-4">
-          <div className="col-lg-8">
+          <div className="col-12">
             <h1 className="mb-3">
               Find listed healthcare providers and check their verification status when seconds count.
             </h1>
@@ -258,29 +258,6 @@ export default function HomePage() {
               <Link href="/diagnostics" className="hero-quick-pill">
                 <EmergencyIcon name="diagnostic" size={18} /> Diagnostics ({stats.diagnostics})
               </Link>
-            </div>
-          </div>
-
-          <div className="col-lg-4 d-none d-lg-block">
-            <div className="hero-information p-4 rounded-3 text-white">
-              <div className="d-flex align-items-center gap-2 mb-3">
-                <EmergencyIcon name="shield" size={24} className="text-warning" />
-                <h3 className="h6 fw-bold mb-0 text-white">MedReach Safety Commitments</h3>
-              </div>
-              <ul className="list-unstyled small mb-0 d-flex flex-column gap-2 opacity-90">
-                <li className="d-flex gap-2">
-                  <EmergencyIcon name="check" size={16} className="text-white flex-shrink-0 mt-1" />
-                  <span><strong>Zero Hallucinated Beds:</strong> Real hospital telemetry, never synthetic approximations.</span>
-                </li>
-                <li className="d-flex gap-2">
-                  <EmergencyIcon name="check" size={16} className="text-white flex-shrink-0 mt-1" />
-                  <span><strong>Live Coordination:</strong> Dedicated triage pipeline directly connected to admitting staff.</span>
-                </li>
-                <li className="d-flex gap-2">
-                  <EmergencyIcon name="check" size={16} className="text-white flex-shrink-0 mt-1" />
-                  <span><strong>Multi-Modal Care:</strong> Cross-functional map spanning trauma, blood, scans, and ambulances.</span>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
