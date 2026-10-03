@@ -81,6 +81,42 @@ test("password sign-in remains available and the retired callback route is absen
   expect(callback.status()).toBe(404);
 });
 
+test("password reset requests report backend feedback and recover after a failed attempt", async ({ page }, testInfo) => {
+  const clean = attachRuntimeGuard(page);
+  let attempts = 0;
+  let releaseFailure;
+  const failureReady = new Promise((resolve) => { releaseFailure = resolve; });
+  await page.route(`${API}/api/auth/forgot-password`, async (route) => {
+    attempts += 1;
+    if (attempts === 1) {
+      await failureReady;
+      await route.fulfill({ status: 503, json: { error: "Reset instructions are temporarily unavailable. Please retry." } });
+    } else await route.continue();
+  });
+  await page.goto("/forgot-password");
+  await page.getByLabel("Email", { exact: true }).fill(`${testInfo.project.name}.e2e@medreach.test`);
+  await page.getByRole("button", { name: /Request reset|Send reset link/ }).click();
+  try {
+    if (testInfo.project.name !== "bootstrap") {
+      await expect(page.getByRole("button", { name: "Requesting…" })).toBeDisabled();
+      await expect(page.getByLabel("Email", { exact: true })).toBeDisabled();
+      await page.locator("form").evaluate((form) => {
+        form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+      });
+    }
+    expect(attempts).toBe(1);
+  } finally { releaseFailure(); }
+  await expect(page.getByText("Reset instructions are temporarily unavailable. Please retry.", { exact: true })).toBeVisible();
+  const retried = page.waitForResponse((response) => response.url() === `${API}/api/auth/forgot-password` && response.status() === 200);
+  await page.getByRole("button", { name: /Request reset|Send reset link/ }).click();
+  const result = await (await retried).json();
+  await expect(page.getByText(result.message, { exact: true })).toBeVisible();
+  await expect(page.getByText("Reset instructions are temporarily unavailable. Please retry.", { exact: true })).toHaveCount(0);
+  expect(attempts).toBe(2);
+  await expect(page.getByText(/instructions have been sent/i)).toHaveCount(0);
+  clean();
+});
+
 test("guest emergency request stays public while tracking and cancellation stay private", async ({ page }) => {
   const clean = attachRuntimeGuard(page);
   let createCalls = 0;
