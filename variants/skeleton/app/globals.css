@@ -29,9 +29,9 @@
   --radius: 0.625rem;
   --radius-lg: 1rem;
   --radius-pill: 9999px;
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
-  --shadow-md: 0 4px 10px -2px rgba(16, 24, 40, 0.12);
-  --shadow-lg: 0 14px 30px -8px rgba(16, 24, 40, 0.18);
+  --shadow-sm: none;
+  --shadow-md: 0 2px 6px rgba(16, 24, 40, 0.05);
+  --shadow-lg: 0 6px 18px rgba(16, 24, 40, 0.1);
 
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
@@ -214,7 +214,7 @@ select.w-auto { width: auto; display: inline-block; }
 .system-banner.live { background: var(--color-success-bg); color: var(--color-success); border-bottom: 1px solid #b9e6c9; }
 
 /* Hero --------------------------------------------------------------------- */
-.emergency-hero { border-radius: var(--radius-lg); padding: clamp(1.5rem, 4vw, 3rem); background: linear-gradient(135deg, var(--color-critical), var(--color-emergency) 70%); color: #fff; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+.emergency-hero { border-radius: var(--radius-lg); padding: clamp(1.5rem, 4vw, 3rem); background: var(--color-emergency-dark); color: #fff; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
 .emergency-hero h1 { color: #fff; font-size: clamp(1.75rem, 5vw, 2.75rem); }
 .emergency-hero .lead { color: rgba(255,255,255,.92); font-size: 1.8rem; }
 
@@ -223,8 +223,8 @@ select.w-auto { width: auto; display: inline-block; }
 .surface { padding: 1.25rem; }
 .card { padding: 0; }
 .card-body { padding: 1.25rem; display: flex; flex-direction: column; height: 100%; }
-.hospital-card { transition: transform .15s ease, box-shadow .15s ease; position: relative; }
-.hospital-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.hospital-card { transition: border-color .15s ease; position: relative; }
+.hospital-card:hover { border-color: #ccd2da; }
 .stretched-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
 .hospital-card .action-bar, .hospital-card .reasons { position: relative; z-index: 2; }
 .lead { font-size: 1.8rem; }
@@ -293,7 +293,7 @@ select.w-auto { width: auto; display: inline-block; }
 .list-group-item:last-child { border-bottom: none; }
 
 /* Map canvas --------------------------------------------------------------- */
-.map-canvas { background: linear-gradient(0deg, rgba(211,32,41,.03), rgba(211,32,41,.03)), repeating-linear-gradient(0deg, #eef0f2, #eef0f2 1px, transparent 1px, transparent 28px), repeating-linear-gradient(90deg, #eef0f2, #eef0f2 1px, transparent 1px, transparent 28px), var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); min-height: 300px; display: flex; align-items: center; justify-content: center; color: var(--color-muted); }
+.map-canvas { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); min-height: 300px; display: flex; align-items: center; justify-content: center; color: var(--color-muted); }
 
 .gmap-container { width: 100%; height: min(65vh, 570px); min-height: 420px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface); }
 .map-fallback { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.5rem 1.5rem; background: var(--color-surface); border: 1px dashed var(--color-border); border-radius: var(--radius); }
@@ -416,3 +416,69 @@ select.w-auto { width: auto; display: inline-block; }
 .row-actions { display: flex; flex-wrap: wrap; gap: .3rem; }
 .row-actions .button { margin: 0; padding: 0 .6rem; height: 30px; line-height: 30px; font-size: .75rem; }
 .admin-toolbar .button { margin: 0; }
+
+/* Solid homepage surfaces; sizes follow Skeleton's 10px rem scale. */
+.hero-premium {
+  border-radius: var(--radius-lg);
+  padding: clamp(2rem, 5vw, 4rem);
+  background: var(--color-emergency-dark);
+  color: #fff;
+}
+.hero-premium h1 {
+  color: #fff;
+  font-size: clamp(2.8rem, 4.5vw, 4rem);
+  line-height: 1.15;
+}
+.hero-premium .lead { color: #fff; max-width: 52ch; line-height: 1.55; }
+.hero-quick-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .8rem 1.2rem;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface);
+  color: var(--color-emergency-dark);
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: none;
+  letter-spacing: normal;
+  height: auto;
+  line-height: 1.5;
+  margin-bottom: 0;
+  transition: background-color .15s ease, color .15s ease;
+}
+.hero-quick-pill:hover { background: #fdecee; color: var(--color-critical); }
+.search-floating-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+}
+
+.hero-information {
+  background: #8f111b;
+  border: 1px solid #ca5b61;
+}
+
+.emergency-icon-surface {
+  background: var(--color-surface);
+  color: var(--color-emergency-dark);
+}
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.hero-actions > a, .hero-actions > button { min-height: 44px; }
+.hero-information h3 { color: inherit; font-size: 1.6rem; }
+.hero-information ul { list-style: none; margin: 0; padding: 0; }
+.hero-information li { display: flex; gap: .8rem; margin-bottom: .8rem; }
+.hero-information li svg { flex-shrink: 0; }
+
+.urgent-blood-submit {
+  max-width: 100%;
+  min-height: 44px;
+  height: auto;
+  line-height: 1.5;
+  white-space: normal;
+}

@@ -105,7 +105,7 @@ export default function UrgentBloodPage() {
 
       {/* Critical Emergency Banner */}
       <div className="alert alert-danger shadow-sm border-0 d-flex align-items-center gap-3 mb-4 p-3 rounded-3">
-        <div className="p-2 bg-danger bg-opacity-25 rounded-circle text-white d-flex align-items-center justify-content-center">
+        <div className="p-2 emergency-icon-surface rounded-circle d-flex align-items-center justify-content-center">
           <EmergencyIcon name="blood" size={32} />
         </div>
         <div>
@@ -350,7 +350,7 @@ export default function UrgentBloodPage() {
                 </Link>
                 <button
                   type="submit"
-                  className="btn btn-danger fw-bold px-4 py-2 d-flex align-items-center gap-2"
+                  className="urgent-blood-submit btn btn-danger fw-bold px-4 py-2 d-flex align-items-center gap-2"
                   disabled={isSubmitting}
                 >
                   <EmergencyIcon name="blood" size={18} />

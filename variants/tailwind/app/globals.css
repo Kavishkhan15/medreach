@@ -31,9 +31,9 @@
   --radius: 0.625rem;
   --radius-lg: 1rem;
 
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
-  --shadow-md: 0 4px 10px -2px rgba(16, 24, 40, 0.12);
-  --shadow-lg: 0 14px 30px -8px rgba(16, 24, 40, 0.18);
+  --shadow-sm: none;
+  --shadow-md: 0 2px 6px rgba(16, 24, 40, 0.05);
+  --shadow-lg: 0 6px 18px rgba(16, 24, 40, 0.1);
 
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
@@ -260,20 +260,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .hero-premium {
   border-radius: var(--radius-lg, 1rem);
   padding: clamp(2rem, 5vw, 4rem);
-  background: radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
-              linear-gradient(135deg, #a51620 0%, #d32029 55%, #b3001b 100%);
+  background: var(--color-emergency-dark);
   color: #fff;
-  box-shadow: 0 20px 45px -15px rgba(179, 0, 27, 0.4);
+  box-shadow: none;
   position: relative;
   overflow: hidden;
-}
-.hero-premium::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-  pointer-events: none;
 }
 .hero-premium h1 {
   color: #fff;
@@ -294,43 +285,40 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   align-items: center;
   gap: 0.5rem;
   padding: 0.55rem 1.1rem;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  color: #fff;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface);
+  color: var(--color-emergency-dark);
   font-weight: 600;
   font-size: 0.92rem;
   text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color .15s ease, color .15s ease;
 }
 .hero-quick-pill:hover {
-  background: #ffffff;
+  background: #fdecee;
   color: var(--color-critical, #b3001b);
   border-color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 .btn-emergency {
   background: #ffffff;
   color: var(--color-emergency, #d32029);
   font-weight: 700;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
   border: 1px solid #ffffff;
 }
 .btn-emergency:hover {
   background: #fdecee;
   color: var(--color-emergency-dark, #a51620);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+  box-shadow: none;
 }
 
 .search-floating-card {
   background: #ffffff;
   border-radius: var(--radius-lg, 1rem);
-  border: 1px solid rgba(16, 24, 40, 0.08);
-  box-shadow: 0 16px 36px -8px rgba(16, 24, 40, 0.14);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
   padding: clamp(1.25rem, 2.5vw, 1.75rem);
 }
 
@@ -340,11 +328,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   border-radius: var(--radius, 0.625rem);
   padding: 1.25rem;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color .15s ease;
 }
 .metric-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
   border-color: #d1d5dc;
 }
 .metric-value {
@@ -355,11 +341,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .card-hover-elevate {
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: border-color .15s ease;
 }
 .card-hover-elevate:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
   border-color: #ccd2da !important;
 }
 
@@ -446,7 +430,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   background: #fee2e2;
   color: #991b1b;
   border-color: #fca5a5;
-  transform: translateY(-1px);
 }
 
 .category-tab-btn {
@@ -460,3 +443,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .interactive-counter {
   font-variant-numeric: tabular-nums;
 }
+
+.hero-information {
+  background: #8f111b;
+  border: 1px solid #ca5b61;
+}
+
+.emergency-icon-surface {
+  background: var(--color-surface);
+  color: var(--color-emergency-dark);
+}
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.hero-actions > a, .hero-actions > button { min-height: 44px; }
+.hero-information h3 { color: inherit; font-size: 1rem; }

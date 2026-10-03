@@ -166,7 +166,7 @@ export default function BloodBanks() {
       {/* Emergency Blood Request Alert Banner */}
       <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex flex-wrap justify-between items-center gap-3 shadow-sm">
         <div className="d-flex align-items-center gap-3">
-          <div className="p-2 bg-danger bg-opacity-25 rounded-circle text-white">
+          <div className="p-2 emergency-icon-surface rounded-circle">
             <EmergencyIcon name="blood" size={28} />
           </div>
           <div>
@@ -409,7 +409,7 @@ export default function BloodBanks() {
             height: "100%",
           }}
         >
-          <div className="w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden my-8">
+          <div className="w-full max-w-2xl bg-white rounded-xl shadow-[var(--shadow-lg)] overflow-hidden my-8">
             <div className="flex flex-col">
               <div className="bg-[var(--color-emergency)] text-white p-4 flex justify-between items-center">
                 <h5 className="modal-title fw-bold">Host a Blood Donation Campaign</h5>

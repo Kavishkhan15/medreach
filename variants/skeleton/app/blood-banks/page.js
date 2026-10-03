@@ -166,7 +166,7 @@ export default function BloodBanks() {
       {/* Emergency Blood Request Alert Banner */}
       <div className="alert alert-danger mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3 shadow-sm border-0">
         <div className="d-flex align-items-center gap-3">
-          <div className="p-2 bg-danger bg-opacity-25 rounded-circle text-white">
+          <div className="p-2 emergency-icon-surface rounded-circle">
             <EmergencyIcon name="blood" size={28} />
           </div>
           <div>

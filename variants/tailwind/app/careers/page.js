@@ -368,9 +368,9 @@ export default function Careers() {
 
       {/* Search & Filter Control Bar */}
       <section className="surface mb-4 shadow-sm" aria-label="Search and Filter Organizations">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           {/* Keyword Search */}
-          <div className="col-12 col-lg-7">
+          <div className="min-w-0 lg:col-span-7">
             <label htmlFor="orgSearchInput" className="form-label fw-semibold small text-uppercase text-muted mb-1">
               Search Facility Name or Locality
             </label>
@@ -398,7 +398,7 @@ export default function Careers() {
           </div>
 
           {/* Organization Type Selector */}
-          <div className="col-12 col-lg-3">
+          <div className="min-w-0 lg:col-span-3">
             <label htmlFor="orgTypeSelect" className="form-label fw-semibold small text-uppercase text-muted mb-1">
               Organization Type
             </label>
@@ -417,7 +417,7 @@ export default function Careers() {
           </div>
 
           {/* Reset Filters CTA */}
-          <div className="col-12 col-lg-2 d-flex align-items-end">
+          <div className="min-w-0 lg:col-span-2 d-flex align-items-end">
             <button
               type="button"
               className="btn btn-outline-secondary w-100 py-2"
@@ -519,7 +519,7 @@ export default function Careers() {
             {/* List of Organizations for this Group */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {group.orgs.map((org) => (
-                <div key={org._id} className="col-12 col-xl-6">
+                <div key={org._id} className="min-w-0">
                   <article className="card h-100 border p-3 d-flex flex-column justify-content-between bg-white hover-shadow">
                     <div>
                       {/* Category & Status Pill */}
@@ -592,7 +592,7 @@ export default function Careers() {
           aria-labelledby="applyModalLabel"
           style={{ backgroundColor: "rgba(16, 24, 40, 0.65)" }}
         >
-          <div className="w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden my-8" role="document">
+          <div className="w-full max-w-2xl bg-white rounded-xl shadow-[var(--shadow-lg)] overflow-hidden my-8" role="document">
             <div className="modal-content border-0 shadow-lg rounded-3">
               <div className="modal-header bg-light border-bottom">
                 <div>

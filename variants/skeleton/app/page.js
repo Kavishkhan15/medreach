@@ -224,9 +224,6 @@ export default function HomePage() {
       <section className="hero-premium mb-4">
         <div className="row align-items-center g-4">
           <div className="col-lg-8">
-            <div className="d-inline-flex align-items-center gap-2 bg-white bg-opacity-20 px-3 py-1 rounded-pill mb-3 text-white small fw-bold">
-              <EmergencyIcon name="verified" size={16} /> Source-Backed Mumbai Health Directory
-            </div>
             <h1 className="mb-3">
               Find listed healthcare providers and check their verification status when seconds count.
             </h1>
@@ -235,7 +232,7 @@ export default function HomePage() {
             </p>
 
             {/* Quick Action Navigation Buttons */}
-            <div className="d-flex flex-wrap gap-2 mb-2">
+            <div className="hero-actions d-flex flex-wrap gap-2 mb-2">
               <Link href="/emergency" className="btn btn-emergency btn-lg d-inline-flex align-items-center gap-2">
                 <EmergencyIcon name="siren" size={20} className="text-danger" />
                 Find Emergency Hospital
@@ -265,7 +262,7 @@ export default function HomePage() {
           </div>
 
           <div className="col-lg-4 d-none d-lg-block">
-            <div className="bg-white bg-opacity-10 p-4 rounded-4 border border-white border-opacity-25 shadow-sm text-white">
+            <div className="hero-information p-4 rounded-3 text-white">
               <div className="d-flex align-items-center gap-2 mb-3">
                 <EmergencyIcon name="shield" size={24} className="text-warning" />
                 <h3 className="h6 fw-bold mb-0 text-white">MedReach Safety Commitments</h3>

@@ -93,18 +93,18 @@ export default function UrgentBloodPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Critical Emergency Banner */}
-      <div className="bg-gradient-to-r from-red-600 via-red-700 to-rose-800 rounded-2xl shadow-lg flex flex-col sm:flex-row sm:items-center gap-4 mb-8 p-6 text-white">
-        <div className="p-3 bg-white/15 backdrop-blur-xs rounded-2xl text-white flex items-center justify-center shrink-0 w-14 h-14 border border-white/20">
+      <div className="bg-[var(--color-emergency-dark)] rounded-xl border border-red-800 flex flex-col sm:flex-row sm:items-center gap-4 mb-8 p-6 text-white">
+        <div className="p-3 bg-white rounded-lg text-red-700 flex items-center justify-center shrink-0 w-14 h-14 border border-white">
           <EmergencyIcon name="blood" size={32} />
         </div>
         <div>
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white/20 text-white border border-white/30 mb-1.5">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#8f111b] text-white border border-[#ca5b61] mb-1.5">
             Critical Clinical Response
           </span>
           <h1 className="text-2xl font-extrabold tracking-tight mb-1 text-white">
             Urgent Blood Requisition
           </h1>
-          <p className="text-sm text-red-100/90 max-w-2xl leading-relaxed">
+          <p className="text-sm text-red-100 max-w-2xl leading-relaxed">
             Record an urgent requirement, then contact blood banks directly to confirm inventory and fulfillment.
           </p>
         </div>
@@ -389,7 +389,7 @@ export default function UrgentBloodPage() {
                 </Link>
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-none transition-all disabled:opacity-50"
                   disabled={isSubmitting}
                 >
                   <EmergencyIcon name="blood" size={18} />

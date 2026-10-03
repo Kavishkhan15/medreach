@@ -440,7 +440,7 @@ export default function MapPage() {
                     <li
                       key={id}
                       className={`p-3 transition-colors ${
-                        isSelected ? "bg-red-50/70" : "bg-white hover:bg-gray-50"
+                        isSelected ? "bg-red-50" : "bg-white hover:bg-gray-50"
                       }`}
                     >
                       <button

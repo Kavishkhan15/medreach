@@ -73,13 +73,13 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-[var(--shadow-lg)] max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between pb-3 border-b border-gray-100 mb-4">
