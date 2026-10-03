@@ -12,7 +12,7 @@ import { JobApplication } from "../src/models/JobApplication.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
 import { AuditLog } from "../src/models/AuditLog.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 import { expireEmergencyRequests } from "../src/services/emergencyRequestExpiry.js";
 import { getRoute } from "../src/services/routingService.js";
 
@@ -234,10 +234,10 @@ test("MedReach Workflows Verification Suite", async (t) => {
   await sysAdmin.setPassword("SecurePass123!");
   await sysAdmin.save();
 
-  const patientToken = signToken(patient);
-  const staffToken = signToken(hospitalStaff);
-  const otherStaffToken = signToken(otherStaff);
-  const adminToken = signToken(sysAdmin);
+  const patientToken = await signSessionToken(patient);
+  const staffToken = await signSessionToken(hospitalStaff);
+  const otherStaffToken = await signSessionToken(otherStaff);
+  const adminToken = await signSessionToken(sysAdmin);
 
   const mainHospital = await Hospital.create({
     name: "Lilavati Hospital & Research Centre",

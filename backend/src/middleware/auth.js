@@ -13,21 +13,22 @@ function presentedToken(req) {
 async function resolveAccessContext(token) {
   const payload = verifyToken(token);
   if (payload.typ !== "access") throw new Error("wrong_token_type");
-  let current = null;
-  if (mongoose.connection.readyState === 1) {
-    current = await User.findById(payload.sub).select("+authVersion").lean();
-    if (!current || current.accountStatus !== "active" || Number(current.authVersion || 0) !== Number(payload.av || 0)) {
-      return { error: "Session is no longer valid" };
-    }
-    if (payload.sid && !(await AuthToken.exists({ familyId: payload.sid, user: current._id,
-      purpose: "refresh_session", usedAt: { $exists: false }, revokedAt: { $exists: false },
-      expiresAt: { $gt: new Date() } }))) {
-      return { error: "Session is no longer valid" };
-    }
+  if (typeof payload.sid !== "string" || !payload.sid) return { error: "Session is no longer valid" };
+  if (mongoose.connection.readyState !== 1) {
+    return { error: "Authentication temporarily unavailable", status: 503 };
+  }
+  const current = await User.findById(payload.sub).select("+authVersion").lean();
+  if (!current || current.accountStatus !== "active" || Number(current.authVersion || 0) !== Number(payload.av || 0)) {
+    return { error: "Session is no longer valid" };
+  }
+  if (!(await AuthToken.exists({ familyId: payload.sid, user: current._id,
+    purpose: "refresh_session", usedAt: { $exists: false }, revokedAt: { $exists: false },
+    expiresAt: { $gt: new Date() } }))) {
+    return { error: "Session is no longer valid" };
   }
   return {
-    user: { id: payload.sub, role: current?.role || payload.role,
-      email: current?.email || payload.email, name: current?.name || payload.name },
+    user: { id: payload.sub, role: current.role,
+      email: current.email, name: current.name },
     claims: payload,
   };
 }
@@ -38,7 +39,7 @@ export async function requireAuth(req, res, next) {
   if (!token) return res.status(401).json({ error: "Authentication required" });
   try {
     const context = await resolveAccessContext(token);
-    if (context.error) return res.status(401).json({ error: context.error });
+    if (context.error) return res.status(context.status || 401).json({ error: context.error });
     req.user = context.user;
     req.accessClaims = context.claims;
     next();
@@ -64,7 +65,7 @@ export async function optionalAuth(req, res, next) {
   if (!token) return next();
   try {
     const context = await resolveAccessContext(token);
-    if (context.error) return res.status(401).json({ error: context.error });
+    if (context.error) return res.status(context.status || 401).json({ error: context.error });
     req.user = context.user;
     req.accessClaims = context.claims;
   } catch {

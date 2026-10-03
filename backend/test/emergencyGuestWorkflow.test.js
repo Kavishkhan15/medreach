@@ -7,7 +7,7 @@ import { connectDB, disconnectDB } from "../src/config/db.js";
 import { Hospital } from "../src/models/Hospital.js";
 import { User } from "../src/models/User.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 
 const testDbUri = "mongodb://127.0.0.1:27017/medreach_emergency_guest_test";
 
@@ -32,7 +32,7 @@ test("Emergency Guest Workflow & Authentication Boundary Test Suite", async (t) 
       role: "user",
       phone: "+91 98765 00001",
     });
-    userToken = signToken(testUser);
+    userToken = await signSessionToken(testUser);
 
     const staff = await User.create({
       name: "Hospital Staff",
@@ -46,8 +46,8 @@ test("Emergency Guest Workflow & Authentication Boundary Test Suite", async (t) 
       role: "system_admin",
       phone: "+91 98765 00003",
     });
-    staffToken = signToken(staff);
-    adminToken = signToken(admin);
+    staffToken = await signSessionToken(staff);
+    adminToken = await signSessionToken(admin);
 
     testHospital = await Hospital.create({
       name: "Holy Family Hospital",

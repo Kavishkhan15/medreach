@@ -11,7 +11,7 @@ import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
 import { EmailDelivery } from "../src/models/EmailDelivery.js";
 import { AuditLog } from "../src/models/AuditLog.js";
 import { expireEmergencyRequests } from "../src/services/emergencyRequestExpiry.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 import { setEmailTransportFactoryForTests } from "../src/services/emailService.js";
 
 const uri = process.env.MEDREACH_PRODUCT_TEST_MONGO_URI;
@@ -25,7 +25,7 @@ test("bed request lifecycle: real database, staff, patient, guest, history and f
   const staff = await User.create({ name: "Lifecycle staff", email: "staff@lifecycle.test", role: "hospital_admin" });
   const outsider = await User.create({ name: "Unassigned staff", email: "outsider@lifecycle.test", role: "hospital_admin" });
   const hospital = await Hospital.create({ name: "Lifecycle Hospital", city: "Mumbai", admins: [staff._id], phone: "+91 22 4000 1000" });
-  const tokens = { patient: signToken(patient), staff: signToken(staff), outsider: signToken(outsider) };
+  const tokens = { patient: await signSessionToken(patient), staff: await signSessionToken(staff), outsider: await signSessionToken(outsider) };
   const payload = { hospitalId: hospital.id, emergencyType: "General care", requiredFacility: "ICU", contactPhone: "+91 98765 40101" };
   const update = (id, token, data, trackingToken) => {
     const call = request(app).patch(`/api/emergency-requests/${id}`);

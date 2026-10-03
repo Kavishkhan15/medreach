@@ -17,7 +17,7 @@ import { tickCrawlerScheduler } from "../src/services/crawlerScheduler.js";
 import { runOne } from "../src/controllers/crawlerController.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
 import { expireEmergencyRequests } from "../src/services/emergencyRequestExpiry.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 import { AuthToken } from "../src/models/AuthToken.js";
 import { digestToken } from "../src/services/authTokenService.js";
 
@@ -49,18 +49,18 @@ test("product workflow: register, ownership, request response, emails, jobs, res
     assert.equal(reset.status, 200);
     const login = await request(app).post("/api/auth/login").send({ email: "patient@medreach.test", password: "NewPassword123" });
     assert.equal(login.status, 200);
-    const patientToken = signToken(await User.findById(user._id).select("+authVersion"));
+    const patientToken = await signSessionToken(await User.findById(user._id).select("+authVersion"));
     const staff = new User({ name: "Hospital Staff", email: "staff@medreach.test", role: "user" });
     await staff.setPassword("SafePassword123"); await staff.save();
     const admin = new User({ name: "System Admin", email: "admin@medreach.test", role: "system_admin" });
     await admin.setPassword("SafePassword123"); await admin.save();
-    const staffToken = signToken(staff); const adminToken = signToken(admin);
+    const staffToken = await signSessionToken(staff); const adminToken = await signSessionToken(admin);
     const hospital = await Hospital.create({ name: "Integration Hospital", city: "Mumbai", locality: "Bandra", hospitalType: "Private", address: "Demo Road", pincode: "400050" });
     const other = await Hospital.create({ name: "Other Integration Hospital", city: "Mumbai", locality: "Andheri", hospitalType: "Private", address: "Other Road", pincode: "400053" });
     const otherHospitalStaff = new User({ name: "Other Hospital Staff", email: "other@test.io", role: "hospital_admin" });
     await otherHospitalStaff.setPassword("SafePassword123"); await otherHospitalStaff.save();
     other.admins = [otherHospitalStaff._id]; await other.save();
-    const otherHospitalStaffToken = signToken(otherHospitalStaff);
+    const otherHospitalStaffToken = await signSessionToken(otherHospitalStaff);
     const claim = await request(app).post("/api/hospital-admin/ownership-claims").set("Authorization", `Bearer ${staffToken}`)
       .send({ hospitalId: hospital.id, hospitalEmail: "staff@integration.example", explanation: "Hospital staff test" });
     assert.equal(claim.status, 201);
@@ -70,7 +70,7 @@ test("product workflow: register, ownership, request response, emails, jobs, res
     const freshStaff = await User.findById(staff._id);
     const hospitalDoc = await Hospital.findById(hospital._id);
     assert.equal(freshStaff.role, "hospital_admin"); assert.equal(hospitalDoc.admins.some((id) => String(id) === String(staff._id)), true);
-    const staffRoleToken = signToken(freshStaff);
+    const staffRoleToken = await signSessionToken(freshStaff);
     const forbidden = await request(app).post(`/api/hospitals/${other.id}/availability`).set("Authorization", `Bearer ${staffRoleToken}`)
       .send({ facility: "ICU", status: "available", quantity: 2 });
     assert.equal(forbidden.status, 403);
@@ -103,7 +103,7 @@ test("product workflow: register, ownership, request response, emails, jobs, res
     await secondStaff.setPassword("SafePassword123"); await secondStaff.save();
     await Hospital.updateOne({ _id: hospital._id }, { $addToSet: { admins: secondStaff._id } });
     const secondClaim = await request(app).post(`/api/hospital-admin/hospitals/${hospital.id}/facility-claims`)
-      .set("Authorization", `Bearer ${signToken(secondStaff)}`)
+      .set("Authorization", `Bearer ${await signSessionToken(secondStaff)}`)
       .send({ facility: "Blood Bank", capability: "no", evidenceText: "Second staff disputes this facility" });
     assert.equal(secondClaim.status, 201);
     assert.equal(secondClaim.body.resolution.conflict, true);

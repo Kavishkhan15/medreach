@@ -8,7 +8,7 @@ import { Hospital } from "../src/models/Hospital.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { OrganizationApplication } from "../src/models/OrganizationApplication.js";
 import { User } from "../src/models/User.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 
 const app = createApp();
 
@@ -49,7 +49,7 @@ describe("Organization Direct Careers & Application System", () => {
         accountStatus: "active",
         emergencyContact: "+91 98201 11222",
       });
-      candidateToken = signToken(candidateUser);
+      candidateToken = await signSessionToken(candidateUser);
 
       secondCandidateUser = await User.create({
         name: "Nurse Rajesh Verma",
@@ -57,7 +57,7 @@ describe("Organization Direct Careers & Application System", () => {
         role: "user",
         accountStatus: "active",
       });
-      secondCandidateToken = signToken(secondCandidateUser);
+      secondCandidateToken = await signSessionToken(secondCandidateUser);
 
       hospitalAdminUser = await User.create({
         name: "Admin KEM Care",
@@ -65,7 +65,7 @@ describe("Organization Direct Careers & Application System", () => {
         role: "hospital_admin",
         accountStatus: "active",
       });
-      hospitalAdminToken = signToken(hospitalAdminUser);
+      hospitalAdminToken = await signSessionToken(hospitalAdminUser);
 
       otherHospitalAdminUser = await User.create({
         name: "Admin Lilavati Care",
@@ -73,7 +73,7 @@ describe("Organization Direct Careers & Application System", () => {
         role: "hospital_admin",
         accountStatus: "active",
       });
-      otherHospitalAdminToken = signToken(otherHospitalAdminUser);
+      otherHospitalAdminToken = await signSessionToken(otherHospitalAdminUser);
 
       systemAdminUser = await User.create({
         name: "System Superadmin",
@@ -81,7 +81,7 @@ describe("Organization Direct Careers & Application System", () => {
         role: "system_admin",
         accountStatus: "active",
       });
-      systemAdminToken = signToken(systemAdminUser);
+      systemAdminToken = await signSessionToken(systemAdminUser);
 
       // Create Hospital
       testHospital = await Hospital.create({

@@ -1,3 +1,4 @@
+import { installAuthMocks, signMockToken } from "./helpers/mockAuth.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
@@ -6,10 +7,10 @@ import request from "supertest";
 const { createApp } = await import("../src/app.js");
 const { User } = await import("../src/models/User.js");
 const { AuthToken } = await import("../src/models/AuthToken.js");
-const { signToken, verifyToken } = await import("../src/utils/token.js");
+const { verifyToken } = await import("../src/utils/token.js");
 
 test("access JWT is typed, issuer/audience bound, and short lived", () => {
-  const token = signToken({ _id: "507f1f77bcf86cd799439011", role: "user", email: "u@example.test", name: "U", authVersion: 3 }, "session-family");
+  const token = signMockToken({ _id: "507f1f77bcf86cd799439011", role: "user", email: "u@example.test", name: "U", authVersion: 3 }, "session-family");
   const claims = verifyToken(token);
   assert.equal(claims.typ, "access");
   assert.equal(claims.av, 3);
@@ -45,10 +46,12 @@ test("auth validators and system-only RBAC reject weak or unauthorized requests 
   assert.equal((await request(app).post("/api/auth/register").send({ name: "A", email: "a@example.test", password: "weakpass" })).status, 400);
   assert.equal((await request(app).post("/api/auth/reset-password").send({ token: "x".repeat(43), password: "weakpass" })).status, 400);
   assert.equal((await request(app).get("/api/auth/sessions")).status, 401);
-  const hospitalToken = signToken({ _id: "507f1f77bcf86cd799439011", role: "hospital_admin", email: "h@example.test", name: "H" });
+  const hospitalToken = signMockToken({ _id: "507f1f77bcf86cd799439011", role: "hospital_admin", email: "h@example.test", name: "H" });
   assert.equal((await request(app).get("/api/admin/users").set("Authorization", `Bearer ${hospitalToken}`)).status, 403);
-  const legacyAdminToken = signToken({ _id: "507f1f77bcf86cd799439013", role: "admin", email: "a@example.test", name: "A" });
+  const legacyAdminToken = signMockToken({ _id: "507f1f77bcf86cd799439013", role: "admin", email: "a@example.test", name: "A" });
   assert.equal((await request(app).get("/api/admin/users").set("Authorization", `Bearer ${legacyAdminToken}`)).status, 403);
-  const userToken = signToken({ _id: "507f1f77bcf86cd799439012", role: "user", email: "u@example.test", name: "U" });
+  const userToken = signMockToken({ _id: "507f1f77bcf86cd799439012", role: "user", email: "u@example.test", name: "U" });
   assert.equal((await request(app).delete("/api/auth/providers/google").set("Authorization", `Bearer ${userToken}`)).status, 404);
 });
+
+test.beforeEach((t) => installAuthMocks(t));

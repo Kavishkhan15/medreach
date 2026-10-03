@@ -9,7 +9,7 @@ import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { Job } from "../src/models/Job.js";
 import { JobApplication } from "../src/models/JobApplication.js";
 import { User } from "../src/models/User.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 
 const app = createApp();
 
@@ -50,7 +50,7 @@ describe("Careers Portal & Healthcare Job Application System", () => {
         accountStatus: "active",
         emergencyContact: "+91 98200 11223",
       });
-      candidateToken = signToken(candidateUser);
+      candidateToken = await signSessionToken(candidateUser);
 
       hospitalAdminUser = await User.create({
         name: "Admin KEM Care",
@@ -58,7 +58,7 @@ describe("Careers Portal & Healthcare Job Application System", () => {
         role: "hospital_admin",
         accountStatus: "active",
       });
-      hospitalAdminToken = signToken(hospitalAdminUser);
+      hospitalAdminToken = await signSessionToken(hospitalAdminUser);
 
       otherHospitalAdminUser = await User.create({
         name: "Admin Lilavati Care",
@@ -66,7 +66,7 @@ describe("Careers Portal & Healthcare Job Application System", () => {
         role: "hospital_admin",
         accountStatus: "active",
       });
-      otherHospitalAdminToken = signToken(otherHospitalAdminUser);
+      otherHospitalAdminToken = await signSessionToken(otherHospitalAdminUser);
 
       systemAdminUser = await User.create({
         name: "Super Administrator",
@@ -74,7 +74,7 @@ describe("Careers Portal & Healthcare Job Application System", () => {
         role: "system_admin",
         accountStatus: "active",
       });
-      systemAdminToken = signToken(systemAdminUser);
+      systemAdminToken = await signSessionToken(systemAdminUser);
 
       // Create Hospital with assigned admin
       testHospital = await Hospital.create({

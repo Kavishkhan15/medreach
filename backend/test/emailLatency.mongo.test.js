@@ -14,7 +14,7 @@ import { OrganizationApplication } from "../src/models/OrganizationApplication.j
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
 import { BloodRequest } from "../src/models/BloodRequest.js";
 import { EmailDelivery } from "../src/models/EmailDelivery.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 import { retryEmailDelivery, setEmailTransportFactoryForTests } from "../src/services/emailService.js";
 
 const uri = process.env.MEDREACH_PRODUCT_TEST_MONGO_URI;
@@ -67,7 +67,7 @@ test("submission email batches preserve records, recipients, tracking, retries a
         const key = `email-batch-${kind}-submission`;
         const submit = async () => {
           const call = request(app).post(url).set("Idempotency-Key", key);
-          if (kind !== "emergency") call.set("Authorization", `Bearer ${signToken(patient)}`);
+          if (kind !== "emergency") call.set("Authorization", `Bearer ${await signSessionToken(patient)}`);
           return call.send(payload);
         };
         const response = await submit();
@@ -98,7 +98,7 @@ test("submission email batches preserve records, recipients, tracking, retries a
       const mock = t.mock.method(Hospital, "findById", () => ({ select: () => ({ lean: async () => { throw new Error("Test routing outage"); } }) }));
       t.mock.method(console, "warn", () => {});
       try {
-        const response = await request(app).post(`/api/jobs/${job.id}/apply`).set("Authorization", `Bearer ${signToken(patient)}`)
+        const response = await request(app).post(`/api/jobs/${job.id}/apply`).set("Authorization", `Bearer ${await signSessionToken(patient)}`)
           .send({ candidateName: patient.name, contactEmail: patient.email, contactPhone: "+91 9876543210",
             sop: "Healthcare qualifications and experience for isolated testing." });
         assert.equal(response.status, 201);

@@ -9,7 +9,7 @@ import { Hospital } from "../src/models/Hospital.js";
 import { User } from "../src/models/User.js";
 import { Job } from "../src/models/Job.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 import { seedCareersFromProviders } from "../src/services/careerJobSeeder.js";
 
 const testDbUri =
@@ -26,7 +26,7 @@ test("explicit healthcare request flow contracts", async (t) => {
     email: "flow-patient@medreach.test",
     role: "user",
   });
-  const token = signToken(user);
+  const token = await signSessionToken(user);
   const hospital = await Hospital.create({
     name: "Flow Contract Hospital",
     slug: "flow-contract-hospital",

@@ -12,5 +12,5 @@ export function signToken(user, sessionId) {
 }
 
 export function verifyToken(token) {
-  return jwt.verify(token, env.jwtSecret, { issuer: "medreach-api", audience: "medreach-web" });
+  return jwt.verify(token, env.jwtSecret, { issuer: "medreach-api", audience: "medreach-web", algorithms: ["HS256"] });
 }

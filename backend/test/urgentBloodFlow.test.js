@@ -7,7 +7,7 @@ import { connectDB, disconnectDB } from "../src/config/db.js";
 import { BloodRequest } from "../src/models/BloodRequest.js";
 import { User } from "../src/models/User.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 
 const testDbUri =
   process.env.MEDREACH_TEST_MONGO_URI ||
@@ -30,14 +30,14 @@ test("Urgent Blood Requisition and Emergency Lifecycles Suite", async (t) => {
       role: "user",
       phone: "+91-98200-10000",
     });
-    ownerToken = signToken(owner);
+    ownerToken = await signSessionToken(owner);
     const admin = await User.create({
       name: "Blood Request Admin",
       email: "blood-admin@medreach.test",
       role: "system_admin",
       phone: "+91-98200-10001",
     });
-    adminToken = signToken(admin);
+    adminToken = await signSessionToken(admin);
     bloodBank = await ResourceProvider.create({
       kind: "blood_bank", name: "Test Blood Bank", sourceName: "Test registry", active: true,
     });

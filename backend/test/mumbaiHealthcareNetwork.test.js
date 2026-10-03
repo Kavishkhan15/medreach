@@ -8,7 +8,7 @@ import { Hospital } from "../src/models/Hospital.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { DataSource } from "../src/models/DataSource.js";
 import { User } from "../src/models/User.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 import { mumbaiHospitals, mumbaiDiagnosticsAndBloodBanks } from "../src/data/seedData.js";
 import { SOURCES } from "../src/_crawler/registry/sources.js";
 
@@ -28,7 +28,7 @@ test("Mumbai Healthcare and Diagnostic Network Test Suite", async (t) => {
       email: "mumbai.admin@medreach.test",
       role: "admin",
     });
-    adminToken = signToken(adminUser);
+    adminToken = await signSessionToken(adminUser);
 
     // Populate hospitals and diagnostic resources
     await Hospital.insertMany(mumbaiHospitals);

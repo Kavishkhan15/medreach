@@ -12,7 +12,7 @@ import { JobApplication } from "../src/models/JobApplication.js";
 import { OrganizationApplication } from "../src/models/OrganizationApplication.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
 import { EmailDelivery } from "../src/models/EmailDelivery.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 import { careerSubmission, createCareerApplication } from "../src/utils/careerReference.js";
 import { env } from "../src/config/env.js";
 import { setEmailTransportFactoryForTests } from "../src/services/emailService.js";
@@ -37,8 +37,8 @@ test("career public references persist through submission, retry, review and tra
       description: "A healthcare role used only by this isolated integration suite.", employmentType: "full_time",
       status: "published", createdBy: staff._id });
     await Promise.all([JobApplication.init(), OrganizationApplication.init()]);
-    const token = signToken(applicant);
-    const staffToken = signToken(staff);
+    const token = await signSessionToken(applicant);
+    const staffToken = await signSessionToken(staff);
     const payload = { candidateName: "Private applicant", contactEmail: applicant.email, contactPhone: "+91 9876543210",
       sop: "Private application statement with healthcare qualifications and experience.", reference: "CAR-J00000000000000" };
     let jobRecord;
@@ -139,8 +139,8 @@ test("career public references persist through submission, retry, review and tra
     await t.test("public references grant no access to review or another applicant's private records", async () => {
       assert.equal((await request(app).patch(`/api/applications/${jobRecord._id}`).send({ status: "rejected" })).status, 401);
       assert.equal((await request(app).patch(`/api/applications/${jobRecord._id}`)
-        .set("Authorization", `Bearer ${signToken(other)}`).send({ status: "rejected" })).status, 403);
-      const mine = await request(app).get("/api/applications/mine").set("Authorization", `Bearer ${signToken(other)}`);
+        .set("Authorization", `Bearer ${await signSessionToken(other)}`).send({ status: "rejected" })).status, 403);
+      const mine = await request(app).get("/api/applications/mine").set("Authorization", `Bearer ${await signSessionToken(other)}`);
       assert.equal(mine.status, 200);
       assert.equal(mine.body.data.some((application) => application.reference === jobRecord.reference), false);
       assert.equal((await request(app).patch(`/api/tracking/career/${jobRecord.reference}`).send({ status: "rejected" })).status, 404);
@@ -166,8 +166,9 @@ test("career public references persist through submission, retry, review and tra
       const candidates = await User.create(Array.from({ length: 4 }, (_, index) => ({
         name: `Concurrent candidate ${index}`, email: `concurrent-${index}@career-reference.test`,
       })));
-      const responses = await Promise.all(candidates.flatMap((candidate) => {
-        const authentication = `Bearer ${signToken(candidate)}`;
+      const authentications = await Promise.all(candidates.map(async (candidate) => `Bearer ${await signSessionToken(candidate)}`));
+      const responses = await Promise.all(candidates.flatMap((candidate, index) => {
+        const authentication = authentications[index];
         return [request(app).post(`/api/jobs/${job._id}/apply`).set("Authorization", authentication)
           .send({ ...payload, contactEmail: candidate.email }),
         request(app).post(`/api/organizations/${hospital._id}/apply`).set("Authorization", authentication)
@@ -197,12 +198,12 @@ test("career public references persist through submission, retry, review and tra
         assert.equal((await careerSubmission(await model.findById(inserted.insertedId))).reference, result.reference);
         assert.equal((await request(app).get(`/api/tracking/career/${result.reference}`)).status, 200);
         const path = model === JobApplication ? `/api/jobs/${job._id}/apply` : `/api/organizations/${hospital._id}/apply`;
-        const replay = await request(app).post(path).set("Authorization", `Bearer ${signToken(legacyUser)}`)
+        const replay = await request(app).post(path).set("Authorization", `Bearer ${await signSessionToken(legacyUser)}`)
           .set("Idempotency-Key", retryKey).send({ ...payload, organizationType: "hospital", roleInterested: "Nurse" });
         assert.equal(replay.status, 200);
         assert.equal(replay.body.application.reference, result.reference);
         assert.equal(replay.body.application._id, undefined);
-        const history = await request(app).get("/api/applications/mine").set("Authorization", `Bearer ${signToken(legacyUser)}`);
+        const history = await request(app).get("/api/applications/mine").set("Authorization", `Bearer ${await signSessionToken(legacyUser)}`);
         assert.equal(history.status, 200);
         assert.equal(history.body.data[0].reference, result.reference);
         assert.equal(history.body.data[0]._id, undefined);

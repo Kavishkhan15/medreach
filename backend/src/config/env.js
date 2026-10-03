@@ -1,5 +1,6 @@
 // Central environment config. Reads .env once, validates, exports typed-ish object.
 import dotenv from "dotenv";
+import { parseTrustProxy } from "./trustProxy.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -18,6 +19,7 @@ const required = (key, fallback) => {
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? "development",
   port: Number(process.env.PORT ?? 4000),
+  trustProxy: parseTrustProxy(process.env.TRUST_PROXY),
   mongoUri: process.env.MONGODB_URI ?? process.env.MONGO_URI ?? (process.env.NODE_ENV === "test" ? "mongodb://127.0.0.1:27017/medreach_test" : "mongodb://127.0.0.1:27017/medreach"),
   // In test/dev we fall back to a dev secret; production MUST set its own.
   jwtSecret:
@@ -80,3 +82,8 @@ export const env = {
   geminiRefinementModel: process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
   geminiRefinementApiKey: process.env.GEMINI_API_KEY ?? "",
 };
+
+if (env.nodeEnv === "production" && (env.jwtSecret.length < 32 ||
+    /^(?:dev-only-insecure-secret|change-me.*|changeme.*)$/i.test(env.jwtSecret))) {
+  throw new Error("Production JWT_SECRET must be a unique random secret of at least 32 characters");
+}

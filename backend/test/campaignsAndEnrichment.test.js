@@ -9,7 +9,7 @@ import { User } from "../src/models/User.js";
 import { BloodCampaign } from "../src/models/BloodCampaign.js";
 import { BloodRequest } from "../src/models/BloodRequest.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 
 const testDbUri =
   process.env.MEDREACH_TEST_MONGO_URI ||
@@ -39,7 +39,7 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
       role: "system_admin",
       accountStatus: "active",
     });
-    adminToken = signToken(adminUser);
+    adminToken = await signSessionToken(adminUser);
 
     // 2. Setup Standard Authenticated User (role: user)
     regularUser = await User.create({
@@ -48,7 +48,7 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
       role: "user",
       accountStatus: "active",
     });
-    regularUserToken = signToken(regularUser);
+    regularUserToken = await signSessionToken(regularUser);
 
     // 3. Setup Secondary Non-Admin User for permission boundaries
     otherUser = await User.create({
@@ -57,7 +57,7 @@ test("Blood campaigns, moderation lifecycle, and blood requests test suite", asy
       role: "user",
       accountStatus: "active",
     });
-    otherUserToken = signToken(otherUser);
+    otherUserToken = await signSessionToken(otherUser);
 
     // 4. Setup Test Hospital
     testHospital = await Hospital.create({

@@ -10,7 +10,7 @@ import { EmailDelivery } from "../src/models/EmailDelivery.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { User } from "../src/models/User.js";
 import { setEmailTransportFactoryForTests } from "../src/services/emailService.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 
 const testDbUri =
   process.env.MEDREACH_TEST_MONGO_URI ||
@@ -216,7 +216,7 @@ test("durable ambulance booking workflow", async (t) => {
     env.emailEnabled = false;
     const created = await request(app)
       .post("/api/ambulances/book")
-      .set("Authorization", `Bearer ${signToken(owner)}`)
+      .set("Authorization", `Bearer ${await signSessionToken(owner)}`)
       .send({
         providerId: provider.id,
         patientName: "Patient Four",
@@ -229,19 +229,19 @@ test("durable ambulance booking workflow", async (t) => {
 
     const ownerList = await request(app)
       .get("/api/ambulances/bookings")
-      .set("Authorization", `Bearer ${signToken(owner)}`);
+      .set("Authorization", `Bearer ${await signSessionToken(owner)}`);
     assert.equal(ownerList.status, 200);
     assert.equal(ownerList.body.total, 1);
     assert.equal(ownerList.body.data[0].reference, created.body.reference);
 
     const denied = await request(app)
       .get(`/api/ambulances/bookings/${created.body.reference}`)
-      .set("Authorization", `Bearer ${signToken(other)}`);
+      .set("Authorization", `Bearer ${await signSessionToken(other)}`);
     assert.equal(denied.status, 403);
 
     const adminView = await request(app)
       .get(`/api/ambulances/bookings/${created.body.reference}`)
-      .set("Authorization", `Bearer ${signToken(admin)}`);
+      .set("Authorization", `Bearer ${await signSessionToken(admin)}`);
     assert.equal(adminView.status, 200);
     assert.equal(adminView.body.booking.reference, created.body.reference);
   });

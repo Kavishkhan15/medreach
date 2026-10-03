@@ -1,10 +1,9 @@
-// Service unit tests (pure, no DB) + route-wiring tests (auth/RBAC/validation
-// run before any Mongoose query, so no DB is required).
+import { installAuthMocks, signMockToken } from "./helpers/mockAuth.js";
+// Pure service and route-wiring unit tests use explicit account/session query mocks.
 import test from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
 import { createApp } from "../src/app.js";
-import { signToken } from "../src/utils/token.js";
 
 import { freshnessLabel } from "../src/services/freshnessService.js";
 import { scoreHospital, rankHospitals } from "../src/services/rankingService.js";
@@ -13,8 +12,6 @@ import { latestByFacility } from "../src/services/availabilityService.js";
 import { applyReview, VALID_DECISIONS } from "../src/services/verificationService.js";
 
 const app = createApp();
-const adminToken = signToken({ _id: "507f1f77bcf86cd799439011", role: "system_admin", email: "a@x.io", name: "A" });
-const userToken = signToken({ _id: "507f1f77bcf86cd799439012", role: "user", email: "u@x.io", name: "U" });
 
 // ---- services ----
 test("freshnessLabel thresholds", () => {
@@ -101,4 +98,11 @@ test("POST /api/admin/hospitals/x/verify invalid decision (admin) → 400", asyn
 test("GET /api/admin/audit as plain user → 403", async () => {
   const res = await request(app).get("/api/admin/audit").set("Authorization", `Bearer ${userToken}`);
   assert.equal(res.status, 403);
+});
+
+let adminToken, userToken;
+test.beforeEach((t) => {
+  installAuthMocks(t);
+  adminToken = signMockToken({ _id: "507f1f77bcf86cd799439011", role: "system_admin", email: "a@x.io", name: "A" });
+  userToken = signMockToken({ _id: "507f1f77bcf86cd799439012", role: "user", email: "u@x.io", name: "U" });
 });

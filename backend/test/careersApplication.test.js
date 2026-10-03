@@ -8,7 +8,7 @@ import { Hospital } from "../src/models/Hospital.js";
 import { User } from "../src/models/User.js";
 import { Job } from "../src/models/Job.js";
 import { JobApplication } from "../src/models/JobApplication.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 
 const testDbUri = "mongodb://127.0.0.1:27017/medreach_careers_test";
 
@@ -31,14 +31,14 @@ test("Careers Resume & Statement of Purpose (SOP) application test suite", async
       email: "priya.nurse@medreach.test",
       role: "user",
     });
-    applicantToken = signToken(applicantUser);
+    applicantToken = await signSessionToken(applicantUser);
 
     staffUser = await User.create({
       name: "Dr. Hospital HR",
       email: "hr@lilavati.test",
       role: "hospital_admin",
     });
-    staffToken = signToken(staffUser);
+    staffToken = await signSessionToken(staffUser);
 
     hospital = await Hospital.create({
       name: "Lilavati Hospital",

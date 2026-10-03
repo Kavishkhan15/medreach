@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import mongoose from "mongoose";
 import request from "supertest";
 import { createApp } from "../src/app.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 import { Hospital } from "../src/models/Hospital.js";
 import { HospitalFacility } from "../src/models/HospitalFacility.js";
 import { DataSource } from "../src/models/DataSource.js";
@@ -58,7 +58,7 @@ test("MongoDB/API: claims remain distinct; only assigned staff can make availabi
 
     const yesClaim = await FacilitySourceClaim.findOne({ hospital: hospital._id, source: site._id });
     const admin = await User.create({ email: "admin@example.org", name: "Test Admin", role: "system_admin" });
-    const token = signToken(admin);
+    const token = await signSessionToken(admin);
     const conflictList = await request(createApp()).get("/api/admin/data-conflicts")
       .set("Authorization", `Bearer ${token}`);
     assert.equal(conflictList.status, 200);
@@ -101,7 +101,7 @@ test("MongoDB/API: claims remain distinct; only assigned staff can make availabi
 
     const staffId = new mongoose.Types.ObjectId();
     await User.create({ _id: staffId, role: "hospital_admin", email: "staff@example.org", name: "Staff" });
-    const staffToken = signToken({ _id: staffId, role: "hospital_admin", email: "staff@example.org", name: "Staff" });
+    const staffToken = await signSessionToken({ _id: staffId, role: "hospital_admin", email: "staff@example.org", name: "Staff" });
     const globalSources = await request(createApp()).get("/api/sources")
       .set("Authorization", `Bearer ${staffToken}`);
     assert.equal(globalSources.status, 403, "hospital staff cannot manage the global source registry");
@@ -323,7 +323,7 @@ test("MongoDB/API: conflicting contact and specialty claims retain both sources 
     assert.equal(publicBefore.status, 200);
     assert.ok(publicBefore.body.hospital.fieldConflicts.some((c) => c.field === "phone" && c.status === "open"));
     const admin = await User.create({ email: "admin@example.org", name: "Test Admin", role: "system_admin" });
-    const token = signToken(admin);
+    const token = await signSessionToken(admin);
     const evidence = await request(createApp()).get("/api/admin/hospital-field-claims")
       .set("Authorization", `Bearer ${token}`);
     assert.equal(evidence.status, 200);
@@ -333,7 +333,7 @@ test("MongoDB/API: conflicting contact and specialty claims retain both sources 
     assert.ok(evidence.body.data.filter((c) => c.field === "phone")
       .every((c) => c.evidenceKind === "source_excerpt" && c.sourcePageUrl.endsWith("/contact")));
     const staff = await User.create({ role: "hospital_admin", email: "staff@example.org", name: "Staff" });
-    const staffToken = signToken(staff);
+    const staffToken = await signSessionToken(staff);
     const staffReview = await request(createApp()).post(`/api/admin/hospital-field-claims/${evidence.body.data[0]._id}/review`)
       .set("Authorization", `Bearer ${staffToken}`).send({ decision: "approve" });
     assert.equal(staffReview.status, 403);

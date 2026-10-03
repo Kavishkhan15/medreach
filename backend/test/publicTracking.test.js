@@ -8,7 +8,7 @@ import { BloodRequest } from "../src/models/BloodRequest.js";
 import { AmbulanceBooking } from "../src/models/AmbulanceBooking.js";
 import { User } from "../src/models/User.js";
 import { hashTrackingToken } from "../src/utils/trackingToken.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 
 const uri = process.env.MEDREACH_TEST_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_public_tracking_test";
 test("reference-only tracking exposes status summaries while detailed records remain authorized", async (t) => {
@@ -63,11 +63,11 @@ test("reference-only tracking exposes status summaries while detailed records re
     });
     await t.test("knowing a reference does not grant guest or another user access to sensitive records", async () => {
       assert.equal((await request(app).get(`/api/blood-requests/${blood.reference}`)).status, 403);
-      assert.equal((await request(app).get(`/api/blood-requests/${donation.reference}`).set("Authorization", `Bearer ${signToken(stranger)}`)).status, 403);
+      assert.equal((await request(app).get(`/api/blood-requests/${donation.reference}`).set("Authorization", `Bearer ${await signSessionToken(stranger)}`)).status, 403);
       assert.equal((await request(app).get(`/api/ambulances/bookings/${booking.reference}`)).status, 403);
-      assert.equal((await request(app).get(`/api/ambulances/bookings/${booking.reference}`).set("Authorization", `Bearer ${signToken(stranger)}`)).status, 403);
+      assert.equal((await request(app).get(`/api/ambulances/bookings/${booking.reference}`).set("Authorization", `Bearer ${await signSessionToken(stranger)}`)).status, 403);
       assert.equal((await request(app).get(`/api/blood-requests/${blood.reference}`).set("X-MedReach-Tracking-Token", secret)).status, 200);
-      assert.equal((await request(app).get(`/api/ambulances/bookings/${booking.reference}`).set("Authorization", `Bearer ${signToken(owner)}`)).status, 200);
+      assert.equal((await request(app).get(`/api/ambulances/bookings/${booking.reference}`).set("Authorization", `Bearer ${await signSessionToken(owner)}`)).status, 200);
     });
     await t.test("status lookup is read-only and rate limited", async () => {
       assert.equal((await request(app).patch(`/api/tracking/blood/${blood.reference}`).send({ status: "CANCELLED" })).status, 404);

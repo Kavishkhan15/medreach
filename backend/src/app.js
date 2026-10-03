@@ -2,6 +2,7 @@
 // Exported so tests can import it with supertest. server.js wires DB + listen.
 
 import express from "express";
+import { env } from "./config/env.js";
 import { applySecurity } from "./middleware/security.js";
 import { notFound, errorHandler } from "./middleware/error.js";
 import { requestId } from "./middleware/requestId.js";
@@ -32,7 +33,7 @@ import trackingRouter from "./routes/tracking.js";
 
 export function createApp() {
   const app = express();
-  app.set("trust proxy", 1); // correct req.ip behind a proxy (for ipHash only)
+  app.set("trust proxy", env.trustProxy);
   app.use(requestId);
   app.use(requestLogger);
   app.use(express.json({ limit: "6mb" }));

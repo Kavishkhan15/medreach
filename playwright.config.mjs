@@ -5,6 +5,8 @@ const apiUrl = "http://localhost:4000";
 const tailwindPort = Number(process.env.MEDREACH_TAILWIND_E2E_PORT || 3001);
 const commonEnv = {
   NODE_ENV: "test",
+  // Browser journeys simulate separate clients through loopback only.
+  TRUST_PROXY: "127.0.0.1,::1",
   MEDREACH_E2E_MONGO_URI: mongoUri,
   MONGO_URI: mongoUri,
   EMAIL_ENABLED: "false",

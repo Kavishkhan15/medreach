@@ -21,7 +21,7 @@ import { AvailabilityObservation } from "../src/models/AvailabilityObservation.j
 import { searchHospitals, searchBloodBanks, searchAmbulances, getHospitalDetails } from "../src/services/assistantTools.js";
 import { setEmailTransportFactoryForTests, sendEmailEvent } from "../src/services/emailService.js";
 import { sendUserEmailSafely } from "../src/services/userEmailService.js";
-import { signToken } from "../src/utils/token.js";
+import { signSessionToken } from "./helpers/session.js";
 
 const uri = "mongodb://127.0.0.1:27017/medreach_reliability_contracts_test";
 
@@ -52,7 +52,7 @@ test("backend reliability contracts", async (t) => {
   });
 
   await t.test("optional authentication rejects a revoked or stale presented session", async () => {
-    const staleToken = signToken({ ...user.toObject(), authVersion: Number(user.authVersion || 0) + 1 });
+    const staleToken = await signSessionToken({ ...user.toObject(), authVersion: Number(user.authVersion || 0) + 1 });
     const response = await request(app)
       .post("/api/blood-requests/standard")
       .set("Authorization", `Bearer ${staleToken}`)
@@ -84,7 +84,7 @@ test("backend reliability contracts", async (t) => {
 
     const mismatch = await request(app)
       .post(`/api/organizations/${ambulance.id}/apply`)
-      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Authorization", `Bearer ${await signSessionToken(user)}`)
       .send({
         organizationType: "blood_bank",
         roleInterested: "Technician",
@@ -174,10 +174,10 @@ test("backend reliability contracts", async (t) => {
     });
     const applicationPayload = { contactPhone: "+91-98200-10101", sop: "A sufficiently detailed statement of purpose for this role." };
     assert.equal((await request(app).post(`/api/jobs/${job.id}/apply`)
-      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Authorization", `Bearer ${await signSessionToken(user)}`)
       .set("Idempotency-Key", "job-application-retry-0001").send(applicationPayload)).status, 201);
     assert.equal((await request(app).post(`/api/jobs/${job.id}/apply`)
-      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Authorization", `Bearer ${await signSessionToken(user)}`)
       .set("Idempotency-Key", "job-application-retry-0001").send(applicationPayload)).status, 200);
     assert.equal(await JobApplication.countDocuments(), 1);
     assert.equal((await JobApplication.findOne()).candidatePhone, applicationPayload.contactPhone);
@@ -190,15 +190,15 @@ test("backend reliability contracts", async (t) => {
       sop: "A sufficiently detailed statement of purpose for this hospital.",
     };
     assert.equal((await request(app).post(`/api/organizations/${hospital.id}/apply`)
-      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Authorization", `Bearer ${await signSessionToken(user)}`)
       .set("Idempotency-Key", "organization-application-retry-0001").send(organizationPayload)).status, 201);
     assert.equal((await request(app).post(`/api/organizations/${hospital.id}/apply`)
-      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Authorization", `Bearer ${await signSessionToken(user)}`)
       .set("Idempotency-Key", "organization-application-retry-0001").send(organizationPayload)).status, 200);
     assert.equal(await OrganizationApplication.countDocuments(), 1);
     assert.equal((await OrganizationApplication.findOne()).candidatePhone, organizationPayload.contactPhone);
     const mine = await request(app).get("/api/applications/mine")
-      .set("Authorization", `Bearer ${signToken(user)}`);
+      .set("Authorization", `Bearer ${await signSessionToken(user)}`);
     assert.equal(mine.status, 200);
     assert.deepEqual(new Set(mine.body.data.map((item) => item.applicationType)), new Set(["job", "organization"]));
   });
@@ -256,7 +256,7 @@ test("backend reliability contracts", async (t) => {
     const fileSize = 4 * 1024 * 1024;
     const fileUrl = `data:application/pdf;base64,${Buffer.alloc(fileSize).toString("base64")}`;
     const response = await request(app).post(`/api/jobs/${job.id}/apply`)
-      .set("Authorization", `Bearer ${signToken(user)}`)
+      .set("Authorization", `Bearer ${await signSessionToken(user)}`)
       .send({ resume: { fileName: "resume.pdf", fileType: "application/pdf", fileSize, fileUrl },
         sop: "A sufficiently detailed statement of purpose for this role." });
     assert.equal(response.status, 201);
@@ -320,12 +320,12 @@ test("backend reliability contracts", async (t) => {
     setEmailTransportFactoryForTests(() => ({ sendMail: async () => ({ messageId: "retry-ok" }) }));
     const denied = await request(app)
       .post(`/api/email/deliveries/${failed._id}/retry`)
-      .set("Authorization", `Bearer ${signToken(user)}`);
+      .set("Authorization", `Bearer ${await signSessionToken(user)}`);
     assert.equal(denied.status, 403);
 
     const retried = await request(app)
       .post(`/api/email/deliveries/${failed._id}/retry`)
-      .set("Authorization", `Bearer ${signToken(admin)}`);
+      .set("Authorization", `Bearer ${await signSessionToken(admin)}`);
     assert.equal(retried.status, 200, JSON.stringify(retried.body));
     assert.equal(retried.body.delivery.status, "sent");
     assert.equal(retried.body.delivery.attempts, 2);
@@ -338,7 +338,7 @@ test("backend reliability contracts", async (t) => {
 
     const duplicateRetry = await request(app)
       .post(`/api/email/deliveries/${failed._id}/retry`)
-      .set("Authorization", `Bearer ${signToken(admin)}`);
+      .set("Authorization", `Bearer ${await signSessionToken(admin)}`);
     assert.equal(duplicateRetry.status, 409);
     assert.equal((await EmailDelivery.findById(failed._id)).attempts, 2);
   });
