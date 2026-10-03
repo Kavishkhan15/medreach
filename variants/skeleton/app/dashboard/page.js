@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import CareerReference from "../../components/CareerReference";
 import { useEffect, useState } from "react";
 import { productApi } from "../../lib/productApi";
 export default function Dashboard() {
@@ -12,7 +13,11 @@ export default function Dashboard() {
     {!user && !error && <p role="status">Loading dashboard…</p>}
     {user && <div className="grid-2">
       <section className="surface"><h2 className="h5">Emergency requests</h2>{requests.length ? requests.slice(0,4).map((r) => <p key={r._id} className="small"><Link href={`/requests/${r._id}`}>{r.requestId}</Link> · {r.status}</p>) : <p className="small">No requests yet.</p>}<Link className="btn btn-outline-primary btn-sm" href="/requests">View requests</Link></section>
-      <section className="surface"><h2 className="h5">Applications</h2>{apps.length ? apps.slice(0,4).map((a) => <p key={a._id} className="small">{a.job?.title || a.hospital?.name || a.provider?.name || a.roleInterested || "Role"} · {a.status}</p>) : <p className="small">No applications yet.</p>}<Link className="btn btn-outline-primary btn-sm" href="/careers">Browse careers</Link></section>
+      <section className="surface" aria-labelledby="dashboard-applications">
+      <h2 id="dashboard-applications" className="h5">Applications</h2>
+        {apps?.length ? apps.slice(0, 4).map((application) => <div key={application.reference} className="small" style={{ marginBottom: 16, minWidth: 0 }}><p>{application.job?.title || application.hospital?.name || application.provider?.name || application.roleInterested || "Role"} · {application.status}</p><CareerReference reference={application.reference} /></div>) : <p>No applications yet.</p>}
+      <Link className="btn btn-outline-primary btn-sm" href="/careers">Browse careers</Link>
+    </section>
       <section className="surface"><h2 className="h5">Saved hospitals</h2>{user.savedHospitals?.length ? user.savedHospitals.map((h) => <p key={h._id} className="small"><Link href={`/hospitals/${h.slug}`}>{h.name}</Link></p>) : <p className="small">No saved hospitals.</p>}<Link className="btn btn-outline-primary btn-sm" href="/hospitals">Find hospitals</Link></section>
       <div><Link href="/profile" className="btn btn-link">Edit profile and security →</Link></div>
     </div>}

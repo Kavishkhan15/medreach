@@ -394,7 +394,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
     recipient: req.user.id,
     eventKey: `application:${application._id}:submitted`,
     emailTemplate: "job_applied",
-    emailData: { title: job.title, demo: job.demo },
+    emailData: { title: job.title, demo: job.demo, reference: application.reference },
   });
 
   if (job.hospital) {
@@ -422,17 +422,15 @@ export const myApplications = asyncHandler(async (req, res) => {
         { path: "provider", select: "name kind locality" },
       ],
     })
-    .sort({ createdAt: -1 })
-    .lean();
+    .sort({ createdAt: -1 });
 
   const organizations = await OrganizationApplication.find({ applicant: req.user.id })
     .populate("hospital", "name slug locality")
     .populate("provider", "name kind locality")
-    .sort({ createdAt: -1 })
-    .lean();
+    .sort({ createdAt: -1 });
   const data = [
-    ...jobs.map((application) => ({ ...application, applicationType: "job" })),
-    ...organizations.map((application) => ({ ...application, applicationType: "organization" })),
+    ...await Promise.all(jobs.map(async (application) => ({ ...await careerSubmission(application), applicationType: "job" }))),
+    ...await Promise.all(organizations.map(async (application) => ({ ...await careerSubmission(application), applicationType: "organization" }))),
   ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json({ data });
 });

@@ -187,7 +187,7 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     recipient: req.user.id,
     eventKey: `org_application:${application._id}:submitted`,
     emailTemplate: "org_applied",
-    emailData: { organizationName: organization.name },
+    emailData: { organizationName: organization.name, reference: application.reference },
   });
 
   if (organizationType === "hospital" && organization.admins && organization.admins.length > 0) {

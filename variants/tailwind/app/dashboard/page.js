@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import CareerReference from "../../components/CareerReference";
 import { useEffect, useState } from "react";
 import { productApi } from "../../lib/productApi";
 export default function Dashboard() {
@@ -12,7 +13,11 @@ export default function Dashboard() {
     {!user && !error && <p role="status" className="text-gray-500">Loading dashboard…</p>}
     {user && <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <section className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5"><h2 className="text-lg font-bold mb-2">Emergency requests</h2>{requests.length ? requests.slice(0,4).map((r) => <p key={r._id} className="text-sm mb-1"><Link href={`/requests/${r._id}`} className="text-[var(--color-emergency)] font-semibold">{r.requestId}</Link> · {r.status}</p>) : <p className="text-sm text-gray-500">No requests yet.</p>}<Link className="inline-block mt-3 border border-[var(--color-emergency)] text-[var(--color-emergency)] rounded-md px-4 py-1.5 text-sm font-semibold" href="/requests">View requests</Link></section>
-      <section className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5"><h2 className="text-lg font-bold mb-2">Applications</h2>{apps.length ? apps.slice(0,4).map((a) => <p key={a._id} className="text-sm mb-1">{a.job?.title || a.hospital?.name || a.provider?.name || a.roleInterested || "Role"} · {a.status}</p>) : <p className="text-sm text-gray-500">No applications yet.</p>}<Link className="inline-block mt-3 border border-[var(--color-emergency)] text-[var(--color-emergency)] rounded-md px-4 py-1.5 text-sm font-semibold" href="/careers">Browse careers</Link></section>
+      <section className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5" aria-labelledby="dashboard-applications">
+      <h2 id="dashboard-applications" className="text-lg font-bold mb-2">Applications</h2>
+        {apps?.length ? apps.slice(0, 4).map((application) => <div key={application.reference} className="text-sm mb-1" style={{ marginBottom: 16, minWidth: 0 }}><p>{application.job?.title || application.hospital?.name || application.provider?.name || application.roleInterested || "Role"} · {application.status}</p><CareerReference reference={application.reference} /></div>) : <p>No applications yet.</p>}
+      <Link className="inline-block mt-3 border border-[var(--color-emergency)] text-[var(--color-emergency)] rounded-md px-4 py-1.5 text-sm font-semibold" href="/careers">Browse careers</Link>
+    </section>
       <section className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5"><h2 className="text-lg font-bold mb-2">Saved hospitals</h2>{user.savedHospitals?.length ? user.savedHospitals.map((h) => <p key={h._id} className="text-sm mb-1"><Link href={`/hospitals/${h.slug}`} className="text-[var(--color-emergency)]">{h.name}</Link></p>) : <p className="text-sm text-gray-500">No saved hospitals.</p>}<Link className="inline-block mt-3 border border-[var(--color-emergency)] text-[var(--color-emergency)] rounded-md px-4 py-1.5 text-sm font-semibold" href="/hospitals">Find hospitals</Link></section>
       <div className="col-span-full"><Link href="/profile" className="text-[var(--color-emergency)] text-sm font-semibold">Edit profile and security →</Link></div>
     </div>}

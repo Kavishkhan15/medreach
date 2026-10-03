@@ -11,8 +11,11 @@ import { Job } from "../src/models/Job.js";
 import { JobApplication } from "../src/models/JobApplication.js";
 import { OrganizationApplication } from "../src/models/OrganizationApplication.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
+import { EmailDelivery } from "../src/models/EmailDelivery.js";
 import { signToken } from "../src/utils/token.js";
 import { careerSubmission, createCareerApplication } from "../src/utils/careerReference.js";
+import { env } from "../src/config/env.js";
+import { setEmailTransportFactoryForTests } from "../src/services/emailService.js";
 
 const uri = process.env.MEDREACH_TEST_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_career_reference_test";
 
@@ -20,7 +23,11 @@ test("career public references persist through submission, retry, review and tra
   assert.match(new URL(uri).pathname, /(?:_test|_integration)$/);
   await connectDB(uri);
   await mongoose.connection.dropDatabase();
+  const emailEnvironment = { emailEnabled: env.emailEnabled, smtpHost: env.smtpHost, smtpFrom: env.smtpFrom, emailProvider: env.emailProvider };
+  const sent = [];
   try {
+    Object.assign(env, { emailEnabled: true, smtpHost: "mock.smtp.test", smtpFrom: "qa@medreach.test", emailProvider: "smtp" });
+    setEmailTransportFactoryForTests(() => ({ sendMail: async (mail) => { sent.push(mail); return { accepted: [mail.to] }; } }));
     const app = createApp();
     const applicant = await User.create({ name: "Private applicant", email: "candidate@career-reference.test" });
     const staff = await User.create({ name: "Hospital staff", email: "staff@career-reference.test", role: "hospital_admin" });
@@ -49,6 +56,13 @@ test("career public references persist through submission, retry, review and tra
       assert.notEqual(jobRecord.reference, jobRecord._id.toString());
       assert.equal(jobRecord.status, "submitted");
       assert.equal(jobRecord.applicant.toString(), applicant.id);
+      assert.equal((await EmailDelivery.findOne({ eventKey: `mail:application:${jobRecord.id}:submitted` })).template, "job_applied");
+      assert.equal((await EmailDelivery.findOne({ eventKey: `mail:application:${jobRecord.id}:received:${staff.id}` })).template, "job_application_received");
+      assert.equal(await mongoose.connection.collection("notifications").countDocuments(), 0);
+      const confirmation = sent.find((mail) => mail.to === applicant.email && mail.subject === "Application submitted");
+      assert.ok(confirmation.text.includes(jobRecord.reference));
+      assert.ok(confirmation.text.includes(`/track?type=career&reference=${jobRecord.reference}`));
+      assert.equal(confirmation.text.includes(jobRecord._id.toString()), false);
     });
 
     await t.test("organization submission has its own server-generated public reference", async () => {
@@ -62,6 +76,11 @@ test("career public references persist through submission, retry, review and tra
       assert.ok(organizationRecord);
       assert.notEqual(organizationRecord.reference, organizationRecord._id.toString());
       assert.notEqual(organizationRecord.reference, jobRecord.reference);
+      assert.equal((await EmailDelivery.findOne({ eventKey: `mail:org_application:${organizationRecord.id}:submitted` })).template, "org_applied");
+      assert.equal((await EmailDelivery.findOne({ eventKey: `mail:org_application:${organizationRecord.id}:received:${staff.id}` })).template, "org_application_received");
+      const confirmation = sent.find((mail) => mail.to === applicant.email && mail.text.includes(organizationRecord.reference));
+      assert.ok(confirmation.text.includes(`/track?type=career&reference=${organizationRecord.reference}`));
+      assert.equal(confirmation.text.includes(organizationRecord._id.toString()), false);
     });
 
     await t.test("idempotent retries return the original reference and create no new application", async () => {
@@ -78,6 +97,14 @@ test("career public references persist through submission, retry, review and tra
       assert.equal(organizationRetry.body.application._id, undefined);
       assert.equal(await JobApplication.countDocuments({ job: job._id, applicant: applicant._id }), 1);
       assert.equal(await OrganizationApplication.countDocuments({ hospital: hospital._id, applicant: applicant._id }), 1);
+    });
+
+    await t.test("application history exposes persisted public references for both application types", async () => {
+      const response = await request(app).get("/api/applications/mine").set("Authorization", `Bearer ${token}`);
+      assert.equal(response.status, 200);
+      assert.deepEqual(new Set(response.body.data.map((item) => item.reference)), new Set([jobRecord.reference, organizationRecord.reference]));
+      for (const item of response.body.data) assert.equal(item._id, undefined);
+      assert.equal(response.body.data.find((item) => item.applicationType === "job").job.title, job.title);
     });
 
     await t.test("guest tracking returns only reference, actual status and updated time for both application types", async () => {
@@ -103,6 +130,8 @@ test("career public references persist through submission, retry, review and tra
         .set("Authorization", `Bearer ${staffToken}`).send({ status: "under_review" });
       assert.equal(jobReview.status, 200);
       assert.equal(organizationReview.status, 200);
+      assert.equal((await EmailDelivery.findOne({ eventKey: `mail:application:${jobRecord.id}:shortlisted` })).template, "job_updated");
+      assert.equal((await EmailDelivery.findOne({ eventKey: `mail:org_application:${organizationRecord.id}:under_review` })).template, "org_application_updated");
       assert.equal((await request(app).get(`/api/tracking/career/${jobRecord.reference}`)).body.record.status, "shortlisted");
       assert.equal((await request(app).get(`/api/tracking/career/${organizationRecord.reference}`)).body.record.status, "under_review");
     });
@@ -173,6 +202,10 @@ test("career public references persist through submission, retry, review and tra
         assert.equal(replay.status, 200);
         assert.equal(replay.body.application.reference, result.reference);
         assert.equal(replay.body.application._id, undefined);
+        const history = await request(app).get("/api/applications/mine").set("Authorization", `Bearer ${signToken(legacyUser)}`);
+        assert.equal(history.status, 200);
+        assert.equal(history.body.data[0].reference, result.reference);
+        assert.equal(history.body.data[0]._id, undefined);
       }
     });
 
@@ -192,6 +225,8 @@ test("career public references persist through submission, retry, review and tra
       assert.equal((await request(app).get("/api/tracking/bed/MR-MUR00000-FFFFFF")).status, 404);
     });
   } finally {
+    Object.assign(env, emailEnvironment);
+    setEmailTransportFactoryForTests();
     await mongoose.connection.dropDatabase();
     await disconnectDB();
   }

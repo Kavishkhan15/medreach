@@ -61,6 +61,18 @@ async function fillJobApplication(page, { name, email, phone }) {
   );
 }
 
+async function assertCareerHistory(page, reference) {
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/dashboard");
+  const applications = page.getByRole("region", { name: "Applications", exact: true });
+  const panel = applications.getByText(reference, { exact: true }).locator("..");
+  await expect(panel).toBeVisible();
+  await panel.getByRole("button", { name: "Copy reference", exact: true }).click();
+  await expect(panel.getByRole("status")).toHaveText("Reference copied.");
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(reference);
+  await expect(panel.getByRole("link", { name: "Track application", exact: true })).toHaveAttribute("href", `/track?type=career&reference=${reference}`);
+}
+
 test("password sign-in remains available and the retired callback route is absent", async ({ page }) => {
   await page.goto("/login");
   await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeVisible();
@@ -156,6 +168,7 @@ test("standard request, normal blood request, login return path, and careers app
   const application = (await (await applicationResponse).json()).application;
   expect(application.reference).toMatch(/^CAR-J[A-F0-9]{14}$/);
   await expect(page.locator("code")).toHaveText(application.reference);
+  await assertCareerHistory(page, application.reference);
   await page.goto("/track");
   await page.locator("#tracking-type").selectOption("career");
   await page.getByLabel("Reference", { exact: true }).fill(application.reference.toLowerCase());
@@ -190,6 +203,7 @@ test("organization career application displays its public reference and tracks f
   expect(application.reference).toMatch(/^CAR-O[A-F0-9]{14}$/);
   await expect(dialog.getByRole("alert")).toContainText(application.reference);
   expect(await dialog.getByRole("alert").innerText()).not.toMatch(/\b[a-f0-9]{24}\b/i);
+  await assertCareerHistory(page, application.reference);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/track");
   await page.locator("#tracking-type").selectOption("career");

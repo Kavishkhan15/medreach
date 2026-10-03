@@ -5,6 +5,10 @@ import { EmailDelivery } from "../models/EmailDelivery.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { AmbulanceBooking } from "../models/AmbulanceBooking.js";
 
+const careerTracking = (d) => d.reference
+  ? `\nApplication reference: ${d.reference}\nTrack application: ${env.publicAppUrl}/track?type=career&reference=${encodeURIComponent(d.reference)}`
+  : "";
+
 const templates = {
   welcome: (d) => ["Welcome to MedReach", `Hello ${d.name || "there"}, your MedReach account is ready.`],
   verify_email: (d) => ["Verify your MedReach email", `Use this link to verify your email: ${d.url}`],
@@ -20,9 +24,9 @@ const templates = {
   emergency_staff: (d) => ["Hospital bed request needs review", `${d.reference} for ${d.hospital} needs review in MedReach. This is not a confirmed bed reservation.`],
   bed_request_staff_updated: (d) => ["Patient updated a hospital bed request", `Request ${d.reference} for ${d.hospital} is now ${d.status}. Open MedReach to review the patient's update. This is not a confirmed bed reservation.`],
   job_application_received: (d) => ["New job application", `A new application for ${d.title} is ready for review in MedReach.`],
-  job_applied: (d) => [d.demo ? "Demo application recorded" : "Application submitted", d.demo
+  job_applied: (d) => [d.demo ? "Demo application recorded" : "Application submitted", (d.demo
     ? `Your simulation application for ${d.title} was recorded in MedReach. It was not delivered as a real job application.`
-    : `Your application for ${d.title} was submitted. Open MedReach to track it.`],
+    : `Your application for ${d.title} was submitted. Open MedReach to track it.`) + careerTracking(d)],
   job_updated: (d) => ["Application status updated", `Your application for ${d.title} is now ${d.status}.`],
   ownership_requested: (d) => ["Hospital access request", `A hospital access request for ${d.hospital} awaits administrator review.`],
   ownership_updated: (d) => ["Hospital access request updated", `Your access request for ${d.hospital} is now ${d.status}.`],
@@ -110,7 +114,7 @@ const templates = {
   ],
   org_applied: (d) => [
     "Application submitted",
-    `Your application to ${d.organizationName} was submitted. Open MedReach to track it.`
+    `Your application to ${d.organizationName} was submitted. Open MedReach to track it.` + careerTracking(d)
   ],
   org_application_received: (d) => [
     "New organization application",
