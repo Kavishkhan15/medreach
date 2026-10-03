@@ -117,6 +117,21 @@ test("password reset requests report backend feedback and recover after a failed
   clean();
 });
 
+test("email verification and password reset links reject missing or invalid credentials", async ({ page }) => {
+  const clean = attachRuntimeGuard(page);
+  await page.goto("/verify-email");
+  await expect(page.getByText("Verification link missing.", { exact: true })).toBeVisible();
+  await page.goto(`/verify-email?token=${"x".repeat(43)}`);
+  await expect(page.getByText(/invalid or expired verification link/i)).toBeVisible();
+  await page.goto("/reset-password");
+  await expect(page.getByRole("button", { name: "Reset password", exact: true })).toBeDisabled();
+  await page.goto(`/reset-password?token=${"x".repeat(43)}`);
+  await page.getByLabel("New password", { exact: true }).fill("E2E_NewPassword_123!");
+  await page.getByRole("button", { name: "Reset password", exact: true }).click();
+  await expect(page.getByText("Invalid or expired reset link", { exact: true })).toBeVisible();
+  clean();
+});
+
 test("mobile and tablet navigation opens, closes and preserves directory actions", async ({ page }) => {
   const clean = attachRuntimeGuard(page);
   for (const width of [375, 768]) {

@@ -6,6 +6,19 @@ test.beforeEach(async ({ context }, testInfo) => {
   await context.setExtraHTTPHeaders({ "X-Forwarded-For": `198.21.${variant}.1` });
 });
 
+test("frontend pages enforce framing and MIME protections without blocking their content", async ({ page }) => {
+  for (const path of ["/", "/login", "/track"]) {
+    const response = await page.goto(path);
+    expect(response.status()).toBe(200);
+    const headers = response.headers();
+    expect(headers["x-frame-options"]).toBe("DENY");
+    expect(headers["x-content-type-options"]).toBe("nosniff");
+    expect(headers["referrer-policy"]).toBe("no-referrer");
+    expect(headers["content-security-policy"]).toContain("frame-ancestors 'none'");
+    await expect(page.locator("#main")).toBeVisible();
+  }
+});
+
 test("staff cannot open unsafe legacy resume links while PDF downloads remain available", async ({ page }) => {
   await page.goto("/login?returnTo=%2Fhospital%2Fjobs");
   await page.locator("#email").fill("staff.e2e@medreach.test");
