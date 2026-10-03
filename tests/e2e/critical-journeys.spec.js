@@ -117,6 +117,29 @@ test("password reset requests report backend feedback and recover after a failed
   clean();
 });
 
+test("mobile and tablet navigation opens, closes and preserves directory actions", async ({ page }) => {
+  const clean = attachRuntimeGuard(page);
+  for (const width of [375, 768]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/track");
+    const navigation = page.getByRole("navigation", { name: "Primary" });
+    const toggle = navigation.getByRole("button", { name: "Toggle navigation", exact: true });
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(navigation.getByRole("link", { name: "Hospitals", exact: true })).toBeHidden();
+    await toggle.press("Enter");
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(navigation.getByRole("link", { name: "Hospitals", exact: true })).toBeVisible();
+    await navigation.getByRole("link", { name: "About", exact: true }).click();
+    await expect(page).toHaveURL(/\/about$/);
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(navigation.getByRole("link", { name: "Hospitals", exact: true })).toBeHidden();
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Hospitals", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Toggle navigation", exact: true })).toBeHidden();
+  clean();
+});
+
 test("guest emergency request stays public while tracking and cancellation stay private", async ({ page }) => {
   const clean = attachRuntimeGuard(page);
   let createCalls = 0;

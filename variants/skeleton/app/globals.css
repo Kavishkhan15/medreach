@@ -190,6 +190,12 @@ select.w-auto { width: auto; display: inline-block; }
 .app-navbar .nav-list { display: flex; align-items: center; gap: .35rem; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
 .app-navbar .nav-link { color: var(--color-text); font-weight: 600; border-radius: var(--radius-pill); padding: .4rem .8rem; text-decoration: none; display: inline-block; }
 .app-navbar .nav-link:hover, .app-navbar .nav-link.active { color: var(--color-emergency); background: #fdecee; }
+.app-navbar .navbar-toggler { display: none; }
+@media (max-width: 799px) {
+  .app-navbar .navbar-toggler { display: inline-flex; }
+  .app-navbar .nav-list { display: none; flex-basis: 100%; padding-top: .8rem; }
+  .app-navbar .nav-list.is-open { display: flex; }
+}
 
 /* Admin sub-nav pills ------------------------------------------------------ */
 .admin-nav { list-style: none; margin: 0; padding: 0; }
