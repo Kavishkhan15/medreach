@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useHospitals, MUMBAI_LOCALITIES } from "@medreach/core";
 import { productApi } from "../lib/productApi";
 import EmergencyIcon from "../components/EmergencyIcons";
-import LiveFeatureIcon from "../components/LiveFeatureIcon";
 import GoogleMapView from "../components/GoogleMapView";
 import AmbulanceBookingModal from "../components/AmbulanceBookingModal";
 import BloodBankActionModal from "../components/BloodBankActionModal";
@@ -890,37 +889,6 @@ export default function HomePage() {
           </div>
         </section>
       )}
-
-      {/* 10. TRANSPARENT VERIFICATION & DATA INTEGRITY PILLARS */}
-      <section className="mb-5 pt-3" aria-label="MedReach Architectural Transparency">
-        <div className="row g-3">
-          {[
-            {
-              title: "Transparent Rule-Based Ranking",
-              desc: "Hospital search scores are computed via deterministic clinical matching (specialty coverage, ER state, geospatial proximity, and source confidence). Never opaque or paid placements.",
-              icon: "radar",
-            },
-            {
-              title: "Factual Data Freshness",
-              desc: "Every record displays exact provenance timestamps. When live status is unverified, MedReach explicitly reports 'Unknown' rather than fabricating bed capacity.",
-              icon: "clock",
-            },
-            {
-              title: "Verified Mumbai Provenance",
-              desc: "Aggregated from official municipal registries, public health authorities, verified hospital staff claims, and structured web crawls with full evidence preservation.",
-              icon: "verified",
-            },
-          ].map((c) => (
-            <div className="col-12 col-md-4" key={c.title}>
-              <div className="surface h-100 p-4 border rounded-3 shadow-sm">
-                <LiveFeatureIcon name={c.icon} label={c.title} />
-                <h3 className="h6 mt-3 fw-bold">{c.title}</h3>
-                <p className="disclaimer mb-0 text-muted">{c.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* 11. MODALS INTEGRATION */}
       {/* Ambulance Booking Modal */}
