@@ -99,6 +99,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .app-navbar .nav-logout { padding-inline: 4px; }
   .app-navbar .nav-logout > span { max-width: 64px; }
   .app-navbar .medreach-account-nav { grid-row: 2; justify-content: flex-end; margin-top: 10px; }
+  /* Keep the full-size logo while halving the visible frame around the links. */
+  .medreach-nav-shell { position: relative; isolation: isolate; background: transparent; border-color: transparent; box-shadow: none; }
+  .medreach-nav-shell::before { content: ""; position: absolute; z-index: -1; inset: 25% -1px; border: 1px solid #e0eaf5; border-radius: inherit; background: #fff; box-shadow: 0 6px 24px rgba(24,65,104,.06); }
+  .medreach-nav-shell:has(.medreach-account-nav)::before { top: 32px; bottom: -1px; }
+  .app-navbar .navbar-brand { position: relative; border-inline-color: transparent; }
+  .app-navbar .navbar-brand::before, .app-navbar .navbar-brand::after { content: ""; position: absolute; top: 25%; bottom: 25%; width: 1px; background: #e4edf6; }
+  .app-navbar .navbar-brand::before { left: -1px; }
+  .app-navbar .navbar-brand::after { right: -1px; }
 }
 @media (max-width: 575px) {
   .app-navbar { padding: 8px; }
