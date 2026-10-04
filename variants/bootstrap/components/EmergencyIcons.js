@@ -16,6 +16,12 @@ export function EmergencyIcon({ name, size = 20, className = "", ...props }) {
   };
 
   switch (name?.toLowerCase()) {
+    case "home":
+      return <svg {...iconProps}><path d="m3 10 9-7 9 7" /><path d="M5 9v12h5v-7h4v7h5V9" fill="currentColor" /></svg>;
+    case "briefcase":
+      return <svg {...iconProps}><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M3 12h18M10 12v3h4v-3" /></svg>;
+    case "user":
+      return <svg {...iconProps}><circle cx="12" cy="7" r="4" /><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2" /></svg>;
     case "hospital":
       return (
         <svg {...iconProps}>
