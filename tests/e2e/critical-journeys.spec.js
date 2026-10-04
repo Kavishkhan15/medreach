@@ -144,8 +144,8 @@ test("mobile and tablet navigation opens, closes and preserves directory actions
     await toggle.press("Enter");
     await expect(toggle).toHaveAttribute("aria-expanded", "true");
     await expect(navigation.getByRole("link", { name: "Hospitals", exact: true })).toBeVisible();
-    await navigation.getByRole("link", { name: "About", exact: true }).click();
-    await expect(page).toHaveURL(/\/about$/);
+    await navigation.getByRole("link", { name: "Diagnostics", exact: true }).click();
+    await expect(page).toHaveURL(/\/diagnostics$/);
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
     await expect(navigation.getByRole("link", { name: "Hospitals", exact: true })).toBeHidden();
   }
