@@ -16,6 +16,30 @@ export function EmergencyIcon({ name, size = 20, className = "", ...props }) {
   };
 
   switch (name?.toLowerCase()) {
+    case "home":
+      return <svg {...iconProps}><path d="m3 10 9-7 9 7" /><path d="M5 9v12h5v-7h4v7h5V9" fill="currentColor" /></svg>;
+    case "hospital":
+      return <svg {...iconProps}><path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4M10 9h4M12 7v4" /></svg>;
+    case "diagnostic":
+      return <svg {...iconProps}><path d="M10 2v7.31a2 2 0 0 1-.37 1.17L4.22 18.6A2 2 0 0 0 5.86 22h12.28a2 2 0 0 0 1.64-3.4l-5.41-8.12A2 2 0 0 1 14 9.31V2M8.5 2h7M7 16h10" /></svg>;
+    case "blood":
+      return <svg {...iconProps}><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" /></svg>;
+    case "ambulance":
+      return <svg {...iconProps}><path d="M10 10H6M8 8v4M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M19 18h2a1 1 0 0 0 1-1v-3.28a1 1 0 0 0-.684-.948L19 12V6a2 2 0 0 0-2-2h-3" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /></svg>;
+    case "briefcase":
+      return <svg {...iconProps}><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v3h4v-3" /></svg>;
+    case "document":
+      return <svg {...iconProps}><path d="M6 2h9l4 4v16H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" /><path d="M14 2v5h5M8 12h7M8 16h7" /></svg>;
+    case "user":
+      return <svg {...iconProps}><circle cx="12" cy="7" r="4" /><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2" /></svg>;
+    case "shield":
+      return <svg {...iconProps}><path d="m12 2 9 4v6c0 5-3.5 8-9 10-5.5-2-9-5-9-10V6z" /></svg>;
+    case "search":
+      return <svg {...iconProps}><circle cx="11" cy="11" r="7" /><path d="m16 16 5 5" /></svg>;
+    case "check":
+      return <svg {...iconProps}><polyline points="20 6 9 17 4 12" /></svg>;
+    case "verified":
+      return <svg {...iconProps}><circle cx="12" cy="12" r="10" /><polyline points="9 12 11.5 14.5 15.5 9.5" /></svg>;
     case "cardiac":
       return (
         <svg {...iconProps}>

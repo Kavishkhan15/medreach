@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   APIProvider,
@@ -52,7 +52,7 @@ export function MapFallback({ count = 0, category = "hospitals", categoryLabel =
         Browse the provider list on this page, open the full directory, or call emergency services if help is needed now.
       </p>
       <div className="flex flex-wrap justify-center gap-2 mb-3">
-        <Link className="border border-gray-300 rounded px-3 py-2 text-sm font-semibold" href={`/${category}`}>Open {categoryLabel.toLowerCase()} directory</Link>
+        <Link className="border border-gray-300 rounded px-3 py-2 text-sm font-semibold" href={category === "all" ? "/map" : `/${category}`}>Open {categoryLabel.toLowerCase()} directory</Link>
         <a className="bg-red-600 text-white rounded px-3 py-2 text-sm font-semibold" href="tel:112">Call 112</a>
       </div>
       <p className="text-xs text-[var(--color-muted)]">
@@ -71,27 +71,38 @@ const CATEGORY_COLORS = {
 
 export default function GoogleMapView({
   items = [],
-  selected,
-  onSelect,
+  selected = "",
+  onSelect = () => {},
   category = "hospitals",
   categoryLabel = "Hospitals",
+  markerColors = CATEGORY_COLORS,
 }) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || "DEMO_MAP_ID";
+  const [mapUnavailable, setMapUnavailable] = useState(false);
+
+  useEffect(() => {
+    if (!apiKey) return;
+    const previous = window.gm_authFailure;
+    const handleFailure = () => { setMapUnavailable(true); if (typeof previous === "function") previous(); };
+    window.gm_authFailure = handleFailure;
+    return () => { if (window.gm_authFailure === handleFailure) { if (previous) window.gm_authFailure = previous; else delete window.gm_authFailure; } };
+  }, [apiKey]);
 
   const selectedItem = useMemo(
     () => items.find((h) => String(h._id || h.slug) === String(selected)),
     [items, selected]
   );
   const selectedPos = useMemo(() => toLatLng(selectedItem), [selectedItem]);
-  const primaryColor = CATEGORY_COLORS[category] || "#d32029";
+  const selectedCategory = category === "all" ? selectedItem?.category || "hospitals" : category;
+  const primaryColor = markerColors[selectedCategory] || CATEGORY_COLORS.hospitals;
 
-  if (!apiKey) return <MapFallback count={items.length} category={category} categoryLabel={categoryLabel} />;
+  if (!apiKey || mapUnavailable) return <MapFallback count={items.length} category={category} categoryLabel={categoryLabel} />;
 
   return (
     <div className="w-full h-[min(65vh,570px)] min-h-[420px] rounded-[var(--radius-lg,1rem)]
       overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface)]">
-      <APIProvider apiKey={apiKey}>
+      <APIProvider apiKey={apiKey} onError={() => setMapUnavailable(true)}>
         <Map
           defaultCenter={MUMBAI_CENTER}
           defaultZoom={11}
@@ -120,7 +131,7 @@ export default function GoogleMapView({
                 onClick={() => onSelect(id)}
               >
                 <Pin
-                  background={isSelected ? "#10151a" : primaryColor}
+                  background={isSelected ? "#10151a" : markerColors[h.category || category] || primaryColor}
                   borderColor="#ffffff"
                   glyphColor="#ffffff"
                   scale={isSelected ? 1.25 : 1.0}
@@ -132,7 +143,7 @@ export default function GoogleMapView({
           {selectedItem && selectedPos && (
             <InfoWindow
               position={selectedPos}
-              onCloseClick={() => onSelect(null)}
+              onCloseClick={() => onSelect("")}
               pixelOffset={[0, -36]}
             >
               <div className="p-1" style={{ maxWidth: 290, color: "#1c2024" }}>
@@ -141,11 +152,11 @@ export default function GoogleMapView({
                     className="inline-block px-1.5 py-0.5 rounded text-white text-[0.7rem] font-bold"
                     style={{ backgroundColor: primaryColor }}
                   >
-                    {category === "blood-banks"
+                    {selectedCategory === "blood-banks"
                       ? "Blood Bank"
-                      : category === "diagnostics"
+                      : selectedCategory === "diagnostics"
                       ? "Diagnostic Centre"
-                      : category === "ambulances"
+                      : selectedCategory === "ambulances"
                       ? "Ambulance Provider"
                       : "Hospital"}
                   </span>
@@ -178,7 +189,7 @@ export default function GoogleMapView({
                 </p>
 
                 {/* Category-adapted details summary */}
-                {category === "blood-banks" && Array.isArray(selectedItem.listedBloodGroups) && selectedItem.listedBloodGroups.length > 0 && (
+                {selectedCategory === "blood-banks" && Array.isArray(selectedItem.listedBloodGroups) && selectedItem.listedBloodGroups.length > 0 && (
                   <div className="text-xs mb-1">
                     <span className="text-[var(--color-muted)]">Groups: </span>
                     <span className="font-semibold text-red-600">
@@ -187,7 +198,7 @@ export default function GoogleMapView({
                     </span>
                   </div>
                 )}
-                {category === "diagnostics" && Array.isArray(selectedItem.services) && selectedItem.services.length > 0 && (
+                {selectedCategory === "diagnostics" && Array.isArray(selectedItem.services) && selectedItem.services.length > 0 && (
                   <div className="text-xs mb-1 truncate" title={selectedItem.services.join(", ")}>
                     <span className="text-[var(--color-muted)]">Tests: </span>
                     <span className="font-semibold text-blue-700">
@@ -195,7 +206,7 @@ export default function GoogleMapView({
                     </span>
                   </div>
                 )}
-                {category === "ambulances" && (selectedItem.providerType || selectedItem.coverageArea) && (
+                {selectedCategory === "ambulances" && (selectedItem.providerType || selectedItem.coverageArea) && (
                   <div className="text-xs mb-1">
                     <span className="text-[var(--color-muted)]">Fleet: </span>
                     <span className="font-semibold text-amber-700">
@@ -203,7 +214,7 @@ export default function GoogleMapView({
                     </span>
                   </div>
                 )}
-                {category === "hospitals" && selectedItem.specialties?.length > 0 && (
+                {selectedCategory === "hospitals" && selectedItem.specialties?.length > 0 && (
                   <div className="text-xs mb-1 truncate" title={selectedItem.specialties.join(", ")}>
                     <span className="text-[var(--color-muted)]">Specialties: </span>
                     <span className="font-semibold text-gray-700">
@@ -230,7 +241,7 @@ export default function GoogleMapView({
                       rounded-[var(--radius)] border border-gray-300 text-gray-800
                       px-2 py-1 no-underline hover:bg-gray-100"
                     href={
-                      category === "hospitals"
+                      selectedCategory === "hospitals"
                         ? `/hospitals/${selectedItem.slug || selectedItem._id}`
                         : `#selected-provider`
                     }
