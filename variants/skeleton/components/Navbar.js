@@ -1,61 +1,87 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@medreach/core";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import EmergencyIcon from "./EmergencyIcons";
+
+const LEFT_LINKS = [
+  { href: "/", label: "Home", icon: "home" },
+  { href: "/hospitals", label: "Hospitals", icon: "hospital" },
+  { href: "/emergency", label: "Emergency", icon: "siren" },
+  { href: "/blood-banks", label: "Blood Banks", icon: "blood" },
+];
+
+const RIGHT_LINKS = [
+  { href: "/diagnostics", label: "Diagnostics", icon: "diagnostic" },
+  { href: "/ambulances", label: "Ambulances", icon: "ambulance" },
+  { href: "/careers", label: "Careers", icon: "briefcase" },
+  { href: "/track", label: "Track request", icon: "document" },
+];
 
 export default function Navbar() {
   const { user, isAdmin, logout } = useAuth();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [loginHidden, setLoginHidden] = useState(false);
+  const toggleRef = useRef(null);
+
+  useEffect(() => {
+    setLoginHidden(false);
+    if (pathname !== "/") return;
+    let previousY = Math.max(0, window.scrollY);
+    const update = () => {
+      const currentY = Math.max(0, window.scrollY);
+      if (currentY <= 24) setLoginHidden(false);
+      else if (currentY !== previousY) setLoginHidden(currentY > previousY);
+      previousY = currentY;
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [open]);
+
+  const renderLink = ({ href, label, icon }) => {
+    const active = pathname === href || (href !== "/" && pathname?.startsWith(`${href}/`));
+    return <li key={href}><Link className={`nav-link${active ? " active" : ""}`} href={href} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)}><EmergencyIcon name={icon} size={20} /><span>{label}</span></Link></li>;
+  };
 
   return (
     <nav className="app-navbar" aria-label="Primary">
-      <div className="container navbar-inner">
+      <div className="skeleton-nav-shell">
         <Link className="navbar-brand" href="/" onClick={() => setOpen(false)}>
-          <Image src="/brand-word-mark.png" alt="MedReach" width={144} height={48} priority />
+          <Image src="/logo.png" alt="MedReach" width={128} height={128} priority />
         </Link>
-        <button
-          className="btn btn-sm btn-outline-secondary navbar-toggler"
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-controls="nav"
-          aria-expanded={open}
-          aria-label="Toggle navigation"
-        >
-          ☰
+        <button ref={toggleRef} className="navbar-toggler" type="button" onClick={() => setOpen(!open)} aria-controls="nav" aria-expanded={open} aria-label="Toggle navigation">
+          <span aria-hidden="true">☰</span>
         </button>
-        <ul className={`nav-list ${open ? "is-open" : ""}`} id="nav">
-          <li className="nav-item"><Link className="nav-link" href="/hospitals" onClick={() => setOpen(false)}>Hospitals</Link></li>
-          <li className="nav-item"><Link className="nav-link" href="/emergency" onClick={() => setOpen(false)}>Emergency</Link></li>
-          <li className="nav-item"><Link className="nav-link" href="/blood-banks" onClick={() => setOpen(false)}>Blood Banks</Link></li>
-          <li className="nav-item"><Link className="nav-link" href="/diagnostics" onClick={() => setOpen(false)}>Diagnostics</Link></li>
-          <li className="nav-item"><Link className="nav-link" href="/ambulances" onClick={() => setOpen(false)}>Ambulances</Link></li>
-          <li className="nav-item"><Link className="nav-link" href="/careers" onClick={() => setOpen(false)}>Careers</Link></li>
-          <li className="nav-item"><Link className="nav-link" href="/track" onClick={() => setOpen(false)}>Track request</Link></li>
-          {user && <li className="nav-item"><Link className="nav-link" href="/dashboard" onClick={() => setOpen(false)}>Dashboard</Link></li>}
-          {user && <li className="nav-item"><Link className="nav-link" href="/profile" onClick={() => setOpen(false)}>Profile</Link></li>}
-          {user?.role === "hospital_admin" && <li className="nav-item"><Link className="nav-link" href="/hospital" onClick={() => setOpen(false)}>Hospital</Link></li>}
-          {isAdmin && user?.role !== "hospital_admin" && <li className="nav-item"><Link className="nav-link" href="/admin" onClick={() => setOpen(false)}>Admin</Link></li>}
-          {user ? (
-            <li className="nav-item">
-              <button
-                className="btn btn-sm btn-outline-secondary"
-                onClick={() => {
-                  setOpen(false);
-                  logout();
-                }}
-              >
-                Logout ({user.name.split(" ")[0]})
-              </button>
-            </li>
-          ) : (
-            <li className="nav-item">
-              <Link className="btn btn-sm btn-primary" href="/login" onClick={() => setOpen(false)}>
-                Login
-              </Link>
-            </li>
-          )}
-        </ul>
+        <div className={`skeleton-nav-content${open ? " is-open" : ""}`} id="nav">
+          <ul className="skeleton-nav-links skeleton-nav-left">{LEFT_LINKS.map(renderLink)}</ul>
+          <ul className="skeleton-nav-links skeleton-nav-right">
+            {RIGHT_LINKS.map(renderLink)}
+            {user ? <li><button className="nav-logout" type="button" onClick={() => { setOpen(false); logout(); }}><EmergencyIcon name="user" size={20} /><span>Logout ({user.name.split(" ")[0]})</span></button></li> :
+              <li><Link className={`nav-login${pathname === "/" && loginHidden ? " is-scroll-hidden" : ""}`} href="/login" onClick={() => setOpen(false)}><EmergencyIcon name="user" size={20} /><span>Login</span></Link></li>}
+          </ul>
+          {user && <ul className="skeleton-account-links" aria-label="Your account">
+            {renderLink({ href: "/dashboard", label: "Dashboard", icon: "document" })}
+            {renderLink({ href: "/profile", label: "Profile", icon: "user" })}
+            {user.role === "hospital_admin" && renderLink({ href: "/hospital", label: "Hospital", icon: "hospital" })}
+            {isAdmin && user.role !== "hospital_admin" && renderLink({ href: "/admin", label: "Admin", icon: "shield" })}
+          </ul>}
+        </div>
       </div>
     </nav>
   );
