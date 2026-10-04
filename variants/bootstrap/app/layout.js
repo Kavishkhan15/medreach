@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "../components/Navbar";
 import SystemBanner from "../components/SystemBanner";
 import SosButton from "../components/SosButton";
@@ -32,6 +33,11 @@ export default function RootLayout({ children }) {
             <span className="fw-semibold"><Image src="/brand-word-mark.png" alt="MedReach" width={108} height={36} /></span>
             <span>Emergency hospital discovery · Mumbai · Bootstrap variant</span>
             <span className="disclaimer">Not an official emergency service. In danger, call 112.</span>
+          </div>
+          <div className="container landing-footer-links">
+            <div><h2>Explore MedReach</h2><Link href="/hospitals">Hospitals</Link><Link href="/map">Healthcare map</Link><Link href="/diagnostics">Diagnostics</Link></div>
+            <div><h2>Care and requests</h2><Link href="/emergency">Emergency care</Link><Link href="/blood-banks">Blood banks</Link><Link href="/urgent-blood">Urgent blood</Link><Link href="/ambulances">Ambulance providers</Link></div>
+            <div><h2>Your next step</h2><Link href="/careers">Healthcare careers</Link><Link href="/track">Track a request</Link><Link href="/login">Sign in</Link><Link href="/profile">Profile and security</Link></div>
           </div>
         </footer>
       </body>

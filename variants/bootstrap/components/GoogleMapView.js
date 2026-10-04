@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import Link from "next/link";
 import EmergencyIcon from "./EmergencyIcons";
 import {
@@ -55,7 +55,7 @@ export function MapFallback({ itemCount = 0, categoryLabel = "resources", catego
         Browse the provider list on this page, open the full directory, or call emergency services if help is needed now.
       </p>
       <div className="d-flex flex-wrap justify-content-center gap-2 mb-3">
-        <Link className="btn btn-sm btn-outline-primary" href={`/${category}`}>Open {categoryLabel.toLowerCase()} directory</Link>
+        <Link className="btn btn-sm btn-outline-primary" href={category === "all" ? "/map" : `/${category}`}>Open {categoryLabel.toLowerCase()} directory</Link>
         <a className="btn btn-sm btn-danger" href="tel:112">Call 112</a>
       </div>
       <p className="small text-secondary mb-0">
@@ -71,9 +71,27 @@ export default function GoogleMapView({
   onSelect = () => {},
   category = "hospitals",
   categoryLabel = "Hospitals",
+  markerColors = CATEGORY_COLORS,
 }) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || "DEMO_MAP_ID";
+  const [mapUnavailable, setMapUnavailable] = useState(false);
+
+  useEffect(() => {
+    if (!apiKey) return;
+    const previousHandler = window.gm_authFailure;
+    const handleAuthFailure = () => {
+      setMapUnavailable(true);
+      if (typeof previousHandler === "function") previousHandler();
+    };
+    window.gm_authFailure = handleAuthFailure;
+    return () => {
+      if (window.gm_authFailure === handleAuthFailure) {
+        if (previousHandler) window.gm_authFailure = previousHandler;
+        else delete window.gm_authFailure;
+      }
+    };
+  }, [apiKey]);
 
   const selectedItem = useMemo(
     () => items.find((item) => String(item._id) === String(selected)),
@@ -81,15 +99,16 @@ export default function GoogleMapView({
   );
   const selectedPos = useMemo(() => toLatLng(selectedItem), [selectedItem]);
 
-  const primaryColor = CATEGORY_COLORS[category] || "#d32029";
+  const selectedCategory = category === "all" ? selectedItem?.category || "hospitals" : category;
+  const primaryColor = markerColors[selectedCategory] || CATEGORY_COLORS.hospitals;
 
-  if (!apiKey) {
+  if (!apiKey || mapUnavailable) {
     return <MapFallback itemCount={items.length} categoryLabel={categoryLabel} category={category} />;
   }
 
   return (
     <div className="gmap-container">
-      <APIProvider apiKey={apiKey}>
+      <APIProvider apiKey={apiKey} onError={() => setMapUnavailable(true)}>
         <Map
           defaultCenter={MUMBAI_CENTER}
           defaultZoom={11}
@@ -118,7 +137,7 @@ export default function GoogleMapView({
                 onClick={() => onSelect(String(item._id))}
               >
                 <Pin
-                  background={isSelected ? "#10151a" : primaryColor}
+                  background={isSelected ? "#10151a" : markerColors[item.category || category] || primaryColor}
                   borderColor="#ffffff"
                   glyphColor="#ffffff"
                   scale={isSelected ? 1.25 : 1.0}
@@ -143,11 +162,11 @@ export default function GoogleMapView({
                       fontSize: "0.72rem",
                     }}
                   >
-                    {category === "blood-banks"
+                    {selectedCategory === "blood-banks"
                       ? "Blood Bank"
-                      : category === "diagnostics"
+                      : selectedCategory === "diagnostics"
                       ? "Diagnostic Centre"
-                      : category === "ambulances"
+                      : selectedCategory === "ambulances"
                       ? "Ambulance Provider"
                       : "Hospital"}
                   </span>
@@ -188,7 +207,7 @@ export default function GoogleMapView({
                 </p>
 
                 {/* Category-adapted details summary */}
-                {category === "blood-banks" && Array.isArray(selectedItem.listedBloodGroups) && selectedItem.listedBloodGroups.length > 0 && (
+                {selectedCategory === "blood-banks" && Array.isArray(selectedItem.listedBloodGroups) && selectedItem.listedBloodGroups.length > 0 && (
                   <div className="small mb-1">
                     <span className="text-muted">Groups: </span>
                     <span className="fw-semibold text-danger">
@@ -197,7 +216,7 @@ export default function GoogleMapView({
                     </span>
                   </div>
                 )}
-                {category === "diagnostics" && Array.isArray(selectedItem.services) && selectedItem.services.length > 0 && (
+                {selectedCategory === "diagnostics" && Array.isArray(selectedItem.services) && selectedItem.services.length > 0 && (
                   <div className="small mb-1 text-truncate" title={selectedItem.services.join(", ")}>
                     <span className="text-muted">Tests: </span>
                     <span className="fw-semibold text-primary">
@@ -205,7 +224,7 @@ export default function GoogleMapView({
                     </span>
                   </div>
                 )}
-                {category === "ambulances" && (selectedItem.providerType || selectedItem.coverageArea) && (
+                {selectedCategory === "ambulances" && (selectedItem.providerType || selectedItem.coverageArea) && (
                   <div className="small mb-1">
                     <span className="text-muted">Fleet: </span>
                     <span className="fw-semibold text-warning-emphasis">
@@ -213,7 +232,7 @@ export default function GoogleMapView({
                     </span>
                   </div>
                 )}
-                {category === "hospitals" && selectedItem.specialties?.length > 0 && (
+                {selectedCategory === "hospitals" && selectedItem.specialties?.length > 0 && (
                   <div className="small mb-1 text-truncate" title={selectedItem.specialties.join(", ")}>
                     <span className="text-muted">Specialties: </span>
                     <span className="fw-semibold text-secondary">
@@ -238,9 +257,9 @@ export default function GoogleMapView({
                   <Link
                     className="btn btn-outline-primary btn-sm flex-fill"
                     href={
-                      category === "hospitals"
+                      selectedCategory === "hospitals"
                         ? `/hospitals/${selectedItem.slug || selectedItem._id}`
-                        : `/${category}`
+                        : `/${selectedCategory}`
                     }
                   >
                     View details

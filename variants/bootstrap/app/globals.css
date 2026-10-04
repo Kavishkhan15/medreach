@@ -156,6 +156,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .action-bar .btn { flex: 1; font-weight: 700; }
 
 .app-footer { border-top: 1px solid var(--color-border); color: var(--color-muted); font-size: .85rem; background: var(--color-surface); }
+.landing-footer-links { display: none; }
 
 .sos-fab { position: fixed; right: 1rem; bottom: 1rem; z-index: 1040; background: var(--color-critical); color: #fff; border: none; border-radius: var(--radius-pill); font-weight: 800; padding: .8rem 1.15rem; box-shadow: var(--shadow-lg); transition: transform 0.15s ease, background 0.15s ease; }
 .sos-fab:hover { background: #8f0015; color: #fff; transform: translateY(-1px); }
