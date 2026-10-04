@@ -264,6 +264,14 @@ export default function MapPage() {
                     Request Bed
                   </Link>
                 )}
+                {category === "blood-banks" && (
+                  <Link
+                    className="inline-flex items-center justify-center font-bold text-sm rounded-[var(--radius)] border border-[var(--color-border)] bg-white text-[var(--color-text)] px-3 py-1.5 hover:bg-[#f1f3f5] no-underline"
+                    href="/blood-banks"
+                  >
+                    Request / Donate Blood
+                  </Link>
+                )}
               {category === "ambulances" && (
   <button
     className="inline-flex items-center justify-center font-bold text-sm rounded-[var(--radius)] bg-green-600 text-white px-3 py-1.5 hover:bg-green-700 no-underline"
