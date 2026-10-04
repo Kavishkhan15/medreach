@@ -5,7 +5,8 @@ import { useHospital, availabilityMeta, saveHospital, useAuth } from "@medreach/
 import { toneClass, statusPill, chip } from "../../../lib/tone";
 import FacilityStatus from "../../../components/FacilityStatus";
 import DataFreshness from "../../../components/DataFreshness";
-import { useState } from "react";
+import { productApi } from "../../../lib/productApi";
+import { useEffect, useState } from "react";
 
 function edStatus(h) {
   return (h.facilities || []).find((f) => f.facility === "Emergency Department")?.status ?? "unknown";
@@ -13,18 +14,36 @@ function edStatus(h) {
 
 export default function HospitalPage() {
   const { slug } = useParams();
-  const { hospital, loading, notFound, error, retry } = useHospital(slug);
+  const { hospital: baseHospital, loading, notFound, error, retry } = useHospital(slug);
   const { user } = useAuth();
   const [saved, setSaved] = useState(false);
+  const [enrichedData, setEnrichedData] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    setEnrichedData(null);
+    if (slug) {
+      productApi(`/api/hospitals/${slug}/enriched`)
+        .then((res) => { if (active) setEnrichedData(res?.enriched || null); })
+        .catch(() => {});
+    }
+    return () => { active = false; };
+  }, [slug]);
 
   if (loading) return <p className="text-[var(--color-muted)]">Loading…</p>;
   if (error) return <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-3 flex flex-wrap items-center justify-between gap-2" role="alert"><span>{error}</span><button type="button" className="border border-red-300 rounded px-3 py-1 text-sm font-semibold" onClick={retry}>Retry</button></div>;
-  if (notFound || !hospital) {
+  if (notFound || !baseHospital) {
     return <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] shadow-[var(--shadow-sm)] p-5">Hospital not found. <Link href="/hospitals">Back to directory</Link></div>;
   }
 
+  const hospital = baseHospital;
   const m = availabilityMeta(edStatus(hospital));
-  const coords = hospital.location?.coordinates || [];
+  const coords = enrichedData?.location?.coordinates || hospital.location?.coordinates || [];
+  const address = enrichedData?.address && enrichedData.address !== "Not available." ? enrichedData.address : hospital.address;
+  const pincode = enrichedData?.pincode && enrichedData.pincode !== "Not available." ? enrichedData.pincode : hospital.pincode;
+  const phone = enrichedData?.phone && enrichedData.phone !== "Not available." ? enrichedData.phone : hospital.phone;
+  const specialties = enrichedData?.specialties?.[0] !== "Not available." && enrichedData?.specialties?.length
+    ? enrichedData.specialties : (hospital.specialties || hospital.departments || []);
   const onSave = async () => {
     try { await saveHospital(hospital._id); setSaved(true); } catch { alert("Please sign in to save."); }
   };
@@ -39,8 +58,8 @@ export default function HospitalPage() {
         <div>
           <h1 className="text-3xl mb-1">{hospital.name}</h1>
           <p className="text-[.78rem] text-[var(--color-muted)] mb-1">
-            {hospital.address ? `${hospital.address}, ` : ""}{hospital.locality || hospital.city}
-            {hospital.pincode ? ` · ${hospital.pincode}` : ""} · {hospital.hospitalType}
+            {address ? `${address}, ` : ""}{hospital.locality || hospital.city}
+            {pincode ? ` · ${pincode}` : ""} · {hospital.hospitalType}
           </p>
         </div>
         <span className={`${statusPill} ${toneClass[m.tone]}`}>
@@ -62,7 +81,7 @@ export default function HospitalPage() {
           <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] shadow-[var(--shadow-sm)] p-5">
             <h2 className="text-xl mb-2">Specialties</h2>
             <div className="flex flex-wrap gap-1">
-              {(hospital.specialties || hospital.departments || []).map((s) => <span key={s} className={chip}>{s}</span>)}
+              {specialties.map((s) => <span key={s} className={chip}>{s}</span>)}
             </div>
           </div>
         </div>
@@ -70,10 +89,10 @@ export default function HospitalPage() {
         <div className="w-full lg:w-1/3 px-2 mt-4 lg:mt-0">
           <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] shadow-[var(--shadow-sm)] p-5">
             <h2 className="text-base mb-2">Contact &amp; actions</h2>
-            <p className="mb-1 text-sm">Phone: {hospital.phone || "—"}</p>
-            <p className="mb-3 text-sm">Emergency: {hospital.emergencyPhone || hospital.phone || "112"}</p>
+            <p className="mb-1 text-sm">Phone: {phone || "—"}</p>
+            <p className="mb-3 text-sm">Emergency: {hospital.emergencyPhone || phone || "112"}</p>
             <div className="flex flex-col gap-2">
-              <a className="inline-flex items-center justify-center gap-1 font-bold rounded-[var(--radius)] bg-[var(--color-emergency)] text-white px-4 py-2 hover:bg-[var(--color-emergency-dark)] no-underline" href={`tel:${hospital.emergencyPhone || hospital.phone || "112"}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call emergency</a>
+              <a className="inline-flex items-center justify-center gap-1 font-bold rounded-[var(--radius)] bg-[var(--color-emergency)] text-white px-4 py-2 hover:bg-[var(--color-emergency-dark)] no-underline" href={`tel:${hospital.emergencyPhone || phone || "112"}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call emergency</a>
               {coords.length === 2 && Number.isFinite(coords[0]) && Number.isFinite(coords[1]) && (
                 <a className="inline-flex items-center justify-center gap-1 font-semibold rounded-[var(--radius)] border border-[var(--color-border)] bg-white text-[var(--color-text)] px-4 py-2 hover:bg-[#f1f3f5] no-underline" target="_blank" rel="noopener noreferrer"
                   href={`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`}><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Navigate</a>
@@ -101,6 +120,12 @@ export default function HospitalPage() {
               Verification: {hospital.verificationStatus || "unverified"}. Availability reflects the
               last known observation and may have changed. Confirm by phone before travelling.
             </p>
+            {(enrichedData?.sourceName || enrichedData?.sourceUrl || hospital.website) && (
+              <p className="text-[.78rem] text-[var(--color-muted)] mt-2 mb-0">
+                Source: {enrichedData?.sourceName || "Hospital directory"}
+                {(enrichedData?.sourceUrl || hospital.website) && <> · <a href={enrichedData?.sourceUrl || hospital.website} target="_blank" rel="noopener noreferrer">Original source</a></>}
+              </p>
+            )}
           </div>
         </div>
       </div>
