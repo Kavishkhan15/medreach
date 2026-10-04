@@ -31,6 +31,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
   const validate = () => {
     if (!patientName.trim()) return "Patient Name is required";
     if (!patientAge || isNaN(patientAge) || Number(patientAge) <= 0) return "Valid Patient Age is required";
+    if (!contactPhone.trim() && !contactEmail.trim()) return "A contact phone or email is required";
     if (ambulanceRequired && !bookingPickup.trim()) return "Pickup address is required when ambulance is needed";
     return null;
   };
@@ -77,6 +78,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
       onClick={onClose}
       role="dialog"
       aria-modal="true"
+      aria-labelledby="skeleton-ambulance-booking-title"
       style={{ zIndex: 1060 }}
     >
       <div
@@ -90,7 +92,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
               <EmergencyIcon name="ambulance" size={22} />
             </span>
             <div>
-              <h3 className="h6 fw-bold mb-0 text-dark">
+              <h3 id="skeleton-ambulance-booking-title" className="h6 fw-bold mb-0 text-dark">
                 Book Ambulance
               </h3>
               <p className="disclaimer mb-0">{provider?.name}</p>
@@ -187,18 +189,17 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
 
             <div className="grid-2 mb-2">
               <div>
-                <label className="form-label small fw-bold text-uppercase">Contact Phone *</label>
+                <label className="form-label small fw-bold text-uppercase">Contact Phone (or email required)</label>
                 <input
                   type="tel"
                   className="form-control"
                   placeholder="+91 98200 12345"
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
-                  required
                 />
               </div>
               <div>
-                <label className="form-label small fw-bold text-uppercase">Email</label>
+                <label className="form-label small fw-bold text-uppercase">Email (or phone required)</label>
                 <input
                   type="email"
                   className="form-control"

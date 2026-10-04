@@ -31,6 +31,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
   const validate = () => {
     if (!patientName.trim()) return "Patient Name is required";
     if (!patientAge || isNaN(patientAge) || Number(patientAge) <= 0) return "Valid Patient Age is required";
+    if (!contactPhone.trim() && !contactEmail.trim()) return "A contact phone or email is required";
     if (ambulanceRequired && !bookingPickup.trim()) return "Pickup address is required when ambulance is needed";
     return null;
   };
@@ -77,6 +78,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
       onClick={onClose}
       role="dialog"
       aria-modal="true"
+      aria-labelledby="tailwind-ambulance-booking-title"
     >
       <div
         className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-[var(--shadow-lg)] max-h-[90vh] overflow-y-auto"
@@ -88,7 +90,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
               <EmergencyIcon name="ambulance" size={24} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900 leading-tight">
+              <h3 id="tailwind-ambulance-booking-title" className="text-lg font-bold text-gray-900 leading-tight">
                 Book Ambulance
               </h3>
               <p className="text-xs text-gray-500 font-medium">{provider?.name}</p>
@@ -199,7 +201,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Contact Phone *
+                  Contact Phone (or email required)
                 </label>
                 <input
                   type="tel"
@@ -207,12 +209,11 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
                   placeholder="+91 98200 12345"
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
-                  required
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Email (Confirmation)
+                  Email (or phone required)
                 </label>
                 <input
                   type="email"
