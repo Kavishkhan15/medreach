@@ -132,6 +132,21 @@ test("email verification and password reset links reject missing or invalid cred
   clean();
 });
 
+test("About page and navigation links are removed", async ({ page }) => {
+  const clean = attachRuntimeGuard(page);
+  for (const width of [375, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    const navigation = page.getByRole("navigation", { name: "Primary" });
+    const toggle = navigation.getByRole("button", { name: "Toggle navigation", exact: true });
+    if (await toggle.isVisible()) await toggle.click();
+    await expect(navigation.getByRole("link", { name: "About", exact: true })).toHaveCount(0);
+    await expect(page.locator('a[href="/about"]')).toHaveCount(0);
+  }
+  expect((await page.goto("/about")).status()).toBe(404);
+  clean();
+});
+
 test("mobile and tablet navigation opens, closes and preserves directory actions", async ({ page }) => {
   const clean = attachRuntimeGuard(page);
   for (const width of [375, 768]) {
@@ -144,6 +159,7 @@ test("mobile and tablet navigation opens, closes and preserves directory actions
     await toggle.press("Enter");
     await expect(toggle).toHaveAttribute("aria-expanded", "true");
     await expect(navigation.getByRole("link", { name: "Hospitals", exact: true })).toBeVisible();
+    await expect(navigation.getByRole("link", { name: "About", exact: true })).toHaveCount(0);
     await navigation.getByRole("link", { name: "Diagnostics", exact: true }).click();
     await expect(page).toHaveURL(/\/diagnostics$/);
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
