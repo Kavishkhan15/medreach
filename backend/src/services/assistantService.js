@@ -12,13 +12,13 @@ import { getAiProvider } from "./aiProviders/index.js";
 
 // Emergency categories matching packages/core/src/emergency.js
 const EMERGENCY_CATEGORY_KEYWORDS = {
-  cardiac: { keywords: ["cardiac", "heart", "chest pain", "cardiology"], specialties: ["Cardiology"], facilities: ["Cardiology", "ICU"] },
-  stroke: { keywords: ["stroke", "neuro", "brain"], specialties: ["Neurology"], facilities: ["Neurology", "CT", "ICU"] },
-  trauma: { keywords: ["trauma", "accident", "injury", "bleeding"], specialties: ["Trauma", "Surgery"], facilities: ["Trauma Center", "Blood Bank"] },
-  burns: { keywords: ["burn", "burns"], specialties: ["Surgery"], facilities: ["Burns Unit"] },
-  respiratory: { keywords: ["breath", "respiratory", "asthma", "oxygen"], specialties: ["General Medicine"], facilities: ["Ventilator", "ICU"] },
-  pediatric: { keywords: ["child", "infant", "baby", "pediatric", "paediatric"], specialties: ["Pediatrics"], facilities: ["Pediatrics"] },
-  maternity: { keywords: ["pregnan", "labour", "labor", "maternity", "delivery"], specialties: ["Maternity"], facilities: ["Maternity", "Operating Theatre"] },
+  cardiac: { keywords: ["cardiac", "heart", "chest pain", "cardiology"], specialties: ["Cardiology", "Cardiothoracic Surgery"], facilities: ["Cardiology"] },
+  stroke: { keywords: ["stroke", "neuro", "brain"], specialties: ["Neurology", "Neurosurgery"], facilities: ["Neurology"] },
+  trauma: { keywords: ["trauma", "accident", "injury", "bleeding"], specialties: ["Trauma", "Trauma Care"], facilities: ["Trauma Center"] },
+  burns: { keywords: ["burn", "burns"], specialties: ["Burn Care", "Burns Care", "Burns"], facilities: ["Burns Unit"] },
+  respiratory: { keywords: ["breath", "respiratory", "asthma", "oxygen"], specialties: ["Respiratory Medicine", "Pulmonology", "Chest Medicine"], facilities: ["Ventilator"] },
+  pediatric: { keywords: ["child", "infant", "baby", "pediatric", "paediatric"], specialties: ["Pediatrics", "Paediatrics"], facilities: ["Pediatrics"] },
+  maternity: { keywords: ["pregnan", "labour", "labor", "maternity", "delivery"], specialties: ["Maternity", "Obstetrics", "Gynecology", "Gynaecology"], facilities: ["Maternity"] },
   icu: { keywords: ["icu", "intensive care", "critical care"], specialties: [], facilities: ["ICU"] },
 };
 
@@ -28,6 +28,7 @@ const EMERGENCY_KEYWORDS = [
   "severe bleeding", "heavy bleeding", "chest pain", "heart attack", "stroke",
   "can't breathe", "cannot breathe", "choking", "overdose", "suicide",
   "dying", "critical condition", "unresponsive", "cardiac arrest",
+  "cardiac emergency", "emergency hospital", "emergency care",
 ];
 
 export const MUMBAI_LOCALITIES = [
@@ -146,10 +147,30 @@ export function classifyIntent(message) {
   return "general";
 }
 
+// Show other listed locations only when the requested area has no matching hospital.
+// The response labels these as outside the requested area; it never claims a nearby match.
+async function findHospitalMatches({ locality, category, emergencyOnly = false, origin }) {
+  const exact = await searchHospitals({ locality, category, emergencyOnly, limit: 3, origin });
+  if (exact.length) return { hospitals: exact, searchScope: "exact" };
+  if (locality) {
+    const otherAreas = await searchHospitals({ category, emergencyOnly, limit: 3, origin });
+    if (otherAreas.length) return { hospitals: otherAreas, searchScope: "other_area" };
+  }
+  return { hospitals: [], searchScope: "none" };
+}
+
+function hospitalFollowups(hospitals, message) {
+  const prompts = [];
+  const area = hospitals.find((hospital) => hospital.locality)?.locality;
+  if (area) prompts.push(`Find hospitals in ${area}`);
+  prompts.push("How do I request a hospital bed?");
+  return prompts.filter((prompt) => prompt.toLowerCase() !== message.trim().toLowerCase());
+}
+
 // Builds the full context object with real database data from assistantTools
 export async function buildContext(message, { origin, locality: providedLocality } = {}) {
   const intent = classifyIntent(message);
-  const locality = providedLocality || detectLocality(message);
+  const locality = detectLocality(message) || (providedLocality === "Your location" ? null : providedLocality);
   const category = detectCategory(message);
   const bloodGroup = detectBloodGroup(message);
 
@@ -160,20 +181,17 @@ export async function buildContext(message, { origin, locality: providedLocality
   let jobs = [];
   let suggestedActions = [];
   let suggestedPrompts = [];
+  let searchScope = null;
 
   switch (intent) {
     case "emergency": {
-      hospitals = await searchHospitals({ locality, category, emergencyOnly: true, limit: 3, origin });
+      ({ hospitals, searchScope } = await findHospitalMatches({ locality, category, emergencyOnly: true, origin }));
       suggestedActions = [
         { type: "call", label: "Call 112 (Emergency)", phone: "112", primary: true },
         { type: "call", label: "Call 108 (Ambulance)", phone: "108" },
         { type: "emergency_bed", label: "Request Emergency Bed", url: "/emergency" },
       ];
-      suggestedPrompts = [
-        "Where is the nearest cardiac ICU?",
-        "I need an ambulance immediately",
-        "Trauma centers near me",
-      ];
+      suggestedPrompts = ["I need an ambulance immediately", ...hospitalFollowups(hospitals, message)].filter((prompt) => prompt.toLowerCase() !== message.trim().toLowerCase());
       break;
     }
     case "urgent_blood": {
@@ -228,16 +246,12 @@ export async function buildContext(message, { origin, locality: providedLocality
       break;
     }
     case "bed_request": {
-      hospitals = await searchHospitals({ locality, category, limit: 3, origin });
+      ({ hospitals, searchScope } = await findHospitalMatches({ locality, category, origin }));
       suggestedActions = [
         { type: "emergency_bed", label: "Emergency Bed Request (No Login)", url: "/emergency", primary: true },
         { type: "routine_bed", label: "Routine Bed Request (Login Required)", url: "/requests/new" },
       ];
-      suggestedPrompts = [
-        "Emergency ICU bed in South Mumbai",
-        "Pediatric hospital bed",
-        "Check bed vacancy near Andheri",
-      ];
+      suggestedPrompts = hospitalFollowups(hospitals, message);
       break;
     }
     case "career_search": {
@@ -253,16 +267,12 @@ export async function buildContext(message, { origin, locality: providedLocality
       break;
     }
     case "hospital_search": {
-      hospitals = await searchHospitals({ locality, category, limit: 3, origin });
+      ({ hospitals, searchScope } = await findHospitalMatches({ locality, category, origin }));
       suggestedActions = [
         { type: "view_directory", label: "Browse All Mumbai Hospitals", url: "/hospitals" },
         { type: "view_map", label: "Open Interactive Care Map", url: "/map" },
       ];
-      suggestedPrompts = [
-        "Cardiac emergency hospital in Andheri",
-        "Maternity hospitals in Bandra",
-        "Trauma centers near Dadar",
-      ];
+      suggestedPrompts = hospitalFollowups(hospitals, message);
       break;
     }
     default: {
@@ -294,6 +304,7 @@ export async function buildContext(message, { origin, locality: providedLocality
     locality,
     category: category?.id ?? null,
     bloodGroup,
+    searchScope,
     suggestedActions,
     suggestedPrompts,
   };
@@ -302,7 +313,12 @@ export async function buildContext(message, { origin, locality: providedLocality
 // Orchestrates context building, AI/rule-based synthesis, and fallback
 export async function getAssistantReply(message, options = {}) {
   const context = await buildContext(message, options);
-  const provider = getAiProvider();
+  // Keep no-match and out-of-area wording deterministic even when an optional
+  // language provider is configured; it must not invent a local match.
+  const hospitalIntent = ["emergency", "hospital_search", "bed_request"].includes(context.intent);
+  const provider = hospitalIntent && context.searchScope !== "exact"
+    ? { generateReply: (await import("./aiProviders/ruleBasedProvider.js")).generateReply }
+    : getAiProvider();
   try {
     const reply = await provider.generateReply(context);
     return {
@@ -319,6 +335,7 @@ export async function getAssistantReply(message, options = {}) {
       locality: context.locality,
       category: context.category,
       bloodGroup: context.bloodGroup,
+      searchScope: context.searchScope,
     };
   } catch (err) {
     const { generateReply: ruleBasedReply } = await import("./aiProviders/ruleBasedProvider.js");
@@ -337,6 +354,7 @@ export async function getAssistantReply(message, options = {}) {
       locality: context.locality,
       category: context.category,
       bloodGroup: context.bloodGroup,
+      searchScope: context.searchScope,
       providerFallback: true,
     };
   }

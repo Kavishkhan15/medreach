@@ -5,11 +5,12 @@
 import { env } from "../../config/env.js";
 
 const SYSTEM_PROMPT =
-  "You are the MedReach healthcare assistant for Mumbai. You help users find verified " +
+  "You are the MedReach healthcare assistant for Mumbai. You help users find listed " +
   "hospitals, blood banks, urgent blood supplies, ambulances, diagnostic centers, hospital beds, " +
   "and healthcare careers using ONLY the factual data supplied to you in context. Never invent " +
   "facilities, doctors, contact numbers, beds, blood units, or real-time availability. If data " +
-  "is unknown or missing, explicitly say so. Never provide clinical diagnoses, medical dosages, " +
+  "is unknown or missing, explicitly say so. State each listing's verification status accurately. " +
+  "If searchScope is other_area, explain that results are outside the requested area. Never provide clinical diagnoses, medical dosages, " +
   "or claim to directly dispatch emergency ambulances. For acute life-threatening emergencies, " +
   "always lead with 'Call 112 or 108 immediately.' Keep answers calm, concise, and actionable.";
 
@@ -22,6 +23,7 @@ export async function generateReply(context) {
     message,
     intent,
     locality,
+    searchScope,
     hospitals = [],
     bloodBanks = [],
     ambulances = [],
@@ -34,6 +36,7 @@ export async function generateReply(context) {
     message,
     intent,
     locality,
+    searchScope,
     hospitals: hospitals.slice(0, 3),
     bloodBanks: bloodBanks.slice(0, 3),
     ambulances: ambulances.slice(0, 3),

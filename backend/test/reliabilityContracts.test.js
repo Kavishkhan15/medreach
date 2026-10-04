@@ -19,6 +19,7 @@ import { AuditLog } from "../src/models/AuditLog.js";
 import { HospitalFacility } from "../src/models/HospitalFacility.js";
 import { AvailabilityObservation } from "../src/models/AvailabilityObservation.js";
 import { searchHospitals, searchBloodBanks, searchAmbulances, getHospitalDetails } from "../src/services/assistantTools.js";
+import { getAssistantReply } from "../src/services/assistantService.js";
 import { setEmailTransportFactoryForTests, sendEmailEvent } from "../src/services/emailService.js";
 import { sendUserEmailSafely } from "../src/services/userEmailService.js";
 import { signSessionToken } from "./helpers/session.js";
@@ -245,6 +246,80 @@ test("backend reliability contracts", async (t) => {
     assert.equal(listedAmbulance.operatingHours, null);
     const noLocation = await Hospital.create({ name: "No Location Hospital" });
     assert.equal((await getHospitalDetails({ idOrSlug: noLocation.id })).locality, null);
+  });
+
+  await t.test("assistant matches listed specialties and areas, labels broader results, and reports lookup failures", async () => {
+    const maternity = await Hospital.create({
+      name: "Bandra Maternity Test Hospital", city: "Mumbai", locality: "Bandra West",
+      specialties: ["Obstetrics & Gynecology"], verificationStatus: "unverified",
+    });
+    const cardiac = await Hospital.create({
+      name: "Andheri Cardiac Test Hospital", city: "Mumbai", locality: "Andheri West",
+      specialties: ["Cardiology"], verificationStatus: "verified",
+    });
+    const trauma = await Hospital.create({
+      name: "Sion Trauma Test Hospital", city: "Mumbai", locality: "Sion",
+      specialties: ["Trauma Care"], verificationStatus: "verified",
+    });
+    await HospitalFacility.create([
+      { hospital: cardiac.id, facility: "Emergency Department", capability: "yes" },
+      { hospital: trauma.id, facility: "Trauma Center", capability: "yes" },
+    ]);
+
+    const maternityReply = await getAssistantReply("Maternity hospitals in Bandra");
+    assert.equal(maternityReply.searchScope, "exact");
+    assert.ok(maternityReply.hospitals.some((item) => item.id === maternity.id));
+    assert.match(maternityReply.text, /Obstetrics & Gynecology/);
+    assert.match(maternityReply.text, /Verification not confirmed/);
+    assert.doesNotMatch(maternityReply.text, /verified hospitals/i);
+
+    const cardiacReply = await getAssistantReply("Cardiac emergency hospital in Andheri");
+    assert.equal(cardiacReply.intent, "emergency");
+    assert.equal(cardiacReply.searchScope, "exact");
+    assert.ok(cardiacReply.hospitals.some((item) => item.id === cardiac.id));
+    assert.match(cardiacReply.text, /^Call 112 or 108 immediately/);
+
+    const traumaReply = await getAssistantReply("Trauma centers near Dadar");
+    assert.equal(traumaReply.searchScope, "other_area");
+    assert.ok(traumaReply.hospitals.some((item) => item.id === trauma.id));
+    assert.match(traumaReply.text, /couldn't find.*Dadar/i);
+    assert.match(traumaReply.text, /elsewhere in the directory/i);
+    assert.ok(traumaReply.suggestedPrompts.every((prompt) => prompt !== "Trauma centers near Dadar"));
+    assert.ok(traumaReply.suggestedPrompts.some((prompt) => prompt.includes("Sion")));
+
+    const surgeryOnly = await Hospital.create({
+      name: "Powai General Surgery Test Hospital", city: "Mumbai", locality: "Powai",
+      specialties: ["Surgery", "General Medicine"], verificationStatus: "verified",
+    });
+    const burnsReply = await getAssistantReply("Burns hospitals in Powai");
+    assert.ok(burnsReply.hospitals.every((item) => item.id !== surgeryOnly.id));
+    const respiratoryReply = await getAssistantReply("Respiratory hospitals in Powai");
+    assert.ok(respiratoryReply.hospitals.every((item) => item.id !== surgeryOnly.id));
+
+    const broaderReply = await getAssistantReply("Find hospitals in Vashi");
+    assert.equal(broaderReply.searchScope, "other_area");
+    assert.doesNotMatch(broaderReply.text, /related recorded specialties or facilities/i);
+
+    const legacyId = new mongoose.Types.ObjectId();
+    await Hospital.collection.insertOne({
+      _id: legacyId, name: "Legacy Neuroscience Test Hospital", slug: "legacy-neuroscience-test-hospital",
+      city: "Mumbai", locality: "Goregaon", specialties: [], departments: ["Neurology"],
+      verificationStatus: "unverified",
+    });
+    const legacyMatches = await searchHospitals({ locality: "Goregaon", category: { specialties: ["Neurology"], facilities: [] } });
+    assert.ok(legacyMatches.some((item) => item.id === String(legacyId) && item.matchedSpecialties.includes("Neurology")));
+
+    const originalFind = Hospital.find;
+    Hospital.find = () => { throw new Error("Simulated hospital lookup failure"); };
+    try {
+      const failed = await request(app).post("/api/assistant/message").send({ message: "Maternity hospitals in Bandra" });
+      assert.equal(failed.status, 200);
+      assert.equal(failed.body.unavailable, true);
+      assert.equal(failed.body.intent, "unavailable");
+      assert.doesNotMatch(failed.body.reply, /couldn't find a hospital/i);
+    } finally {
+      Hospital.find = originalFind;
+    }
   });
 
   await t.test("the advertised 4 MiB resume reaches a saved job application", async () => {

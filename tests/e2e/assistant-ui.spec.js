@@ -132,8 +132,43 @@ test("real hospital responses retain call, directions, bed, details and follow-u
   expect(await page.evaluate(() => window.scrollY)).toBe(scrollBefore);
   expect(await panelFor(page).locator("header").boundingBox()).toEqual(headerBefore);
   expect(await panelFor(page).locator("footer").boundingBox()).toEqual(footerBefore);
-  await results.getByRole("link", { name: "Details ›", exact: true }).click();
+  await results.getByRole("link", { name: "Details ›", exact: true }).first().click();
   await expect(page).toHaveURL(new RegExp(`/hospitals/${hospital.slug}$`));
+  clean();
+});
+
+test("suggested hospital questions give honest results and do not repeat failed suggestions", async ({ page }) => {
+  const clean = runtimeGuard(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openAssistant(page);
+  const panel = panelFor(page);
+  const questions = [
+    "Cardiac emergency hospital in Andheri",
+    "Maternity hospitals in Bandra",
+    "Trauma centers near Dadar",
+  ];
+  for (const [index, question] of questions.entries()) {
+    let reply;
+    if (index === 0) {
+      const responsePromise = page.waitForResponse(response => response.url().endsWith("/api/assistant/message") && response.request().method() === "POST");
+      await panel.getByRole("button", { name: question, exact: true }).click();
+      const response = await responsePromise;
+      expect(response.status()).toBe(200);
+      expect(response.request().postDataJSON().message).toBe(question);
+      reply = await response.json();
+    } else {
+      reply = await ask(page, question);
+    }
+    expect(reply.hospitals).toEqual([]);
+    expect(reply.suggestedPrompts).not.toContain(question);
+    expect(reply.reply).not.toMatch(/verified hospitals|nearest verified/i);
+    await expect(panel.getByText(reply.reply, { exact: true })).toBeVisible();
+    expect(await panel.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+  }
+  const broad = await ask(page, "Find hospitals in Bandra");
+  expect(broad.searchScope).toBe("exact");
+  expect(broad.hospitals.some(hospital => hospital.name === "MedReach E2E Hospital")).toBe(true);
+  await expect(panel.getByRole("region", { name: "Hospital matches" }).getByRole("heading", { name: "MedReach E2E Hospital" })).toBeVisible();
   clean();
 });
 

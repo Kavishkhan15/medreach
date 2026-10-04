@@ -29,6 +29,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
       suggestedPrompts: reply.suggestedPrompts || [],
       locality: reply.locality || null,
       category: reply.category || null,
+      searchScope: reply.searchScope || null,
       bloodGroup: reply.bloodGroup || null,
     });
   } catch (err) {

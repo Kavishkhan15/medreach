@@ -4,7 +4,7 @@
 
 const EMERGENCY_OPENER =
   "Call 112 or 108 immediately. In a life-threatening medical emergency, professional emergency services must be contacted right away. " +
-  "MedReach does not dispatch ambulances directly, but here are the nearest verified emergency hospitals:";
+  "MedReach does not dispatch ambulances directly.";
 
 const GENERAL_HELP =
   "I am your MedReach Healthcare Assistant for Mumbai. I can help you with:\n" +
@@ -16,20 +16,32 @@ const GENERAL_HELP =
   "• Healthcare careers & hospital job openings\n\n" +
   "Try asking: \"Find cardiac hospitals near Andheri\", \"I need O+ blood urgently\", or \"Book an ambulance in Bandra\".";
 
+const CATEGORY_LABELS = {
+  cardiac: "cardiac", stroke: "neurology", trauma: "trauma care", burns: "burns care",
+  respiratory: "respiratory care", pediatric: "pediatric", maternity: "maternity", icu: "ICU",
+};
+
 function formatHospitalLine(h, index) {
   const distance = h.distanceKm != null ? `${h.distanceKm.toFixed(1)} km` : null;
-  const facilityBits = (h.matchedFacilities || []).slice(0, 2).join(", ");
+  const recordedMatches = [...(h.matchedSpecialties || []), ...(h.matchedFacilities || [])].slice(0, 2);
   const phone = h.phone ? `Phone: ${h.phone}` : null;
-  const meta = [distance, facilityBits, phone].filter(Boolean).join(" • ");
+  const verification = h.verificationStatus === "verified" ? "Verified listing" : "Verification not confirmed";
+  const meta = [h.locality, distance, recordedMatches.length ? `Recorded: ${recordedMatches.join(", ")}` : null, verification, phone].filter(Boolean).join(" • ");
   return `${index + 1}. ${h.name}${meta ? `\n   ${meta}` : ""}`;
 }
 
-function formatHospitalList(hospitals) {
+function formatHospitalList(hospitals, { locality, category, searchScope, emergencyOnly = false } = {}) {
+  const requested = CATEGORY_LABELS[category] ? `${CATEGORY_LABELS[category]}-related ` : "";
+  const area = locality ? ` in ${locality}` : "";
+  const emergencyRequirement = emergencyOnly ? " with a recorded Emergency Department" : "";
   if (!hospitals?.length) {
-    return "I couldn't find a matching hospital in MedReach's current verified records for that area or specialty.";
+    return `I couldn't find a ${requested}hospital${emergencyRequirement}${area} in MedReach's listings. This does not mean care is unavailable. Please contact a provider to confirm services and capacity.`;
   }
   const lines = hospitals.slice(0, 3).map(formatHospitalLine);
-  return `Here are ${lines.length} nearby verified hospitals from MedReach's network:\n\n${lines.join("\n\n")}`;
+  const intro = searchScope === "other_area"
+    ? `I couldn't find a ${requested}hospital${emergencyRequirement}${area} in MedReach's listings. ${category ? "These hospitals have related recorded specialties or facilities" : emergencyOnly ? "These hospitals have a recorded Emergency Department" : "These are other listed hospitals"} elsewhere in the directory:`
+    : `Here are ${lines.length} listed hospitals${area}${category ? " with related recorded specialties or facilities" : ""}:`;
+  return `${intro}\n\n${lines.join("\n\n")}\n\nConfirm the specific service and current availability with the hospital directly.`;
 }
 
 function formatBloodBankList(bloodBanks, bloodGroup) {
@@ -44,7 +56,7 @@ function formatBloodBankList(bloodBanks, bloodGroup) {
     return `${i + 1}. ${b.name}${meta ? `\n   ${meta}` : ""}`;
   });
   const bgNote = bloodGroup ? ` for blood group ${bloodGroup}` : "";
-  return `Here are verified blood banks${bgNote}:\n\n${lines.join("\n\n")}`;
+  return `Here are listed blood banks${bgNote}. Confirm inventory directly:\n\n${lines.join("\n\n")}`;
 }
 
 function formatAmbulanceList(ambulances) {
@@ -53,17 +65,17 @@ function formatAmbulanceList(ambulances) {
   }
   const lines = ambulances.slice(0, 3).map((a, i) => {
     const type = a.providerType || "Emergency Transit";
-    const phone = a.phone ? `Phone: ${a.phone}` : "Dial 108";
+    const phone = a.phone ? `Phone: ${a.phone}` : null;
     const coverage = a.coverageArea ? `Coverage: ${a.coverageArea}` : null;
     const meta = [a.locality, type, coverage, phone].filter(Boolean).join(" • ");
     return `${i + 1}. ${a.name}${meta ? `\n   ${meta}` : ""}`;
   });
-  return `Here are verified ambulance services in Mumbai:\n\n${lines.join("\n\n")}\n\nYou can click "Book Ambulance" on any provider below to arrange medical transit.`;
+  return `Here are listed ambulance providers:\n\n${lines.join("\n\n")}\n\nYou can click "Book Ambulance" to record a request. Confirm dispatch directly with the provider.`;
 }
 
 function formatDiagnosticList(diagnostics) {
   if (!diagnostics?.length) {
-    return "No diagnostic centers found matching that search in MedReach's verified records.";
+    return "No diagnostic centers found matching that search in MedReach's listed records.";
   }
   const lines = diagnostics.slice(0, 3).map((d, i) => {
     const distance = d.distanceKm != null ? `${d.distanceKm.toFixed(1)} km` : null;
@@ -72,7 +84,7 @@ function formatDiagnosticList(diagnostics) {
     const meta = [d.locality, distance, services, phone].filter(Boolean).join(" • ");
     return `${i + 1}. ${d.name}${meta ? `\n   ${meta}` : ""}`;
   });
-  return `Here are verified diagnostic & scan centers:\n\n${lines.join("\n\n")}`;
+  return `Here are listed diagnostic and scan centers. Confirm services directly:\n\n${lines.join("\n\n")}`;
 }
 
 function formatJobList(jobs) {
@@ -96,12 +108,13 @@ export async function generateReply(context) {
     jobs = [],
     locality,
     bloodGroup,
+    category,
+    searchScope,
   } = context;
 
   if (intent === "emergency") {
-    const body = hospitals.length > 0 ? formatHospitalList(hospitals) : "";
     return {
-      text: `${EMERGENCY_OPENER}\n\n${body}`.trim(),
+      text: `${EMERGENCY_OPENER}\n\n${formatHospitalList(hospitals, { locality, category, searchScope, emergencyOnly: true })}`,
       source: "rule_based",
     };
   }
@@ -143,8 +156,8 @@ export async function generateReply(context) {
       "MedReach distinguishes between two types of bed requests:\n" +
       "1. Emergency Bed Requests: No login required (guest allowed). Direct acute care routing via Emergency Mode.\n" +
       "2. Routine Hospital Bed Requests: Login required. Used for scheduled admissions or standard inpatient care.\n\n" +
-      "Here are verified hospitals with bed and ICU facilities:";
-    const list = formatHospitalList(hospitals);
+      "These request forms do not confirm bed availability. Here are hospital listings to review:";
+    const list = formatHospitalList(hospitals, { locality, category, searchScope });
     return {
       text: `${explanation}\n\n${list}`,
       source: "rule_based",
@@ -159,14 +172,8 @@ export async function generateReply(context) {
   }
 
   if (intent === "hospital_search") {
-    if (!hospitals.length && !locality) {
-      return {
-        text: "Which Mumbai area are you in? (e.g. Andheri, Bandra, Dadar, Powai, Borivali). I will look up verified nearby hospitals once I know your location.",
-        source: "rule_based",
-      };
-    }
     return {
-      text: formatHospitalList(hospitals),
+      text: formatHospitalList(hospitals, { locality, category, searchScope }),
       source: "rule_based",
     };
   }

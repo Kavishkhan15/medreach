@@ -28,6 +28,10 @@ test("classifyIntent: hospital search phrasing", () => {
   assert.equal(classifyIntent("Find cardiac hospitals near Andheri"), "hospital_search");
   assert.equal(classifyIntent("ICU hospitals near Bandra"), "hospital_search");
   assert.equal(classifyIntent("Where is the nearest hospital?"), "hospital_search");
+  assert.equal(classifyIntent("Maternity hospitals in Bandra"), "hospital_search");
+  assert.equal(classifyIntent("Trauma centers near Dadar"), "hospital_search");
+  assert.equal(classifyIntent("Cardiac emergency hospital in Andheri"), "emergency");
+  assert.equal(classifyIntent("Find emergency hospitals"), "emergency");
 });
 
 test("classifyIntent: urgent blood vs blood bank search", () => {

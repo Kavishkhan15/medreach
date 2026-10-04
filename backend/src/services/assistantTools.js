@@ -28,45 +28,70 @@ export function computeDistanceKm(lat1, lon1, lat2, lon2) {
 // 1. Search Hospitals using real Mongoose models & ranking
 export async function searchHospitals({ locality, category, specialty, emergencyOnly = false, limit = 4, origin } = {}) {
   try {
+    const escapeRegex = (value) => value.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const filter = {};
     if (locality) {
-      const escapedLoc = locality.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const escapedLoc = escapeRegex(locality);
       filter.$and = [{ $or: [
-        { locality: { $regex: new RegExp(`^${escapedLoc}$`, "i") } },
-        { city: { $regex: new RegExp(escapedLoc, "i") } },
+        // "Bandra" includes Bandra West/East; "Bandra West" stays specific.
+        { locality: { $regex: new RegExp(`^${escapedLoc}(?:\\s|$)`, "i") } },
+        { city: { $regex: new RegExp(`^${escapedLoc}$`, "i") } },
       ] }];
     }
+    const requestedSpecialties = specialty ? [specialty] : category?.specialties || [];
+    const specialtyPatterns = requestedSpecialties.map((name) => new RegExp(`\\b${escapeRegex(name)}\\b`, "i"));
+    const requestedFacilities = !specialty ? category?.facilities || [] : [];
+    const facilityIds = requestedFacilities.length
+      ? await HospitalFacility.distinct("hospital", {
+          facility: { $in: requestedFacilities }, capability: "yes", capabilityConflict: { $ne: true },
+        })
+      : [];
     if (specialty) {
-      const specFilter = [{ specialties: specialty }, { departments: specialty }];
-      filter.$and = [...(filter.$and || []), { $or: specFilter }];
-    } else if (category?.specialties?.length) {
-      const catFilter = [
-        { specialties: { $in: category.specialties } },
-        { departments: { $in: category.specialties } },
-      ];
-      filter.$and = [...(filter.$and || []), { $or: catFilter }];
+      filter.$and = [...(filter.$and || []), { $or: [
+        { specialties: { $in: specialtyPatterns } }, { departments: { $in: specialtyPatterns } },
+      ] }];
+    } else if (category) {
+      const matches = [];
+      if (specialtyPatterns.length) matches.push(
+        { specialties: { $in: specialtyPatterns } }, { departments: { $in: specialtyPatterns } },
+      );
+      if (facilityIds.length) matches.push({ _id: { $in: facilityIds } });
+      if (!matches.length) return [];
+      filter.$and = [...(filter.$and || []), { $or: matches }];
     }
 
-    let candidates = await Hospital.find(filter).limit(30).lean();
+    // Rank the complete eligible set, so an arbitrary database row order cannot
+    // hide a closer or better-matched hospital from the results.
+    let candidates = await Hospital.find(filter).lean();
     if (emergencyOnly && candidates.length) {
       const capable = await HospitalFacility.distinct("hospital", {
         hospital: { $in: candidates.map((hospital) => hospital._id) },
         facility: "Emergency Department",
-        capability: "yes",
+        capability: "yes", capabilityConflict: { $ne: true },
       });
       const capableIds = new Set(capable.map(String));
       candidates = candidates.filter((hospital) => capableIds.has(String(hospital._id)));
     }
 
     const ranked = rankHospitals(candidates, { category });
+    if (origin) ranked.sort((a, b) => {
+      const distance = (hospital) => {
+        const [lng, lat] = hospital.location?.coordinates || [];
+        return Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0)
+          ? computeDistanceKm(origin.lat, origin.lng, lat, lng) : Infinity;
+      };
+      return distance(a) - distance(b) || b._rank.score - a._rank.score;
+    });
     const selected = ranked.slice(0, limit);
 
     return await Promise.all(
       selected.map(async (h) => {
         const facilities = await HospitalFacility.find({ hospital: h._id }).lean();
         const matchedFacilities = category?.facilities?.length
-          ? facilities.filter((f) => category.facilities.includes(f.facility)).map((f) => f.facility)
-          : facilities.slice(0, 3).map((f) => f.facility);
+          ? facilities.filter((f) => category.facilities.includes(f.facility) && f.capability === "yes" && !f.capabilityConflict).map((f) => f.facility)
+          : facilities.filter((f) => f.capability === "yes" && !f.capabilityConflict).slice(0, 3).map((f) => f.facility);
+        const specialties = [...new Set([...(h.specialties || []), ...(h.departments || [])])];
+        const matchedSpecialties = specialties.filter((name) => specialtyPatterns.some((pattern) => pattern.test(name)));
 
         const summary = {
           id: String(h._id),
@@ -74,8 +99,9 @@ export async function searchHospitals({ locality, category, specialty, emergency
           name: h.name,
           locality: h.locality || h.city || null,
           address: h.address || null,
-          specialties: h.specialties || h.departments || [],
+          specialties,
           matchedFacilities,
+          matchedSpecialties,
           verificationStatus: h.verificationStatus || "unverified",
           phone: h.emergencyPhone || h.phone || null,
           coordinates:
@@ -114,7 +140,7 @@ export async function searchHospitals({ locality, category, specialty, emergency
     );
   } catch (err) {
     console.error("searchHospitals error:", err);
-    return [];
+    throw err;
   }
 }
 
