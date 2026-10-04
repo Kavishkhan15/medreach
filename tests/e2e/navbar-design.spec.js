@@ -24,9 +24,10 @@ test.beforeEach(async ({ context }, testInfo) => {
 });
 
 test("desktop navbar keeps the logo between icon links with no overlap", async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto("/");
   for (const width of [1400, 1440, 1600, 1800, 1920, 2048]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/");
     await assertShieldLogo(page);
     await expect(nav(page).getByRole("button", { name: "Toggle navigation" })).toBeHidden();
     for (const [label, href] of links) {
