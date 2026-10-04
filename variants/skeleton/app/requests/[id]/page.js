@@ -17,8 +17,8 @@ export default function RequestDetail() {
     <div className="container py-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         {user ? (
-          <Link href="/hospitals" className="small text-decoration-none">
-            ← Hospital directory
+          <Link href="/requests" className="small text-decoration-none">
+            ← All requests
           </Link>
         ) : (
           <Link href="/emergency" className="small text-decoration-none text-danger fw-bold">

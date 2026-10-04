@@ -17,8 +17,8 @@ export default function RequestDetail() {
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex justify-between items-center mb-4">
         {user ? (
-          <Link href="/hospitals" className="text-sm text-blue-600 hover:underline">
-            ← Hospital directory
+          <Link href="/requests" className="text-sm text-blue-600 hover:underline">
+            ← All requests
           </Link>
         ) : (
           <Link href="/emergency" className="text-sm text-red-600 hover:underline font-semibold">
