@@ -22,6 +22,8 @@ export function EmergencyIcon({ name, size = 20, className = "", ...props }) {
       return <svg {...iconProps}><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M3 12h18M10 12v3h4v-3" /></svg>;
     case "user":
       return <svg {...iconProps}><circle cx="12" cy="7" r="4" /><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2" /></svg>;
+    case "info":
+      return <svg {...iconProps}><circle cx="12" cy="12" r="10" /><path d="M12 11v6M12 7h.01" /></svg>;
     case "hospital":
       return (
         <svg {...iconProps}>
