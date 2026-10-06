@@ -1,6 +1,6 @@
 // Public hospital data contract. Static capability and current availability
 // are independent signals. Only a verified, recent observation may produce a
-// non-unknown current status; crawler capability never does.
+// non-unknown current status; stored capability evidence never does.
 import { freshnessLabel } from "./freshnessService.js";
 export const CURRENT_AVAILABILITY_MAX_AGE_MS = 30 * 60 * 1000;
 

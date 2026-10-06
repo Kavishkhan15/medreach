@@ -1,6 +1,6 @@
 # MedReach Backend
 
-Shared Express + MongoDB API for Bootstrap, Tailwind and Skeleton. Authentication, validation, request lifecycle, email delivery and crawler services are common to all three frontends.
+Shared Express + MongoDB API for Bootstrap, Tailwind and Skeleton. Authentication, validation, request lifecycle, email delivery and stored provider data are common to all three frontends.
 
 ## Setup
 
@@ -31,7 +31,7 @@ The API defaults to `http://localhost:4000`. `MONGODB_URI` takes precedence over
 | Careers | `/api/jobs`, `/api/organizations/careers`, job/organization applications and `/api/applications/mine`; public `CAR-J…` / `CAR-O…` references |
 | Tracking | `/api/tracking/:type/:reference` exposes only reference, status and update time for blood, bed, career or ambulance; private details remain protected |
 | Assistant | `/api/assistant/message` returns grounded directory results and actions; rule based by default, optional external phrasing provider |
-| Administration | Assigned hospital operations, system administration, source/claim review, crawler controls, audit and protected email delivery/retry endpoints |
+| Administration | Assigned hospital operations, system administration, claim review, audit and protected email delivery/retry endpoints |
 
 See [API reference](../docs/api.md), [data model](../docs/data-model.md) and [bed lifecycle](../docs/bed-request-lifecycle.md) for contracts and access rules. Google sign-in and the in-app notification inbox/API are intentionally removed. Email verification, recovery, request confirmations, status emails and staff/admin emails remain.
 

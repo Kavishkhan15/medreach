@@ -36,7 +36,6 @@ async function run(label, command, args) {
 }
 
 await run("Backend tests, including MongoDB-gated suites", process.execPath, ["scripts/verify-backend-tests.mjs"]);
-await run("Crawler offline tests", process.execPath, ["scripts/verify-crawler-tests.mjs"]);
 await run("Production dependency vulnerability gate", npm, ["audit", "--audit-level=high"]);
 await run("Bootstrap, Tailwind, and Skeleton production builds", npm, ["run", "build:variants"]);
 await run("Critical browser journeys in all three variants", npm, ["run", "test:e2e"]);

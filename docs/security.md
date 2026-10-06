@@ -28,7 +28,7 @@ Rate limits are process-local. A deployment with multiple API instances needs an
 
 ## Authorization and tracking
 
-Roles are `user`, `hospital_admin`, `system_admin` and legacy `admin`. Route gates and controller assignment checks both matter: hospital staff must be assigned to the hospital they manage. User/account administration, global claim review, audit and email administration require `system_admin`. Global crawler/source operations permit legacy `admin` and `system_admin`.
+Roles are `user`, `hospital_admin`, `system_admin` and legacy `admin`. Route gates and controller assignment checks both matter: hospital staff must be assigned to the hospital they manage. User/account administration, global claim review, audit and email administration require `system_admin`. Historical source and claim records remain in MongoDB; crawl/source-control routes are removed.
 
 Emergency bed creation remains login-free; standard bed requests and career applications require a user session. Urgent blood has its own guest-capable endpoint and urgency rules.
 
@@ -46,16 +46,11 @@ Independent bed/blood/career submission emails run concurrently with a cap of th
 
 Only system administrators can inspect sanitized delivery metadata or trigger eligible retries. Sent means SMTP accepted the message; inbox delivery, provider receipt and patient care require separate evidence. In-app notification routes/models are removed; all email functions remain.
 
-## Crawler and optional AI
+## Stored data and optional AI
 
-- Approved source registry, public DNS and literal IP SSRF checks, redirect checks,
-  robots enforcement and rate limits govern crawler fetches. DNS resolution and
-  connection pinning, streaming byte caps and full-attempt timeouts are enforced.
-  Unreadable robots policies fail closed; only genuine 404/410 permits missing
-  robots. Legacy feeds enforce robots too. See [crawler](crawler.md).
-  Blocked sources must remain blocked; external failures do not produce fabricated
-  fallback providers or availability.
-- Source registration is restricted to global administrators and validates URLs against the SSRF guard.
+- No application component fetches or parses external provider websites. Stored
+  source URLs are provenance only; provider failures never trigger a scrape or
+  fabricate availability. See [stored data](stored-data.md).
 - Assistant inputs are trimmed, sanitized and capped at 500 characters. Provider credentials remain server-side. Provider failures use rule-based phrasing over the same stored data; broader failures return safe generic guidance.
 - If an external AI provider is enabled, the message and directory context are transmitted to it. This is a data-processing decision, not simply a UI setting; see [privacy](privacy.md).
 - Optional refinement suggestions require review and do not directly rewrite canonical availability.

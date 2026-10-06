@@ -1,7 +1,7 @@
 import { HospitalFieldClaim, HOSPITAL_CLAIM_FIELDS } from "../models/HospitalFieldClaim.js";
 import { HospitalFieldConflict } from "../models/HospitalFieldConflict.js";
 import { Hospital } from "../models/Hospital.js";
-import { canonicalHospitalName } from "../_crawler/identity/hospitalIdentity.js";
+import { canonicalHospitalName } from "./hospitalIdentity.js";
 
 const CONFIDENCE = { HIGH: 3, MEDIUM: 2, LOW: 1, UNKNOWN: 0 };
 const isPresent = (value) => Array.isArray(value) ? value.length > 0 : typeof value === "string" && value.trim().length > 0;

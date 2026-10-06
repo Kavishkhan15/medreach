@@ -1,5 +1,5 @@
 // Central, deterministic constants for the whole backend. Single source of truth
-// for enums and thresholds so models, services, validators, and the crawler stay
+// for enums and thresholds so models, services, and validators stay
 // in agreement. NO business logic here — just values. Mirrored (values only) in
 // packages/core/src/constants.js for the frontend; keep the two in sync.
 
@@ -63,9 +63,8 @@ export const AVAILABILITY_STATUS = ["available", "limited", "unavailable", "unkn
 export const EMERGENCY_STATUS = ["available", "limited", "full", "closed"];
 
 // ---- Data sources ----
-// Exact 5-type list per the ingestion-system spec. "government" and "manual"
-// are kept as legacy aliases (existing seeded DataSource docs / tests use
-// them) so this rename never breaks previously-seeded data.
+// Source types retained for existing provenance and manual claims.
+// "government" and "manual" remain valid for older DataSource documents.
 export const SOURCE_TYPES = [
   "hospital_site",
   "government_directory",
@@ -79,29 +78,8 @@ export const SOURCE_TYPES = [
 ];
 export const ACCESS_METHODS = ["http_api", "http_html", "feed", "manual"];
 
-// ---- Crawler ----
-export const CRAWL_STATUS = [
-  "queued",
-  "running",
-  "success",
-  "partial",
-  "failed",
-  "blocked",
-  "rate_limited",
-  "parsing_error",
-];
-
 // ---- Alerts (infrastructure/system alerts — NOT medical/AI) ----
 export const ALERT_SEVERITY = ["info", "warning", "critical"];
-export const ALERT_KIND = [
-  "crawler_failure",
-  "stale_data",
-  "source_unavailable",
-  "unusual_change",
-  "system_failure",
-  "public_notice",
-];
-
 // ---- Audit ----
 export const AUDIT_ACTIONS = [
   "create",

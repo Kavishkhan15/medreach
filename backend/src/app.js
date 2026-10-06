@@ -12,8 +12,6 @@ import healthRouter from "./routes/health.js";
 import authRoutes from "./routes/authRoutes.js";
 import hospitalRoutes from "./routes/hospitalRoutes.js";
 import availabilityRoutes from "./routes/availability.js";
-import sourceRoutes from "./routes/sources.js";
-import crawlerRoutes from "./routes/crawler.js";
 import adminRoutes from "./routes/admin.js";
 import alertRoutes from "./routes/alertRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -48,8 +46,6 @@ export function createApp() {
   app.use("/api/hospitals", hospitalRoutes);
   // Facilities + availability are nested under a hospital id.
   app.use("/api/hospitals", availabilityRoutes);
-  app.use("/api/sources", sourceRoutes);
-  app.use("/api/crawler", crawlerRoutes);
   app.use("/api/admin", adminRoutes);
   app.use("/api/alerts", alertRoutes);
   app.use("/api/users", userRoutes);

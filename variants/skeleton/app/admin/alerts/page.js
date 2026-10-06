@@ -12,7 +12,7 @@ export default function AdminAlertsPage() {
     catch (err) { setMsg((err.message || "Failed") + " (requires live backend + admin)"); }
   };
   return (
-    <AdminGuard title="Alerts" subtitle="Broadcast infrastructure/system notices (crawler failures, stale data, outages). Not medical or AI alerts.">
+    <AdminGuard title="Alerts" subtitle="Broadcast infrastructure/system notices (stale data and service outages). Not medical or AI alerts.">
       <div className="surface" style={{ maxWidth: 720 }}>
         {msg && <div className="alert alert-info py-2">{msg}</div>}
         <form onSubmit={broadcast} className="grid-alert-form">

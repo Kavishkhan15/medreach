@@ -5,10 +5,7 @@ import { drainWorkers, registerGracefulShutdown } from "../src/services/graceful
 import { createApp } from "../src/app.js";
 import request from "supertest";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
-import { CrawlerSetting } from "../src/models/CrawlerSetting.js";
-import { env } from "../src/config/env.js";
 import { startEmergencyRequestExpiryWorker, stopEmergencyRequestExpiryWorker } from "../src/services/emergencyRequestExpiry.js";
-import { startCrawlerScheduler, tickCrawlerScheduler, stopCrawlerScheduler, schedulerState } from "../src/services/crawlerScheduler.js";
 
 const logger = { log() {}, error() {} };
 
@@ -104,30 +101,5 @@ test("expiry worker stop cancels future ticks and waits for the current database
   } finally {
     release([]); await stopEmergencyRequestExpiryWorker();
     globalThis.setInterval = original.interval; globalThis.clearInterval = original.clear; EmergencyRequest.find = original.find;
-  }
-});
-
-test("crawler stop waits for an active tick and prevents any new scheduled work", async () => {
-  const original = { enabled: env.schedulerEnabled, find: CrawlerSetting.findOne, update: CrawlerSetting.updateOne };
-  let release;
-  const pause = new Promise((resolve) => { release = resolve; });
-  env.schedulerEnabled = true;
-  CrawlerSetting.findOne = () => ({ lean: () => pause });
-  CrawlerSetting.updateOne = async () => ({});
-  try {
-    startCrawlerScheduler();
-    const current = tickCrawlerScheduler();
-    let stopped = false;
-    const stopping = stopCrawlerScheduler().then(() => { stopped = true; });
-    await new Promise((resolve) => setImmediate(resolve));
-    assert.equal(stopped, false);
-    assert.equal(schedulerState().running, false);
-    assert.deepEqual(await tickCrawlerScheduler(), { skipped: "stopping" });
-    release({ value: true });
-    await current; await stopping;
-    assert.equal(stopped, true);
-  } finally {
-    release({ value: true }); await stopCrawlerScheduler();
-    env.schedulerEnabled = original.enabled; CrawlerSetting.findOne = original.find; CrawlerSetting.updateOne = original.update;
   }
 });

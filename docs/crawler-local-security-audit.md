@@ -1,3 +1,6 @@
+> Historical record: describes the removed acquisition system as it existed
+> before 2026-10-06. See [stored data](stored-data.md) for the current architecture.
+
 # MedReach local crawler redirect audit — 2026-09-14
 
 ## Security fix update — 2026-10-03
@@ -7,7 +10,7 @@ superseded by tested fixes in both crawler copies. Actual connections pin public
 DNS answers, bodies stream under a byte cap, and the timeout includes DNS and
 body reads. Unreadable robots policies deny crawling; only genuine HTTP 404/410
 permits a missing policy. Legacy feeds now check robots on initial/redirect URLs.
-See [security verification](security-verification.md) and [current crawler](crawler.md).
+See [security verification](security-verification.md) and [current crawler](stored-data.md).
 The dated audit evidence below is preserved as history.
 
 
@@ -16,7 +19,7 @@ The dated audit evidence below is preserved as history.
 The sections below preserve the **2026-09-14 audit**, including its original
 counts and unresolved findings at that time. They are historical evidence, not
 a statement of current release health. The latest executed local gate is in
-[Release QA](release-qa.md); current crawler operation is in [crawler](crawler.md).
+[Release QA](release-qa.md); current crawler operation is in [crawler](stored-data.md).
 No external website was contacted for this documentation update.
 
 Current code inspection confirms:

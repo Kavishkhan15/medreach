@@ -1,6 +1,4 @@
 import { Hospital } from "../models/Hospital.js";
-import { CrawlJob } from "../models/CrawlJob.js";
-import { DataSource } from "../models/DataSource.js";
 import { HospitalFacility } from "../models/HospitalFacility.js";
 import { FacilitySourceClaim } from "../models/FacilitySourceClaim.js";
 import { DataConflict } from "../models/DataConflict.js";
@@ -18,13 +16,11 @@ import { resolveStoredField } from "../services/hospitalFieldFusion.js";
 
 // GET /api/admin/overview — dashboard cards.
 export const overview = asyncHandler(async (_req, res) => {
-  const [hospitals, verified, sourcesActive, crawlFailures] = await Promise.all([
+  const [hospitals, verified] = await Promise.all([
     Hospital.countDocuments(),
     Hospital.countDocuments({ verificationStatus: "verified" }),
-    DataSource.countDocuments({ enabled: true }),
-    CrawlJob.countDocuments({ status: { $in: ["failed", "blocked", "rate_limited", "parsing_error"] } }),
   ]);
-  res.json({ hospitals, verified, verificationQueue: hospitals - verified, sourcesActive, crawlFailures });
+  res.json({ hospitals, verified, verificationQueue: hospitals - verified });
 });
 
 // POST /api/admin/hospitals/:id/verify — approve/reject/override/mark_stale (audited).

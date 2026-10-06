@@ -35,8 +35,8 @@ export async function refineFacilityClaim(claimId) {
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", temperature: 0, maxOutputTokens: 600 } }),
       signal: AbortSignal.timeout(8000),
     });
-  } catch { return { error: "Gemini unavailable; deterministic crawler data remains unchanged", status: 503 }; }
-  if (!response.ok) return { error: "Gemini unavailable; deterministic crawler data remains unchanged", status: 503 };
+  } catch { return { error: "Gemini unavailable; stored evidence remains unchanged", status: 503 }; }
+  if (!response.ok) return { error: "Gemini unavailable; stored evidence remains unchanged", status: 503 };
   let parsed;
   try { const raw = await response.json(); parsed = JSON.parse(raw.candidates?.[0]?.content?.parts?.[0]?.text || "{}"); }
   catch { return { error: "Gemini returned invalid structured output", status: 502 }; }
@@ -51,13 +51,4 @@ export async function refineFacilityClaim(claimId) {
     candidates.push(candidate);
   }
   return { candidates, rejectedCount: (parsed.suggestions?.length || 0) - candidates.length };
-}
-
-export async function enqueueRefinementAfterCrawl({ sourceId, since }) {
-  if (!refinementStatus().configured) return { attempted: 0, disabled: true };
-  const claims = await FacilitySourceClaim.find({ source: sourceId, evidenceKind: "source_excerpt",
-    observedAt: { $gte: since } }).select("_id").limit(5).lean();
-  const results = [];
-  for (const claim of claims) results.push(await refineFacilityClaim(claim._id));
-  return { attempted: claims.length, candidates: results.reduce((n, item) => n + (item.candidates?.length || 0), 0) };
 }

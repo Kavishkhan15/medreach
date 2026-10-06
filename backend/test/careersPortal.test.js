@@ -93,7 +93,7 @@ describe("Careers Portal & Healthcare Job Application System", () => {
         kind: "diagnostic",
         locality: "Andheri East",
         city: "Mumbai",
-        sourceName: "Automated Mumbai Crawler",
+        sourceName: "Existing Mumbai directory",
         verificationStatus: "verified",
       });
 

@@ -6,8 +6,6 @@ import { useAuth } from "@medreach/core";
 const LINKS = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/hospitals", label: "Hospitals" },
-  { href: "/admin/sources", label: "Sources" },
-  { href: "/admin/crawler", label: "Crawler" },
   { href: "/admin/verification", label: "Verification" },
   { href: "/admin/alerts", label: "Alerts" },
   { href: "/admin/audit", label: "Audit", systemOnly: true },

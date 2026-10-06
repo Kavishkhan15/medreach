@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { canonicalHospitalName, uniqueHospitalIdentityMatch } from "../src/_crawler/identity/hospitalIdentity.js";
+import { canonicalHospitalName, uniqueHospitalIdentityMatch } from "../src/services/hospitalIdentity.js";
 
 test("identity matching requires an exact canonical name and pincode", () => {
   const candidates = [

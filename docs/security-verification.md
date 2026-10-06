@@ -1,3 +1,6 @@
+> Historical record: describes the removed acquisition system as it existed
+> before 2026-10-06. See [stored data](stored-data.md) for the current architecture.
+
 # Security verification — 2026-10-03
 
 ## Result
@@ -77,4 +80,4 @@ credentials were not broadly upgraded or overwritten.
 
 No action is needed on retired Google OAuth or in-app notifications. Dependencies
 have no reported advisory requiring an upgrade in this audit. See [deployment](deployment.md),
-[security](security.md), [crawler](crawler.md) and [release QA](release-qa.md).
+[security](security.md), [crawler](stored-data.md) and [release QA](release-qa.md).

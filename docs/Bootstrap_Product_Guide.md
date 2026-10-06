@@ -12,16 +12,15 @@ MongoDB and JWT secret. `./run.sh` starts the API on 4000, Bootstrap on 3000,
 Tailwind on 3001 and Skeleton on 3002. `./run.sh bootstrap`, `tailwind` or
 `skeleton` starts just that frontend and the API.
 
-Set `CRAWLER_SCHEDULER_ENABLED=false` when local work must remain offline.
-Otherwise the launcher enables scheduling when the variable is unset.
-Provider data comes from the backend and approved-source ingestion. API errors
+The API has no crawler scheduler or provider-site fetch.
+Provider data comes from the existing MongoDB dataset. API errors
 never substitute fake providers, jobs, statistics, availability or ETA.
 
 Seed scripts are development tools. The main seed **deletes and replaces**
 selected collections; do not run it against product or production data. Optional
 product-demo fixtures are explicitly demo data. Predefined jobs remain drafts
 awaiting verification, not evidence-backed published vacancies. See
-[backend setup](../backend/README.md) and [crawler](crawler.md).
+[backend setup](../backend/README.md) and [stored data](stored-data.md).
 
 ## Patient journeys
 
@@ -71,8 +70,7 @@ and manage applications/jobs within their scope. Unassigned staff cannot access
 another hospital's records. Ownership requests require manual system-admin review.
 Capability claims never establish current availability by themselves.
 
-System administrators review ownership, jobs, source claims/conflicts, crawler
-state, resources, analytics, audit and safe account/security metadata. Email
+System administrators review ownership, jobs, source claims/conflicts, resources, analytics, audit and safe account/security metadata. Email
 configuration/history/retry and user/session administration are system-admin-only.
 No verification is granted just because data was seeded.
 
@@ -111,5 +109,5 @@ ingestion refinement produces cited review candidates, never automatic facts.
 Automated local tests use isolated accounts/providers/databases and disabled or
 mocked outbound email. Production builds and browser journeys do not prove live
 hospital participation, dispatch, inventory, mailbox receipt, hosted health or
-physical-device accessibility. Known crawler fetch limitations and proposed
+physical-device accessibility. Historical crawler findings and proposed
 research work remain documented; use [Release QA](release-qa.md) before rollout.

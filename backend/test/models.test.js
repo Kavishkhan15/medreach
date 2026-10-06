@@ -10,7 +10,6 @@ import {
   HOSPITAL_TYPES,
   FACILITY_TYPES,
   AVAILABILITY_STATUS,
-  CRAWL_STATUS,
   SOURCE_RELIABILITY,
 } from "../src/config/constants.js";
 import { User } from "../src/models/User.js";
@@ -18,8 +17,6 @@ import { Hospital } from "../src/models/Hospital.js";
 import { HospitalFacility } from "../src/models/HospitalFacility.js";
 import { AvailabilityObservation } from "../src/models/AvailabilityObservation.js";
 import { DataSource } from "../src/models/DataSource.js";
-import { CrawlJob } from "../src/models/CrawlJob.js";
-import { CrawlResult } from "../src/models/CrawlResult.js";
 import { AuditLog } from "../src/models/AuditLog.js";
 
 test("constants: role families are consistent", () => {
@@ -84,17 +81,7 @@ test("DataSource: reliability defaults from type", async () => {
   assert.equal(s.reliability, SOURCE_RELIABILITY.government);
 });
 
-test("CrawlJob: status enum-gated", () => {
-  const j = new CrawlJob({ source: "507f1f77bcf86cd799439011", status: "rate_limited" });
-  assert.equal(j.validateSync(), undefined);
-  assert.ok(CRAWL_STATUS.includes("rate_limited"));
-  const bad = new CrawlJob({ source: "507f1f77bcf86cd799439011", status: "exploded" });
-  assert.ok(bad.validateSync()?.errors?.status);
-});
-
-test("CrawlResult + AuditLog: minimal valid documents", () => {
-  const r = new CrawlResult({ job: "507f1f77bcf86cd799439011", source: "507f1f77bcf86cd799439012" });
-  assert.equal(r.validateSync(), undefined);
+test("AuditLog: minimal valid document", () => {
   const a = new AuditLog({ action: "verify", entityType: "Hospital" });
   assert.equal(a.validateSync(), undefined);
 });

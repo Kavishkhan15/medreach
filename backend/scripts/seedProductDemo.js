@@ -1,4 +1,4 @@
-// Additive, idempotent product demo data. Never resets crawled hospitals or claims.
+// Additive, idempotent product demo data. Never resets stored hospitals or claims.
 // Run explicitly: node backend/scripts/seedProductDemo.js --demo
 import { connectDB, disconnectDB } from "../src/config/db.js";
 import { Hospital } from "../src/models/Hospital.js";

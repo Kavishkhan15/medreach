@@ -103,7 +103,7 @@ describe("Organization Direct Careers & Application System", () => {
         locality: "Parel",
         city: "Mumbai",
         phone: "+91 22 2410 1122",
-        sourceName: "Automated Crawler",
+        sourceName: "Existing Mumbai directory",
         verificationStatus: "verified",
         services: ["Whole Blood", "Platelet Apheresis", "Plasma"],
       });
@@ -115,7 +115,7 @@ describe("Organization Direct Careers & Application System", () => {
         locality: "Andheri East",
         city: "Mumbai",
         phone: "+91 22 2830 3344",
-        sourceName: "Automated Crawler",
+        sourceName: "Existing Mumbai directory",
         verificationStatus: "verified",
         services: ["MRI 3T", "CT Scan", "Pathology"],
       });
@@ -127,7 +127,7 @@ describe("Organization Direct Careers & Application System", () => {
         locality: "Dadar",
         city: "Mumbai",
         phone: "+91 22 2420 5566",
-        sourceName: "Automated Crawler",
+        sourceName: "Existing Mumbai directory",
         verificationStatus: "verified",
         services: ["Advanced Life Support", "Ventilator Ambulance"],
       });

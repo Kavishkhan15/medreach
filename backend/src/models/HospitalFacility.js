@@ -13,8 +13,8 @@ const hospitalFacilitySchema = new mongoose.Schema(
     // of whether it has capacity for a patient right now.
     capability: { type: String, enum: ["yes", "no", "unknown"], default: "unknown" },
     capabilityConflict: { type: Boolean, default: false },
-    // Legacy status retained for old records. New crawler writes keep it unknown;
-    // public availability comes from AvailabilityObservation instead.
+    // Legacy status retained for old records. Static capability evidence alone
+    // does not establish current availability; observations do.
     status: { type: String, enum: AVAILABILITY_STATUS, default: "unknown" },
     count: { type: Number, min: 0, default: null }, // null = quantity unknown/unsupported
     lastUpdated: { type: Date },

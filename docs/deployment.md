@@ -1,12 +1,8 @@
 # Deployment
 
-MedReach has four runtime responsibilities:
-
-1. **Frontend variants** (Next.js — Bootstrap 5 / Tailwind 4 / Skeleton CSS)
-2. **Backend API** (Express + Mongoose)
-3. **MongoDB**
-4. **Crawler execution** — the backend starts its scheduler when enabled;
-   the standalone CLI is separate. Neither runs inside a frontend server.
+MedReach runs three frontend variants, one Express API and the existing MongoDB
+dataset. The API starts no acquisition scheduler or website crawler. Keep the
+provider, job, claim and historical provenance collections intact during deployment.
 
 ## Environment
 
@@ -33,8 +29,6 @@ MedReach has four runtime responsibilities:
 Optional server-side settings:
 
 - `SYSTEM_EMAIL` for operational email routing.
-- `CRAWLER_SCHEDULER_ENABLED`, `CRAWLER_SCHEDULER_TICK_MS` for due-source checks.
-  Do not enable multiple schedulers against one dataset without reviewing overlap.
 - `ROUTING_PROVIDER`, `ROUTING_BASE_URL`, `ROUTING_API_KEY`; unset/`none` leaves
   route duration unknown rather than calculating an invented ETA.
 - `AI_PROVIDER`, `AI_API_KEY`, `AI_MODEL` for the assistant. The default
@@ -72,14 +66,13 @@ npm --workspace @medreach/variant-skeleton  run dev   # :3002
 
 # or start everything
 ./run.sh                    # backend + all three variants
-# For offline local work, set CRAWLER_SCHEDULER_ENABLED=false before launching.
 ```
 
 ## Build & test
 ```bash
 npm ci                      # deterministic install from package-lock.json
 npx playwright install --with-deps chromium
-npm run release:check       # backend/crawler, dependency audit, 3 builds, browser journeys, backup restore, diff check
+npm run release:check       # backend, dependency audit, 3 builds, browser journeys, backup restore, diff check
 ```
 
 Set `MEDREACH_E2E_MONGO_URI`, `MEDREACH_BACKUP_SOURCE_URI`, and `MEDREACH_RESTORE_VERIFY_URI` before invoking the release check. The command stops immediately with the missing variable names instead of omitting browser or recovery verification.
@@ -97,7 +90,8 @@ server; test suites drop their own databases.
 
 Override the hosts with `MEDREACH_BASE_TEST_MONGO_URI`, `MEDREACH_AUTH_TEST_MONGO_URI`, `MEDREACH_PRODUCT_TEST_MONGO_URI`, and `MEDREACH_TEST_MONGO_URI`. The database names must remain exact because the tests drop their databases. The runner also overrides `MONGO_URI` and `MONGODB_URI` so a developer's configured database cannot be used by accident. It fails when a database-gated test is skipped.
 
-The deterministic crawler gate excludes `crawler/tests/live.test.js` and prints that exclusion in its result. Run `npm run crawler:test:live` separately when live checks are authorized. That suite reports each source's `success`, `partial`, `failed`, or `blocked` status; a passing test means the crawler classified the outcome safely, not that every source supplied data. It honors robots, rate limits, and source allowlists. External availability is not a deterministic release gate. The release check does require local Playwright journeys for all three variants.
+The release check runs the backend gate, three frontend builds and Playwright
+journeys. No external provider website is fetched by the application.
 
 For the exact current local counts and offline Maps/mock-SMTP configuration, use
 [Release QA](release-qa.md). Ordinary `npm test` is not the strict database gate.
@@ -112,7 +106,7 @@ For the exact current local counts and offline Maps/mock-SMTP configuration, use
 ## Shutdown and restarts
 
 SIGTERM and SIGINT mark the API unready, stop accepting HTTP connections, drain
-HTTP requests, stop and drain crawler/expiry workers, then disconnect MongoDB.
+HTTP requests, stop and drain the request-expiry worker, then disconnect MongoDB.
 Repeated signals share one shutdown. A 30-second deadline forces exit with status
 1 if work cannot finish; clean shutdown exits with status 0. Configure a host
 termination grace period longer than that deadline. Forced shutdown does not
@@ -185,5 +179,5 @@ See [release QA](release-qa.md) for the separate local, live-integration, and ho
 - Authentication deliberately refuses to authorize users while MongoDB is
   unavailable; `/health/ready` must gate traffic and the UI can retry the outage.
 - See [security verification](security-verification.md). Local audit results do
-  not verify hosted TLS, proxy behavior, secret rotation, mailbox receipt or live
-  crawler sources. No deployment was performed in this pass.
+  not verify hosted TLS, proxy behavior, secret rotation, mailbox receipt or historical
+  provider data. No deployment was performed in this pass.

@@ -6,7 +6,6 @@
   "description": "Controlled testbed for empirically evaluating responsive web design frameworks (Almeida & Sousa 2026 extension).",
   "workspaces": [
     "backend",
-    "crawler",
     "packages/core",
     "variants/bootstrap",
     "variants/tailwind",
@@ -22,18 +21,13 @@
     "bundles": "node evaluation/measure/bundles.mjs",
     "audit:deps": "node evaluation/security/audit.mjs",
     "probe:react": "node probe-react/probe.mjs",
-    "test": "npm run backend:test && npm run crawler:test",
-    "crawler:test": "npm --workspace @medreach/crawler test",
-    "crawler:test:offline": "node scripts/verify-crawler-tests.mjs",
+    "test": "npm run backend:test",
     "test:e2e": "playwright test",
     "release:check": "node scripts/release-check.mjs",
     "verify:mongo-backup": "node scripts/verify-mongo-backup.mjs",
     "eval:performance": "node evaluation/performance/measure.mjs",
     "eval:results": "node evaluation/results/aggregate.mjs",
-    "eval:all": "npm run bundles && npm run audit:deps || true; npm run eval:performance && npm run eval:results",
-    "crawl": "npm --workspace @medreach/crawler run crawl --",
-    "crawl:list": "npm --workspace @medreach/crawler run crawl:list",
-    "crawler:test:live": "npm --workspace @medreach/crawler run test:live"
+    "eval:all": "npm run bundles && npm run audit:deps || true; npm run eval:performance && npm run eval:results"
   },
   "engines": {
     "node": ">=22.19.0"

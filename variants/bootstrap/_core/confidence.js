@@ -26,7 +26,7 @@ export function confidenceLevel({
   const recency = FRESH_SCORE[label] ?? 0;
   if (recency === 0) return "UNKNOWN";
   // Honesty cap: data older than the STALE window is "old" and can never be
-  // reported above LOW, however reliable the source. Mirrors crawler/confidence.
+  // reported above LOW, however reliable the historical source.
   if (label === "OUTDATED") return "LOW";
   // Weighted, deterministic composite in [0,1].
   const score =

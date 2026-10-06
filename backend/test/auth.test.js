@@ -69,13 +69,6 @@ test("conflict evidence is restricted to system admins", async () => {
   assert.equal(res.status, 403);
 });
 
-test("hospital staff cannot run the global crawler", async () => {
-  const token = signMockToken({ _id: "507f1f77bcf86cd799439011", role: "hospital_admin", email: "h@x.io", name: "H" });
-  const res = await request(app).post("/api/crawler/run-all")
-    .set("Authorization", `Bearer ${token}`);
-  assert.equal(res.status, 403);
-});
-
 test("facility claim review validates decisions before touching MongoDB", async () => {
   const token = signMockToken({ _id: "507f1f77bcf86cd799439011", role: "system_admin", email: "a@x.io", name: "A" });
   const res = await request(app)
@@ -85,12 +78,6 @@ test("facility claim review validates decisions before touching MongoDB", async 
   assert.equal(res.status, 400);
 });
 
-test("scheduler control requires runtime configuration before accepting pause", async () => {
-  const token = signMockToken({ _id: "507f1f77bcf86cd799439011", role: "system_admin", email: "a@x.io", name: "A" });
-  const res = await request(app).post("/api/crawler/scheduler")
-    .set("Authorization", `Bearer ${token}`).send({ paused: true });
-  assert.equal(res.status, 409);
-  assert.match(res.body.error, /CRAWLER_SCHEDULER_ENABLED/);
-});
+
 
 test.beforeEach((t) => installAuthMocks(t));

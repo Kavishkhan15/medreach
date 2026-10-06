@@ -16,14 +16,12 @@ and recovery actions instead of fallback providers, jobs or availability.
 
 ## Current verification
 
-Local backend database tests, offline crawler tests, all three production builds,
-browser journeys, the dependency audit and diff check passed. Exact counts,
-scope, commands and remaining live checks are maintained in
-[Release QA](docs/release-qa.md). Local success does not establish hosted
-readiness, inbox receipt, live source availability or remote CI status.
+The application now reads its existing healthcare dataset from MongoDB through
+the shared Express API. Automated crawling and source acquisition have been
+removed. Current verification and limits are tracked in [Release QA](docs/release-qa.md).
 
-Security hardening now covers persisted sessions, public campaign privacy, safe
-resume links, explicit proxy trust and DNS/stream/robots crawler protections.
+Security hardening covers persisted sessions, public campaign privacy, safe
+resume links and explicit proxy trust.
 See [security verification](docs/security-verification.md) for tested scope.
 
 Submission emails now run in batches of up to three independent deliveries per
@@ -55,7 +53,7 @@ measurements use simulated SMTP delays, not production timings.
 - **Assistant:** healthcare chat with real backend results and existing actions.
   SOS is the only bottom floating action button.
 - **Operations:** hospital ownership review, scoped staff, verification/conflicts,
-  crawler/source controls, analytics, audit and email administration.
+  provider and claim review, analytics, audit and email administration.
 
 Google OAuth and the in-app notification inbox/API are intentionally removed.
 All transactional emails and controlled delivery retries remain. `/map` opens
@@ -73,8 +71,7 @@ through **Full Map View →** on the homepage; Map is absent from the top navbar
 | Tests | Node test runner, Supertest, Playwright/Chromium |
 
 ```text
-backend/          API, models, services, workers, tests and migrations
-crawler/          approved-source ingestion and deterministic/live tests
+backend/          API, models, services, tests and migrations
 packages/core/    shared API client, hooks, ranking, location and formatting
 variants/         bootstrap/, tailwind/, skeleton/
 docs/             current guides, release evidence and dated history
@@ -96,7 +93,7 @@ Start MongoDB separately, then from the repository root:
 ```sh
 npm ci
 cp backend/.env.example backend/.env
-# Edit MongoDB, JWT_SECRET, email and crawler settings.
+# Set the URI for the existing MongoDB dataset, JWT_SECRET and email settings.
 ./run.sh                         # API :4000; all three frontends
 # Or choose one:
 ./run.sh bootstrap               # :3000
@@ -104,21 +101,14 @@ cp backend/.env.example backend/.env
 ./run.sh skeleton                # :3002
 ```
 
-Set `CRAWLER_SCHEDULER_ENABLED=false` before launching if local work must avoid
-external crawler requests. The launcher otherwise enables it when unset. The
-worker honors source schedules, access policy and pause controls.
-
-Use the [crawler guide](docs/crawler.md) for approved-source ingestion. Seed/demo
-commands are development tools, not production verification. Seeds do not
-establish current availability or automatically verify predefined jobs. Never
-run database tests against product data. Credentials and real `.env` files stay
-outside Git.
+The API starts without a crawler process. Historical source metadata and claims
+remain in MongoDB. Do not run optional development seed commands against the
+existing dataset: they can replace records. See [stored data](docs/stored-data.md).
 
 ## Verify locally
 
 ```sh
 npm run backend:test:db           # all database suites; fails on skips
-npm run crawler:test:offline      # deterministic; live sources excluded
 NEXT_PUBLIC_API_URL=http://localhost:4000 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY='' npm run build:variants
 npx playwright install --with-deps chromium
 MEDREACH_E2E_MONGO_URI=mongodb://127.0.0.1:27017/medreach_e2e MONGODB_URI=mongodb://127.0.0.1:27017/medreach_e2e AI_PROVIDER=rule_based npm run test:e2e
@@ -137,7 +127,7 @@ Set `NEXT_PUBLIC_API_URL` before building every hosted frontend. Configure Mongo
 `PUBLIC_APP_URL`, exact CORS origins, production cookies and SMTP on the backend.
 Public variables must never contain backend secrets. The assistant defaults to
 a rule-based provider; optional OpenAI/Gemini configuration stays server-side.
-Gemini ingestion refinement is a separate review queue, not automatic publishing.
+Optional Gemini refinement only analyzes already stored evidence and requires admin review.
 
 [Deployment](docs/deployment.md) covers commands, migrations, health, shutdown and
 backup/restore. [Release QA](docs/release-qa.md) distinguishes local evidence,
@@ -153,7 +143,7 @@ live checks and deployment blockers. This documentation does not imply deploymen
 | [Security](docs/security.md) · [Privacy](docs/privacy.md) | Protections and limits |
 | [Services/maps](docs/SERVICES_AND_MAP_GUIDE.md) | Booking, blood and tracking |
 | [Bed lifecycle](docs/bed-request-lifecycle.md) | State transitions and private details |
-| [Crawler](docs/crawler.md) · [Assistant](docs/ai-assistant.md) | Integration contracts |
+| [Stored data](docs/stored-data.md) · [Assistant](docs/ai-assistant.md) | Dataset and assistant contracts |
 | [Deployment](docs/deployment.md) | Production configuration and operations |
 | [Release QA](docs/release-qa.md) · [Parity](docs/PARITY_VERIFICATION.md) | Current evidence and scope |
 | [Latency](docs/latency-verification.md) | Benchmark and concurrency limits |

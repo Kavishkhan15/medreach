@@ -1,6 +1,6 @@
 # MedReach implementation inventory
 
-Current repository state, reviewed 2026-10-03. This is a capability/gap inventory,
+Current repository state, updated 2026-10-06. This is a capability/gap inventory,
 not proof of live deployment or provider participation. [Release QA](release-qa.md)
 is the canonical owner of current test counts, commands and verification limits.
 
@@ -19,24 +19,21 @@ is the canonical owner of current test counts, commands and verification limits.
 | Staff ownership | Evidence submission and manual ownership review before hospital access is assigned |
 | Email | Delivery records, safe failure metadata, eligible encrypted retries, patient status history and bounded submission email concurrency |
 | Dashboard resilience | Independent saved/profile, request and application fetching with targeted retry |
-| Ingestion | Registry-bound adapters, source schedules/pause controls, jobs/results, evidence normalization and blocked-source classification |
-| Operations | Scoped hospital staff, verification/conflicts, source/crawler/resource/job controls, analytics and audit |
+| Existing dataset | MongoDB provider records, source claims, historical observations and provenance remain available through Express APIs; acquisition code has been removed |
+| Operations | Scoped hospital staff, verification/conflicts, claim/resource/job controls, analytics and audit |
 | Shutdown | HTTP and worker drain before MongoDB disconnect, unready state, repeated-signal handling and deadline |
 | Assistant | Compact responsive panel, real backend resource actions, deterministic default and optional server-side providers |
-| QA | Strict database gate, separate offline/live crawler checks, three production builds, browser journeys and backup/restore tooling |
+| QA | Strict database gate, three production builds, browser journeys and backup/restore tooling |
 
 ## Remaining limits
 
 - **Live deployment:** hosted API/public URLs, CORS, cookies, health, `/track`,
-  real SMTP mailbox receipt, permitted live crawling and remote CI require their
+  real SMTP mailbox receipt and remote CI require their
   own verification. Local tests do not prove these integrations.
 - **Care coordination:** requests do not reserve beds, establish blood inventory,
   prove hospital participation or confirm ambulance dispatch.
 - **Evidence:** historical records can lack verbatim excerpts; keyword extraction
   needs human interpretation. Unreviewed conflicts stay visible and unknown.
-- **Crawler fetch hardening:** DNS resolution/pinning, streaming download limits,
-  full-body timeout and some unreadable-robots policy cases remain limitations
-  described in [crawler](crawler.md); offline passes do not remove them.
 - **Recovery:** saved primary state survives secondary failures, but there is no
   transactional outbox replay for an audit/email intent lost before it could be
   stored. The email concurrency cap is per request, not global SMTP rate control.
@@ -46,7 +43,8 @@ is the canonical owner of current test counts, commands and verification limits.
 
 ## Intentional removals and retained behavior
 
-Google OAuth and in-app notifications are removed. Password login and all emails
+Google OAuth, in-app notifications and crawler execution are removed. Existing MongoDB
+provider/provenance documents are retained. Password login and all emails
 remain. Map was removed from the navbar only; `/map`, the homepage Full Map View
 link and integration remain. SOS is the only floating launcher; assistant
 functionality remains through its existing entry actions. Recreating removed

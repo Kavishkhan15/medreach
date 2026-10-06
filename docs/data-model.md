@@ -48,8 +48,8 @@ For an existing database, rerun `npm --workspace @medreach/backend run migrate:a
 - `hospital`, `facility` enum, `capability` (`yes | no | unknown`)
 - `capabilityConflict` records whether non-rejected sources disagree, even when
   a verified claim selects a value.
-- Legacy `status` remains in storage for compatibility but crawler writes keep it
-  `unknown`. It is **not** used as current availability by the public API.
+- Legacy `status` remains in storage for compatibility. It is **not** used as
+  current availability by the public API.
 - `count` is legacy storage; the public API only publishes a quantity from a
   recent, verified `AvailabilityObservation`.
 - `lastUpdated`, `source`, `confidence`
@@ -61,7 +61,8 @@ For an existing database, rerun `npm --workspace @medreach/backend run migrate:a
   source page URL, observed timestamp, confidence, and review status.
 - The resolver keeps unreviewed disagreements as `unknown`. A verified claim
   can select a value while the dispute flag remains; opposed verified claims
-  remain `unknown`. `CrawlResult` retains earlier crawl payloads for history.
+  remain `unknown`. Historical MongoDB result documents retain earlier source
+  payloads for provenance.
 - System administrators review source claims at `/api/admin/facility-claims`;
   the action is audited and recalculates the materialized `HospitalFacility`.
 
@@ -99,24 +100,14 @@ confirm capability but cannot imply current beds. The old hospital-level
 - `reliability` (0..1) defaulted from `type` via `SOURCE_RELIABILITY`
 - `enabled`, `lastSuccessfulFetch`, `lastFailedFetch`
 - `crawlFrequencyMs`, `rateLimitMs`, health/robots status, failure counters,
-  failure reason, admin notes and optional linked hospital; operational
-  configuration does not authorize arbitrary crawler URLs
+  failure reason, admin notes and optional linked hospital. These are historical
+  metadata fields; no runtime worker reads them to fetch sources
 
-### CrawlJob
+### Historical acquisition collections and active conflict models
 
-- `source`, `status` enum: `queued | running | success | partial | failed |
-  blocked | rate_limited | parsing_error`
-- timings, `recordsFound`, `recordsUpdated`, `errorMessages`, `retryCount`
-
-### CrawlResult
-
-- `job`, `source`, `hospital`, `payload`, `rawHash`
-- `valid`, `validationErrors`, `confidence`, `applied`
-
-### CrawlerSetting, DataConflict and HospitalFieldConflict
-
-- `CrawlerSetting` is a unique key/value store for persistent global scheduler
-  settings, including the paused flag.
+- Existing `CrawlJob`, `CrawlResult`, and `CrawlerSetting` documents remain in
+  MongoDB as historical data. The application no longer registers Mongoose
+  models for them, and no scheduler or API reads or writes them.
 - `DataConflict` records facility-capability disagreements with participating
   claims, open/resolved status, selected claim/value, method and history.
 - `HospitalFieldConflict` does the same for directory fields, preserving claim

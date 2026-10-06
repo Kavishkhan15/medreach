@@ -8,7 +8,7 @@ Responses use endpoint-specific envelopes such as `{data}`, `{hospital}`, `{requ
 
 - **Public** routes work without login. **Optional auth** permits no credential, but rejects a presented invalid, expired or revoked credential.
 - **User** routes require a valid account/session. **Hospital staff** operations require assignment to the relevant hospital, not merely an administrator role.
-- Roles are `user`, `hospital_admin`, `system_admin` and legacy `admin`. Global source/crawler operations admit `admin` and `system_admin`; user administration, audit, global claim review and email administration require `system_admin`.
+- Roles are `user`, `hospital_admin`, `system_admin` and legacy `admin`. user administration, audit, global claim review and email administration require `system_admin`.
 - Private guest request access uses `X-MedReach-Tracking-Token`. It is separate from public reference-only status lookup.
 - Bed, blood, ambulance and career submissions accept an optional `Idempotency-Key` (8–200 allowed characters). Keep the same opaque key when retrying one submission, and use a fresh key for a new submission. Replays are ownership checked; conflicts can return 409. Do not expose these keys in logs or public links.
 
@@ -122,14 +122,11 @@ Response: `{record: {reference, status, updatedAt}}`. Invalid formats return 400
 - Data comes from stored providers and composed hospital observations. Provider phrasing failure falls back to rule-based replies; a broader failure returns safe contact actions with `unavailable: true`. [Assistant design](ai-assistant.md).
 - `GET /api/routing/hospital/:id?lat=&lng=` — public; validated origin coordinates and configured routing provider. Missing routing data must not be presented as an invented ETA.
 
-## Administration, sources and crawler
+## Administration and stored evidence
 
 - `/api/hospital-admin/hospitals`, `/ownership-claims` and `/hospitals/:id/facility-claims` — authenticated ownership/assigned-hospital operations.
 - `/api/admin/overview`, `/hospitals/:id/verify` — administrator operations with hospital scope where required.
 - `/api/admin/audit`, `/users[/:id]`, `/ownership-claims`, `/facility-claims`, `/data-conflicts`, `/hospital-field-claims`, `/hospital-field-conflicts` — system administrator only. Review endpoints and user status/role/revocation/recovery actions are audited.
-- `GET/POST /api/sources`, `PATCH /api/sources/:id` — `admin` / `system_admin`; source URLs pass SSRF checks.
-- `/api/crawler/overview`, `/sources`, `/jobs[/:id]`, `/results`, `/data-quality`, `/verification-queue` — `admin` / `system_admin`.
-- `POST /api/crawler/run?sourceId=`, `/run-all`, `/jobs/:id/retry`, `/sources/:sourceKey/reset`, `/scheduler`; `PATCH /sources/:sourceKey` — same global roles; approved registry sources, optional dry-run and bounded operational controls.
 - `/api/admin/refinement/status`, `/candidates`, `/claims/:id`, `/candidates/:id/review` — `admin` / `system_admin`; optional refinement suggestions do not directly change canonical availability.
 - `GET /api/analytics/overview` — `admin` / `system_admin`.
 - `GET /api/alerts` — public infrastructure/public notices; `POST` and `PATCH /:id/deactivate` have administrator checks and scope. These alerts are separate from the removed personal notification inbox.

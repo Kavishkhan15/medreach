@@ -20,9 +20,9 @@ fallback. Bootstrap and Tailwind tracking cards keep their existing behavior.
 In-app notifications and Google OAuth are removed; all transactional emails,
 email delivery history and controlled retries remain supported.
 
-## Verification — 2026-10-03
+## Historical verification — 2026-10-03
 
-All 247 backend tests, 112 offline crawler tests, three production builds and 87
+At that time, 247 backend tests, 112 offline crawler tests, three production builds and 87
 Chromium journeys passed. The browser suite includes the former 66 journeys and
 later regression coverage for failures, responsive navigation, references and
 clipboard denial. No tests in the local backend/browser suites were skipped.

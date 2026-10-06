@@ -70,17 +70,14 @@ test("GET /health → 200 with db field", async () => {
   assert.ok("db" in res.body);
 });
 
-test("GET /api/sources without auth → 401", async () => {
-  assert.equal((await request(app).get("/api/sources")).status, 401);
-});
-
 test("GET /api/admin/overview without auth → 401", async () => {
   assert.equal((await request(app).get("/api/admin/overview")).status, 401);
 });
 
-test("GET /api/crawler/jobs as non-admin → 403", async () => {
-  const res = await request(app).get("/api/crawler/jobs").set("Authorization", `Bearer ${userToken}`);
-  assert.equal(res.status, 403);
+test("crawler and source-control routes are unavailable", async () => {
+  assert.equal((await request(app).post("/api/crawler/run-all")).status, 404);
+  assert.equal((await request(app).get("/api/crawler/jobs")).status, 404);
+  assert.equal((await request(app).get("/api/sources")).status, 404);
 });
 
 test("POST /api/hospitals/x/availability invalid body (admin) → 400", async () => {

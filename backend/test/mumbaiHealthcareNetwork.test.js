@@ -6,52 +6,23 @@ import { createApp } from "../src/app.js";
 import { connectDB, disconnectDB } from "../src/config/db.js";
 import { Hospital } from "../src/models/Hospital.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
-import { DataSource } from "../src/models/DataSource.js";
-import { User } from "../src/models/User.js";
-import { signSessionToken } from "./helpers/session.js";
 import { mumbaiHospitals, mumbaiDiagnosticsAndBloodBanks } from "../src/data/seedData.js";
-import { SOURCES } from "../src/_crawler/registry/sources.js";
 
-const testDbUri = "mongodb://127.0.0.1:27017/medreach_mumbai_network_test";
+const testDbUri = process.env.MEDREACH_MUMBAI_TEST_MONGO_URI;
+const isolated = Boolean(testDbUri && /\/medreach_mumbai_network_test(?:\?|$)/.test(testDbUri));
 
-test("Mumbai Healthcare and Diagnostic Network Test Suite", async (t) => {
+test("Mumbai Healthcare and Diagnostic Network Test Suite", { skip: !isolated }, async (t) => {
   let app;
-  let adminToken;
 
   t.before(async () => {
     await connectDB(testDbUri);
     await mongoose.connection.dropDatabase();
     app = createApp();
 
-    const adminUser = await User.create({
-      name: "Mumbai Admin",
-      email: "mumbai.admin@medreach.test",
-      role: "admin",
-    });
-    adminToken = await signSessionToken(adminUser);
-
     // Populate hospitals and diagnostic resources
     await Hospital.insertMany(mumbaiHospitals);
     await ResourceProvider.insertMany(mumbaiDiagnosticsAndBloodBanks);
 
-    // Populate data sources
-    for (const s of SOURCES) {
-      await DataSource.findOneAndUpdate(
-        { sourceKey: s.sourceId },
-        {
-          $set: {
-            sourceKey: s.sourceId,
-            name: s.name,
-            type: s.sourceType,
-            url: s.baseUrl,
-            accessMethod: "http_html",
-            reliability: s.reliability,
-            enabled: s.enabled,
-          },
-        },
-        { upsert: true, new: true, setDefaultsOnInsert: true }
-      );
-    }
   });
 
   t.after(async () => {
@@ -149,20 +120,4 @@ test("Mumbai Healthcare and Diagnostic Network Test Suite", async (t) => {
     }
   });
 
-  await t.test("GET /api/sources returns newly registered crawler sources with admin token", async () => {
-    const res = await request(app)
-      .get("/api/sources")
-      .set("Authorization", `Bearer ${adminToken}`);
-    assert.equal(res.status, 200);
-    const sources = res.body.data || res.body;
-    const sourceKeys = (Array.isArray(sources) ? sources : sources.sources || []).map((s) => s.sourceKey);
-
-    assert.ok(sourceKeys.includes("kem_mumbai"), "kem_mumbai source registered");
-    assert.ok(sourceKeys.includes("sion_hospital"), "sion_hospital source registered");
-    assert.ok(sourceKeys.includes("tata_memorial"), "tata_memorial source registered");
-    assert.ok(sourceKeys.includes("nanavati_max"), "nanavati_max source registered");
-    assert.ok(sourceKeys.includes("suburban_diagnostics"), "suburban_diagnostics source registered");
-    assert.ok(sourceKeys.includes("metropolis_labs"), "metropolis_labs source registered");
-    assert.ok(sourceKeys.includes("nm_medical"), "nm_medical source registered");
-  });
 });

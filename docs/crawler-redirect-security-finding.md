@@ -1,3 +1,6 @@
+> Historical record: describes the removed acquisition system as it existed
+> before 2026-10-06. See [stored data](stored-data.md) for the current architecture.
+
 # Crawler redirect crosses the approved-source boundary
 
 ## Security fix update — 2026-10-03
@@ -7,7 +10,7 @@ superseded by tested fixes in both crawler copies. Actual connections pin public
 DNS answers, bodies stream under a byte cap, and the timeout includes DNS and
 body reads. Unreadable robots policies deny crawling; only genuine HTTP 404/410
 permits a missing policy. Legacy feeds now check robots on initial/redirect URLs.
-See [security verification](security-verification.md) and [current crawler](crawler.md).
+See [security verification](security-verification.md) and [current crawler](stored-data.md).
 The dated audit evidence below is preserved as history.
 
 
@@ -26,7 +29,7 @@ buffered before length validation and the fetch timeout stops at headers. These
 are separate remaining limitations, not resolved redirect findings.
 
 No external site was contacted for this correction. For current implementation
-and executed local verification, see [crawler](crawler.md) and
+and executed local verification, see [crawler](stored-data.md) and
 [Release QA](release-qa.md). Read the following “remaining legacy path” section
 as the original audit's finding, rather than a claim that its redirect gap is
 still open today.

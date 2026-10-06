@@ -35,7 +35,7 @@ export default function AdminVerificationPage() {
   const { data, loading } = useHospitals({}, { sort: "updated" });
   const queue = data.filter((h) => h.verificationStatus !== "verified");
   return (
-    <AdminGuard title="Verification queue" subtitle="Review crawler-discovered data before it is trusted. Every override is audit-logged.">
+    <AdminGuard title="Verification queue" subtitle="Review stored provider data before it is trusted. Every override is audit-logged.">
       <div className={surface}>
         {loading ? <p className="text-[var(--color-muted)]">Loading…</p> : queue.length === 0 ? (
           <p className="mb-0 text-[var(--color-muted)]">Nothing awaiting verification.</p>

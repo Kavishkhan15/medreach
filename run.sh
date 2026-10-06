@@ -92,7 +92,6 @@ echo -e "  Backend      → ${YELLOW}http://localhost:4000${NC}"
 
 # Start backend
 cd "$ROOT/backend"
-export CRAWLER_SCHEDULER_ENABLED="${CRAWLER_SCHEDULER_ENABLED:-true}"
 npm run dev &
 pids+=($!)
 

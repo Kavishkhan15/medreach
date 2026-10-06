@@ -10,11 +10,7 @@ import { Job } from "../src/models/Job.js";
 import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { EmailDelivery } from "../src/models/EmailDelivery.js";
 import { AuditLog } from "../src/models/AuditLog.js";
-import { DataSource } from "../src/models/DataSource.js";
 import { DataConflict } from "../src/models/DataConflict.js";
-import { CrawlerSetting } from "../src/models/CrawlerSetting.js";
-import { tickCrawlerScheduler } from "../src/services/crawlerScheduler.js";
-import { runOne } from "../src/controllers/crawlerController.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
 import { expireEmergencyRequests } from "../src/services/emergencyRequestExpiry.js";
 import { signSessionToken } from "./helpers/session.js";
@@ -169,18 +165,6 @@ test("product workflow: register, ownership, request response, emails, jobs, res
     assert.equal(analytics.status, 200); assert.equal(analytics.body.hospitals.total, 2);
     assert.equal(await AuditLog.countDocuments({ entityType: "EmergencyRequest" }) >= 3, true);
     assert.equal(await Job.countDocuments(), 1); assert.equal(await ResourceProvider.countDocuments(), 3);
-    await DataSource.create({ name: "Blocked test source", sourceKey: "fortis", type: "hospital_site", enabled: true, healthStatus: "blocked" });
-    const registryBlockedSource = await DataSource.create({ name: "Registry blocked test source", sourceKey: "apollo_mumbai", type: "hospital_site", enabled: true, healthStatus: "error" });
-    const blockedRun = await runOne(registryBlockedSource);
-    assert.equal(blockedRun.job.status, "blocked");
-    assert.equal((await DataSource.findById(registryBlockedSource._id)).healthStatus, "blocked");
-    const cannotEnableBlocked = await request(app).patch("/api/crawler/sources/apollo_mumbai")
-      .set("Authorization", `Bearer ${adminToken}`).send({ enabled: true });
-    assert.equal(cannotEnableBlocked.status, 409);
-    const scheduler = await tickCrawlerScheduler();
-    assert.deepEqual(scheduler.attempted, []); // blocked source generates no network work
-    await CrawlerSetting.create({ key: "schedulerPaused", value: true });
-    assert.equal((await tickCrawlerScheduler()).skipped, "paused");
     const expiring = await EmergencyRequest.create({ requestId: "MR-EXPIRY-TEST", user: user._id,
       hospital: hospital._id, emergencyType: "general", requiredFacility: "Emergency Department",
       contactPhone: "9999999999", status: "REQUESTED", expiresAt: new Date(Date.now() - 60000),

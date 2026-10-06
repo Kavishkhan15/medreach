@@ -109,20 +109,6 @@ export const adminSetUserRole = (id, role) => req(`/api/admin/users/${id}/role`,
 export const adminRevokeUserSessions = (id) => req(`/api/admin/users/${id}/revoke-sessions`, { method: "POST" });
 export const adminTriggerUserReset = (id) => req(`/api/admin/users/${id}/trigger-reset`, { method: "POST" });
 export const adminResendUserVerification = (id) => req(`/api/admin/users/${id}/resend-verification`, { method: "POST" });
-export const listSources = () => req(`/api/sources`);
-export const createSource = (body) => req(`/api/sources`, { method: "POST", body: JSON.stringify(body) });
-export const listCrawlerJobs = (params = {}) =>
-  req(`/api/crawler/jobs?${new URLSearchParams(clean(params))}`);
-export const runCrawl = (sourceId, { dryRun } = {}) =>
-  req(`/api/crawler/run?${new URLSearchParams(clean({ sourceId, dryRun }))}`, { method: "POST" });
-
-// --- Crawler admin dashboard (registry-approved sources only) ---
-export const crawlerOverview = () => req(`/api/crawler/overview`);
-export const crawlerSources = () => req(`/api/crawler/sources`);
-export const crawlerJob = (id) => req(`/api/crawler/jobs/${id}`);
-export const crawlerResults = () => req(`/api/crawler/results`);
-export const crawlerDataQuality = () => req(`/api/crawler/data-quality`);
-export const crawlerVerificationQueue = () => req(`/api/crawler/verification-queue`);
 export const facilityClaims = () => req(`/api/admin/facility-claims`);
 export const dataConflicts = (status = "all") =>
   req(`/api/admin/data-conflicts?${new URLSearchParams({ status })}`);
@@ -132,16 +118,6 @@ export const hospitalFieldClaims = () => req(`/api/admin/hospital-field-claims`)
 export const hospitalFieldConflicts = () => req(`/api/admin/hospital-field-conflicts`);
 export const reviewHospitalFieldClaim = (id, decision) =>
   req(`/api/admin/hospital-field-claims/${id}/review`, { method: "POST", body: JSON.stringify({ decision }) });
-export const crawlerRunAll = ({ dryRun } = {}) =>
-  req(`/api/crawler/run-all?${new URLSearchParams(clean({ dryRun }))}`, { method: "POST" });
-export const crawlerUpdateSource = (sourceKey, body) =>
-  req(`/api/crawler/sources/${sourceKey}`, { method: "PATCH", body: JSON.stringify(clean(body)) });
-export const crawlerResetSource = (sourceKey) =>
-  req(`/api/crawler/sources/${sourceKey}/reset`, { method: "POST" });
-export const crawlerRetryJob = (id) => req(`/api/crawler/jobs/${id}/retry`, { method: "POST" });
-export const crawlerSetScheduler = (paused) =>
-  req(`/api/crawler/scheduler`, { method: "POST", body: JSON.stringify({ paused }) });
-
 // AI Assistant — public, rate-limited. Never sends precise location unless the
 // caller explicitly passes origin (from useLocation, which never persists it).
 export const sendAssistantMessage = (message, { locality, origin } = {}) =>

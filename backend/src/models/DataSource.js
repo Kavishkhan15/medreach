@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
 import { SOURCE_TYPES, ACCESS_METHODS, SOURCE_RELIABILITY } from "../config/constants.js";
 
-// The approved registry of external sources. The crawler will ONLY fetch URLs
-// that resolve from an enabled DataSource here — never arbitrary user input.
+// Historical and manually asserted source metadata retained for provenance.
+// No application route or worker fetches these URLs.
 const dataSourceSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 160 },
-    // Stable string id matching crawler/src/registry/sources.js sourceId
-    // (e.g. "lilavati"). Optional — only hospital-site crawler sources set it.
+    // Historical source identifier retained for existing records.
     sourceKey: { type: String, trim: true, index: true, sparse: true, unique: true },
     type: { type: String, enum: SOURCE_TYPES, required: true },
     url: { type: String, trim: true },
@@ -15,12 +14,10 @@ const dataSourceSchema = new mongoose.Schema(
     // 0..1; defaults from SOURCE_RELIABILITY by type but can be overridden per source.
     reliability: { type: Number, min: 0, max: 1 },
     enabled: { type: Boolean, default: true },
-    // Admin-controllable operational config (overrides registry defaults).
-    // The registry stays the source of truth for URL/paths/adapter (security:
-    // never crawl arbitrary URLs); only these operational knobs are editable.
-    crawlFrequencyMs: { type: Number, min: 60000 }, // >= 1 min; never seconds
-    rateLimitMs: { type: Number, min: 1000 }, // min interval between requests
-    // Health/standing of the source, surfaced in the admin dashboard.
+    // Historical execution metadata. Kept so existing documents deserialize
+    // without losing their recorded provenance; it has no runtime effect.
+    crawlFrequencyMs: { type: Number, min: 60000 },
+    rateLimitMs: { type: Number, min: 1000 },
     healthStatus: {
       type: String,
       enum: ["healthy", "warning", "stale", "blocked", "error", "disabled", "unknown"],

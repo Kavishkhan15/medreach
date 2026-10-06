@@ -361,7 +361,7 @@ export default function Careers() {
             <EmergencyIcon name="building" size={16} className="text-dark me-1" /> <strong>{apiStats.totalOrganizations}</strong> Total Organizations
           </span>
           <span className="badge bg-light text-success border border-success-subtle px-3 py-2 rounded-pill">
-            <EmergencyIcon name="check" size={14} className="text-success me-1" /> Populated from Crawled & Verified Healthcare Data
+            <EmergencyIcon name="check" size={14} className="text-success me-1" /> Healthcare opportunities from stored provider records
           </span>
         </div>
       </header>

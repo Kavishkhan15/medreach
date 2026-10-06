@@ -84,7 +84,7 @@ The earlier 16-week team schedule was a planning estimate. It does not establish
 
 ## 10. Controlled security demonstrations
 
-Any proposed CSS exfiltration or build-tool demonstration must use owned isolated instances, synthetic inputs and a documented approved scope. Do not bypass crawler robots/access restrictions, introduce malicious dependencies into product builds, or characterize known techniques as novel. Version-specific historical comparisons require their own retained evidence.
+Any proposed CSS exfiltration or build-tool demonstration must use owned isolated instances, synthetic inputs and a documented approved scope. Do not introduce malicious dependencies into product builds or characterize known techniques as novel. Version-specific historical comparisons require their own retained evidence. MedReach's current application does not crawl external sites.
 
 ## 11. Paper and threats to validity
 

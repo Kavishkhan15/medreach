@@ -76,8 +76,6 @@ export const env = {
   routingProvider: process.env.ROUTING_PROVIDER ?? "none",
   routingBaseUrl: process.env.ROUTING_BASE_URL ?? "",
   routingApiKey: process.env.ROUTING_API_KEY ?? "",
-  schedulerEnabled: process.env.CRAWLER_SCHEDULER_ENABLED === "true",
-  schedulerTickMs: Number(process.env.CRAWLER_SCHEDULER_TICK_MS ?? 180000),
   geminiRefinementEnabled: process.env.GEMINI_ENABLED === "true",
   geminiRefinementModel: process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
   geminiRefinementApiKey: process.env.GEMINI_API_KEY ?? "",

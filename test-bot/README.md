@@ -35,6 +35,6 @@ messages to that provider; use `AI_PROVIDER=rule_based` for deterministic local
 verification.
 
 See [assistant implementation](../docs/ai-assistant.md) for all supported domains
-and [Release QA](../docs/release-qa.md) for backend, crawler, browser and build
+and [Release QA](../docs/release-qa.md) for backend, browser and build
 coverage. No new manual or live-provider run was performed for this documentation
 update (2026-10-03).

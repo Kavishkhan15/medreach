@@ -111,8 +111,8 @@ failures return the unavailable state with emergency contact actions; backend
 network failures also produce an unavailable UI instead of hiding emergency
 contacts.
 
-These settings are separate from optional crawler refinement
-`GEMINI_ENABLED`/`GEMINI_API_KEY`/`GEMINI_MODEL`; see [crawler](crawler.md).
+These settings are separate from optional stored-evidence refinement
+`GEMINI_ENABLED`/`GEMINI_API_KEY`/`GEMINI_MODEL`; see [stored data](stored-data.md).
 
 ## API and security
 

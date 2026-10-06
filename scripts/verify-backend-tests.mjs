@@ -5,6 +5,7 @@ const databaseConfig = [
   ["MEDREACH_AUTH_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_auth_test", "medreach_auth_test"],
   ["MEDREACH_PRODUCT_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_product_integration", "medreach_product_integration"],
   ["MEDREACH_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_fusion_integration", "medreach_fusion_integration"],
+  ["MEDREACH_MUMBAI_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_mumbai_network_test", "medreach_mumbai_network_test"],
 ];
 
 function databaseName(uri, variable) {

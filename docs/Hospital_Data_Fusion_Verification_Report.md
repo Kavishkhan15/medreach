@@ -1,3 +1,6 @@
+> Historical record: describes the removed acquisition system as it existed
+> before 2026-10-06. See [stored data](stored-data.md) for the current architecture.
+
 # Hospital Data Fusion & Verification — evidence report
 
 ## Current status note — 2026-10-03
@@ -22,7 +25,7 @@ Provenance and verification safeguards remain requirements: seeded/crawled
 records do not automatically become verified, static capability does not prove
 available beds, missing evidence is not reconstructed, and conflicts require
 review. Optional Gemini refinement creates evidence-bound review candidates; its
-approval alone does not change canonical claims. See [crawler](crawler.md).
+approval alone does not change canonical claims. See [crawler](stored-data.md).
 No live provider, production deployment or new MongoDB dataset audit is claimed
 by this status note. Historical counts must not be used as current statistics.
 
