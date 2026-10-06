@@ -20,7 +20,9 @@ export const env = {
   nodeEnv: process.env.NODE_ENV ?? "development",
   port: Number(process.env.PORT ?? 4000),
   trustProxy: parseTrustProxy(process.env.TRUST_PROXY),
-  mongoUri: process.env.MONGODB_URI ?? process.env.MONGO_URI ?? (process.env.NODE_ENV === "test" ? "mongodb://127.0.0.1:27017/medreach_test" : "mongodb://127.0.0.1:27017/medreach"),
+  mongoUri: process.env.MONGODB_URI ?? process.env.MONGO_URI ??
+    (process.env.NODE_ENV === "production" ? required("MONGODB_URI") :
+      process.env.NODE_ENV === "test" ? "mongodb://127.0.0.1:27017/medreach_test" : "mongodb://127.0.0.1:27017/medreach"),
   // In test/dev we fall back to a dev secret; production MUST set its own.
   jwtSecret:
     process.env.JWT_SECRET ??

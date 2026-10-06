@@ -10,7 +10,7 @@ const app = createApp();
 connectDB()
   .then(() => {
     startEmergencyRequestExpiryWorker();
-    const server = app.listen(env.port, () =>
+    const server = app.listen(env.port, "0.0.0.0", () =>
       console.log(`[medreach] API listening on :${env.port} (${env.nodeEnv})`)
     );
     registerGracefulShutdown({ server, onStart: () => { app.locals.shuttingDown = true; },
