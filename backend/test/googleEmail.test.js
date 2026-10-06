@@ -9,7 +9,7 @@ import {
   setEmailTransportFactoryForTests,
 } from "../src/services/emailService.js";
 
-const testDbUri = "mongodb://127.0.0.1:27017/medreach_google_email_test";
+const testDbUri = process.env.MEDREACH_EMAIL_TEST_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_google_email_test";
 
 test("Google / Gmail SMTP email authentication and delivery test suite", async (t) => {
   const originalEnv = {

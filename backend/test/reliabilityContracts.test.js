@@ -24,7 +24,7 @@ import { setEmailTransportFactoryForTests, sendEmailEvent } from "../src/service
 import { sendUserEmailSafely } from "../src/services/userEmailService.js";
 import { signSessionToken } from "./helpers/session.js";
 
-const uri = "mongodb://127.0.0.1:27017/medreach_reliability_contracts_test";
+const uri = process.env.MEDREACH_RELIABILITY_TEST_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_reliability_contracts_test";
 
 test("backend reliability contracts", async (t) => {
   const app = createApp();

@@ -1,6 +1,11 @@
 import { spawn } from "node:child_process";
 
 const databaseConfig = [
+  ["MEDREACH_RELIABILITY_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_reliability_contracts_test", "medreach_reliability_contracts_test"],
+  ["MEDREACH_WORKFLOW_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_workflow_verification", "medreach_workflow_verification"],
+  ["MEDREACH_GUEST_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_emergency_guest_test", "medreach_emergency_guest_test"],
+  ["MEDREACH_EMAIL_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_google_email_test", "medreach_google_email_test"],
+  ["MEDREACH_CAREERS_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_careers_test", "medreach_careers_test"],
   ["MEDREACH_BASE_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_test", "medreach_test"],
   ["MEDREACH_AUTH_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_auth_test", "medreach_auth_test"],
   ["MEDREACH_PRODUCT_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_product_integration", "medreach_product_integration"],

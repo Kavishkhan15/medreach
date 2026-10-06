@@ -21,7 +21,7 @@ import { validateRegister, validateLogin, sanitizeText, isEmail, minLen, nonEmpt
 import { distanceKm, localityToCoords } from "../../packages/core/src/location.js";
 import { scoreHospital, rankHospitals } from "../../packages/core/src/ranking.js";
 
-const uri = "mongodb://127.0.0.1:27017/medreach_workflow_verification";
+const uri = process.env.MEDREACH_WORKFLOW_TEST_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_workflow_verification";
 
 test("MedReach Workflows Verification Suite", async (t) => {
   await connectDB(uri);

@@ -9,7 +9,7 @@ import { User } from "../src/models/User.js";
 import { EmergencyRequest } from "../src/models/EmergencyRequest.js";
 import { signSessionToken } from "./helpers/session.js";
 
-const testDbUri = "mongodb://127.0.0.1:27017/medreach_emergency_guest_test";
+const testDbUri = process.env.MEDREACH_GUEST_TEST_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_emergency_guest_test";
 
 test("Emergency Guest Workflow & Authentication Boundary Test Suite", async (t) => {
   let app;

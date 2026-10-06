@@ -10,7 +10,7 @@ import { Job } from "../src/models/Job.js";
 import { JobApplication } from "../src/models/JobApplication.js";
 import { signSessionToken } from "./helpers/session.js";
 
-const testDbUri = "mongodb://127.0.0.1:27017/medreach_careers_test";
+const testDbUri = process.env.MEDREACH_CAREERS_TEST_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_careers_test";
 
 test("Careers Resume & Statement of Purpose (SOP) application test suite", async (t) => {
   let app;
