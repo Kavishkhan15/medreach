@@ -20,6 +20,7 @@ out/
 build/
 dist/
 .vercel/
+.migration-backups/
 
 # Evaluation raw outputs (can be large / regenerated)
 data/raw/

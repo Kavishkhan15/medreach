@@ -12,6 +12,7 @@
     "variants/skeleton"
   ],
   "scripts": {
+    "migrate:atlas": "node scripts/migrate-to-atlas.mjs",
     "backend:dev": "npm --workspace @medreach/backend run dev",
     "backend:seed": "npm --workspace @medreach/backend run seed",
     "backend:test": "npm --workspace @medreach/backend test",
