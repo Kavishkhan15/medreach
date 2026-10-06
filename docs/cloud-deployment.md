@@ -22,8 +22,11 @@ IPs on its Pro plan; allowlist the assigned addresses if using that feature.
 Without stable egress, review the Atlas network policy needed for your Railway
 plan before launching. Keep credentials in private environment variables.
 
-The application dataset currently lives in local MongoDB. Copy it rather than
-seeding a replacement:
+The existing dataset was copied from local MongoDB to Atlas on October 7, 2026.
+All 30 collections and 2,711 documents matched by count, BSON content and index
+definitions at migration. The local source and private backup were preserved.
+Do not rerun migration against the populated Atlas database. For a future move
+to an empty database, copy the dataset rather than seeding a replacement:
 
 1. Install MongoDB Database Tools (`mongodump` and `mongorestore`).
 2. Stop application writes and the old API's expiry worker during migration.
@@ -47,14 +50,22 @@ and must be kept private.
 
 Create one backend service from this repository. Railway's monorepo import may
 suggest other services; only the backend belongs on Railway in this architecture.
+The production project currently contains one service, `medreach`. Do not create
+services for `@medreach/core` or the frontend workspaces: core is a library and
+the frontends deploy independently on Vercel.
+
+Configure new services through the dashboard. Railway currently deprecates
+`railway.json` configuration and documents compatibility for legacy services
+until December 1, 2026. `backend/railway.json` remains a legacy reference; do not
+depend on it being applied to a new service.
 
 | Setting | Value |
 | --- | --- |
 | Root directory | `/` (repository root, preserving workspace lockfile) |
-| Config file | `/backend/railway.json` |
 | Builder | Railpack |
 | Node version variable | `RAILPACK_NODE_VERSION=24` |
 | Start command | `node backend/src/server.js` |
+| Custom build command | Empty; Express needs no compilation |
 | Health check | `/health/ready` |
 | Replicas | `1` |
 | Sleep/serverless | Disabled |
@@ -73,8 +84,8 @@ Set these Railway variables:
 | `NODE_ENV` | `production` |
 | `MONGODB_URI` | Verified Atlas application database URI |
 | `JWT_SECRET` | Existing secret; preserve it to retain sessions and encrypted email retry envelopes |
-| `PUBLIC_APP_URL` | New Bootstrap project's HTTPS origin assigned by Vercel |
-| `CORS_ORIGINS` | Exact HTTPS origins of the new Bootstrap project and any deployed Tailwind/Skeleton projects |
+| `PUBLIC_APP_URL` | `https://medreach-three.vercel.app` |
+| `CORS_ORIGINS` | `https://medreach-three.vercel.app`; add exact Tailwind/Skeleton origins when deployed |
 | `COOKIE_SAME_SITE` | `none` for separate Vercel/Railway sites |
 | `TRUST_PROXY` | `1` only when every request follows one trusted ingress hop; verify the actual proxy boundary |
 | `EMAIL_ENABLED` | `true` with working existing SMTP settings |
@@ -83,6 +94,10 @@ Railway supplies `PORT`; the API listens on that port at `0.0.0.0`.
 Keep the existing `SMTP_*` variables, routing settings, and optional assistant
 settings. Readiness checks MongoDB, not SMTP or Maps. Verify Railway SMTP egress
 and actual mailbox receipt before treating email delivery as working.
+Railway currently permits SMTP only on Pro and above. The current Trial plan
+requires an HTTPS email provider, which has not been implemented. Keep email
+delivery classified as pending; API readiness does not verify email-dependent
+flows. Disabling email records delivery intent without sending mail.
 
 The request-expiry worker runs every minute in this process. Keep sleep disabled
 so it runs between web requests. Existing email retry/admin flows stay available;
@@ -98,8 +113,9 @@ email/audit delivery; inspect stored delivery records after a restart.
 
 ## 3. Create and connect Vercel
 
-The previous Bootstrap deployment was deleted. Create a new Vercel project by
-importing `kasim672/medreach`, selecting Next.js and root `variants/bootstrap`.
+Bootstrap is deployed at `https://medreach-three.vercel.app`, with the API at
+`https://medreach-production.up.railway.app`. For a new Vercel project, import
+`kasim672/medreach`, selecting Next.js and root `variants/bootstrap`.
 Use Node.js 24, build command `npm run build`, and automatic install/output
 settings. Enable source files outside the root directory for the workspace.
 Record the newly assigned HTTPS production origin for Railway's `PUBLIC_APP_URL`
@@ -109,6 +125,10 @@ and `CORS_ORIGINS`. Set the frontend build environment:
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: existing Maps JavaScript API key with
   referrer restrictions covering the frontend origins.
 - `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`: retain the existing value if configured.
+
+Vercel's Config variable type is appropriate for the `NEXT_PUBLIC_*` values,
+which are embedded in browser bundles. Restrict the Maps key by website origin
+and API in Google Cloud; storing it as a Secret does not make browser use private.
 
 Next.js embeds `NEXT_PUBLIC_API_URL` at build time. Changing it requires a new
 build; leaving it unset makes the deployed browser call `http://localhost:4000`.
@@ -130,6 +150,13 @@ and API is the more reliable long-term deployment; test the actual target browse
 before launch. Do not place database or SMTP credentials in `NEXT_PUBLIC_*` values.
 
 ## 4. Verify and launch
+
+GitHub Actions currently defines nine checks. Deployment integrations add their
+own statuses. Failed or cancelled statuses from deleted Railway services remain
+on earlier commits; they are historical results, not additional test failures.
+Keep deployment sources limited to the intended services and verify both Actions
+and active host deployments on new commits. Do not rewrite history or fabricate
+successful statuses to hide earlier failures.
 
 Before switching traffic, verify:
 

@@ -1,5 +1,30 @@
 # Release QA
 
+## Hosted deployment checks — October 7, 2026
+
+- Bootstrap: `https://medreach-three.vercel.app`.
+- Express API: `https://medreach-production.up.railway.app`.
+- Atlas migration verified 30 collections and 2,711 documents, including BSON
+  content and indexes. Local MongoDB and the private archive were preserved.
+- Railway readiness returns 200 with MongoDB connected. Public hospital, blood
+  bank, diagnostic, ambulance and job APIs return stored data. CORS permits the
+  Bootstrap production origin.
+- Read-only browser checks verified directory search, category filters, provider
+  selection, primary route loading, mobile menu behavior and login visibility
+  on scroll. No runtime errors or unexpected failed responses were observed.
+- Interactive Maps showed its fallback at the last browser check. Maps setup
+  and a subsequent live verification remain pending.
+- Production sign-in, request/application submission and email delivery have
+  not been verified end to end. Trial-plan SMTP is blocked by Railway; an HTTPS
+  email integration remains necessary for that plan.
+- All nine Actions checks passed on `901b7e2`. The two vulnerable dependencies
+  were patched in `ada1af1`; the security gate reported zero vulnerabilities.
+- Only the successful `medreach` service remains in Railway. Earlier failures
+  for auto-imported workspaces remain attached to their original commit and do
+  not imply current Actions failures. See [cloud deployment](cloud-deployment.md).
+
+The following sections record earlier local verification at their stated dates.
+
 ## Vercel + Railway + Atlas preparation — 2026-10-07
 
 The selected architecture uses independent Vercel frontends, the persistent
