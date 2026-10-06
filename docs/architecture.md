@@ -1,6 +1,6 @@
 # MedReach architecture
 
-Updated 2026-10-06. See [implementation inventory](MedReach_Implementation_Inventory.md)
+Updated 2026-10-07. See [implementation inventory](MedReach_Implementation_Inventory.md)
 and [release QA](release-qa.md) for capability and verification status.
 
 ```text
@@ -24,9 +24,19 @@ a MongoDB connection. Public provider APIs query stored `Hospital`,
 `ResourceProvider`, `Job` and related models. Requests, tracking, authentication,
 email and staff/admin workflows continue through their existing routes.
 
+The selected cloud architecture is Vercel for the three independent Next.js
+frontends, Railway for the persistent Express API, and MongoDB Atlas for a
+verified copy of the existing dataset. Railway runs `backend/src/server.js`
+and its one-minute request-expiry worker. Sleep is disabled and the deployment
+uses one replica because rate limits are currently held in process memory.
+Production reuses a bounded MongoDB connection pool and disables automatic
+collection/index creation. Atlas provisioning and cloud cutover remain pending.
+See [cloud setup](cloud-deployment.md).
+
 Claims and conflicts remain reviewable. `DataSource`, `FacilitySourceClaim`,
-`HospitalFieldClaim`, `AvailabilityObservation`, `CrawlJob` and `CrawlResult`
-schemas preserve historical evidence. No public availability is inferred from
+`HospitalFieldClaim` and `AvailabilityObservation` models preserve evidence;
+historical crawl collections remain stored without executable acquisition code.
+No public availability is inferred from
 static facility capability: only eligible recent verified observations can
 establish a current status. Optional Gemini refinement uses already stored
 excerpts and requires human review; it does not fetch provider websites.

@@ -4,6 +4,8 @@
 
 <h1 align="center">MedReach</h1>
 
+**Cloud deployment:** [Vercel frontends + Railway API + MongoDB Atlas](docs/cloud-deployment.md), including a verified copy of the existing dataset.
+
 Healthcare discovery and request coordination for Mumbai. Bootstrap, Tailwind
 and Skeleton are active frontends for one Express/MongoDB backend. Bootstrap is
 the functional reference; each variant keeps its own design system.

@@ -1,6 +1,6 @@
 # MedReach implementation inventory
 
-Current repository state, updated 2026-10-06. This is a capability/gap inventory,
+Current repository state, updated 2026-10-07. This is a capability/gap inventory,
 not proof of live deployment or provider participation. [Release QA](release-qa.md)
 is the canonical owner of current test counts, commands and verification limits.
 
@@ -24,6 +24,7 @@ is the canonical owner of current test counts, commands and verification limits.
 | Shutdown | HTTP and worker drain before MongoDB disconnect, unready state, repeated-signal handling and deadline |
 | Assistant | Compact responsive panel, real backend resource actions, deterministic default and optional server-side providers |
 | QA | Strict database gate, three production builds, browser journeys and backup/restore tooling |
+| Cloud deployment preparation | Vercel frontends, always-running Railway Express API with request-expiry worker, bounded Atlas connection pool and verified database-copy tooling; [cloud setup](cloud-deployment.md) still required |
 
 ## Remaining limits
 

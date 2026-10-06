@@ -1,5 +1,39 @@
 # Release QA
 
+## Vercel + Railway + Atlas preparation — 2026-10-07
+
+The selected architecture uses independent Vercel frontends, the persistent
+Express API on Railway, and a verified copy of the existing MongoDB dataset on
+Atlas. The unshipped Vercel backend function, external cron, temporary upload
+transport and their dedicated tests were removed. The existing server's
+request-expiry worker and original application/email flows remain.
+
+| Check | Result |
+| --- | --- |
+| Backend database gate | 281 passed, 0 failed, 0 skipped; all ten database gates pointed to an isolated MongoDB instance on port 27028 |
+| Production builds | Bootstrap, Tailwind and Skeleton passed |
+| Browser journeys | 123 passed, 0 failed; 24 pre-existing Bootstrap-only cases skipped in Tailwind/Skeleton |
+| Resume payload | Existing 4 MiB PDF upload/submission and stored base64 content passed in all three variants |
+| Railway configuration | Validated against Railway's published JSON schema; Railpack, repository-root start command, one replica, sleep disabled, readiness and 35-second drain |
+| Dependency installation | Backend-only production workspace install succeeded in a separate temporary directory; repository dependencies were not changed |
+| Process smoke | Production startup on supplied PORT, Mongo readiness, retired cron/upload endpoint 404s and clean SIGTERM exit passed |
+| Stored-data preservation | All 30 collections and 2,711 documents matched a disposable restored copy in counts, indexes and BSON content; original counts unchanged |
+| Patch | `git diff --check` passed; `run.sh` unchanged |
+
+The backend-only dependency audit still reports the pre-existing critical
+[`proxy-addr` advisory](https://github.com/advisories/GHSA-jqcg-44mw-7w3h).
+Dependency versions were not changed in this hosting switch. Review this before
+production launch; this pass does not claim a clean dependency audit.
+
+Atlas provisioning and Railway authentication are still required. No migration
+to Atlas or hosted backend deployment occurred. The previous Bootstrap Vercel
+project was deleted; create a fresh project and configure its build-time API URL
+with the eventual Railway HTTPS origin. Publishing the code is a separate step
+from this local verification.
+Hosted cookies, SMTP delivery, Maps restrictions and worker operation still need
+verification after [cloud setup](cloud-deployment.md). Local browser fixtures do
+not certify these integrations or broad accessibility.
+
 ## Local crawler-removal verification — 2026-10-06
 
 The application now reads the existing dataset from MongoDB through the shared

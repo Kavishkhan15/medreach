@@ -1,5 +1,9 @@
 # Deployment
 
+The selected stack is **Vercel frontends + Railway API + MongoDB Atlas**.
+Follow the [cloud deployment guide](cloud-deployment.md) for service settings,
+verified dataset migration and the rollout order.
+
 MedReach runs three frontend variants, one Express API and the existing MongoDB
 dataset. The API starts no acquisition scheduler or website crawler. Keep the
 provider, job, claim and historical provenance collections intact during deployment.
@@ -46,7 +50,14 @@ Use Node.js **22.19.0 or newer** for the root, backend, and each frontend. CI te
 
 Before rolling out password-only sign-in, confirm transactional email delivery. Existing accounts without a stored password can use **Forgot password** to establish one; the reset flow preserves the account and revokes its old sessions. Remove retired sign-in credentials from the hosting environment.
 
-The backend's `railway.json` assumes the service root directory is `backend/`, where `npm start` runs `node src/server.js`. Set the health check to `/health/ready`. Tailwind and Skeleton require the monorepo workspace build context for `@medreach/core`; Bootstrap bundles a local `_core` copy for its standalone tar deployment. Run the database migrations listed below before accepting traffic.
+Use the repository root `/` for Railway so the shared workspace lockfile remains
+available, and set the config file path to `/backend/railway.json`. The config
+uses Railpack and starts `node backend/src/server.js` with readiness at
+`/health/ready`, one replica, sleep disabled, and a 35-second shutdown grace
+period. Tailwind and Skeleton require the workspace build context for
+`@medreach/core`; Bootstrap bundles a local `_core` copy. Review existing schema
+and indexes before running an upgrade migration; deployment does not run seed or
+schema scripts automatically.
 
 No secrets are committed. Copy `.env` from `.env.example`.
 
