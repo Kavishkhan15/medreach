@@ -275,10 +275,19 @@ test("standard request, normal blood request, login return path, and careers app
     email,
     phone: "+91 98765 40202",
   });
+  {
+    await page.getByRole("button", { name: "File Upload", exact: true }).click();
+    const pdf = Buffer.alloc(4 * 1024 * 1024, 32);
+    pdf.write("%PDF-1.4\n");
+    await page.locator("#resumeFile").setInputFiles({ name: "candidate.pdf", mimeType: "application/pdf", buffer: pdf });
+    await expect(page.getByText("candidate.pdf", { exact: true })).toBeVisible();
+  }
   const applicationResponse = page.waitForResponse((response) => response.request().method() === "POST" && response.url().endsWith(`/api/jobs/${job._id}/apply`));
   await page.getByRole("button", { name: "Submit Application" }).click();
   await expect(page.getByText("Application Submitted Successfully", { exact: true })).toBeVisible();
   const application = (await (await applicationResponse).json()).application;
+  expect(application.resume.fileUrl).toMatch(/^data:application\/pdf;base64,/);
+  expect(Buffer.from(application.resume.fileUrl.split(",")[1], "base64").length).toBe(4 * 1024 * 1024);
   expect(application.reference).toMatch(/^CAR-J[A-F0-9]{14}$/);
   await expect(page.locator("code")).toHaveText(application.reference);
   await assertCareerHistory(page, application.reference);
