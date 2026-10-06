@@ -9,6 +9,10 @@ name: CI
       - main
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-variants:
     name: Build Variant (${{ matrix.variant }})
