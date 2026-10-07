@@ -17,13 +17,16 @@ async function resolveAccessContext(token) {
   if (mongoose.connection.readyState !== 1) {
     return { error: "Authentication temporarily unavailable", status: 503 };
   }
-  const current = await User.findById(payload.sub).select("+authVersion").lean();
+  const [current, session] = await Promise.all([
+    User.findById(payload.sub).select("+authVersion").lean(),
+    AuthToken.exists({ familyId: payload.sid, user: payload.sub,
+      purpose: "refresh_session", usedAt: { $exists: false }, revokedAt: { $exists: false },
+      expiresAt: { $gt: new Date() } }),
+  ]);
   if (!current || current.accountStatus !== "active" || Number(current.authVersion || 0) !== Number(payload.av || 0)) {
     return { error: "Session is no longer valid" };
   }
-  if (!(await AuthToken.exists({ familyId: payload.sid, user: current._id,
-    purpose: "refresh_session", usedAt: { $exists: false }, revokedAt: { $exists: false },
-    expiresAt: { $gt: new Date() } }))) {
+  if (!session) {
     return { error: "Session is no longer valid" };
   }
   return {

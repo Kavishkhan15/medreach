@@ -40,7 +40,10 @@ function clearSessionCookies(res) {
 }
 
 async function establishSession(req, res, user) {
-  const { token: refreshToken, entry } = await issueSession(user, context(req));
+  const [{ token: refreshToken, entry }] = await Promise.all([
+    issueSession(user, context(req)),
+    user.save(),
+  ]);
   setSessionCookies(res, signToken(user, entry.familyId), refreshToken);
 }
 
@@ -81,7 +84,6 @@ export const login = asyncHandler(async (req, res) => {
     return res.status(401).json({ error: "Invalid email or password" });
   }
   user.lastLogin = new Date();
-  await user.save();
   await establishSession(req, res, user);
   await audit(req, { user: user._id, action: "login", entityType: "AuthSession", entityId: user._id });
   res.json({ user: publicUser(user) });
