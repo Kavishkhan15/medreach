@@ -29,7 +29,7 @@ export async function productApi(path, options = {}, retried = false) {
   const { headers: optionHeaders, ...requestOptions } = options;
   const response = await fetch(`${BASE}${path}`, {
     credentials: "include", ...requestOptions,
-    headers: { "Content-Type": "application/json", ...(optionHeaders || {}) },
+    headers: { ...(options.body === undefined ? {} : { "Content-Type": "application/json" }), ...(optionHeaders || {}) },
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
   });
   const data = await response.json().catch(() => ({}));

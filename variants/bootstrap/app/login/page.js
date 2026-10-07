@@ -1,11 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { profileDestination, safeReturnTo, useAuth, validateLogin, validateRegister } from "@medreach/core";
 import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
+  const submitting = useRef(false);
+  const [busy, setBusy] = useState(false);
   const { login, register } = useAuth();
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ email: "", password: "", name: "" });
@@ -28,11 +30,14 @@ export default function LoginPage() {
 
   const submit = async (e) => {
     e.preventDefault();
+    if (submitting.current) return;
     setServerError("");
     setNotice("");
     const check = mode === "login" ? validateLogin(form) : validateRegister(form);
     setErrors(check.errors);
     if (!check.valid) return;
+    submitting.current = true;
+    setBusy(true);
     try {
       if (mode === "login") {
         const user = await login(form.email, form.password);
@@ -51,6 +56,9 @@ export default function LoginPage() {
       }
     } catch (err) {
       setServerError(err.message);
+    } finally {
+      submitting.current = false;
+      setBusy(false);
     }
   };
 
@@ -62,7 +70,7 @@ export default function LoginPage() {
           <p className="disclaimer mb-3">Sign in to save hospitals for quick access.</p>
           {serverError && <div className="alert alert-danger py-2">{serverError}</div>}
           {notice && <div className="alert alert-success py-2" role="status">{notice}</div>}
-          <form onSubmit={submit} noValidate className="vstack gap-3">
+          <form aria-busy={busy} onSubmit={submit} noValidate className="vstack gap-3">
             {mode === "register" && (
               <div>
                 <label htmlFor="name" className="form-label fw-semibold">Name</label>
@@ -80,10 +88,10 @@ export default function LoginPage() {
               <input id="password" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} className={`form-control ${errors.password ? "is-invalid" : ""}`} value={form.password} onChange={set("password")} />
               {errors.password && <div className="invalid-feedback">{errors.password}</div>}
             </div>
-            <button className="btn btn-primary btn-lg" type="submit">{mode === "login" ? "Sign in" : "Create account"}</button>
+            <button className="btn btn-primary btn-lg" type="submit" disabled={busy}>{busy ? (mode === "login" ? "Signing in…" : "Creating account…") : (mode === "login" ? "Sign in" : "Create account")}</button>
           </form>
           <div className="text-center mt-3">
-            <button className="btn btn-link p-0" onClick={() => { setMode(mode === "login" ? "register" : "login"); setErrors({}); }}>
+            <button className="btn btn-link p-0" disabled={busy} onClick={() => { setMode(mode === "login" ? "register" : "login"); setErrors({}); }}>
               {mode === "login" ? "Need an account? Register here" : "Have an account? Sign in"}
             </button>
           </div>

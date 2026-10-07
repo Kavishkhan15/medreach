@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { profileDestination, safeReturnTo, useAuth, validateLogin, validateRegister } from "@medreach/core";
 import Link from "next/link";
@@ -9,6 +9,8 @@ const controlInvalid = "border-[var(--color-danger)]";
 
 export default function LoginPage() {
   const router = useRouter();
+  const submitting = useRef(false);
+  const [busy, setBusy] = useState(false);
   const { login, register } = useAuth();
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ email: "", password: "", name: "" });
@@ -33,11 +35,14 @@ export default function LoginPage() {
 
   const submit = async (e) => {
     e.preventDefault();
+    if (submitting.current) return;
     setServerError("");
     setNotice("");
     const check = mode === "login" ? validateLogin(form) : validateRegister(form);
     setErrors(check.errors);
     if (!check.valid) return;
+    submitting.current = true;
+    setBusy(true);
     try {
       if (mode === "login") {
         const user = await login(form.email, form.password);
@@ -54,6 +59,9 @@ export default function LoginPage() {
       }
     } catch (err) {
       setServerError(err.message);
+    } finally {
+      submitting.current = false;
+      setBusy(false);
     }
   };
 
@@ -65,7 +73,7 @@ export default function LoginPage() {
           <p className="text-[.78rem] text-[var(--color-muted)] mb-3">Sign in to save hospitals for quick access.</p>
           {serverError && <div className="rounded bg-[var(--color-danger-bg)] text-[var(--color-danger)] px-3 py-2 mb-3">{serverError}</div>}
           {notice && <div className="rounded bg-green-50 border border-green-200 text-green-800 px-3 py-2 mb-3" role="status">{notice}</div>}
-          <form onSubmit={submit} noValidate className="flex flex-col gap-3">
+          <form aria-busy={busy} onSubmit={submit} noValidate className="flex flex-col gap-3">
             {mode === "register" && (
               <div>
                 <label htmlFor="name" className="block font-semibold mb-1">Name</label>
@@ -83,10 +91,10 @@ export default function LoginPage() {
               <input id="password" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} className={`${control} ${errors.password ? controlInvalid : ""}`} value={form.password} onChange={set("password")} />
               {errors.password && <div className="text-[var(--color-danger)] text-sm mt-1">{errors.password}</div>}
             </div>
-            <button className="inline-flex items-center justify-center font-bold text-lg rounded-[var(--radius)] bg-[var(--color-emergency)] text-white px-4 py-2 hover:bg-[var(--color-emergency-dark)]" type="submit">{mode === "login" ? "Sign in" : "Create account"}</button>
+            <button className="inline-flex items-center justify-center font-bold text-lg rounded-[var(--radius)] bg-[var(--color-emergency)] text-white px-4 py-2 hover:bg-[var(--color-emergency-dark)]" type="submit" disabled={busy}>{busy ? (mode === "login" ? "Signing in…" : "Creating account…") : (mode === "login" ? "Sign in" : "Create account")}</button>
           </form>
           <div className="text-center mt-3">
-            <button className="p-0 bg-transparent text-[var(--color-emergency-dark)] underline" onClick={() => { setMode(mode === "login" ? "register" : "login"); setErrors({}); }}>
+            <button className="p-0 bg-transparent text-[var(--color-emergency-dark)] underline" disabled={busy} onClick={() => { setMode(mode === "login" ? "register" : "login"); setErrors({}); }}>
               {mode === "login" ? "Need an account? Register" : "Have an account? Sign in"}
             </button>
           </div>

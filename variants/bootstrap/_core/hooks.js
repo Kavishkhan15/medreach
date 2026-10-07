@@ -2,10 +2,15 @@
 // Headless React hooks — data + state only, ZERO markup. Every variant uses these
 // identical hooks and supplies its own UI, so behavior is held constant.
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from "react";
 import * as api from "./api.js";
+import { createAuthSession } from "./authSession.js";
 import { searchHospitals } from "./search.js";
 import { getBrowserLocation, localityToCoords } from "./location.js";
+
+const authSession = createAuthSession(api);
+const handledAuthEvents = new WeakSet();
+const serverAuthSnapshot = { user: null, ready: false };
 
 // System data mode. API failures are surfaced instead of substituting fixture data.
 export function useSystemStatus() {
@@ -105,25 +110,38 @@ export function useLocation() {
 }
 
 export function useAuth() {
-  const [user, setUser] = useState(null);
-  const [ready, setReady] = useState(false);
-
+  const { user, ready } = useSyncExternalStore(authSession.subscribe,
+    authSession.getSnapshot, () => serverAuthSnapshot);
   useEffect(() => {
-    let active = true;
-    const refresh = () => api.me().then((r) => { if (active) setUser(r.user); })
-      .catch(() => { if (active) setUser(null); }).finally(() => { if (active) setReady(true); });
-    refresh();
+    authSession.refresh();
+    const refresh = (event) => {
+      if (handledAuthEvents.has(event)) return;
+      handledAuthEvents.add(event);
+      authSession.invalidate();
+      authSession.refresh(true);
+    };
+    const visible = (event) => { if (document.visibilityState === "visible") refresh(event); };
     window.addEventListener("medreach:auth-changed", refresh);
-    return () => { active = false; window.removeEventListener("medreach:auth-changed", refresh); };
+    document.addEventListener("visibilitychange", visible);
+    return () => {
+      window.removeEventListener("medreach:auth-changed", refresh);
+      document.removeEventListener("visibilitychange", visible);
+    };
   }, []);
-
   const login = useCallback(async (email, password) => {
-    const r = await api.login(email, password); setUser(r.user); window.dispatchEvent(new Event("medreach:auth-changed")); return r.user;
+    const result = await api.login(email, password);
+    authSession.setUser(result.user);
+    return result.user;
   }, []);
   const register = useCallback(async (payload) => {
-    const r = await api.register(payload); setUser(r.user); window.dispatchEvent(new Event("medreach:auth-changed")); return r;
+    const result = await api.register(payload);
+    if (result.user) authSession.setUser(result.user);
+    return result;
   }, []);
-  const logout = useCallback(async () => { await api.logout(); setUser(null); window.dispatchEvent(new Event("medreach:auth-changed")); }, []);
+  const logout = useCallback(async () => {
+    await api.logout();
+    authSession.setUser(null);
+  }, []);
 
   const isAdmin = ["admin", "system_admin", "hospital_admin"].includes(user?.role);
   return { user, ready, loading: !ready, login, register, logout, isAdmin };

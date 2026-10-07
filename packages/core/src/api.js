@@ -32,7 +32,7 @@ async function refreshOnce(state) {
   return state.promise;
 }
 
-async function req(path, opts = {}, retried = false) {
+async function performRequest(path, opts = {}, retried = false) {
   const state = refreshState();
   const generation = state.generation;
   const shouldAttachIdempotencyKey =
@@ -42,7 +42,7 @@ async function req(path, opts = {}, retried = false) {
   const requestOptions = {
     ...opts,
     headers: {
-      "Content-Type": "application/json",
+      ...(opts.body === undefined ? {} : { "Content-Type": "application/json" }),
       ...(opts.headers || {}),
       ...(shouldAttachIdempotencyKey
         ? { "Idempotency-Key": globalThis.crypto?.randomUUID?.() || `web-${Date.now()}-${Math.random().toString(36).slice(2)}` }
@@ -54,15 +54,34 @@ async function req(path, opts = {}, retried = false) {
     ...requestOptions,
   });
   const json = await res.json().catch(() => ({}));
-  if (res.status === 401 && !retried && path !== "/api/auth/refresh") {
+  if (res.status === 401 && !retried && !["/api/auth/refresh", "/api/auth/login", "/api/auth/register"].includes(path)) {
     const refreshed = state.generation !== generation || await refreshOnce(state);
-    if (refreshed) return req(path, requestOptions, true);
+    if (refreshed) return performRequest(path, requestOptions, true);
     if (opts.method === "POST" && GUEST_SUBMISSIONS.has(path)) {
-      return req(path, { ...requestOptions, credentials: "omit" }, true);
+      return performRequest(path, { ...requestOptions, credentials: "omit" }, true);
     }
   }
   if (!res.ok) throw new Error(json.error || `Request failed (${res.status})`);
   return json;
+}
+
+// Only simultaneous reads are shared; no completed response is cached.
+const pendingReads = new Map();
+function req(path, opts = {}) {
+  if (typeof window === "undefined" || (opts.method && opts.method !== "GET") || opts.signal) {
+    if (typeof window !== "undefined" && opts.method && opts.method !== "GET") {
+      pendingReads.clear();
+      return performRequest(path, opts).finally(() => pendingReads.clear());
+    }
+    return performRequest(path, opts);
+  }
+  const key = JSON.stringify([path, opts]);
+  if (pendingReads.has(key)) return pendingReads.get(key);
+  const request = performRequest(path, opts).finally(() => {
+    if (pendingReads.get(key) === request) pendingReads.delete(key);
+  });
+  pendingReads.set(key, request);
+  return request;
 }
 
 // Public
