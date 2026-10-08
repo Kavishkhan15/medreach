@@ -97,7 +97,6 @@ export default function LoginPage() {
           </div>
           {mode === "login" && <p className="text-center mt-2 mb-0"><Link href={`/register?returnTo=${encodeURIComponent(returnTo)}`}>Open the registration page</Link></p>}
           {mode === "login" && <p className="text-center mt-2 mb-0"><Link href="/forgot-password">Forgot password?</Link></p>}
-          <p className="disclaimer text-center mt-2 mb-0">Demo: admin@medreach.test / Admin1234</p>
         </div>
       </div>
     </div>
