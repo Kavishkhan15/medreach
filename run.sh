@@ -79,8 +79,27 @@ case "$TARGET" in
     ;;
 esac
 
+# Give development servers enough descriptors without changing system limits.
+if [ "$(ulimit -Sn)" != "unlimited" ] && [ "$(ulimit -Sn)" -lt 65536 ]; then
+  ulimit -Sn 65536 2>/dev/null || ulimit -Sn "$(ulimit -Hn)" 2>/dev/null || true
+fi
+
+# Editors and other development tools share Linux's per-user inotify budget.
+# Poll on low-limit systems so three Next servers do not exhaust that budget.
+# An explicit WATCHPACK_POLLING value always takes precedence.
+if [ -z "${WATCHPACK_POLLING+x}" ] && [ -r /proc/sys/fs/inotify/max_user_instances ]; then
+  read -r watcher_limit < /proc/sys/fs/inotify/max_user_instances
+  if [ "$watcher_limit" -le 256 ]; then
+    export WATCHPACK_POLLING=1000
+  fi
+fi
+
 echo -e "${GREEN}MedReach — starting services (${TARGET})${NC}"
 echo ""
+if [ -n "${WATCHPACK_POLLING:-}" ] && [ "$WATCHPACK_POLLING" != "false" ]; then
+  echo "  Frontend file watching uses polling (WATCHPACK_POLLING=${WATCHPACK_POLLING})."
+  echo ""
+fi
 
 # Check database
 check_mongo

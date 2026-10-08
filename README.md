@@ -103,6 +103,13 @@ cp backend/.env.example backend/.env
 ./run.sh skeleton                # :3002
 ```
 
+The launcher raises its own open-file limit where permitted. On Linux systems
+with a low inotify instance limit, it uses one-second frontend polling to avoid
+`Watchpack EMFILE` errors when running all three variants. This affects local
+development only and leaves system settings unchanged. You can choose another
+interval with `WATCHPACK_POLLING=2000 ./run.sh`, or opt into native watching with
+`WATCHPACK_POLLING=false ./run.sh` when your system has sufficient watcher capacity.
+
 The API starts without a crawler process. Historical source metadata and claims
 remain in MongoDB. Do not run optional development seed commands against the
 existing dataset: they can replace records. See [stored data](docs/stored-data.md).
