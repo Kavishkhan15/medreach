@@ -2,7 +2,9 @@
   "name": "@medreach/variant-bootstrap",
   "version": "0.1.0",
   "private": true,
-  "engines": { "node": ">=22.19.0" },
+  "engines": {
+    "node": ">=22.19.0"
+  },
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
@@ -12,7 +14,7 @@
   "dependencies": {
     "@vis.gl/react-google-maps": "^1.10.0",
     "bootstrap": "5.3.3",
-    "next": "15.5.24",
+    "next": "^15.5.27",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   }
