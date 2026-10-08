@@ -29,7 +29,7 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
     messages, sending, unavailable, send, reset, activeModal, modalData,
     openAmbulanceModal, openBloodModal, closeModals,
   } = useAssistant();
-  const { origin, label, useLocality } = useLocation();
+  const { origin, label, useLocality: selectLocality } = useLocation();
   const conversationRef = useRef(null);
   const inputRef = useRef(null);
   const actionModalRef = useRef(null);
@@ -184,7 +184,7 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
             <summary>Conversation options</summary>
             <label className={styles.locality}>Mumbai locality
               <select aria-label="Mumbai locality" value={MUMBAI_LOCALITIES.includes(label) ? label : ""}
-                onChange={(event) => { if (event.target.value) useLocality(event.target.value); }}>
+                onChange={(event) => { if (event.target.value) selectLocality(event.target.value); }}>
                 <option value="" disabled>{label || "Choose an area"}</option>
                 {MUMBAI_LOCALITIES.map(locality => <option key={locality} value={locality}>{locality}</option>)}
               </select>

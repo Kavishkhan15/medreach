@@ -9,7 +9,7 @@ import { EmergencyIcon } from "../../components/EmergencyIcons";
 
 export default function EmergencyPage() {
   const [categoryId, setCategoryId] = useState(null);
-  const { origin, label, status, useGps, useLocality, error } = useLocation();
+  const { origin, label, status, useGps: requestGps, useLocality: selectLocality, error } = useLocation();
   const cat = categoryId ? emergencyCategory(categoryId) : null;
 
   const filters = useMemo(() => ({ categoryId: categoryId || undefined, emergencyOnly: true }), [categoryId]);
@@ -37,11 +37,11 @@ export default function EmergencyPage() {
       <section className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] shadow-[var(--shadow-sm)] p-5 mb-3">
         <h2 className="text-base mb-2">2 · Where are you?</h2>
         <div className="flex flex-wrap items-center gap-2">
-          <button type="button" className="inline-flex items-center gap-1 text-sm font-semibold rounded-[var(--radius)] border border-[var(--color-border)] bg-white px-3 py-1 hover:bg-[#f1f3f5]" onClick={() => useGps().catch(() => {})}>
+          <button type="button" className="inline-flex items-center gap-1 text-sm font-semibold rounded-[var(--radius)] border border-[var(--color-border)] bg-white px-3 py-1 hover:bg-[#f1f3f5]" onClick={() => requestGps().catch(() => {})}>
             <EmergencyIcon name="pin" size={15} /> Use my location
           </button>
           <select aria-label="Select locality" className="rounded-[var(--radius)] border border-[var(--color-border)] bg-white text-sm px-2 py-1" style={{ width: "auto" }}
-            onChange={(e) => e.target.value && useLocality(e.target.value)} defaultValue="">
+            onChange={(e) => e.target.value && selectLocality(e.target.value)} defaultValue="">
             <option value="">Or pick a locality…</option>
             {MUMBAI_LOCALITIES.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>

@@ -10,7 +10,7 @@ export default function HospitalsPage() {
   const [facility, setFacility] = useState("");
   const [emergencyOnly, setEmergencyOnly] = useState(false);
   const [sort, setSort] = useState("recommended");
-  const { origin, label, status, useGps, useLocality, error } = useLocation();
+  const { origin, label, status, useGps: requestGps, useLocality: selectLocality, error } = useLocation();
 
   const filters = useMemo(() => ({
     q: q || undefined, specialty: specialty || undefined,
@@ -67,11 +67,11 @@ export default function HospitalsPage() {
             <input className="form-check-input" type="checkbox" id="er" checked={emergencyOnly} onChange={(e) => setEmergencyOnly(e.target.checked)} />
             <label className="form-check-label" htmlFor="er">Emergency department open</label>
           </div>
-          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => useGps().catch(() => {})}>
+          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => requestGps().catch(() => {})}>
             <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Use my location
           </button>
           <select aria-label="Select locality" className="form-select form-select-sm w-auto"
-            onChange={(e) => e.target.value && useLocality(e.target.value)} defaultValue="">
+            onChange={(e) => e.target.value && selectLocality(e.target.value)} defaultValue="">
             <option value="">Or pick a locality…</option>
             {MUMBAI_LOCALITIES.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>

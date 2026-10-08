@@ -6,7 +6,7 @@ import { EmergencyIcon } from "../../components/EmergencyIcons";
 
 export default function HospitalsPage() {
   const [q, setQ] = useState("");
-  const { origin, label, status, useGps, useLocality, error } = useLocation();
+  const { origin, label, status, useGps: requestGps, useLocality: selectLocality, error } = useLocation();
 
   const filters = useMemo(() => ({
     limit: 50,
@@ -46,7 +46,7 @@ export default function HospitalsPage() {
                 className="form-select"
                 onChange={(e) => {
                   if (e.target.value) {
-                    useLocality(e.target.value);
+                    selectLocality(e.target.value);
                   }
                 }}
                 defaultValue=""
@@ -63,7 +63,7 @@ export default function HospitalsPage() {
             <button
               type="button"
               className="btn btn-sm btn-outline-secondary"
-              onClick={() => useGps().catch(() => {})}
+              onClick={() => requestGps().catch(() => {})}
             >
               <EmergencyIcon name="pin" size={16} className="me-1" /> Use my location
             </button>

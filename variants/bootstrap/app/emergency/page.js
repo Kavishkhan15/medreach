@@ -7,7 +7,7 @@ import { EmergencyIcon } from "../../components/EmergencyIcons";
 
 export default function EmergencyPage() {
   const [categoryId, setCategoryId] = useState(null);
-  const { origin, label, status, useGps, useLocality, error } = useLocation();
+  const { origin, label, status, useGps: requestGps, useLocality: selectLocality, error } = useLocation();
   const cat = categoryId ? emergencyCategory(categoryId) : null;
 
   const filters = useMemo(() => ({ categoryId: categoryId || undefined, emergencyOnly: true }), [categoryId]);
@@ -35,11 +35,11 @@ export default function EmergencyPage() {
       <section className="surface mb-3">
         <h2 className="h6 mb-2">2 · Where are you?</h2>
         <div className="d-flex flex-wrap align-items-center gap-2">
-          <button type="button" className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1" onClick={() => useGps().catch(() => {})}>
+          <button type="button" className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1" onClick={() => requestGps().catch(() => {})}>
             <EmergencyIcon name="pin" size={15} /> Use my location
           </button>
           <select aria-label="Select locality" className="form-select form-select-sm" style={{ width: "auto" }}
-            onChange={(e) => e.target.value && useLocality(e.target.value)} defaultValue="">
+            onChange={(e) => e.target.value && selectLocality(e.target.value)} defaultValue="">
             <option value="">Or pick a locality…</option>
             {MUMBAI_LOCALITIES.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
