@@ -430,7 +430,7 @@ test("application sign-in preserves its destination and system admin reaches the
     phone: "+91 98765 40505",
   });
   await page.getByRole("button", { name: "Submit Application" }).click();
-  const signIn = page.getByRole("link", { name: "Sign in" });
+  const signIn = page.getByRole("main").getByRole("link", { name: "Sign in", exact: true });
   await expect(signIn).toHaveAttribute("href", `/login?returnTo=${encodeURIComponent(`/jobs/${job._id}`)}`);
 
   await login(page, "admin.e2e@medreach.test", "/admin");
