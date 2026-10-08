@@ -27,8 +27,19 @@ export function useSystemStatus() {
 }
 
 // Unified hospital search/filter/sort/rank using backend data only.
-export function useHospitals(filters = {}, options = {}) {
-  const key = useMemo(() => JSON.stringify({ filters, options }), [filters, options]);
+export function useDebouncedValue(value, delay = 250) {
+  const [settled, setSettled] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setSettled(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return settled;
+}
+
+export function useHospitals(inputFilters = {}, options = {}) {
+  const query = useDebouncedValue(inputFilters.q || "");
+  const filters = { ...inputFilters, q: query };
+  const key = JSON.stringify({ filters, options });
   const [revision, setRevision] = useState(0);
   const [state, setState] = useState({ loading: true, data: [], total: 0, offline: false, error: "" });
   const retry = useCallback(() => setRevision((value) => value + 1), []);
@@ -36,10 +47,11 @@ export function useHospitals(filters = {}, options = {}) {
   useEffect(() => {
     let active = true;
     setState((s) => ({ ...s, loading: true, error: "" }));
+    const controller = new AbortController();
     api
-      .listHospitals(filters)
+      .listHospitals(filters, { signal: controller.signal })
       .then((r) => {
-        // Re-rank/sort client-side so ranking is identical to demo mode.
+        // Rank the returned records consistently across frontend variants.
         const data = searchHospitals(r.data || [], filters, options);
         if (active) setState({ loading: false, data, total: data.length, offline: false, error: "" });
       })
@@ -52,7 +64,7 @@ export function useHospitals(filters = {}, options = {}) {
           error: error?.message || "Hospital data is temporarily unavailable.",
         });
       });
-    return () => { active = false; };
+    return () => { active = false; controller.abort(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, revision]);
 

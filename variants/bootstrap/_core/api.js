@@ -86,8 +86,8 @@ function req(path, opts = {}) {
 
 // Public
 export const health = () => req(`/health`);
-export const listHospitals = (params = {}) =>
-  req(`/api/hospitals?${new URLSearchParams(clean(params))}`);
+export const listHospitals = (params = {}, options = {}) =>
+  req(`/api/hospitals?${new URLSearchParams(clean(params))}`, options);
 export const getHospital = (slug) => req(`/api/hospitals/${slug}`);
 export const listAlerts = (region) =>
   req(`/api/alerts${region ? `?region=${encodeURIComponent(region)}` : ""}`);
