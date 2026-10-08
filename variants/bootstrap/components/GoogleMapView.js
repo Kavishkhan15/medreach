@@ -9,7 +9,16 @@ import {
   Pin,
   InfoWindow,
   useMap,
+  useApiLoadingStatus,
 } from "@vis.gl/react-google-maps";
+
+function MapLoadStatus({ onUnavailable }) {
+  const status = useApiLoadingStatus();
+  useEffect(() => {
+    if (status === "AUTH_FAILURE" || status === "FAILED") onUnavailable();
+  }, [status, onUnavailable]);
+  return null;
+}
 
 const MUMBAI_CENTER = { lat: 19.076, lng: 72.8777 };
 
@@ -109,6 +118,7 @@ export default function GoogleMapView({
   return (
     <div className="gmap-container">
       <APIProvider apiKey={apiKey} onError={() => setMapUnavailable(true)}>
+        <MapLoadStatus onUnavailable={() => setMapUnavailable(true)} />
         <Map
           defaultCenter={MUMBAI_CENTER}
           defaultZoom={11}

@@ -2,8 +2,16 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, useMap } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, useMap, useApiLoadingStatus } from "@vis.gl/react-google-maps";
 import EmergencyIcon from "./EmergencyIcons";
+
+function MapLoadStatus({ onUnavailable }) {
+  const status = useApiLoadingStatus();
+  useEffect(() => {
+    if (status === "AUTH_FAILURE" || status === "FAILED") onUnavailable();
+  }, [status, onUnavailable]);
+  return null;
+}
 
 const MUMBAI_CENTER = { lat: 19.076, lng: 72.8777 };
 const CATEGORY_COLORS = {
@@ -71,6 +79,7 @@ export default function GoogleMapView({ items = [], selected = "", onSelect = ()
 
   return <div className="gmap-container skeleton-map-container">
     <APIProvider apiKey={apiKey} onError={() => setMapUnavailable(true)}>
+        <MapLoadStatus onUnavailable={() => setMapUnavailable(true)} />
       <Map defaultCenter={MUMBAI_CENTER} defaultZoom={11} mapId={mapId} gestureHandling="greedy" mapTypeControl={false} streetViewControl={false} fullscreenControl zoomControl style={{ width: "100%", height: "100%" }}>
         <MapRecenter position={selectedPos} />
         {items.map((item) => {
