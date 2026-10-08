@@ -1,9 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
+import { useDialogFocus } from "../lib/useDialogFocus";
 import Link from "next/link";
 import { ASSISTANT_ENTRY_LABEL, ASSISTANT_ENTRY_SUBTITLE } from "@medreach/core";
 import { btnPrimary, btnOutlineSecondary } from "../lib/tone";
-import AiAssistantModal from "./AiAssistantModal";
+import dynamic from "next/dynamic";
+const AiAssistantModal = dynamic(() => import("./AiAssistantModal"), { ssr: false });
 
 // Prominent SOS control. Does NOT claim to dispatch emergency services (no such
 // integration exists) — it surfaces the real emergency actions and requires a
@@ -11,6 +13,9 @@ import AiAssistantModal from "./AiAssistantModal";
 export default function SosButton() {
   const [open, setOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
+  const dialogRef = useRef(null);
+  const close = useCallback(() => setOpen(false), []);
+  useDialogFocus(dialogRef, open, close);
 
   const openAssistant = () => {
     setOpen(false);
@@ -30,7 +35,7 @@ export default function SosButton() {
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-3"
-          role="dialog"
+          ref={dialogRef} tabIndex={-1} role="dialog"
           aria-modal="true"
           aria-labelledby="sosTitle"
           style={{ background: "rgba(0,0,0,.5)" }}
@@ -70,7 +75,7 @@ export default function SosButton() {
         </div>
       )}
 
-      <AiAssistantModal open={aiOpen} onClose={() => setAiOpen(false)} />
+      {aiOpen && <AiAssistantModal open={aiOpen} onClose={() => setAiOpen(false)} />}
     </>
   );
 }
