@@ -47,6 +47,14 @@ body {
 }
 main { min-height: 68vh; }
 h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; font-weight: 700; color: #10151a; margin-bottom: .8rem; }
+h1 { font-size: clamp(4.4rem, 4.5vw, 6.4rem); line-height: 1.15; letter-spacing: -0.025em; font-weight: 700; }
+h2 { font-size: clamp(2.8rem, 2.5vw, 3.6rem); line-height: 1.25; letter-spacing: -0.02em; font-weight: 700; }
+h3 { font-size: clamp(2.0rem, 1.8vw, 2.4rem); line-height: 1.35; letter-spacing: -0.015em; font-weight: 650; }
+@media (min-width: 550px) {
+  h1 { font-size: clamp(4.4rem, 4.5vw, 6.4rem); }
+  h2 { font-size: clamp(2.8rem, 2.5vw, 3.6rem); }
+  h3 { font-size: clamp(2.0rem, 1.8vw, 2.4rem); }
+}
 a { color: var(--color-emergency-dark); }
 a:hover { color: var(--color-critical); }
 
@@ -246,6 +254,34 @@ select.w-auto { width: auto; display: inline-block; }
 .system-banner { font-size: 1.35rem; font-weight: 600; padding: .4rem 0; text-align: center; }
 .system-banner.demo { background: var(--color-warning-bg); color: var(--color-warning); border-bottom: 1px solid #f0d9a8; }
 .system-banner.live { background: var(--color-success-bg); color: var(--color-success); border-bottom: 1px solid #b9e6c9; }
+
+/* Page Header & Typography Hierarchy ---------------------------------------- */
+.page-head { max-width: 58rem; padding: 2rem 0 .75rem; }
+.page-head h1, .page-head .h1, .page-head h1.h2 {
+  font-size: clamp(4.4rem, 4.5vw, 6.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+  margin-top: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+.page-head p {
+  color: var(--color-muted);
+  font-size: clamp(1.6rem, 1.15vw, 1.8rem);
+  line-height: 1.6;
+  max-width: 66ch;
+  margin-bottom: 0;
+}
+.eyebrow {
+  display: inline-block;
+  color: var(--color-emergency-dark, #a51620);
+  font-size: 1.2rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 800;
+  margin-bottom: 0.35rem;
+}
 
 /* Hero --------------------------------------------------------------------- */
 .emergency-hero { border-radius: var(--radius-lg); padding: clamp(1.5rem, 4vw, 3rem); background: var(--color-emergency-dark); color: #fff; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }

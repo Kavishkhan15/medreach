@@ -19,11 +19,12 @@ export default function EmergencyPage() {
 
   return (
     <>
-      <header className="mb-3">
-        <h1 className="text-2xl mb-1 flex items-center gap-2">
-          <EmergencyIcon name="siren" size={26} className="text-red-600" /> Emergency mode
+      <header className="page-head mb-4">
+        <span className="eyebrow">Critical care</span>
+        <h1 className="flex items-center gap-2">
+          <EmergencyIcon name="siren" size={32} className="text-red-600" /> Emergency mode
         </h1>
-        <p className="text-[.78rem] text-[var(--color-muted)] mb-0">
+        <p>
           This assists with hospital discovery only. It is not medical advice and does not
           assess severity. In a life-threatening emergency, call 112.
         </p>

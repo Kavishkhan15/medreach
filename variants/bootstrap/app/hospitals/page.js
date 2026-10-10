@@ -17,9 +17,10 @@ export default function HospitalsPage() {
 
   return (
     <>
-      <header className="mb-4">
-        <h1 className="h3 mb-1">Hospital directory</h1>
-        <p className="text-secondary mb-0">
+      <header className="page-head mb-4">
+        <span className="eyebrow">Mumbai care network</span>
+        <h1>Hospital directory</h1>
+        <p>
           Information and discovery directory for {total || "verified"} hospitals in Mumbai.
         </p>
       </header>

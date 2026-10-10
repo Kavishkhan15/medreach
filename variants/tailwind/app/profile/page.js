@@ -57,7 +57,7 @@ export default function Profile() {
   };
   const signOut = async () => { await logout(); window.dispatchEvent(new Event("medreach:auth-changed")); router.push("/login"); };
   if (!user) return <div className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5"><h1 className="h3">Profile & security</h1><p role="status">{status || "Loading account…"}</p></div>;
-  return <><div className="mb-6"><span className="text-xs font-bold uppercase tracking-wider text-gray-500">Account</span><h1 className="text-2xl font-bold mt-1">{onboarding ? "Complete your profile" : "Profile & security"}</h1>
+  return <><div className="page-head mb-4"><span className="eyebrow">Account</span><h1>{onboarding ? "Complete your profile" : "Profile & security"}</h1>
     <p>{onboarding ? "Add your region so MedReach can prioritize nearby care and regional alerts." : "Manage your verified email, password, and active sessions."}</p></div>
     {status && <div className="bg-blue-50 border border-blue-200 text-blue-800 rounded-md p-3 text-sm mb-4" role="status">{status}</div>}
     <div className="flex flex-col gap-6">

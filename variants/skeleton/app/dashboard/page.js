@@ -17,7 +17,7 @@ export default function Dashboard() {
   const { profile, requests, applications, retry } = useDashboard();
   const user = profile.data;
   return <>
-    <div className="mb-4"><span className="eyebrow">Your MedReach</span><h1 className="">{user ? `Welcome, ${user.name.split(" ")[0]}` : "Dashboard"}</h1><p className="">Quick access to your requests, applications, saved hospitals.</p></div>
+    <div className="page-head mb-4"><span className="eyebrow">Your MedReach</span><h1 className="">{user ? `Welcome, ${user.name.split(" ")[0]}` : "Dashboard"}</h1><p className="">Quick access to your requests, applications, saved hospitals.</p></div>
     <div className="grid-2">
       <section className="surface" aria-labelledby="dashboard-requests">
       <h2 id="dashboard-requests" className="h5">Emergency requests</h2>

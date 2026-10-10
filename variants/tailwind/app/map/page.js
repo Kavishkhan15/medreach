@@ -105,16 +105,14 @@ export default function MapPage() {
 
   return (
     <>
-      <header className="mb-4">
-        <span className="text-[var(--color-emergency-dark)] text-xs tracking-wider uppercase font-bold block mb-1">
-          Mumbai care network
-        </span>
-        <h1 className="text-3xl font-bold mb-1">Explore nearby care</h1>
-        <p className="text-sm text-[var(--color-muted)] mb-0">
+      <div className="page-head mb-4">
+        <span className="eyebrow">Mumbai care network</span>
+        <h1>Explore nearby care</h1>
+        <p>
           Filter hospitals, blood banks, diagnostic centres, and ambulance fleets on the map.
           Select any marker or list entry to inspect contact details, services, and get Google Maps directions.
         </p>
-      </header>
+      </div>
 
       {/* Category Tabs */}
       <div className="flex flex-wrap gap-2 mb-3" role="group" aria-label="Resource category">

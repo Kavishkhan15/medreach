@@ -27,9 +27,10 @@ export default function HospitalsPage() {
 
   return (
     <>
-      <header className="mb-3">
-        <h1 className="text-2xl mb-1">Hospital directory</h1>
-        <p className="text-[.78rem] text-[var(--color-muted)] mb-0">Search {total} facilities by name, specialty, facility, or type.</p>
+      <header className="page-head mb-4">
+        <span className="eyebrow">Mumbai care network</span>
+        <h1>Hospital directory</h1>
+        <p>Search {total} facilities by name, specialty, facility, or type.</p>
       </header>
 
       <form className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius)] shadow-[var(--shadow-sm)] p-5 mb-4" role="search" onSubmit={(e) => e.preventDefault()}>

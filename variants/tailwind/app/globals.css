@@ -47,6 +47,9 @@ body {
 }
 main { min-height: 68vh; }
 h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; font-weight: 700; color: #10151a; }
+h1 { font-size: clamp(2.75rem, 4.5vw, 4rem); line-height: 1.15; letter-spacing: -0.025em; font-weight: 700; }
+h2 { font-size: clamp(1.75rem, 2.5vw, 2.25rem); line-height: 1.25; letter-spacing: -0.02em; font-weight: 700; }
+h3 { font-size: clamp(1.25rem, 1.8vw, 1.5rem); line-height: 1.35; letter-spacing: -0.015em; font-weight: 650; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
@@ -131,14 +134,34 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   box-shadow: var(--shadow-sm);
   padding: 1.25rem;
 }
+.page-head {
+  max-width: 58rem;
+  padding: 2rem 0 0.75rem;
+}
+.page-head h1, .page-head .h1, .page-head h1.h2 {
+  font-size: clamp(2.75rem, 4.5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--color-text, #1c2024);
+  margin-top: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+.page-head p {
+  color: var(--color-muted, #5b6570);
+  font-size: clamp(1rem, 1.15vw, 1.125rem);
+  line-height: 1.6;
+  max-width: 66ch;
+  margin-bottom: 0;
+}
 .eyebrow {
   display: inline-block;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-muted, #5b6570);
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.12em;
+  color: var(--color-emergency-dark, #a51620);
+  margin-bottom: 0.35rem;
 }
 .disclaimer {
   font-size: 0.75rem;

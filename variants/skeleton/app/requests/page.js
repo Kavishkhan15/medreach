@@ -8,7 +8,7 @@ export default function Requests() {
   useEffect(() => { setState("loading"); productApi("/api/emergency-requests").then((r) => { setItems(r.data || []); setState("ready"); }).catch((e) => { setItems([]); setState(e.message); }); }, [revision]);
   const authError = /authentication required|login required/i.test(state);
   return <>
-    <div className="mb-4"><span className="eyebrow">Your coordination history</span><h1>Bed requests</h1><p>Track hospital responses. An accepted request does not guarantee a reserved bed.</p></div>
+    <div className="page-head mb-4"><span className="eyebrow">Your coordination history</span><h1>Bed requests</h1><p>Track hospital responses. An accepted request does not guarantee a reserved bed.</p></div>
     <Link className="btn btn-primary mb-3" href="/requests/new?flow=standard">New standard request</Link>
     {state === "loading" && <p role="status">Loading requests…</p>}
     {state !== "ready" && state !== "loading" && <div className="alert alert-warning d-flex flex-wrap align-items-center gap-2"><span className="me-auto">{state}</span>{authError ? <Link href="/login?returnTo=%2Frequests">Sign in</Link> : <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setRevision((value) => value + 1)}>Retry</button>}</div>}

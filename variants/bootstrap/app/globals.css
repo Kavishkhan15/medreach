@@ -52,6 +52,9 @@ body {
 }
 main { min-height: 68vh; }
 h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; font-weight: 700; color: #10151a; }
+h1 { font-size: clamp(2.75rem, 4.5vw, 4rem); line-height: 1.15; letter-spacing: -0.025em; font-weight: 700; }
+h2 { font-size: clamp(1.75rem, 2.5vw, 2.25rem); line-height: 1.25; letter-spacing: -0.02em; font-weight: 700; }
+h3 { font-size: clamp(1.25rem, 1.8vw, 1.5rem); line-height: 1.35; letter-spacing: -0.015em; font-weight: 650; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
@@ -164,10 +167,32 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .map-canvas { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); min-height: 300px; display: flex; align-items: center; justify-content: center; color: var(--color-muted); }
 
 .disclaimer { font-size: .78rem; color: var(--color-muted); }
-.page-head { max-width: 56rem; padding: 1.75rem 0 .5rem; }
-.page-head h1 { font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.08; }
-.page-head p { color: var(--color-muted); font-size: 1.05rem; max-width: 66ch; }
-.eyebrow { color: var(--color-emergency-dark); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 800; }
+.page-head { max-width: 58rem; padding: 2rem 0 .75rem; }
+.page-head h1, .page-head .h1, .page-head h1.h2 {
+  font-size: clamp(2.75rem, 4.5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+  margin-top: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+.page-head p {
+  color: var(--color-muted);
+  font-size: clamp(1rem, 1.15vw, 1.125rem);
+  line-height: 1.6;
+  max-width: 66ch;
+  margin-bottom: 0;
+}
+.eyebrow {
+  display: inline-block;
+  color: var(--color-emergency-dark);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 800;
+  margin-bottom: 0.35rem;
+}
 .timeline-list { border-left: 2px solid var(--color-border); padding-left: 1.4rem; list-style: none; }
 .timeline-list li { position: relative; margin: 0 0 1.4rem; }
 .timeline-list li::before { content: ""; position: absolute; left: -1.78rem; top: .35rem; width: .7rem; height: .7rem; border-radius: 50%; background: var(--color-emergency); }

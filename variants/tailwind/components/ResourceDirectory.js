@@ -34,10 +34,10 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
 
   return (
     <div>
-      <div className="mb-6">
-        <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Mumbai care network</span>
-        <h1 className="text-2xl font-bold mt-1">{title}</h1>
-        <p className="text-gray-600 mt-2">{intro}</p>
+      <div className="page-head mb-6">
+        <span className="eyebrow">Mumbai care network</span>
+        <h1>{title}</h1>
+        <p>{intro}</p>
       </div>
       <label className="block text-sm font-semibold mb-1" htmlFor="resource-search">Search {label}</label>
       <input

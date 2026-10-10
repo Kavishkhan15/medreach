@@ -336,7 +336,7 @@ export default function Careers() {
       {/* Portal Header */}
       <header className="page-head mb-4 pb-2 border-bottom">
         <span className="eyebrow d-block mb-1">MedReach Healthcare Network</span>
-        <h1 className="h2 fw-bold text-dark mb-2">
+        <h1 className="fw-bold text-dark mb-2">
           Mumbai Healthcare Careers Portal — Verified Opportunities Across Hospitals, Labs, Blood Banks & EMS
         </h1>
         <p className="lead text-secondary mb-3">
