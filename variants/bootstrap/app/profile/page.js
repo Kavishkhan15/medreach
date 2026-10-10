@@ -58,33 +58,163 @@ export default function Profile() {
     <p className="text-muted">Manage your verified email, password, and active sessions.</p></div>
     {onboarding && <div className="alert alert-warning" role="alert"><strong>Complete your account setup.</strong> Choose your region below. It is required so MedReach can prioritize relevant local healthcare services.</div>}
     {status && <div className="alert alert-info" role="status">{status}</div>}
-    <div className="row g-3">
-      <div className="col-lg-6"><form className="surface vstack gap-2" onSubmit={saveProfile}>
-        <h2 className="h5">Your profile</h2><p className="small text-secondary mb-1">{user.email}</p>
-        {["name", "region", "emergencyContact"].map((key) => <div key={key}><label htmlFor={key} className="form-label">{key === "emergencyContact" ? "Emergency contact" : key === "region" && onboarding ? "Region (required)" : key[0].toUpperCase() + key.slice(1)}</label><input id={key} className="form-control" maxLength={120} required={key === "region" && onboarding} autoFocus={key === "region" && onboarding} value={form[key]} onChange={(event) => setForm({ ...form, [key]: event.target.value })} /></div>)}
-        <button className="btn btn-primary w-100" disabled={busy}>Save profile</button>
-      </form></div>
-      <div className="col-lg-6"><section className="surface h-100"><h2 className="h5">Email verification</h2>
-        <p>{security.emailVerified ? "Verified" : "Not verified"}</p>
-        {!security.emailVerified && <button className="btn btn-outline-primary" disabled={busy} onClick={() => action(requestVerification, "Verification instructions prepared.")}>Resend verification</button>}
-      </section></div>
-      <div className="col-lg-6"><section className="surface h-100"><h2 className="h5">Sign-in method</h2>
-        <div className="d-flex justify-content-between align-items-center border-bottom py-2"><span>Password</span><span className="badge text-bg-light">{security.providers.password ? "Configured" : "Not set"}</span></div>
-        {!security.providers.password && <p className="disclaimer mt-2">This account has no password. <Link href="/forgot-password">Use password reset</Link> to set one.</p>}
-      </section></div>
-      <div className="col-lg-6"><form className="surface vstack gap-2" onSubmit={(event) => { event.preventDefault(); action(async () => { await changePassword(password); window.dispatchEvent(new Event("medreach:auth-changed")); router.push("/login"); }, "Password changed. Sign in again."); }}>
-        <h2 className="h5">Change password</h2>
-        {security.providers.password ? <><label className="form-label" htmlFor="oldPassword">Current password</label><input id="oldPassword" type="password" autoComplete="current-password" className="form-control" required value={password.currentPassword} onChange={(event) => setPassword({ ...password, currentPassword: event.target.value })} />
-          <label className="form-label" htmlFor="newPassword">New password</label><input id="newPassword" type="password" autoComplete="new-password" className="form-control" required minLength={12} maxLength={128} value={password.newPassword} onChange={(event) => setPassword({ ...password, newPassword: event.target.value })} />
-          <p className="disclaimer">Use 12+ characters with upper, lower, and numeric characters. Changing it signs out every session.</p><button className="btn btn-outline-primary" disabled={busy}>Change password</button></> :
-          <p className="text-secondary">This account has no password. <Link href="/forgot-password">Use password reset</Link> to add one safely.</p>}
-      </form></div>
-      <div className="col-12"><section className="surface"><div className="d-flex justify-content-between align-items-center"><div><h2 className="h5 mb-1">Active sessions</h2><p className="disclaimer mb-0">Only hashed device and network fingerprints are stored.</p></div><button className="btn btn-outline-danger" onClick={signOut}>Log out this browser</button></div>
-        <div className="table-responsive mt-3"><table className="table"><thead><tr><th>Started</th><th>Expires</th><th>Device fingerprint</th><th><span className="visually-hidden">Action</span></th></tr></thead><tbody>
-          {security.sessions.map((session) => <tr key={session._id}><td>{date(session.createdAt)}</td><td>{date(session.expiresAt)}</td><td><code>{session.userAgentHash?.slice(0, 10) || "unknown"}</code></td><td className="text-end"><button className="btn btn-sm btn-outline-danger" disabled={busy} onClick={() => action(() => revokeSession(session._id), "Session revoked.")}>Revoke</button></td></tr>)}
-          {!security.sessions.length && <tr><td colSpan="4" className="text-secondary">No refresh sessions are active.</td></tr>}
-        </tbody></table></div>
-      </section></div>
+    <div className="d-flex flex-column gap-4">
+      {/* Your Profile Card */}
+      <div className="w-100">
+        <form className="surface p-4" onSubmit={saveProfile}>
+          <h2 className="h5 fw-bold text-dark mb-4">Your profile</h2>
+          <div className="row g-3">
+            {/* Left Column: Email and Name */}
+            <div className="col-12 col-md-6 d-flex flex-column gap-3">
+              <div>
+                <label htmlFor="email" className="form-label fw-semibold text-secondary small mb-1">Email address</label>
+                <input id="email" className="form-control bg-light text-muted" type="email" readOnly value={user.email} />
+              </div>
+              <div>
+                <label htmlFor="name" className="form-label fw-semibold text-secondary small mb-1">Name</label>
+                <input id="name" className="form-control" maxLength={120} value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
+              </div>
+            </div>
+
+            {/* Right Column: Region and Emergency contact */}
+            <div className="col-12 col-md-6 d-flex flex-column gap-3">
+              <div>
+                <label htmlFor="region" className="form-label fw-semibold text-secondary small mb-1">
+                  Region{onboarding ? " (required)" : ""}
+                </label>
+                <input
+                  id="region"
+                  className="form-control"
+                  maxLength={120}
+                  required={onboarding}
+                  autoFocus={onboarding}
+                  value={form.region}
+                  onChange={(event) => setForm({ ...form, region: event.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="emergencyContact" className="form-label fw-semibold text-secondary small mb-1">Emergency contact</label>
+                <input
+                  id="emergencyContact"
+                  className="form-control"
+                  maxLength={120}
+                  value={form.emergencyContact}
+                  onChange={(event) => setForm({ ...form, emergencyContact: event.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="d-flex justify-content-end mt-4">
+            <button className="btn btn-primary px-4 py-2" disabled={busy}>
+              {busy ? "Saving…" : onboarding ? "Save and continue" : "Save profile"}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Change Password Card */}
+      <div className="w-100">
+        <form
+          className="surface p-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            action(async () => {
+              await changePassword(password);
+              window.dispatchEvent(new Event("medreach:auth-changed"));
+              router.push("/login");
+            }, "Password changed. Sign in again.");
+          }}
+        >
+          <h2 className="h5 fw-bold text-dark mb-4">Change password</h2>
+          {security.providers.password ? (
+            <>
+              <div className="row g-3">
+                {/* Left Column: Current password */}
+                <div className="col-12 col-md-6">
+                  <label className="form-label fw-semibold text-secondary small mb-1" htmlFor="oldPassword">Current password</label>
+                  <input
+                    id="oldPassword"
+                    type="password"
+                    autoComplete="current-password"
+                    className="form-control"
+                    required
+                    value={password.currentPassword}
+                    onChange={(event) => setPassword({ ...password, currentPassword: event.target.value })}
+                  />
+                </div>
+
+                {/* Right Column: New password and validation guidance */}
+                <div className="col-12 col-md-6 d-flex flex-column gap-2">
+                  <div>
+                    <label className="form-label fw-semibold text-secondary small mb-1" htmlFor="newPassword">New password</label>
+                    <input
+                      id="newPassword"
+                      type="password"
+                      autoComplete="new-password"
+                      className="form-control"
+                      required
+                      minLength={12}
+                      maxLength={128}
+                      value={password.newPassword}
+                      onChange={(event) => setPassword({ ...password, newPassword: event.target.value })}
+                    />
+                  </div>
+                  <p className="disclaimer mb-0 text-muted small">
+                    Use 12+ characters with upper, lower, and numeric characters. Changing it signs out every session.
+                  </p>
+                </div>
+              </div>
+
+              <div className="d-flex justify-content-end mt-4">
+                <button className="btn btn-outline-primary px-4 py-2" disabled={busy}>
+                  Change password
+                </button>
+              </div>
+            </>
+          ) : (
+            <p className="text-secondary mb-0">This account has no password. <Link href="/forgot-password">Use password reset</Link> to add one safely.</p>
+          )}
+        </form>
+      </div>
+
+      {/* Active Sessions */}
+      <div className="w-100">
+        <section className="surface p-4">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h2 className="h5 fw-bold text-dark mb-1">Active sessions</h2>
+              <p className="disclaimer mb-0">Only hashed device and network fingerprints are stored.</p>
+            </div>
+            <button className="btn btn-outline-danger" onClick={signOut}>Log out this browser</button>
+          </div>
+          <div className="table-responsive mt-3">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Started</th>
+                  <th>Expires</th>
+                  <th>Device fingerprint</th>
+                  <th><span className="visually-hidden">Action</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {security.sessions.map((session) => (
+                  <tr key={session._id}>
+                    <td>{date(session.createdAt)}</td>
+                    <td>{date(session.expiresAt)}</td>
+                    <td><code>{session.userAgentHash?.slice(0, 10) || "unknown"}</code></td>
+                    <td className="text-end">
+                      <button className="btn btn-sm btn-outline-danger" disabled={busy} onClick={() => action(() => revokeSession(session._id), "Session revoked.")}>Revoke</button>
+                    </td>
+                  </tr>
+                ))}
+                {!security.sessions.length && <tr><td colSpan="4" className="text-secondary">No refresh sessions are active.</td></tr>}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </div>
   </>;
 }
