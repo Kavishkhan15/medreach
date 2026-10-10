@@ -18,9 +18,8 @@ const RIGHT_LINKS = [
   { href: "/careers", label: "Careers", icon: "briefcase" },
   { href: "/track", label: "Track request", icon: "document" },
 ];
-
 export default function Navbar() {
-  const { user, isAdmin, logout } = useAuth();
+  const { user } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [loginHidden, setLoginHidden] = useState(false);
@@ -73,20 +72,20 @@ export default function Navbar() {
             {RIGHT_LINKS.map(renderLink)}
             {user ? (
               <li className="nav-item">
-                <button className="btn btn-sm btn-outline-secondary nav-logout" onClick={() => { setOpen(false); logout(); }}>
-                  <EmergencyIcon name="user" size={22} /><span>Logout ({user.name.split(" ")[0]})</span>
-                </button>
+                <Link
+                  className={`nav-link nav-profile${pathname?.startsWith("/profile") ? " active" : ""}`}
+                  href="/profile"
+                  aria-current={pathname?.startsWith("/profile") ? "page" : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  <EmergencyIcon name="user" size={22} />
+                  <span>Profile ({user.name.split(" ")[0]})</span>
+                </Link>
               </li>
             ) : (
               <li className="nav-item"><Link className={`btn btn-sm btn-primary nav-login${pathname === "/" && loginHidden ? " is-scroll-hidden" : ""}`} href="/login" onClick={() => setOpen(false)}><EmergencyIcon name="user" size={22} /><span>Login</span></Link></li>
             )}
           </ul>
-          {user && <ul className="navbar-nav medreach-account-nav" aria-label="Your account">
-            {renderLink({ href: "/dashboard", label: "Dashboard", icon: "document" })}
-            {renderLink({ href: "/profile", label: "Profile", icon: "user" })}
-            {user.role === "hospital_admin" && renderLink({ href: "/hospital", label: "Hospital", icon: "hospital" })}
-            {isAdmin && user.role !== "hospital_admin" && renderLink({ href: "/admin", label: "Admin", icon: "shield" })}
-          </ul>}
         </div>
       </div>
     </nav>

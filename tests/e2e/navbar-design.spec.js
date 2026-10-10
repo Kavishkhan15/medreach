@@ -133,18 +133,30 @@ test("signed-in patient, hospital staff and admin keep their account links and l
       await page.goto("/");
       const toggle = nav(page).getByRole("button", { name: "Toggle navigation" });
       if (width < 1400) await toggle.click();
-      const logout = nav(page).getByRole("button", { name: /^Logout \(/ });
-      await expect(logout).toBeVisible();
-      await expect(nav(page).getByRole("link", { name: "Dashboard", exact: true })).toBeVisible();
-      await expect(nav(page).getByRole("link", { name: "Profile", exact: true })).toBeVisible();
-      if (roleLink) await expect(nav(page).getByRole("link", { name: roleLink, exact: true })).toBeVisible();
-      for (const label of ["Admin", "Hospital"].filter((name) => name !== roleLink)) await expect(nav(page).getByRole("link", { name: label, exact: true })).toHaveCount(0);
-      await nav(page).getByRole("link", { name: "Profile", exact: true }).click();
+      const profileLink = nav(page).getByRole("link", { name: /^Profile/ });
+      await expect(profileLink).toBeVisible();
+      expect(await profileLink.getAttribute("href")).toBe("/profile");
+      await expect(nav(page).getByRole("link", { name: "Dashboard", exact: true })).toHaveCount(0);
+      await expect(nav(page).getByRole("button", { name: "Log out", exact: true })).toHaveCount(0);
+      await expect(nav(page).getByRole("button", { name: "Logout", exact: true })).toHaveCount(0);
+      await expect(page.locator('[aria-label="Your account"]')).toHaveCount(0);
+      await profileLink.click();
       await expect(page).toHaveURL(/\/profile$/);
-      if (width < 1400) await toggle.click();
-      await logout.click();
+      const sidebar = page.getByRole("navigation", { name: "Account" });
+      await expect(sidebar.getByRole("link", { name: "Dashboard", exact: true })).toBeVisible();
+      await expect(sidebar.getByRole("link", { name: "Profile", exact: true })).toBeVisible();
+      if (roleLink) {
+        await expect(sidebar.getByRole("link", { name: roleLink, exact: true })).toBeVisible();
+        const otherRole = roleLink === "Hospital" ? "Admin" : "Hospital";
+        await expect(sidebar.getByRole("link", { name: otherRole, exact: true })).toHaveCount(0);
+      } else {
+        await expect(sidebar.getByRole("link", { name: "Hospital", exact: true })).toHaveCount(0);
+        await expect(sidebar.getByRole("link", { name: "Admin", exact: true })).toHaveCount(0);
+      }
+      const logoutBtn = sidebar.getByRole("button", { name: "Log out", exact: true });
+      await expect(logoutBtn).toBeVisible();
+      await logoutBtn.click();
       if (width < 1400) {
-        await expect(nav(page).getByRole("link", { name: "Login", exact: true, includeHidden: true })).toHaveAttribute("href", "/login");
         await expect(toggle).toHaveAttribute("aria-expanded", "false");
         await toggle.click();
       }

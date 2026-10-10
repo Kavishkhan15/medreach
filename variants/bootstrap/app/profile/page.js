@@ -52,16 +52,17 @@ export default function Profile() {
     if (saved && onboarding) router.replace(onboardingReturnTo);
   };
   const signOut = async () => { await logout(); window.dispatchEvent(new Event("medreach:auth-changed")); router.push("/login"); };
-  if (!user) return <div className="surface"><h1 className="h3">Profile & security</h1><p role="status">{status || "Loading account…"}</p></div>;
-  return <><div className="page-head mb-4"><span className="eyebrow">Account</span><h1>Profile & security</h1>
-    <p>Manage your verified email, password, and active sessions.</p></div>
+  if (!user) return <div className="surface"><h1 className="h3">Profile &amp; security</h1><p role="status">{status || "Loading account…"}</p></div>;
+  return <>
+    <div className="page-head mb-4"><span className="eyebrow">Account</span><h1>Profile &amp; security</h1>
+    <p className="text-muted">Manage your verified email, password, and active sessions.</p></div>
     {onboarding && <div className="alert alert-warning" role="alert"><strong>Complete your account setup.</strong> Choose your region below. It is required so MedReach can prioritize relevant local healthcare services.</div>}
     {status && <div className="alert alert-info" role="status">{status}</div>}
     <div className="row g-3">
       <div className="col-lg-6"><form className="surface vstack gap-2" onSubmit={saveProfile}>
         <h2 className="h5">Your profile</h2><p className="small text-secondary mb-1">{user.email}</p>
         {["name", "region", "emergencyContact"].map((key) => <div key={key}><label htmlFor={key} className="form-label">{key === "emergencyContact" ? "Emergency contact" : key === "region" && onboarding ? "Region (required)" : key[0].toUpperCase() + key.slice(1)}</label><input id={key} className="form-control" maxLength={120} required={key === "region" && onboarding} autoFocus={key === "region" && onboarding} value={form[key]} onChange={(event) => setForm({ ...form, [key]: event.target.value })} /></div>)}
-        <button className="btn btn-primary" disabled={busy}>Save profile</button>
+        <button className="btn btn-primary w-100" disabled={busy}>Save profile</button>
       </form></div>
       <div className="col-lg-6"><section className="surface h-100"><h2 className="h5">Email verification</h2>
         <p>{security.emailVerified ? "Verified" : "Not verified"}</p>
@@ -84,5 +85,6 @@ export default function Profile() {
           {!security.sessions.length && <tr><td colSpan="4" className="text-secondary">No refresh sessions are active.</td></tr>}
         </tbody></table></div>
       </section></div>
-    </div></>;
+    </div>
+  </>;
 }

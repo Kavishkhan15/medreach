@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import SystemBanner from "../components/SystemBanner";
 import SosButton from "../components/SosButton";
 import HealthcareAssistant from "../components/HealthcareAssistant";
+import AccountChrome from "../components/AccountChrome";
 
 export const metadata = {
   title: "MedReach — Emergency care, when every second matters",
@@ -25,7 +26,7 @@ export default function RootLayout({ children }) {
         <a href="#main" className="visually-hidden-focusable p-2">Skip to content</a>
         <SystemBanner />
         <Navbar />
-        <main id="main" className="container py-4">{children}</main>
+        <main id="main" className="container py-4"><AccountChrome>{children}</AccountChrome></main>
         <SosButton />
         <HealthcareAssistant />
         <footer className="app-footer py-4 mt-5">
