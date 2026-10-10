@@ -527,9 +527,11 @@ export default function Careers() {
                         <span className={`status-pill ${getOrgTypeBadgeTone(org.type)}`}>
                           {getOrgTypeDisplay(org.type)}
                         </span>
-                        <span className="badge bg-light text-success border border-success-subtle">
-                          <EmergencyIcon name="verified" size={14} className="text-success me-1" /> {org.verificationStatus === "verified" ? "MedReach Verified" : "Registered"}
-                        </span>
+                        {org.verificationStatus !== "verified" && (
+                          <span className="badge bg-light text-secondary border">
+                            Registered
+                          </span>
+                        )}
                       </div>
 
                       {/* Org Name */}
@@ -617,10 +619,12 @@ export default function Careers() {
                   {/* Position Overview Banner */}
                   <div className="p-3 mb-4 rounded-2 bg-light border d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div>
-                      <span className={`badge ${getOrgTypeBadgeTone(selectedOrg.type)} me-2`}>{getOrgTypeDisplay(selectedOrg.type)}</span>
-                      <span className="badge bg-success-subtle text-success-emphasis border border-success-subtle">
-                        {selectedOrg.verificationStatus === "verified" ? "Verified Partner" : "Registered"}
-                      </span>
+                      <span className={`badge ${getOrgTypeBadgeTone(selectedOrg.type)}`}>{getOrgTypeDisplay(selectedOrg.type)}</span>
+                      {selectedOrg.verificationStatus !== "verified" && (
+                        <span className="badge bg-secondary-subtle text-secondary-emphasis border ms-2">
+                          Registered
+                        </span>
+                      )}
                     </div>
                   </div>
 

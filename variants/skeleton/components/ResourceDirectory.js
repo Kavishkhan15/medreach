@@ -63,7 +63,9 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
             <article className="surface h-100 d-flex flex-column">
               <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem" }}>
                 <h2 className="h5">{item.name}</h2>
-                <span className={`status-pill ${item.verificationStatus === "verified" ? "tone-success" : "tone-neutral"}`}>{item.verificationStatus}</span>
+                {item.verificationStatus && item.verificationStatus !== "verified" && (
+                  <span className="status-pill tone-neutral">{item.verificationStatus}</span>
+                )}
               </div>
               <p className="small text-secondary mb-2">
                 {item.address || item.locality || "Address not supplied"}

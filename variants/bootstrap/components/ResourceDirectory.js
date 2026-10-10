@@ -63,7 +63,9 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
             <article className="surface h-100 d-flex flex-column">
               <div className="d-flex justify-content-between gap-2">
                 <h2 className="h5">{item.name}</h2>
-                <span className={`status-pill ${item.verificationStatus === "verified" ? "tone-success" : "tone-neutral"}`}>{item.verificationStatus}</span>
+                {item.verificationStatus && item.verificationStatus !== "verified" && (
+                  <span className="status-pill tone-neutral">{item.verificationStatus}</span>
+                )}
               </div>
               <p className="small text-secondary mb-2">
                 {item.address || item.locality || "Address not supplied"}
