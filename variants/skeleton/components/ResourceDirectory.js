@@ -97,38 +97,58 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                 <p className="disclaimer">Availability and dispatch: unknown. Contact provider directly.</p>
               )}
               <div className="card-actions pt-3 border-top" style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "auto" }}>
-                {onSelectResource && kind === "blood-banks" && (
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm fw-semibold"
-                    onClick={() => onSelectResource(item)}
-                  >
-                    Request / Donate Blood
-                  </button>
-                )}
-                {item.phone ? (
-                  <a className="btn btn-primary btn-sm" href={`tel:${item.phone}`}>Call provider</a>
+                {kind === "ambulances" ? (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-success btn-sm fw-semibold"
+                      onClick={() => handleBook(item)}
+                    >
+                      Book Ambulance
+                    </button>
+                    {item.location?.coordinates?.length === 2 && (
+                      <a
+                        className="btn btn-outline-secondary btn-sm"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${item.location.coordinates[1]},${item.location.coordinates[0]}`}
+                      >
+                        Navigate
+                      </a>
+                    )}
+                    {item.phone ? (
+                      <a className="btn btn-primary btn-sm" href={`tel:${item.phone}`}>Call provider</a>
+                    ) : (
+                      <span className="small text-secondary align-self-center">Phone unavailable</span>
+                    )}
+                  </>
                 ) : (
-                  <span className="small text-secondary align-self-center">Phone unavailable</span>
-                )}
-                {item.location?.coordinates?.length === 2 && (
-                  <a
-                    className="btn btn-outline-secondary btn-sm"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${item.location.coordinates[1]},${item.location.coordinates[0]}`}
-                  >
-                    Navigate
-                  </a>
-                )}
-                {kind === "ambulances" && (
-                  <button
-                    type="button"
-                    className="btn btn-success btn-sm fw-semibold"
-                    onClick={() => handleBook(item)}
-                  >
-                    Book Ambulance
-                  </button>
+                  <>
+                    {onSelectResource && kind === "blood-banks" && (
+                      <button
+                        type="button"
+                        className="btn btn-danger btn-sm fw-semibold"
+                        onClick={() => onSelectResource(item)}
+                      >
+                        Request / Donate Blood
+                      </button>
+                    )}
+                    {item.phone ? (
+                      <a className="btn btn-primary btn-sm" href={`tel:${item.phone}`}>Call provider</a>
+                    ) : (
+                      <span className="small text-secondary align-self-center">Phone unavailable</span>
+                    )}
+                    {item.location?.coordinates?.length === 2 && (
+                      <a
+                        className="btn btn-outline-secondary btn-sm"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${item.location.coordinates[1]},${item.location.coordinates[0]}`}
+                      >
+                        Navigate
+                      </a>
+                    )}
+                  </>
                 )}
               </div>
             </article>

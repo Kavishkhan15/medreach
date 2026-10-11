@@ -97,38 +97,58 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                 <p className="text-[11px] text-gray-400">Availability and dispatch: unknown. Contact provider directly.</p>
               )}
               <div className="mt-auto pt-3 border-t border-gray-100 flex flex-wrap gap-2">
-                {onSelectResource && kind === "blood-banks" && (
-                  <button
-                    type="button"
-                    className="bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded hover:bg-red-700"
-                    onClick={() => onSelectResource(item)}
-                  >
-                    Request / Donate Blood
-                  </button>
-                )}
-                {item.phone ? (
-                  <a className="bg-[var(--color-emergency)] text-white text-xs font-semibold px-3 py-1.5 rounded hover:bg-[var(--color-emergency-dark)]" href={`tel:${item.phone}`}>Call provider</a>
+                {kind === "ambulances" ? (
+                  <>
+                    <button
+                      type="button"
+                      className="bg-green-600 text-white text-xs font-semibold px-3 py-1.5 rounded hover:bg-green-700"
+                      onClick={() => handleBook(item)}
+                    >
+                      Book Ambulance
+                    </button>
+                    {item.location?.coordinates?.length === 2 && (
+                      <a
+                        className="border border-gray-300 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded hover:bg-gray-50"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${item.location.coordinates[1]},${item.location.coordinates[0]}`}
+                      >
+                        Navigate
+                      </a>
+                    )}
+                    {item.phone ? (
+                      <a className="bg-[var(--color-emergency)] text-white text-xs font-semibold px-3 py-1.5 rounded hover:bg-[var(--color-emergency-dark)]" href={`tel:${item.phone}`}>Call provider</a>
+                    ) : (
+                      <span className="small text-secondary align-self-center">Phone unavailable</span>
+                    )}
+                  </>
                 ) : (
-                  <span className="small text-secondary align-self-center">Phone unavailable</span>
-                )}
-                {item.location?.coordinates?.length === 2 && (
-                  <a
-                    className="border border-gray-300 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded hover:bg-gray-50"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${item.location.coordinates[1]},${item.location.coordinates[0]}`}
-                  >
-                    Navigate
-                  </a>
-                )}
-                {kind === "ambulances" && (
-                  <button
-                    type="button"
-                    className="bg-green-600 text-white text-xs font-semibold px-3 py-1.5 rounded hover:bg-green-700"
-                    onClick={() => handleBook(item)}
-                  >
-                    Book Ambulance
-                  </button>
+                  <>
+                    {onSelectResource && kind === "blood-banks" && (
+                      <button
+                        type="button"
+                        className="bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded hover:bg-red-700"
+                        onClick={() => onSelectResource(item)}
+                      >
+                        Request / Donate Blood
+                      </button>
+                    )}
+                    {item.phone ? (
+                      <a className="bg-[var(--color-emergency)] text-white text-xs font-semibold px-3 py-1.5 rounded hover:bg-[var(--color-emergency-dark)]" href={`tel:${item.phone}`}>Call provider</a>
+                    ) : (
+                      <span className="small text-secondary align-self-center">Phone unavailable</span>
+                    )}
+                    {item.location?.coordinates?.length === 2 && (
+                      <a
+                        className="border border-gray-300 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded hover:bg-gray-50"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${item.location.coordinates[1]},${item.location.coordinates[0]}`}
+                      >
+                        Navigate
+                      </a>
+                    )}
+                  </>
                 )}
               </div>
             </article>
