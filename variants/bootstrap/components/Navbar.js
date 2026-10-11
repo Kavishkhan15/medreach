@@ -23,7 +23,18 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [loginHidden, setLoginHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const y = Math.max(0, window.scrollY);
+      setScrolled(y > 20);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     setLoginHidden(false);
@@ -57,7 +68,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-xxl app-navbar sticky-top" aria-label="Primary">
+    <nav className={`navbar navbar-expand-xxl app-navbar sticky-top${scrolled ? " is-scrolled" : ""}`} aria-label="Primary">
       <div className="medreach-nav-shell">
         <Link className="navbar-brand" href="/" onClick={() => setOpen(false)}>
           <Image src="/logo.png" alt="MedReach" width={128} height={128} priority />

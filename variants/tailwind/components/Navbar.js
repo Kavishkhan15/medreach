@@ -20,7 +20,18 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [loginHidden, setLoginHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const y = Math.max(0, window.scrollY);
+      setScrolled(y > 20);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     setLoginHidden(false);
@@ -50,7 +61,7 @@ export default function Navbar() {
     return <li key={href}><Link href={href} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)} className={`tw-nav-link ${active ? "tw-nav-active" : ""}`}><EmergencyIcon name={icon} size={20} /><span>{label}</span></Link></li>;
   };
 
-  return <nav className="tw-navbar sticky top-0 z-30 bg-white px-2 py-2 sm:px-4" aria-label="Primary">
+  return <nav className={`tw-navbar sticky top-0 z-30 bg-white px-2 py-2 sm:px-4${scrolled ? " is-scrolled" : ""}`} aria-label="Primary">
     <div className="tw-nav-shell">
       <Link href="/" className="tw-nav-brand" onClick={() => setOpen(false)}><Image src="/logo.png" alt="MedReach" width={128} height={128} priority /></Link>
       <button ref={toggleRef} type="button" className="tw-nav-toggle" aria-controls="nav" aria-expanded={open} aria-label="Toggle navigation" onClick={() => setOpen((value) => !value)}><span className="tw-nav-toggle-lines" /></button>
@@ -62,8 +73,8 @@ export default function Navbar() {
         </ul>
         {user && <ul className="tw-nav-account" aria-label="Your account">
           {navLink(["/dashboard", "Dashboard", "document"])}{navLink(["/profile", "Profile", "user"])}
-          {user.role === "hospital_admin" && navLink(["/hospital", "Hospital", "hospital"])}
-          {isAdmin && user.role !== "hospital_admin" && navLink(["/admin", "Admin", "shield"])}
+          {["provider_admin", "hospital_admin"].includes(user.role) && navLink(["/provider", "Provider", "hospital"])}
+          {isAdmin && user.role === "system_admin" && navLink(["/admin", "Admin", "shield"])}
         </ul>}
       </div>
     </div>

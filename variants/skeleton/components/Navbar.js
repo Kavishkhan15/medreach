@@ -26,7 +26,18 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [loginHidden, setLoginHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const y = Math.max(0, window.scrollY);
+      setScrolled(y > 20);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     setLoginHidden(false);
@@ -60,7 +71,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="app-navbar" aria-label="Primary">
+    <nav className={`app-navbar${scrolled ? " is-scrolled" : ""}`} aria-label="Primary">
       <div className="skeleton-nav-shell">
         <Link className="navbar-brand" href="/" onClick={() => setOpen(false)}>
           <Image src="/logo.png" alt="MedReach" width={128} height={128} priority />
@@ -78,8 +89,8 @@ export default function Navbar() {
           {user && <ul className="skeleton-account-links" aria-label="Your account">
             {renderLink({ href: "/dashboard", label: "Dashboard", icon: "document" })}
             {renderLink({ href: "/profile", label: "Profile", icon: "user" })}
-            {user.role === "hospital_admin" && renderLink({ href: "/hospital", label: "Hospital", icon: "hospital" })}
-            {isAdmin && user.role !== "hospital_admin" && renderLink({ href: "/admin", label: "Admin", icon: "shield" })}
+            {["provider_admin", "hospital_admin"].includes(user.role) && renderLink({ href: "/provider", label: "Provider", icon: "hospital" })}
+            {isAdmin && user.role === "system_admin" && renderLink({ href: "/admin", label: "Admin", icon: "shield" })}
           </ul>}
         </div>
       </div>
