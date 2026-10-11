@@ -1,3 +1,4 @@
+import { routeRequestSafely, assignedProviderUsers } from "./requestNotifications.js";
 import { randomBytes } from "node:crypto";
 import { EmergencyRequest } from "../models/EmergencyRequest.js";
 import { Hospital } from "../models/Hospital.js";
@@ -8,7 +9,7 @@ import { sendUserEmailSafely } from "./userEmailService.js";
 import { runEmailBatch } from "./emailBatch.js";
 import { generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, verifyTrackingToken } from "../utils/trackingToken.js";
 
-import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "./emailService.js";
+import { sendEmailEvent } from "./emailService.js";
 import { auditRequestUpdate, emailRequestUpdate } from "./bedRequestEmails.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
@@ -39,13 +40,14 @@ export async function createEmergencyRequest(data, actor) {
   const previous = await replay();
   if (previous) return previous;
   const hospital = await Hospital.findById(data.hospitalId);
-  if (!hospital) return { error: "Hospital not found", status: 404 };
+  if (!hospital || ["pending", "rejected"].includes(hospital.approvalStatus)) return { error: "Hospital not found", status: 404 };
   const userId = actor?.id || null;
   const isEmergency = data.isEmergency !== false;
   const trackingToken = userId ? undefined : (trackingTokenForIdempotency(data.idempotencyKeyHash) || generateTrackingToken());
   let request;
   try {
     request = await EmergencyRequest.create({
+    notificationVersion: 1,
     requestId: `MR-${Date.now().toString(36).toUpperCase()}-${randomBytes(3).toString("hex").toUpperCase()}`,
     user: userId,
     trackingTokenHash: trackingToken ? hashTrackingToken(trackingToken) : undefined,
@@ -75,8 +77,7 @@ export async function createEmergencyRequest(data, actor) {
   let connectedStaff = [];
   let hasHospitalStaff = false;
   try {
-    connectedStaff = await User.find({ _id: { $in: hospital.admins || [] },
-      accountStatus: "active", role: { $in: ["hospital_admin", "admin", "system_admin"] } }).select("_id").lean();
+    connectedStaff = await assignedProviderUsers("hospital", hospital._id);
     hasHospitalStaff = connectedStaff.length > 0;
     if (hasHospitalStaff) {
       request.status = "SENT";
@@ -117,39 +118,7 @@ export async function createEmergencyRequest(data, actor) {
     });
   }
 
-  // 3. MedReach admin notification to medreachforyou@gmail.com
-  emails.push(async () => {
-    try {
-      await sendEmailEvent({
-        eventKey: `mail:emergency:${request._id}:admin_system`,
-        to: SYSTEM_NOTIFICATION_EMAIL,
-        template: "bed_request_admin_notification",
-        data: {
-          reference: request.requestId,
-          hospital: hospital.name,
-          isEmergency: request.isEmergency,
-          emergencyType: request.emergencyType,
-          requiredFacility: request.requiredFacility,
-          contactPhone: request.contactPhone,
-          contactEmail: userRecipient || "Not provided",
-          ambulanceRequired: request.ambulanceRequired,
-          ambulancePickupAddress: request.ambulancePickupAddress,
-          patientAgeGroup: request.patientAgeGroup,
-          patientReference: request.patientReference,
-          patientSummary: request.patientSummary,
-          locality: request.locality,
-        },
-      });
-    } catch (err) {
-      console.warn("Failed to dispatch emergency request admin notification email:", err.message);
-    }
-  });
-
-  for (const { _id: adminId } of connectedStaff) {
-    emails.push(() => sendUserEmailSafely({ recipient: adminId, eventKey: `emergency:${request._id}:hospital:${adminId}`,
-      emailTemplate: "emergency_staff", emailData: { reference: request.requestId, hospital: hospital.name } }));
-  }
-  await runEmailBatch(emails);
+  await routeRequestSafely(request, "EmergencyRequest", emails);
   return { request, trackingToken };
 }
 
@@ -209,9 +178,9 @@ export async function changeEmergencyRequest({ requestId, actor, trackingToken, 
 }
 
 export async function listVisibleEmergencyRequests(actor) {
-  if (["admin", "system_admin"].includes(actor.role)) return EmergencyRequest.find().select("-patientSummary").populate("hospital", "name slug").sort({ createdAt: -1 }).limit(100).lean();
-  if (actor.role === "hospital_admin") {
-    const ids = await Hospital.find({ admins: actor.id }).distinct("_id");
+  if (["system_admin"].includes(actor.role)) return EmergencyRequest.find().select("-patientSummary").populate("hospital", "name slug").sort({ createdAt: -1 }).limit(100).lean();
+  if (["provider_admin", "hospital_admin"].includes(actor.role)) {
+    const ids = actor.role === "hospital_admin" ? await Hospital.find({ admins: actor.id }).distinct("_id") : actor.hospitalIds || [];
     return EmergencyRequest.find({ hospital: { $in: ids } }).populate("hospital", "name slug").sort({ createdAt: -1 }).limit(100).lean();
   }
   return EmergencyRequest.find({ user: actor.id }).populate("hospital", "name slug").sort({ createdAt: -1 }).limit(100).lean();

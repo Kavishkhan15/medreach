@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const API = "http://localhost:4000";
+const API = process.env.MEDREACH_HOME_TEST_API_URL || "http://localhost:4000";
 test.beforeEach(async ({ context }, testInfo) => {
   const variant = ["bootstrap", "tailwind", "skeleton"].indexOf(testInfo.project.name) + 1;
   await context.setExtraHTTPHeaders({ "X-Forwarded-For": `198.20.${variant}.1` });

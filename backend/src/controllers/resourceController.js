@@ -1,3 +1,5 @@
+import { routeRequestSafely } from "../services/requestNotifications.js";
+import { canManageResource } from "../services/providerAccess.js";
 import { randomBytes } from "node:crypto";
 import { ResourceProvider, RESOURCE_KINDS } from "../models/ResourceProvider.js";
 import { AmbulanceBooking, DELIVERY_STATES } from "../models/AmbulanceBooking.js";
@@ -10,11 +12,11 @@ import {
   verifyTrackingToken,
   TRACKING_TOKEN_HEADER,
 } from "../utils/trackingToken.js";
-import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "../services/emailService.js";
+import { sendEmailEvent } from "../services/emailService.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 export const listResources = (kind) => asyncHandler(async (req, res) => {
-  const filter = { kind, active: { $ne: false } };
+  const filter = { kind, approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } };
   if (req.query.q) filter.$or = ["name", "locality", "services", "coverageArea"].map((field) => ({ [field]: { $regex: String(req.query.q).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" } }));
   if (req.query.locality) filter.locality = { $regex: String(req.query.locality).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
   if (req.query.service) filter.services = String(req.query.service).slice(0, 80);
@@ -23,7 +25,7 @@ export const listResources = (kind) => asyncHandler(async (req, res) => {
   res.json({ data, currentInventory: "unknown", liveDispatch: false });
 });
 export const getResource = (kind) => asyncHandler(async (req, res) => {
-  const data = await ResourceProvider.findOne({ _id: req.params.id, kind, active: { $ne: false } }).select("-email").lean();
+  const data = await ResourceProvider.findOne({ _id: req.params.id, kind, approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } }).select("-email").lean();
   if (!data) return res.status(404).json({ error: "Provider not found" });
   res.json({ data, currentInventory: "unknown", liveDispatch: false });
 });
@@ -31,16 +33,17 @@ export const createResource = asyncHandler(async (req, res) => {
   if (!RESOURCE_KINDS.includes(req.body.kind)) return res.status(400).json({ error: "Invalid provider type" });
   const allowed = ["kind", "name", "hospital", "address", "locality", "city", "phone", "email", "website", "operatingHours", "services", "listedBloodGroups", "providerType", "coverageArea", "location", "sourceName", "sourceUrl", "observedAt", "confidence", "verificationStatus", "demo"];
   const data = Object.fromEntries(allowed.filter((key) => req.body[key] !== undefined).map((key) => [key, req.body[key]]));
-  const provider = await ResourceProvider.create(data);
+  const provider = await ResourceProvider.create({ ...data, approvalStatus: "pending" });
   await AuditLog.create({ user: req.user.id, action: "create", entityType: "ResourceProvider", entityId: provider._id,
     after: { kind: provider.kind, name: provider.name, verificationStatus: provider.verificationStatus }, requestId: req.id });
   res.status(201).json({ data: provider });
 });
 export const updateResource = asyncHandler(async (req, res) => {
-  const allowed = ["name", "hospital", "address", "locality", "city", "phone", "email", "website", "operatingHours", "services", "listedBloodGroups", "providerType", "coverageArea", "location", "sourceName", "sourceUrl", "observedAt", "confidence", "verificationStatus"];
+  const allowed = req.user.role === "system_admin" ? ["name", "hospital", "address", "locality", "city", "phone", "email", "website", "operatingHours", "services", "listedBloodGroups", "providerType", "coverageArea", "location", "sourceName", "sourceUrl", "observedAt", "confidence", "verificationStatus"] : ["address", "locality", "phone", "email", "website", "operatingHours"];
   const patch = Object.fromEntries(allowed.filter((key) => req.body[key] !== undefined).map((key) => [key, req.body[key]]));
   const provider = await ResourceProvider.findById(req.params.id);
   if (!provider) return res.status(404).json({ error: "Provider not found" });
+  if (!canManageResource(req.user, provider)) return res.status(403).json({ error: "Not assigned to this provider" });
   const before = { name: provider.name, verificationStatus: provider.verificationStatus };
   Object.assign(provider, patch); await provider.save();
   await AuditLog.create({ user: req.user.id, action: "update", entityType: "ResourceProvider", entityId: provider._id,
@@ -128,7 +131,7 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
   }
 
   const provider = providerId
-    ? await ResourceProvider.findOne({ _id: providerId, kind: "ambulance", active: { $ne: false } })
+    ? await ResourceProvider.findOne({ _id: providerId, kind: "ambulance", approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } })
       .select("+email")
       .lean()
     : null;
@@ -154,6 +157,8 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
   let booking;
   try {
     booking = await AmbulanceBooking.create({
+    notificationVersion: 1,
+    isEmergency: req.body.isEmergency === true,
     reference,
     provider: provider._id,
     user: req.user?.id || undefined,
@@ -174,8 +179,8 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
     status: "RECORDED",
     delivery: {
       user: { status: userEmail ? "pending" : "not_available" },
-      admin: { status: "pending" },
-      provider: { status: provider.email ? "pending" : "not_available" },
+      admin: { status: req.body.isEmergency === true ? "pending" : "not_available" },
+      provider: { status: "pending" },
     },
     trackingTokenHash: hashTrackingToken(trackingToken),
     idempotencyKeyHash: req.idempotencyKeyHash,
@@ -198,21 +203,7 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
     });
   }
 
-  await deliver("admin", {
-    eventKey: `ambulance_booking_admin_${reference}`,
-    to: SYSTEM_NOTIFICATION_EMAIL,
-    template: "ambulance_booking_admin_notification",
-    data: bookingData,
-  });
-
-  if (provider.email) {
-    await deliver("provider", {
-      eventKey: `ambulance_booking_provider_${reference}`,
-      to: provider.email,
-      template: "ambulance_booking_provider_notification",
-      data: bookingData,
-    });
-  }
+  await routeRequestSafely(booking, "AmbulanceBooking");
 
   res.status(201).json({
     success: true,
@@ -231,7 +222,7 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
 });
 
 export const listAmbulanceBookings = asyncHandler(async (req, res) => {
-  const filter = ["admin", "system_admin"].includes(req.user.role) ? {} : { user: req.user.id };
+  const filter = req.user.role === "system_admin" ? {} : ["provider_admin", "hospital_admin"].includes(req.user.role) ? { provider: { $in: req.user.providerIds || [] } } : { user: req.user.id };
   const data = await AmbulanceBooking.find(filter).sort({ createdAt: -1 }).limit(100).lean();
   res.json({ data: data.map(publicBooking), total: data.length });
 });
@@ -241,7 +232,7 @@ export const getAmbulanceBooking = asyncHandler(async (req, res) => {
     .select("+trackingTokenHash");
   if (!booking) return res.status(404).json({ error: "Ambulance booking not found" });
 
-  const isAdmin = req.user && ["admin", "system_admin"].includes(req.user.role);
+  const isAdmin = req.user && (req.user.role === "system_admin" || req.user.providerIds?.includes(String(booking.provider)));
   const isOwner = req.user && booking.user && String(booking.user) === String(req.user.id);
   const suppliedToken = req.get(TRACKING_TOKEN_HEADER);
   const hasGuestAccess = verifyTrackingToken(suppliedToken, booking.trackingTokenHash);

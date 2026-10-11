@@ -13,6 +13,9 @@ const timeline = new mongoose.Schema({
 }, { _id: false });
 
 const schema = new mongoose.Schema({
+  notificationVersion: Number,
+  notificationRoutedAt: Date,
+  notificationRouting: { type: String, enum: ["recorded", "no_eligible_recipients"] },
   requestId: { type: String, required: true, unique: true, index: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false, index: true },
   trackingTokenHash: { type: String, select: false },
@@ -46,4 +49,5 @@ schema.set("toJSON", {
     return ret;
   },
 });
+schema.index({ notificationVersion: 1, notificationRoutedAt: 1 });
 export const EmergencyRequest = mongoose.model("EmergencyRequest", schema);

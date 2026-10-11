@@ -1,4 +1,4 @@
-import { User } from "../models/User.js";
+import { notificationRecipients } from "./requestNotifications.js";
 import { EmailDelivery } from "../models/EmailDelivery.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { sendUserEmailSafely } from "./userEmailService.js";
@@ -33,11 +33,10 @@ export async function emailRequestUpdate(request, hospital) {
   const latest = request.timeline.at(-1);
   if (latest?.actorRole === "patient") {
     try {
-      const staff = await User.find({ _id: { $in: hospital?.admins || [] }, accountStatus: "active",
-        role: { $in: ["hospital_admin", "admin", "system_admin"] } }).select("_id").lean();
-      for (const recipient of staff) {
-        await sendUserEmailSafely({ ...event, recipient: recipient._id, eventKey: `${eventKey}:hospital:${recipient._id}`,
-          emailTemplate: "bed_request_staff_updated" });
+      const staff = await notificationRecipients("hospital", hospital?._id, false);
+      for (const { user } of staff) {
+        await sendEmailEvent({ eventKey: `mail:${eventKey}:hospital:${user._id}`, to: user.notificationEmail,
+          template: "bed_request_staff_updated", data: event.emailData });
       }
     } catch {
       console.warn("[medreach] Request saved; staff update email unavailable.");

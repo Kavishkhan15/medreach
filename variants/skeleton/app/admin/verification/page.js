@@ -1,19 +1,15 @@
 "use client";
-import { useState } from "react";
-import { useHospitals, adminVerifyHospital } from "@medreach/core";
+import { useAdminAccess, useAdminResource, loadAdminHospitals, adminList, useAdminAction, adminEntity, adminVerifyHospital } from "@medreach/core";
 import { toneClass } from "../../../lib/tone";
+import AdminDataState from "../../../components/AdminDataState";
+import AdminActionFeedback from "../../../components/AdminActionFeedback";
 import AdminGuard from "../../../components/AdminGuard";
 
-function Row({ hospital }) {
-  const [status, setStatus] = useState(hospital.verificationStatus || "unverified");
-  const [msg, setMsg] = useState("");
-  const act = async (decision) => {
-    try {
-      await adminVerifyHospital(hospital._id, decision);
-      setStatus(decision === "reject" ? "rejected" : decision === "mark_stale" ? "stale" : "verified");
-      setMsg("saved");
-    } catch { setMsg("requires live backend + admin"); }
-  };
+function Row({ hospital, refresh, action }) {
+  const status = hospital.verificationStatus || "unverified";
+  const act = (decision) => action.run(() => adminVerifyHospital(hospital._id, decision), {
+    validate: adminEntity("hospital"), success: "Verification decision confirmed.", refresh,
+  });
   return (
     <tr>
       <th scope="row" className="fw-semibold">{hospital.name}</th>
@@ -21,32 +17,35 @@ function Row({ hospital }) {
       <td><span className={`status-pill ${status === "verified" ? toneClass.success : toneClass.warning}`}>{status}</span></td>
       <td>
         <div className="flex flex-wrap items-center gap-1">
-          <button className="btn btn-sm btn-primary" onClick={() => act("approve")}>Approve</button>
-          <button className="btn btn-sm btn-outline-secondary" onClick={() => act("reject")}>Reject</button>
-          <button className="btn btn-sm btn-outline-secondary" onClick={() => act("mark_stale")}>Mark stale</button>
-          <span className="small text-secondary">{msg}</span>
+          <button className="btn btn-sm btn-primary" disabled={action.disabled} onClick={() => act("approve")}>Approve</button>
+          <button className="btn btn-sm btn-outline-secondary" disabled={action.disabled} onClick={() => act("reject")}>Reject</button>
+          <button className="btn btn-sm btn-outline-secondary" disabled={action.disabled} onClick={() => act("mark_stale")}>Mark stale</button>
         </div>
       </td>
     </tr>
   );
 }
 
+const validateHospitals = adminList("hospital");
+
 export default function AdminVerificationPage() {
-  const { data, loading } = useHospitals({}, { sort: "updated" });
-  const queue = data.filter((h) => h.verificationStatus !== "verified");
+  const { allowed } = useAdminAccess();
+  const resource = useAdminResource(loadAdminHospitals, validateHospitals, allowed);
+  const data = resource.status === "success" ? resource.data : [];
+  const action = useAdminAction();
+  const queue = data.filter((h) => h.verificationStatus !== "verified" && h.approvalStatus !== "rejected");
   return (
     <AdminGuard title="Verification queue" subtitle="Review stored provider data before it is trusted. Every override is audit-logged.">
+      <AdminActionFeedback action={action} refresh={resource.reload} />
       <div className="surface">
-        {loading ? <p className="text-secondary">Loading…</p> : queue.length === 0 ? (
-          <p className="mb-0 text-secondary">Nothing awaiting verification.</p>
-        ) : (
+        <AdminDataState resource={resource} label="verification queue" empty={resource.status === "success" && queue.length === 0} emptyMessage="Nothing awaiting verification.">
           <div className="table-responsive">
             <table className="table mb-0">
               <thead><tr><th scope="col">Hospital</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
-              <tbody>{queue.map((h) => <Row key={h._id || h.slug} hospital={h} />)}</tbody>
+              <tbody>{queue.map((h) => <Row key={h._id || h.slug} hospital={h} refresh={resource.reload} action={action} />)}</tbody>
             </table>
           </div>
-        )}
+        </AdminDataState>
       </div>
     </AdminGuard>
   );

@@ -263,7 +263,7 @@ test("assistant ambulance booking records the selected provider and opens privat
   expect(saved.delivery.provider.sent).toBe(false);
   await expect(modal.getByText(`Request ${saved.reference} was recorded.`, { exact: false })).toBeVisible();
   await expect(modal.getByText(/provider notification email was not sent/i)).toBeVisible();
-  const bookingUrl = `http://localhost:4000/api/ambulances/bookings/${saved.reference}`;
+  const bookingUrl = `${process.env.MEDREACH_HOME_TEST_API_URL || "http://localhost:4000"}/api/ambulances/bookings/${saved.reference}`;
   expect((await request.get(bookingUrl)).status()).toBe(403);
   const trackedResponse = await request.get(bookingUrl, { headers: { "X-MedReach-Tracking-Token": saved.trackingToken } });
   expect(trackedResponse.status()).toBe(200);

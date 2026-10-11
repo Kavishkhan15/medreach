@@ -22,7 +22,7 @@ test("bed request lifecycle: real database, staff, patient, guest, history and f
   await mongoose.connection.dropDatabase();
   const app = createApp();
   const patient = await User.create({ name: "Lifecycle patient", email: "patient@lifecycle.test", role: "user" });
-  const staff = await User.create({ name: "Lifecycle staff", email: "staff@lifecycle.test", role: "hospital_admin" });
+  const staff = await User.create({ name: "Lifecycle staff", email: "staff@lifecycle.test", role: "hospital_admin", notificationsEnabled: true, notificationEmail: "staff@lifecycle.test", notificationEmailVerifiedAt: new Date() });
   const outsider = await User.create({ name: "Unassigned staff", email: "outsider@lifecycle.test", role: "hospital_admin" });
   const hospital = await Hospital.create({ name: "Lifecycle Hospital", city: "Mumbai", admins: [staff._id], phone: "+91 22 4000 1000" });
   const tokens = { patient: await signSessionToken(patient), staff: await signSessionToken(staff), outsider: await signSessionToken(outsider) };
@@ -47,7 +47,7 @@ test("bed request lifecycle: real database, staff, patient, guest, history and f
       assert.equal(result.request.status, "SENT");
       assert.deepEqual(result.request.timeline.map((s) => s.status), ["REQUESTED", "SENT"]);
       assert.equal(await mongoose.connection.collection("notifications").countDocuments(), 0);
-      assert.ok(await EmailDelivery.findOne({ eventKey: `mail:emergency:${result.request._id}:hospital:${staff.id}` }));
+      assert.ok(await EmailDelivery.findOne({ eventKey: `request-routing:EmergencyRequest:${result.request._id}:${staff.id}` }));
       const view = await request(app).get(`/api/emergency-requests/${result.request._id}`).set("Authorization", `Bearer ${tokens.patient}`);
       assert.equal(view.status, 200);
       assert.equal(view.body.request.hospital.phone, hospital.phone);

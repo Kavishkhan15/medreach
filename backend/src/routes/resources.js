@@ -31,6 +31,7 @@ export const resourceRouter = (kind) => {
       body("providerId").isMongoId().withMessage("Valid ambulance provider is required"),
       body("patientName").trim().notEmpty().withMessage("Patient name is required"),
       body("patientAge").isInt({ min: 1, max: 130 }).withMessage("Patient age must be between 1 and 130"),
+      body("isEmergency").optional().isBoolean().toBoolean(),
       body("ambulanceRequired").optional().isBoolean().toBoolean(),
       body("bookingPickup").optional({ checkFalsy: true }).isString().trim().isLength({ min: 2, max: 300 }),
       body("bookingPickup").custom((value, { req }) => !req.body.ambulanceRequired || (typeof value === "string" && value.trim().length >= 2))
@@ -57,12 +58,12 @@ export const resourceRouter = (kind) => {
   return router;
 };
 export const resourceAdminRouter = Router();
-resourceAdminRouter.post("/", requireAuth, requireRole("admin", "system_admin"),
+resourceAdminRouter.post("/", requireAuth, requireRole("system_admin"),
   body("kind").isIn(["blood_bank", "diagnostic", "ambulance"]), body("name").trim().isLength({ min: 2, max: 180 }),
   body("sourceName").trim().notEmpty(),
   body("email").optional({ checkFalsy: true }).trim().toLowerCase().isEmail(),
   validate, createResource);
-resourceAdminRouter.patch("/:id", requireAuth, requireRole("admin", "system_admin"),
+resourceAdminRouter.patch("/:id", requireAuth, requireRole("system_admin", "provider_admin"),
   param("id").isMongoId(),
   body("email").optional({ checkFalsy: true }).trim().toLowerCase().isEmail(),
   validate, updateResource);

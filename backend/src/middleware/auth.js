@@ -1,4 +1,6 @@
+import { isolatedDemoEnabled } from "../services/demoAccounts.js";
 import { verifyToken } from "../utils/token.js";
+import { assignedContext } from "../services/providerAccess.js";
 import mongoose from "mongoose";
 import { User } from "../models/User.js";
 import { AuthToken } from "../models/AuthToken.js";
@@ -23,14 +25,17 @@ async function resolveAccessContext(token) {
       purpose: "refresh_session", usedAt: { $exists: false }, revokedAt: { $exists: false },
       expiresAt: { $gt: new Date() } }),
   ]);
-  if (!current || current.accountStatus !== "active" || Number(current.authVersion || 0) !== Number(payload.av || 0)) {
+  if (!current || current.accountStatus !== "active" || (current.demoAccount && !isolatedDemoEnabled()) || Number(current.authVersion || 0) !== Number(payload.av || 0)) {
     return { error: "Session is no longer valid" };
   }
   if (!session) {
     return { error: "Session is no longer valid" };
   }
+  let scope;
+  try { scope = await assignedContext({ id: payload.sub, role: current.role }); }
+  catch { return { error: "Provider permissions temporarily unavailable", status: 503 }; }
   return {
-    user: { id: payload.sub, role: current.role,
+    user: { ...scope, id: payload.sub, role: current.role,
       email: current.email, name: current.name },
     claims: payload,
   };
@@ -51,7 +56,7 @@ export async function requireAuth(req, res, next) {
   }
 }
 
-// RBAC — usage: router.post("/", requireAuth, requireRole("admin"), handler)
+// RBAC — usage: router.post("/", requireAuth, requireRole("system_admin"), handler)
 export function requireRole(...roles) {
   return (req, res, next) => {
     if (!req.user) return res.status(401).json({ error: "Authentication required" });

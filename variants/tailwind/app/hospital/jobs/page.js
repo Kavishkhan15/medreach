@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
+import { useAuth, useAdminResource, useAdminAction, adminList, adminEntity } from "@medreach/core";
+import AdminDataState from "../../../components/AdminDataState";
+import AdminActionFeedback from "../../../components/AdminActionFeedback";
 import { productApi, post } from "../../../lib/productApi";
 import EmergencyIcon from "../../../components/EmergencyIcons";
 
@@ -26,120 +29,62 @@ function isSafeUrl(url) {
   }
 }
 
-export default function HospitalJobs() {
-  const [hospitals, setHospitals] = useState([]);
-  const [jobs, setJobs] = useState([]);
+const loadHospitals = (signal) => productApi("/api/hospital-admin/hospitals", { signal });
+const loadProviders = (signal) => productApi("/api/providers/mine", { signal });
+const parseProviders = adminList("organization");
+const loadJobs = (signal) => productApi("/api/jobs/manage", { signal });
+const parseHospitals = adminList("hospital"), parseJobs = adminList("job"), parseApplications = adminList("application");
+
+export default function HospitalJobs({ providerMode = false }) {
+  const { user, ready } = useAuth();
+  const enabled = ready && Boolean(user);
+  const hospitalResource = useAdminResource(providerMode ? loadProviders : loadHospitals, providerMode ? parseProviders : parseHospitals, enabled);
+  const jobsResource = useAdminResource(loadJobs, parseJobs, enabled);
+  const hospitals = hospitalResource.status === "success" ? hospitalResource.data : [];
+  const jobs = jobsResource.status === "success" ? jobsResource.data : [];
   const [form, setForm] = useState(initialForm);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   const [expandedJobId, setExpandedJobId] = useState("");
-  const [applications, setApplications] = useState([]);
-  const [loadingApps, setLoadingApps] = useState(false);
-  const [updatingAppId, setUpdatingAppId] = useState(null);
-
-  const refresh = useCallback(async () => {
-    try {
-      const [hRes, jRes] = await Promise.all([
-        productApi("/api/hospital-admin/hospitals"),
-        productApi("/api/jobs/manage"),
-      ]);
-      const hospList = hRes.data || [];
-      setHospitals(hospList);
-      setJobs(jRes.data || []);
-      setForm((prev) => ({
-        ...prev,
-        hospital: prev.hospital || hospList[0]?._id || "",
-      }));
-      setError("");
-    } catch (e) {
-      setError(e.message || "Failed to load hospital data.");
-    }
-  }, []);
-
+  const loadApplicants = useCallback((signal) => productApi(`/api/jobs/${expandedJobId}/applications`, { signal }), [expandedJobId]);
+  const applicantResource = useAdminResource(loadApplicants, parseApplications, enabled && Boolean(expandedJobId));
+  const applications = applicantResource.status === "success" ? applicantResource.data : [];
+  const action = useAdminAction();
   useEffect(() => {
-    refresh();
-  }, [refresh]);
-
-  const act = async (fn, successMsg = "Saved.") => {
-    try {
-      await fn();
-      setMessage(successMsg);
-      setError("");
-      await refresh();
-    } catch (e) {
-      setError(e.message || "Action failed.");
-    }
-  };
-
-  const loadApplications = async (jobId) => {
-    if (expandedJobId === jobId) {
-      setExpandedJobId("");
-      setApplications([]);
-      return;
-    }
-    setLoadingApps(true);
-    setExpandedJobId(jobId);
-    try {
-      const res = await productApi(`/api/jobs/${jobId}/applications`);
-      setApplications(res.data || []);
-      setError("");
-    } catch (e) {
-      setError(e.message || "Failed to load applicant records.");
-    } finally {
-      setLoadingApps(false);
-    }
-  };
-
-  const handleUpdateStatus = async (appId, newStatus) => {
-    setUpdatingAppId(appId);
-    try {
-      await productApi(`/api/applications/${appId}`, {
-        method: "PATCH",
-        body: { status: newStatus },
-      });
-      // Optimistically update local application state immediately
-      setApplications((prev) =>
-        prev.map((app) => (app._id === appId ? { ...app, status: newStatus } : app))
-      );
-      setMessage(`Applicant marked as ${newStatus.replaceAll("_", " ")}.`);
-      setError("");
-    } catch (e) {
-      setError(e.message || "Failed to update applicant review status.");
-    } finally {
-      setUpdatingAppId(null);
-    }
-  };
-
+    if (hospitalResource.status === "success") setForm((previous) => ({ ...previous, hospital: hospitalResource.data.some((h) => h._id === previous.hospital) ? previous.hospital : hospitalResource.data[0]?._id || "" }));
+  }, [hospitalResource.status, hospitalResource.data]);
+  const act = (fn, success = "Job update confirmed.") => action.run(fn, { validate: adminEntity("job"), success, refresh: jobsResource.reload });
+  const loadApplications = (jobId) => setExpandedJobId((previous) => previous === jobId ? "" : jobId);
+  const handleUpdateStatus = (appId, newStatus) => action.run(() => productApi(`/api/applications/${appId}`, { method: "PATCH", body: { status: newStatus } }), { validate: adminEntity("application"), success: `Applicant update to ${newStatus.replaceAll("_", " ")} confirmed.`, refresh: applicantResource.reload, target: appId });
+  if (!ready) return <p role="status">Loading hospital careers…</p>;
+  if (!user) return <p>Sign in to manage hospital careers. <Link href="/login?returnTo=%2Fhospital%2Fjobs">Sign in</Link></p>;
   return (
     <>
-      <Link href="/hospital" className="small text-decoration-none">
-        ← Back to Hospital Workspace
+      <Link href={providerMode ? "/provider" : "/hospital"} className="small text-decoration-none">
+        ← Back to {providerMode ? "Provider" : "Hospital"} Workspace
       </Link>
 
       <div className="page-head my-3">
-        <span className="eyebrow">Hospital Careers Management</span>
+        <span className="eyebrow">{providerMode ? "Provider" : "Hospital"} Careers Management</span>
         <h1>Job Listings & Applications</h1>
         <p>Review incoming clinical candidates, qualifications, and manage active departmental drafts.</p>
       </div>
 
-      {error && <div className="alert alert-danger" role="alert">{error}</div>}
-      {message && <div className="alert alert-success" role="status">{message}</div>}
+      <AdminActionFeedback action={action} refresh={action.target ? applicantResource.reload : jobsResource.reload} />
 
       <div className="row g-4">
         {/* Left Column: Create Job Draft */}
         <div className="col-lg-5">
-          <form
+          <AdminDataState resource={hospitalResource} label="career hospital assignments" emptyMessage="No organisation assigned for job creation."><form
             className="surface vstack gap-2"
             onSubmit={(e) => {
               e.preventDefault();
-              act(() => post("/api/jobs", form), "Job draft created successfully.");
+              act(() => post("/api/jobs", providerMode ? { ...form, hospital: hospitals.find((h) => h._id === form.hospital)?.kind === "hospital" ? form.hospital : undefined, provider: hospitals.find((h) => h._id === form.hospital)?.kind !== "hospital" ? form.hospital : undefined } : form), "Job draft created successfully.");
             }}
           >
             <h2 className="h5 mb-2">Create Job Draft</h2>
 
             <div>
               <label className="form-label small fw-bold" htmlFor="jhospital">
-                Hospital Facility
+                Assigned organisation
               </label>
               <select
                 id="jhospital"
@@ -237,17 +182,17 @@ export default function HospitalJobs() {
               />
             </div>
 
-            <button className="btn btn-primary btn-sm mt-2 fw-bold" disabled={!form.hospital}>
+            <button className="btn btn-primary btn-sm mt-2 fw-bold" disabled={action.disabled || !form.hospital}>
               Save Job Draft
             </button>
-          </form>
+          </form></AdminDataState>
         </div>
 
         {/* Right Column: Listings & Review Applicants */}
         <div className="col-lg-7">
           <div className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5">
             <h2 className="h5 mb-3">Facility Job Listings</h2>
-            {!jobs.length && <p className="text-secondary small">No job listings found for your managed hospitals.</p>}
+            <AdminDataState resource={jobsResource} label="managed jobs" emptyMessage="No job listings found for your managed hospitals.">
 
             {jobs.map((job) => {
               const isExpanded = expandedJobId === job._id;
@@ -257,7 +202,7 @@ export default function HospitalJobs() {
                     <div>
                       <strong className="h6 d-block mb-1">{job.title}</strong>
                       <p className="small text-secondary mb-2">
-                        {job.hospital?.name} · <span className="text-capitalize">{job.category}</span> · {job.employmentType?.replaceAll("_", " ")}
+                        {job.hospital?.name || job.provider?.name} · <span className="text-capitalize">{job.category}</span> · {job.employmentType?.replaceAll("_", " ")}
                       </p>
                     </div>
                     <span className="status-pill tone-info text-capitalize">{job.status}</span>
@@ -265,22 +210,22 @@ export default function HospitalJobs() {
 
                   <div className="d-flex flex-wrap gap-2 mb-2">
                     {job.status === "draft" && (
-                      <button
+                      <button disabled={action.disabled}
                         className="btn btn-sm btn-outline-primary"
-                        onClick={() => act(() => post(`/api/jobs/${job._id}/status`, { status: "published" }), "Listing published.")}
+                        onClick={() => act(() => post(`/api/jobs/${job._id}/status`, { status: "published" }), "Listing submission confirmed. Check its status for publication or pending review.")}
                       >
                         Publish Listing
                       </button>
                     )}
                     {job.status === "published" && (
-                      <button
+                      <button disabled={action.disabled}
                         className="btn btn-sm btn-outline-secondary"
                         onClick={() => act(() => post(`/api/jobs/${job._id}/status`, { status: "closed" }), "Listing closed.")}
                       >
                         Close Listing
                       </button>
                     )}
-                    <button
+                    <button disabled={action.disabled}
                       className={`btn btn-sm ${isExpanded ? "btn-secondary" : "btn-outline-secondary"}`}
                       onClick={() => loadApplications(job._id)}
                       aria-expanded={isExpanded}
@@ -294,23 +239,19 @@ export default function HospitalJobs() {
                   {isExpanded && (
                     <div id={`apps-${job._id}`} className="mt-3 ps-2 border-start border-3 border-primary bg-light p-3 rounded">
                       <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h3 className="h6 fw-bold mb-0">Candidate Applications ({applications.length})</h3>
-                        {loadingApps && <span className="spinner-border spinner-border-sm text-secondary" />}
+                        <h3 className="h6 fw-bold mb-0">Candidate Applications{applicantResource.status === "success" ? ` (${applications.length})` : ""}</h3>
                       </div>
 
-                      {!loadingApps && !applications.length && (
-                        <p className="small text-muted mb-0">No candidates have applied for this listing yet.</p>
-                      )}
-
+                      <AdminDataState resource={applicantResource} label="applicants" emptyMessage="No candidates have applied for this listing yet.">
                       {applications.map((app) => {
                         const candName = app.candidateName || app.applicant?.name || "Candidate";
                         const candEmail = app.contactEmail || app.applicant?.email || "Not specified";
                         const candPhone = app.candidatePhone || app.phone || app.applicant?.emergencyContact || "Not specified";
-                        const candQual = app.qualifications || app.qualification || app.degree || "Clinical Credentials on File";
-                        const candExp = app.experienceYears !== undefined ? `${app.experienceYears} Year(s)` : app.experience !== undefined ? `${app.experience} Year(s)` : "Experience on file";
+                        const candQual = app.qualifications || app.qualification || app.degree || "Not provided";
+                        const candExp = app.experienceYears !== undefined ? `${app.experienceYears} Year(s)` : app.experience !== undefined ? `${app.experience} Year(s)` : "Not provided";
                         const sopText = app.sop || app.statement || "";
                         const sopWords = sopText.trim() ? sopText.trim().split(/\s+/).filter(Boolean).length : 0;
-                        const isUpdating = updatingAppId === app._id;
+                        const isUpdating = action.disabled;
 
                         return (
                           <div key={app._id} className="border rounded p-3 mb-3 bg-white shadow-sm">
@@ -433,11 +374,13 @@ export default function HospitalJobs() {
                           </div>
                         );
                       })}
+                      </AdminDataState>
                     </div>
                   )}
                 </div>
               );
             })}
+            </AdminDataState>
           </div>
         </div>
       </div>

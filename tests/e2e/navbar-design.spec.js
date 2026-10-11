@@ -127,7 +127,7 @@ test("landing Login hides on downward scroll and returns on upward scroll or ano
 test("signed-in patient, hospital staff and admin keep their account links and logout", async ({ page }) => {
   for (const width of [1440, 375]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const [email, roleLink] of [["bootstrap.e2e@medreach.test", null], ["staff.e2e@medreach.test", "Hospital"], ["admin.e2e@medreach.test", "Admin"]]) {
+    for (const [email, roleLink] of [["bootstrap.e2e@medreach.test", null], ["staff.e2e@medreach.test", "Provider"], ["admin.e2e@medreach.test", "Admin"]]) {
       const response = await page.request.post(`${API}/api/auth/login`, { data: { email, password: "E2E_SafePassword_123!" } });
       expect(response.ok()).toBe(true);
       await page.goto("/");

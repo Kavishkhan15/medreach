@@ -11,7 +11,7 @@ const ALL_BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
 export default function BloodBanks() {
   const { user } = useAuth();
-  const isAdmin = user && ["admin", "system_admin"].includes(user.role);
+  const isAdmin = user?.role === "system_admin";
 
   const [campaigns, setCampaigns] = useState([]);
   const [pendingCampaigns, setPendingCampaigns] = useState([]);

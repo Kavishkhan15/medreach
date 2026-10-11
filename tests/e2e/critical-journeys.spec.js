@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const API = "http://localhost:4000";
+const API = process.env.MEDREACH_HOME_TEST_API_URL || "http://localhost:4000";
 const PASSWORD = "E2E_SafePassword_123!";
 
 // Isolate browser clients so separate journeys do not share rate-limit budgets.

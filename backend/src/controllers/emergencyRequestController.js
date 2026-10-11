@@ -19,7 +19,7 @@ export const getRequest = asyncHandler(async (req, res) => {
     .populate("hospital", "name slug admins phone emergencyPhone address location");
   if (!request) return res.status(404).json({ error: "Request not found" });
   if (request.user) {
-    if (!req.user || (String(request.user) !== req.user.id && !canManageHospital(req.user, request.hospital) && !["admin", "system_admin"].includes(req.user.role))) {
+    if (!req.user || (String(request.user) !== req.user.id && !canManageHospital(req.user, request.hospital) && !["system_admin"].includes(req.user.role))) {
       return res.status(403).json({ error: "Access denied" });
     }
   } else if (!canManageHospital(req.user, request.hospital)

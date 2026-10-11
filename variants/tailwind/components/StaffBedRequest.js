@@ -1,28 +1,24 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState } from "react";
-import { bedRequestLabel, BED_REQUEST_STAFF_ACTIONS } from "@medreach/core";
+import { useState } from "react";
+import { bedRequestLabel, BED_REQUEST_STAFF_ACTIONS, adminEntity } from "@medreach/core";
+import AdminActionFeedback from "./AdminActionFeedback";
 import { patch } from "../lib/productApi";
 
-export default function StaffBedRequest({ request, refresh }) {
+export default function StaffBedRequest({ request, refresh, action }) {
   const [response, setResponse] = useState("");
   const [error, setError] = useState("");
-  const [saved, setSaved] = useState("");
-  const [busy, setBusy] = useState(false);
-  const locked = useRef(false);
+  const busy = action.busy;
+  const disabled = action.disabled;
   const actions = BED_REQUEST_STAFF_ACTIONS[request.status] || [];
   const expired = !["ACCEPTED", "COMPLETED", "CANCELLED", "REJECTED", "EXPIRED"].includes(request.status) && new Date(request.expiresAt) <= new Date();
   const act = async (status) => {
-    if (locked.current) return;
-    setError(""); setSaved("");
+    setError("");
     if (status === "INFORMATION_REQUESTED" && !response.trim()) { setError("Explain what information the patient should provide."); return; }
-    locked.current = true; setBusy(true);
-    try {
-      await patch(`/api/emergency-requests/${request._id}`, { status, expectedStatus: request.status, expectedTimelineLength: request.timeline.length, hospitalResponse: response.trim() });
-      setResponse(""); setSaved("Response recorded. Check email delivery history for delivery status.");
-      await refresh();
-    } catch (e) { setError(e.message || "Could not save the response."); }
-    finally { locked.current = false; setBusy(false); }
+    const result = await action.run(() => patch(`/api/emergency-requests/${request._id}`, { status, expectedStatus: request.status, expectedTimelineLength: request.timeline.length, hospitalResponse: response.trim() }), {
+      validate: adminEntity("request"), success: "Response recorded. Check email delivery history for delivery status.", refresh, target: request._id,
+    });
+    if (result) setResponse("");
   };
   return <article className="bg-white rounded-lg border border-gray-200 p-5 mb-4" aria-label={request.requestId}>
     <h3 className="text-lg font-bold mt-5 mb-3">{request.requestId} · {request.hospital?.name}</h3>
@@ -35,11 +31,11 @@ export default function StaffBedRequest({ request, refresh }) {
     <Link style={{ minHeight: 44 }} className="inline-flex items-center justify-center min-h-[44px] rounded border border-gray-300 px-4 py-2 text-sm font-semibold disabled:opacity-50" href={`/requests/${request._id}`}>Open request and timeline</Link>
     {actions.length > 0 && !expired && <>
       <label htmlFor={`response-${request._id}`}>Message to patient</label>
-      <textarea style={{ fontSize: 16 }} id={`response-${request._id}`} className="block w-full rounded border border-gray-300 p-3 text-base mt-1 mb-3" rows={3} maxLength={500} value={response} disabled={busy} onChange={(e) => setResponse(e.target.value)} />
-      <div className="flex flex-wrap items-center gap-3 my-3">{actions.map(([status, label]) => <button style={{ minHeight: 44 }} className="inline-flex items-center justify-center min-h-[44px] rounded border border-gray-300 px-4 py-2 text-sm font-semibold disabled:opacity-50" key={status} disabled={busy} onClick={() => act(status)}>{busy ? "Saving…" : label}</button>)}</div>
+      <textarea style={{ fontSize: 16 }} id={`response-${request._id}`} className="block w-full rounded border border-gray-300 p-3 text-base mt-1 mb-3" rows={3} maxLength={500} value={response} disabled={disabled} onChange={(e) => setResponse(e.target.value)} />
+      <div className="flex flex-wrap items-center gap-3 my-3">{actions.map(([status, label]) => <button style={{ minHeight: 44 }} className="inline-flex items-center justify-center min-h-[44px] rounded border border-gray-300 px-4 py-2 text-sm font-semibold disabled:opacity-50" key={status} disabled={disabled} onClick={() => act(status)}>{busy ? "Saving…" : label}</button>)}</div>
     </>}
+    {action.target === request._id && <AdminActionFeedback action={action} refresh={refresh} />}
     {expired && <p>The response deadline passed. Refresh to check expiry.</p>}
-    {saved && <p role="status">{saved}</p>}
-    {error && <div className="p-3 my-3 border border-red-200 rounded bg-red-50 text-red-800" role="alert">{error}<div><button style={{ minHeight: 44 }} className="inline-flex items-center justify-center min-h-[44px] rounded border border-gray-300 px-4 py-2 text-sm font-semibold disabled:opacity-50" disabled={busy} onClick={refresh}>Refresh requests</button></div></div>}
+    {error && <div className="p-3 my-3 border border-red-200 rounded bg-red-50 text-red-800" role="alert">{error}<div><button style={{ minHeight: 44 }} className="inline-flex items-center justify-center min-h-[44px] rounded border border-gray-300 px-4 py-2 text-sm font-semibold disabled:opacity-50" disabled={disabled} onClick={refresh}>Refresh requests</button></div></div>}
   </article>;
 }

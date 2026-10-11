@@ -1,17 +1,21 @@
 "use client";
-import { useEffect, useState } from "react";
-import { adminListAudit, relativeTime } from "@medreach/core";
+import { adminListAudit, adminList, adminEmailData, useAdminResource, useAdminAccess, relativeTime } from "@medreach/core";
 import { productApi } from "../../../lib/productApi";
 import AdminGuard from "../../../components/AdminGuard";
-
+import AdminDataState from "../../../components/AdminDataState";
+const loadAudit = (signal) => adminListAudit({ signal });
+const parseAudit = adminList("audit");
+const validateAudit = (r) => parseAudit(r).filter((a) => ["AuthSession", "User", "UserEmail", "UserPassword", "AuthRegistration"].includes(a.entityType));
+const loadEmail = (signal) => productApi("/api/email/status", { signal });
 export default function AdminSecurityPage() {
-  const [audit, setAudit] = useState([]); const [email, setEmail] = useState(null); const [error, setError] = useState("");
-  useEffect(() => { Promise.all([adminListAudit(), productApi("/api/email/status")])
-    .then(([events, config]) => { setAudit((events.data || []).filter((item) => ["AuthSession", "User", "UserEmail", "UserPassword", "AuthRegistration"].includes(item.entityType))); setEmail(config); })
-    .catch((reason) => setError(reason.message)); }, []);
-  return <AdminGuard systemOnly title="Security & authentication" subtitle="Safe operational metadata only; passwords, hashes, refresh tokens, and SMTP credentials never appear here.">
-    {error && <div className="alert alert-danger">{error}</div>}
-    <div className="row g-3 mb-3"><div className="col-md-4"><div className="surface h-100"><h2 className="h6">Access tokens</h2><p className="mb-0">Short-lived, signed, httpOnly cookie</p></div></div><div className="col-md-4"><div className="surface h-100"><h2 className="h6">Refresh sessions</h2><p className="mb-0">Opaque, hashed, rotating, revocable</p></div></div><div className="col-md-4"><div className="surface h-100"><h2 className="h6">Email delivery</h2><p className="mb-0">{email ? `${email.mode} · ${email.configured ? "configured" : "not configured"}` : "Loading…"}</p></div></div></div>
-    <div className="surface table-responsive"><h2 className="h5">Recent authentication events</h2><table className="table"><thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Area</th><th>Request</th></tr></thead><tbody>{audit.map((event) => <tr key={event._id}><td>{relativeTime(event.createdAt)}</td><td>{event.user?.name || "System/public"}</td><td>{event.action}</td><td>{event.entityType}</td><td><code>{event.requestId || "—"}</code></td></tr>)}{!audit.length && <tr><td colSpan="5" className="text-secondary">No recent authentication events.</td></tr>}</tbody></table></div>
+  const { allowed } = useAdminAccess();
+  const audit = useAdminResource(loadAudit, validateAudit, allowed);
+  const email = useAdminResource(loadEmail, adminEmailData, allowed);
+  return <AdminGuard title="Security & authentication" subtitle="Operational metadata; credentials and tokens are never shown.">
+    <div className="row row-cols-2 row-cols-lg-4 g-3"><section className="surface mb-3"><h2>Access tokens</h2><p>Short-lived, signed, httpOnly cookie</p></section><section className="surface mb-3"><h2>Refresh sessions</h2><p>Opaque, hashed, rotating, revocable</p></section></div>
+    <section className="surface mb-3" aria-label="Email delivery"><h2>Email delivery</h2><AdminDataState resource={email} label="email status">{(data) => <p>{data.mode} · {data.configured ? "configured" : "not configured"}</p>}</AdminDataState></section>
+    <section className="surface mb-3"><h2>Recent authentication events</h2><AdminDataState resource={audit} label="authentication events" emptyMessage="No recent authentication events.">
+      {(events) => <div style={{ overflowX: "auto" }}><table className="table align-middle"><thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Area</th><th>Request</th></tr></thead><tbody>{events.map((event) => <tr key={event._id}><td>{relativeTime(event.createdAt)}</td><td>{event.user?.name || "System/public"}</td><td>{event.action}</td><td>{event.entityType}</td><td><code>{event.requestId || "—"}</code></td></tr>)}</tbody></table></div>}
+    </AdminDataState></section>
   </AdminGuard>;
 }

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-const API = "http://localhost:4000";
+const API = process.env.MEDREACH_HOME_TEST_API_URL || "http://localhost:4000";
 
 test.beforeEach(async ({ context }, testInfo) => {
   const variant = ["bootstrap", "tailwind", "skeleton"].indexOf(testInfo.project.name) + 1;

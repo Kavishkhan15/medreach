@@ -11,6 +11,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
   // Form state
   const [patientName, setPatientName] = useState("");
   const [patientAge, setPatientAge] = useState("");
+  const [isEmergency, setIsEmergency] = useState(false);
   const [ambulanceRequired, setAmbulanceRequired] = useState(false);
   const [bookingPickup, setBookingPickup] = useState("");
   const [bookingDetails, setBookingDetails] = useState("");
@@ -51,6 +52,7 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
         providerName: provider?.name,
         patientName,
         patientAge: Number(patientAge),
+        isEmergency,
         ambulanceRequired,
         bookingPickup,
         bookingDetails,
@@ -134,6 +136,8 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
+<label><input type="checkbox" checked={isEmergency} onChange={(e) => setIsEmergency(e.target.checked)} /> This is an emergency request</label><p>Ordinary transport stays separate. For immediate emergency assistance call 112.</p>
+
             <div className="mb-2">
               <label className="form-label small fw-bold text-uppercase">Patient Full Name *</label>
               <input
@@ -167,6 +171,8 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
                   value={ambulanceRequired ? "yes" : "no"}
                   onChange={(e) => setAmbulanceRequired(e.target.value === "yes")}
                 >
+
+
                   <option value="no">No (Consultation)</option>
                   <option value="yes">Yes (Pickup requested)</option>
                 </select>

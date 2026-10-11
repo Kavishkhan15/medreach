@@ -1,3 +1,4 @@
+import { guardSystemAdminMutation } from "../services/adminMutationGuard.js";
 import mongoose from "mongoose";
 import { User } from "../models/User.js";
 import { issueAuthToken, revokeAllSessions } from "../services/authTokenService.js";
@@ -5,20 +6,20 @@ import { sendEmailEvent } from "../services/emailService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { hashIp, writeAudit } from "../utils/audit.js";
 
-const SYSTEM_ROLES = ["admin", "system_admin"];
-const SAFE_ROLES = ["user", "hospital_admin", "system_admin"];
+const SYSTEM_ROLES = ["system_admin"];
+const SAFE_ROLES = ["user", "provider_admin", "system_admin"];
 const validId = (id) => mongoose.isValidObjectId(id);
 const safeUser = (user) => ({ _id: user._id, email: user.email, name: user.name, role: user.role,
   accountStatus: user.accountStatus, emailVerifiedAt: user.emailVerifiedAt, lastLogin: user.lastLogin,
   createdAt: user.createdAt, updatedAt: user.updatedAt,
-  providers: { password: Boolean(user.passwordHash) } });
+  notificationEmail: user.notificationEmail || "", notificationsEnabled: Boolean(user.notificationsEnabled), notificationContactVerified: Boolean(user.notificationEmailVerifiedAt), providers: { password: Boolean(user.passwordHash) } });
 const audit = (req, entry) => writeAudit({ ...entry, ipHash: hashIp(req.ip), requestId: req.id });
 
 export const listUsers = asyncHandler(async (req, res) => {
   const limit = Math.min(Math.max(Number(req.query.limit) || 50, 1), 200);
   const filter = {};
   if (["active", "suspended", "pending"].includes(req.query.status)) filter.accountStatus = req.query.status;
-  if ([...SAFE_ROLES, "admin"].includes(req.query.role)) filter.role = req.query.role;
+  if (req.user.role === "system_admin" && [...SAFE_ROLES, "admin", "hospital_admin", "user_admin"].includes(req.query.role)) filter.role = req.query.role;
   const users = await User.find(filter).select("+passwordHash").sort({ createdAt: -1 }).limit(limit);
   res.json({ data: users.map(safeUser) });
 });
@@ -30,11 +31,12 @@ export const getUser = asyncHandler(async (req, res) => {
   res.json({ user: safeUser(user) });
 });
 
-export const setUserStatus = asyncHandler(async (req, res) => {
+export const setUserStatus = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async (assertHeld) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: "Invalid user id" });
   const user = await User.findById(req.params.id).select("+authVersion +passwordHash");
   if (!user) return res.status(404).json({ error: "User not found" });
   const next = req.body.status;
+  if (user.role === "provider_admin" && next === "active" && (!user.passwordHash || !user.emailVerifiedAt)) return res.status(409).json({ error: "The representative must accept the activation invitation first" });
   if (String(user._id) === req.user.id && next !== "active") return res.status(409).json({ error: "You cannot disable your own account" });
   if (SYSTEM_ROLES.includes(user.role) && next !== "active") {
     const remaining = await User.countDocuments({ _id: { $ne: user._id }, role: { $in: SYSTEM_ROLES }, accountStatus: "active" });
@@ -44,6 +46,7 @@ export const setUserStatus = asyncHandler(async (req, res) => {
   user.accountStatus = next;
   user.disabledAt = next === "active" ? undefined : new Date();
   user.authVersion = Number(user.authVersion || 0) + 1;
+  await assertHeld();
   await user.save();
   await revokeAllSessions(user._id, next === "active" ? "account_enabled" : "account_disabled");
   await sendEmailEvent({ eventKey: `account-status:${user._id}:${user.authVersion}`, to: user.email,
@@ -51,9 +54,9 @@ export const setUserStatus = asyncHandler(async (req, res) => {
   await audit(req, { user: req.user.id, action: next === "active" ? "account_enabled" : "account_disabled",
     entityType: "User", entityId: user._id, before: { accountStatus: before }, after: { accountStatus: next } });
   res.json({ user: safeUser(user) });
-});
+}));
 
-export const setUserRole = asyncHandler(async (req, res) => {
+export const setUserRole = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async (assertHeld) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: "Invalid user id" });
   const user = await User.findById(req.params.id).select("+authVersion +passwordHash");
   if (!user) return res.status(404).json({ error: "User not found" });
@@ -67,6 +70,7 @@ export const setUserRole = asyncHandler(async (req, res) => {
   const before = user.role;
   user.role = next;
   user.authVersion = Number(user.authVersion || 0) + 1;
+  await assertHeld();
   await user.save();
   await revokeAllSessions(user._id, "role_changed");
   await sendEmailEvent({ eventKey: `role-change:${user._id}:${user.authVersion}`, to: user.email,
@@ -74,34 +78,37 @@ export const setUserRole = asyncHandler(async (req, res) => {
   await audit(req, { user: req.user.id, action: "role_changed", entityType: "User", entityId: user._id,
     before: { role: before }, after: { role: next } });
   res.json({ user: safeUser(user) });
-});
+}));
 
-export const revokeUserSessions = asyncHandler(async (req, res) => {
+export const revokeUserSessions = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async (assertHeld) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: "Invalid user id" });
   const user = await User.findById(req.params.id).select("+authVersion");
   if (!user) return res.status(404).json({ error: "User not found" });
   user.authVersion = Number(user.authVersion || 0) + 1;
+  await assertHeld();
   await user.save();
   const result = await revokeAllSessions(user._id, "admin_revoked");
   await audit(req, { user: req.user.id, action: "revoke", entityType: "AuthSession", entityId: user._id,
     after: { revokedCount: result.modifiedCount || 0 } });
   res.json({ ok: true, revokedCount: result.modifiedCount || 0 });
-});
+}));
 
-export const triggerUserReset = asyncHandler(async (req, res) => {
+export const triggerUserReset = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async (assertHeld) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: "Invalid user id" });
   const user = await User.findById(req.params.id);
   if (!user) return res.status(404).json({ error: "User not found" });
+  if (user.accountStatus !== "active") return res.status(409).json({ error: "Activate the account before preparing password recovery" });
+  if (user.role === "provider_admin" && (!user.notificationEmailVerifiedAt || !user.notificationEmail)) return res.status(409).json({ error: "Verify a real recovery contact before preparing a reset" });
   await issueAuthToken(user, "reset_password");
   await audit(req, { user: req.user.id, action: "password_reset_requested", entityType: "UserPassword", entityId: user._id });
   res.json({ ok: true, message: "Password-reset instructions were prepared." });
-});
+}));
 
-export const resendUserVerification = asyncHandler(async (req, res) => {
+export const resendUserVerification = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async (assertHeld) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: "Invalid user id" });
   const user = await User.findById(req.params.id);
   if (!user) return res.status(404).json({ error: "User not found" });
   if (!user.emailVerifiedAt) await issueAuthToken(user, "verify_email");
   await audit(req, { user: req.user.id, action: "email_verification_requested", entityType: "UserEmail", entityId: user._id });
   res.json({ ok: true, alreadyVerified: Boolean(user.emailVerifiedAt) });
-});
+}));

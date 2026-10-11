@@ -6,6 +6,7 @@ const point = new mongoose.Schema({
   coordinates: { type: [Number], required: true },
 }, { _id: false });
 const schema = new mongoose.Schema({
+  approvalStatus: { type: String, enum: ["pending", "approved", "rejected"] },
   kind: { type: String, enum: RESOURCE_KINDS, required: true, index: true },
   active: { type: Boolean, default: true, index: true },
   derivedFromCapability: { type: String, enum: ["Blood Bank", "Diagnostics", "Ambulance"] },

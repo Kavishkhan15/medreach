@@ -8,6 +8,7 @@ import { notFound, errorHandler } from "./middleware/error.js";
 import { requestId } from "./middleware/requestId.js";
 import { requestLogger } from "./middleware/logging.js";
 
+import { providerAccountRouter, providerRouter, providerApprovalRouter } from "./routes/providerAdmin.js";
 import healthRouter from "./routes/health.js";
 import authRoutes from "./routes/authRoutes.js";
 import hospitalRoutes from "./routes/hospitalRoutes.js";
@@ -46,6 +47,9 @@ export function createApp() {
   app.use("/api/hospitals", hospitalRoutes);
   // Facilities + availability are nested under a hospital id.
   app.use("/api/hospitals", availabilityRoutes);
+  app.use("/api/admin/provider-accounts", providerAccountRouter);
+  app.use("/api/admin/provider-approvals", providerApprovalRouter);
+  app.use("/api/providers", providerRouter);
   app.use("/api/admin", adminRoutes);
   app.use("/api/alerts", alertRoutes);
   app.use("/api/users", userRoutes);

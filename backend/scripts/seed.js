@@ -1,5 +1,6 @@
 // Seed the database with comprehensive Mumbai hospitals, diagnostic centres, blood banks, users, and alerts.
 // Requires a running MongoDB (MONGO_URI). Run: npm --workspace backend run seed
+import { isolatedDemoEnabled, setDemoPassword } from "../src/services/demoAccounts.js";
 import { connectDB, disconnectDB } from "../src/config/db.js";
 import { Hospital } from "../src/models/Hospital.js";
 import { User } from "../src/models/User.js";
@@ -10,6 +11,7 @@ import { hospitals, adminSeed, userSeed, bloodCampaignsSeed, mumbaiDiagnosticsAn
 
 async function run() {
   await connectDB();
+  if (!isolatedDemoEnabled()) throw new Error("Legacy dataset seeding is restricted to an isolated local demo database with email disabled. Use non-destructive account provisioning for existing data.");
   await Promise.all([
     Hospital.deleteMany({}),
     User.deleteMany({}),
@@ -18,8 +20,8 @@ async function run() {
     ResourceProvider.deleteMany({}),
   ]);
 
-  const admin = new User({ email: adminSeed.email, name: adminSeed.name, region: adminSeed.region, role: "admin" });
-  await admin.setPassword(adminSeed.password);
+  const admin = new User({ email: "admin@medreach.com", name: adminSeed.name, region: adminSeed.region, role: "system_admin" });
+  await setDemoPassword(admin);
   await admin.save();
 
   const user = new User({

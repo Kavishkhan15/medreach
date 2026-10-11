@@ -46,7 +46,7 @@ test("product workflow: register, ownership, request response, emails, jobs, res
     const login = await request(app).post("/api/auth/login").send({ email: "patient@medreach.test", password: "NewPassword123" });
     assert.equal(login.status, 200);
     const patientToken = await signSessionToken(await User.findById(user._id).select("+authVersion"));
-    const staff = new User({ name: "Hospital Staff", email: "staff@medreach.test", role: "user" });
+    const staff = new User({ name: "Hospital Staff", email: "staff@medreach.test", role: "provider_admin" });
     await staff.setPassword("SafePassword123"); await staff.save();
     const admin = new User({ name: "System Admin", email: "admin@medreach.test", role: "system_admin" });
     await admin.setPassword("SafePassword123"); await admin.save();
@@ -57,15 +57,17 @@ test("product workflow: register, ownership, request response, emails, jobs, res
     await otherHospitalStaff.setPassword("SafePassword123"); await otherHospitalStaff.save();
     other.admins = [otherHospitalStaff._id]; await other.save();
     const otherHospitalStaffToken = await signSessionToken(otherHospitalStaff);
+    await request(app).post(`/api/admin/provider-approvals/organizations/hospital/${hospital._id}/approve`).set("Authorization", `Bearer ${adminToken}`).expect(200);
     const claim = await request(app).post("/api/hospital-admin/ownership-claims").set("Authorization", `Bearer ${staffToken}`)
       .send({ hospitalId: hospital.id, hospitalEmail: "staff@integration.example", explanation: "Hospital staff test" });
     assert.equal(claim.status, 201);
     const reviewed = await request(app).post(`/api/admin/ownership-claims/${claim.body.claim._id}/review`).set("Authorization", `Bearer ${adminToken}`)
       .send({ decision: "approve", note: "Verified for integration test" });
     assert.equal(reviewed.status, 200);
-    const freshStaff = await User.findById(staff._id);
+    const freshStaff = await User.findById(staff._id).select("+authVersion");
     const hospitalDoc = await Hospital.findById(hospital._id);
-    assert.equal(freshStaff.role, "hospital_admin"); assert.equal(hospitalDoc.admins.some((id) => String(id) === String(staff._id)), true);
+    assert.equal(freshStaff.role, "provider_admin");
+    assert.equal(await mongoose.connection.collection("providermemberships").countDocuments({ user: staff._id, organization: hospital._id, active: true }), 1);
     const staffRoleToken = await signSessionToken(freshStaff);
     const forbidden = await request(app).post(`/api/hospitals/${other.id}/availability`).set("Authorization", `Bearer ${staffRoleToken}`)
       .send({ facility: "ICU", status: "available", quantity: 2 });
@@ -146,12 +148,14 @@ test("product workflow: register, ownership, request response, emails, jobs, res
     const provider = await request(app).post("/api/admin/resources").set("Authorization", `Bearer ${adminToken}`)
       .send({ kind: "blood_bank", name: "Test Blood Bank", sourceName: "Integration fixture", demo: true });
     assert.equal(provider.status, 201);
+    assert.equal((await request(app).post(`/api/admin/provider-approvals/organizations/blood_bank/${provider.body.data._id}/approve`).set("Authorization", `Bearer ${adminToken}`)).status, 200);
     const blood = await request(app).get("/api/blood-banks");
     assert.equal(blood.status, 200); assert.equal(blood.body.currentInventory, "unknown"); assert.equal(blood.body.data.length, 1);
     for (const kind of ["diagnostic", "ambulance"]) {
       const createdProvider = await request(app).post("/api/admin/resources").set("Authorization", `Bearer ${adminToken}`)
         .send({ kind, name: `Test ${kind}`, sourceName: "Integration fixture", demo: true });
       assert.equal(createdProvider.status, 201);
+      assert.equal((await request(app).post(`/api/admin/provider-approvals/organizations/${kind}/${createdProvider.body.data._id}/approve`).set("Authorization", `Bearer ${adminToken}`)).status, 200);
     }
     assert.equal((await request(app).get("/api/diagnostics")).body.data.length, 1);
     assert.equal((await request(app).get("/api/ambulances")).body.liveDispatch, false);

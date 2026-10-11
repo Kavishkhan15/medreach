@@ -44,7 +44,7 @@ router.post("/", proposalLimit, optionalAuth, ...campaignFields(), createCampaig
 router.post("/propose", proposalLimit, optionalAuth, ...campaignFields(), createCampaign);
 
 // Admin-only status approval/rejection endpoint
-router.patch("/:id/status", requireAuth, requireRole("admin", "system_admin"), param("id").isMongoId(), validate, updateCampaignStatus);
+router.patch("/:id/status", requireAuth, requireRole("system_admin"), param("id").isMongoId(), validate, updateCampaignStatus);
 
 // Update campaign: authenticated creator or admin
 router.patch("/:id", requireAuth, param("id").isMongoId(), ...campaignFields(true), updateCampaign);

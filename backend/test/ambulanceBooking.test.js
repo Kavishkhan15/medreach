@@ -1,3 +1,4 @@
+import { ProviderMembership } from "../src/models/ProviderMembership.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
@@ -102,7 +103,7 @@ test("durable ambulance booking workflow", async (t) => {
     assert.ok(response.body.reference.startsWith("AMB-"));
     assert.ok(response.body.trackingToken, "guest receives a private tracking token once");
     assert.equal(response.body.delivery.user.status, "sent");
-    assert.equal(response.body.delivery.admin.status, "sent");
+    assert.equal(response.body.delivery.admin.status, "not_available");
     assert.equal(response.body.delivery.provider.status, "not_available");
     assert.equal(response.body.delivery.provider.attempted, false);
     assert.equal(response.body.booking.providerName, provider.name);
@@ -143,6 +144,8 @@ test("durable ambulance booking workflow", async (t) => {
       active: true,
     });
 
+    const staff = await User.create({ name: "Ambulance representative", email: "login@ambulance.example", role: "provider_admin", notificationsEnabled: true, notificationEmail: "dispatch@example.com", notificationEmailVerifiedAt: new Date() });
+    await ProviderMembership.create({ user: staff._id, kind: "ambulance", organization: provider._id, assignedBy: staff._id });
     setEmailTransportFactoryForTests(() => ({
       sendMail: async ({ to }) => {
         if (to === provider.email) {
@@ -166,7 +169,7 @@ test("durable ambulance booking workflow", async (t) => {
 
     assert.equal(response.status, 201);
     assert.equal(response.body.delivery.user.status, "sent");
-    assert.equal(response.body.delivery.admin.status, "sent");
+    assert.equal(response.body.delivery.admin.status, "not_available");
     assert.equal(response.body.delivery.provider.status, "failed");
     assert.equal(response.body.delivery.provider.attempted, true);
     assert.equal(response.body.delivery.provider.sent, false);

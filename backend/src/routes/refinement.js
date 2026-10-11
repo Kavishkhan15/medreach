@@ -7,7 +7,7 @@ import { refinementStatus, refineFacilityClaim } from "../services/refinementSer
 import { RefinementCandidate } from "../models/RefinementCandidate.js";
 import { AuditLog } from "../models/AuditLog.js";
 const router = Router();
-router.use(requireAuth, requireRole("admin", "system_admin"));
+router.use(requireAuth, requireRole("system_admin"));
 router.get("/status", (_req, res) => res.json(refinementStatus()));
 router.get("/candidates", asyncHandler(async (_req, res) => res.json({ data: await RefinementCandidate.find()
   .populate("hospital", "name").populate("source", "name type").sort({ createdAt: -1 }).limit(100).lean() })));

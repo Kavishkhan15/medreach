@@ -14,6 +14,7 @@ const slugify = (s) =>
 
 const hospitalSchema = new mongoose.Schema(
   {
+    approvalStatus: { type: String, enum: ["pending", "approved", "rejected"] },
     name: { type: String, required: true, trim: true, maxlength: 200 },
     slug: { type: String, unique: true, index: true },
     description: { type: String, trim: true, maxlength: 2000 },

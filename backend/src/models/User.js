@@ -17,6 +17,14 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true, maxlength: 120 },
     role: { type: String, enum: ROLE_VALUES, default: ROLES.USER },
     accountStatus: { type: String, enum: ACCOUNT_STATUS, default: "active" },
+    provisioningKey: { type: String, unique: true, sparse: true, select: false },
+    provisioningOrganization: { type: String, select: false },
+    demoAccount: { type: Boolean, default: false },
+    activationDeliveryStatus: { type: String, enum: ["not_required", "pending", "sent", "failed", "disabled", "uncertain", "unknown"] },
+    credentialState: { type: String, enum: ["demo_default", "custom", "unknown"], default: "unknown" },
+    notificationEmail: { type: String, trim: true, lowercase: true, maxlength: 150 },
+    notificationsEnabled: { type: Boolean, default: false },
+    notificationEmailVerifiedAt: { type: Date },
     lastLogin: { type: Date },
     emailVerifiedAt: { type: Date },
     authVersion: { type: Number, default: 0, min: 0, select: false },
@@ -31,6 +39,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.methods.setPassword = async function (plain) {
   this.passwordHash = await bcrypt.hash(plain, 12);
+  this.credentialState = "custom";
 };
 
 userSchema.methods.comparePassword = function (plain) {
@@ -38,7 +47,7 @@ userSchema.methods.comparePassword = function (plain) {
   return bcrypt.compare(plain, this.passwordHash);
 };
 
-// True for any administrator role (new roles + legacy "admin").
+// Legacy roles are retained in storage, not treated as global administrators.
 userSchema.virtual("isAdmin").get(function () {
   return ADMIN_ROLES.includes(this.role);
 });
@@ -57,6 +66,8 @@ userSchema.set("toJSON", {
     delete ret.passwordHash;
     delete ret.googleSubject;
     delete ret.authVersion;
+    delete ret.provisioningKey;
+    delete ret.provisioningOrganization;
     delete ret.__v;
     return ret;
   },

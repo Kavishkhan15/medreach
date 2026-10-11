@@ -2,7 +2,7 @@ import js from "@eslint/js";
 import hooks from "eslint-plugin-react-hooks";
 
 export default [
-  { ignores: ["**/.next/**", "**/node_modules/**", "backend/**", "evaluation/**", "probe-react/**", "scripts/**", "playwright-report/**", "test-results/**"] },
+  { ignores: ["**/.next/**", "**/.next-security-test/**", "**/node_modules/**", "backend/**", "evaluation/**", "probe-react/**", "scripts/**", "playwright-report/**", "test-results/**"] },
   {
     files: ["variants/**/app/**/*.js", "variants/**/components/**/*.js", "variants/**/lib/**/*.js", "variants/**/_core/**/*.js", "packages/core/src/**/*.js"],
     languageOptions: { ecmaVersion: "latest", sourceType: "module", parserOptions: { ecmaFeatures: { jsx: true } },

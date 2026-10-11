@@ -20,8 +20,8 @@ export default function EmergencyPage() {
     <>
       <header className="page-head mb-4">
         <span className="eyebrow">Critical care</span>
-        <h1 className="d-flex align-items-center gap-2">
-          <EmergencyIcon name="siren" size={32} className="text-danger" /> Emergency mode
+        <h1 className="d-flex align-items-center flex-wrap gap-2">
+          <EmergencyIcon name="siren" size={32} className="text-danger flex-shrink-0" /> Emergency mode
         </h1>
         <p>
           This assists with hospital discovery only. It is not medical advice and does not

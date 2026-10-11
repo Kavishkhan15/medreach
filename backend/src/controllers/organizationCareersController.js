@@ -3,6 +3,8 @@ import { Hospital } from "../models/Hospital.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { User } from "../models/User.js";
+import { providerEmailTasks } from "../services/requestNotifications.js";
+import { canManageResource } from "../services/providerAccess.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
 import { sendUserEmailSafely } from "../services/userEmailService.js";
 import { runEmailBatch } from "../services/emailBatch.js";
@@ -14,7 +16,7 @@ export const listOrganizationsForCareers = asyncHandler(async (req, res) => {
   const q = req.query.q ? String(req.query.q) : "";
   const typeFilter = req.query.type ? String(req.query.type) : null;
 
-  let query = {};
+  let query = { approvalStatus: { $nin: ["pending", "rejected"] } };
   if (q) {
     const escaped = q
       .slice(0, 80)
@@ -113,7 +115,7 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     }
   }
 
-  if (!organization) {
+  if (!organization || ["pending", "rejected"].includes(organization.approvalStatus)) {
     return res.status(404).json({ error: "Organization not found" });
   }
 
@@ -191,16 +193,10 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     emailData: { organizationName: organization.name, reference: application.reference },
   })];
 
-  if (organizationType === "hospital" && organization.admins && organization.admins.length > 0) {
-    for (const adminId of organization.admins) {
-      emails.push(() => sendUserEmailSafely({
-        recipient: adminId,
-        eventKey: `org_application:${application._id}:received:${adminId}`,
-        emailTemplate: "org_application_received",
-        emailData: { organizationName: organization.name },
-      }));
-    }
-  }
+  try {
+    emails.push(...await providerEmailTasks(organizationType, organization._id, `org_application:${application._id}:received`,
+      "org_application_received", { organizationName: organization.name }));
+  } catch { console.warn("[medreach] Application saved; provider email routing unavailable."); }
   await runEmailBatch(emails);
   res.status(201).json({ application: await careerSubmission(application) });
 });
@@ -216,7 +212,7 @@ export const organizationApplications = asyncHandler(async (req, res) => {
       return res.status(403).json({ error: "Not assigned to this hospital" });
     }
   } else if (provider) {
-    if (!["admin", "system_admin"].includes(req.user.role)) {
+    if (!canManageResource(req.user, provider)) {
       return res.status(403).json({ error: "Not authorized to view these applications" });
     }
   } else {
@@ -248,7 +244,7 @@ export const reviewOrganizationApplication = asyncHandler(async (req, res) => {
   } else {
     organization = await ResourceProvider.findById(application.provider);
     if (!organization) return res.status(404).json({ error: "Organization not found" });
-    if (!["admin", "system_admin"].includes(req.user.role)) {
+    if (!canManageResource(req.user, organization)) {
       return res.status(403).json({ error: "Not authorized to review this application" });
     }
   }

@@ -27,10 +27,10 @@ test("constants: role families are consistent", () => {
   assert.ok(ADMIN_ROLES.includes("system_admin") && !ADMIN_ROLES.includes("user"));
 });
 
-test("User: legacy admin role still validates (seed compat)", () => {
+test("User: legacy admin role still validates (storage compatibility without privileges)", () => {
   const u = new User({ email: "a@x.io", name: "A", passwordHash: "x", role: "admin" });
   assert.equal(u.validateSync(), undefined);
-  assert.equal(u.isAdmin, true);
+  assert.equal(u.isAdmin, false);
 });
 
 test("User: new roles validate; unknown role rejected", () => {

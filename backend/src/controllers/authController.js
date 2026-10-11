@@ -1,3 +1,4 @@
+import { isolatedDemoEnabled } from "../services/demoAccounts.js";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { User } from "../models/User.js";
@@ -20,7 +21,7 @@ function publicUser(user) {
   const raw = user?.toObject ? user.toObject() : { ...user };
   raw.regionOnboardingRequired = user?.regionOnboardingRequired
     ?? !String(raw.region || "").trim();
-  delete raw.passwordHash; delete raw.googleSubject; delete raw.authVersion; delete raw.__v;
+  delete raw.passwordHash; delete raw.googleSubject; delete raw.authVersion; delete raw.provisioningKey; delete raw.provisioningOrganization; delete raw.__v;
   return raw;
 }
 
@@ -79,7 +80,7 @@ export const login = asyncHandler(async (req, res) => {
     await audit(req, { user: user?._id, action: "login_failed", entityType: "AuthSession" });
     return res.status(401).json({ error: "Invalid email or password" });
   }
-  if (user.accountStatus !== "active") {
+  if (user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled())) {
     await audit(req, { user: user._id, action: "login_failed", entityType: "AuthSession" });
     return res.status(401).json({ error: "Invalid email or password" });
   }
@@ -150,16 +151,20 @@ export const resetPassword = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Invalid or expired reset link" });
   }
   const user = await User.findById(entry.user).select("+passwordHash +authVersion");
-  if (!user || user.accountStatus !== "active") {
+  if (!user || user.accountStatus !== "active" || (user.role === "provider_admin" && (!user.notificationEmailVerifiedAt || entry.metadata?.notificationEmail !== user.notificationEmail))) {
     await audit(req, { user: entry.user, action: "password_reset", entityType: "UserPassword",
       after: { success: false, reason: "account_unavailable" } });
     return res.status(400).json({ error: "Invalid or expired reset link" });
   }
   await user.setPassword(req.body.password);
-  user.authVersion = Number(user.authVersion || 0) + 1;
-  await user.save();
+  const updated = await User.findOneAndUpdate({ _id: user._id, role: user.role, accountStatus: "active",
+    authVersion: Number(user.authVersion || 0) ? Number(user.authVersion) : { $in: [0, null] }, ...(user.role === "provider_admin" ? {
+      notificationEmail: entry.metadata.notificationEmail, notificationEmailVerifiedAt: user.notificationEmailVerifiedAt } : {}) },
+    { $set: { passwordHash: user.passwordHash, credentialState: "custom" }, $inc: { authVersion: 1 } },
+    { new: true, runValidators: true });
+  if (!updated) return res.status(409).json({ error: "Account changed. Request a new password recovery link" });
   await revokeAllSessions(user._id, "password_reset");
-  await sendEmailEvent({ eventKey: `password-reset-complete:${entry._id}`, to: user.email,
+  await sendEmailEvent({ eventKey: `password-reset-complete:${entry._id}`, to: user.role === "provider_admin" ? user.notificationEmail : user.email,
     template: "password_changed" });
   await audit(req, { user: user._id, action: "password_reset", entityType: "UserPassword", entityId: user._id });
   clearSessionCookies(res);
@@ -204,10 +209,13 @@ export const changePassword = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Current password incorrect" });
   }
   await user.setPassword(req.body.newPassword);
-  user.authVersion = Number(user.authVersion || 0) + 1;
-  await user.save();
+  const updated = await User.findOneAndUpdate({ _id: user._id, accountStatus: "active", role: user.role,
+    authVersion: Number(user.authVersion || 0) ? Number(user.authVersion) : { $in: [0, null] } },
+    { $set: { passwordHash: user.passwordHash, credentialState: "custom" }, $inc: { authVersion: 1 } }, { new: true });
+  if (!updated) return res.status(409).json({ error: "Account changed. Sign in again before changing its password" });
+  user.authVersion = updated.authVersion;
   await revokeAllSessions(user._id, "password_change");
-  await sendEmailEvent({ eventKey: `password-change:${user._id}:${user.authVersion}`, to: user.email,
+  await sendEmailEvent({ eventKey: `password-change:${user._id}:${user.authVersion}`, to: user.role === "provider_admin" ? user.notificationEmail : user.email,
     template: "password_changed" });
   await audit(req, { user: user._id, action: "password_change", entityType: "UserPassword", entityId: user._id });
   clearSessionCookies(res);

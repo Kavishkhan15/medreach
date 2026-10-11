@@ -3,12 +3,12 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const PUBLIC_STATUSES = ["active", "upcoming", "completed"];
 const VALID_STATUSES = ["pending", ...PUBLIC_STATUSES, "cancelled", "rejected"];
-const isAdministrator = (user) => !!user && ["admin", "system_admin"].includes(user.role);
+const isAdministrator = (user) => !!user && ["system_admin"].includes(user.role);
 
 // GET /api/blood-banks/campaigns — list campaigns (public shows active/upcoming; admin can view pending)
 export const listCampaigns = asyncHandler(async (req, res) => {
   const { status, bloodGroup, q } = req.query;
-  const isAdmin = req.user && ["admin", "system_admin"].includes(req.user.role);
+  const isAdmin = req.user && ["system_admin"].includes(req.user.role);
   const filter = {};
 
   if ((status !== undefined && (typeof status !== "string" || ![...VALID_STATUSES, "all"].includes(status))) ||
@@ -76,7 +76,7 @@ export const createCampaign = asyncHandler(async (req, res) => {
     });
   }
 
-  const isAdmin = req.user && ["admin", "system_admin"].includes(req.user.role);
+  const isAdmin = req.user && ["system_admin"].includes(req.user.role);
   // Admins can create directly as 'active' (or any requested status); public/guests are always 'pending'
   const initialStatus = isAdmin
     ? (requestedStatus || "active")
@@ -135,7 +135,7 @@ export const updateCampaign = asyncHandler(async (req, res) => {
 
   const userId = req.user?._id || req.user?.id;
   const isCreator = userId && String(campaign.createdBy) === String(userId);
-  const isAdmin = req.user && ["admin", "system_admin"].includes(req.user.role);
+  const isAdmin = req.user && ["system_admin"].includes(req.user.role);
 
   if (!isCreator && !isAdmin) {
     return res.status(403).json({ error: "Unauthorized to update this campaign" });

@@ -109,11 +109,13 @@ test("database-backed auth, admin, and SMTP security flows", { skip: !isolated, 
     assert.equal((await adminAgent.patch(`/api/admin/users/${target._id}/status`).send({ status: "suspended" })).status, 200);
     assert.equal((await request(app).post("/api/auth/login").send({ email: target.email, password: "FinalPassword123" })).status, 401);
     assert.equal((await adminAgent.patch(`/api/admin/users/${target._id}/status`).send({ status: "active" })).status, 200);
-    assert.equal((await adminAgent.patch(`/api/admin/users/${target._id}/role`).send({ role: "hospital_admin" })).status, 200);
+    assert.equal((await adminAgent.patch(`/api/admin/users/${target._id}/role`).send({ role: "provider_admin" })).status, 200);
     const hospitalLogin = await request(app).post("/api/auth/login").send({ email: target.email, password: "FinalPassword123" });
     assert.equal(hospitalLogin.status, 200);
     assert.equal((await request(app).get("/api/admin/users").set("Cookie", cookie(hospitalLogin, "token"))).status, 403);
     assert.equal((await adminAgent.post(`/api/admin/users/${target._id}/revoke-sessions`)).status, 200);
+    assert.equal((await adminAgent.post(`/api/admin/users/${target._id}/trigger-reset`)).status, 409);
+    await User.updateOne({ _id: target._id }, { $set: { notificationEmail: "provider@company.com", notificationEmailVerifiedAt: new Date() } });
     assert.equal((await adminAgent.post(`/api/admin/users/${target._id}/trigger-reset`)).status, 200);
     assert.equal((await adminAgent.post(`/api/admin/users/${target._id}/resend-verification`)).status, 200);
     assert.equal((await adminAgent.patch(`/api/admin/users/${admin._id}/status`).send({ status: "suspended" })).status, 409);

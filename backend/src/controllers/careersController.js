@@ -5,6 +5,8 @@ import { Hospital } from "../models/Hospital.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { User } from "../models/User.js";
+import { providerEmailTasks } from "../services/requestNotifications.js";
+import { canManageResource } from "../services/providerAccess.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
 import { sendUserEmailSafely } from "../services/userEmailService.js";
 import { runEmailBatch } from "../services/emailBatch.js";
@@ -163,9 +165,9 @@ export const getJob = asyncHandler(async (req, res) => {
 
 export const manageJobs = asyncHandler(async (req, res) => {
   const filter = {};
-  if (!["admin", "system_admin"].includes(req.user.role)) {
-    const ids = await Hospital.find({ admins: req.user.id }).distinct("_id");
-    filter.hospital = { $in: ids };
+  if (!["system_admin"].includes(req.user.role)) {
+    const hospitalIds = req.user.role === "hospital_admin" ? await Hospital.find({ admins: req.user.id }).distinct("_id") : req.user.hospitalIds || [];
+    filter.$or = [{ hospital: { $in: hospitalIds } }, { provider: { $in: req.user.providerIds || [] } }];
   }
 
   const data = await Job.find(filter)
@@ -191,11 +193,9 @@ export const createJob = asyncHandler(async (req, res) => {
     payload.organizationType = "hospital";
     payload.organizationName = hospital.name;
   } else if (req.body.provider) {
-    if (!["admin", "system_admin"].includes(req.user.role)) {
-      return res.status(403).json({ error: "Only administrators can manage standalone provider careers" });
-    }
     const provider = await ResourceProvider.findById(req.body.provider);
     if (!provider) return res.status(404).json({ error: "Resource provider not found" });
+    if (!canManageResource(req.user, provider)) return res.status(403).json({ error: "Not assigned to this provider" });
     payload.provider = provider._id;
     payload.organizationType = provider.kind || "other";
     payload.organizationName = provider.name;
@@ -226,15 +226,17 @@ export const updateJob = asyncHandler(async (req, res) => {
     if (!canManageHospital(req.user, hospital)) {
       return res.status(403).json({ error: "Not assigned to this hospital" });
     }
-  } else if (!["admin", "system_admin"].includes(req.user.role)) {
+  } else if (!canManageResource(req.user, await ResourceProvider.findById(job.provider))) {
     return res.status(403).json({ error: "Not authorized to update this job" });
   }
 
   const before = { title: job.title, status: job.status };
-  Object.assign(job, { ...patchFrom(req.body), hospital: job.hospital, provider: job.provider });
+  const patch = patchFrom(req.body);
+  if (req.user.role !== "system_admin") { delete patch.status; delete patch.verificationStatus; }
+  Object.assign(job, { ...patch, hospital: job.hospital, provider: job.provider });
 
   if (
-    !["admin", "system_admin"].includes(req.user.role) &&
+    !["system_admin"].includes(req.user.role) &&
     ["published", "closed", "rejected"].includes(before.status)
   ) {
     job.status = "pending";
@@ -266,7 +268,7 @@ export const setJobStatus = asyncHandler(async (req, res) => {
     if (!canManageHospital(req.user, hospital)) {
       return res.status(403).json({ error: "Not assigned to this hospital" });
     }
-  } else if (!["admin", "system_admin"].includes(req.user.role)) {
+  } else if (!canManageResource(req.user, await ResourceProvider.findById(job.provider))) {
     return res.status(403).json({ error: "Not authorized to modify this job" });
   }
 
@@ -274,20 +276,20 @@ export const setJobStatus = asyncHandler(async (req, res) => {
 
   if (
     next === "published" &&
-    ["admin", "system_admin"].includes(req.user.role) &&
+    ["system_admin"].includes(req.user.role) &&
     !["pending", "draft"].includes(job.status)
   ) {
     return res.status(409).json({ error: "Only a draft or pending listing can be published" });
   }
 
-  if (next === "published" && !["admin", "system_admin"].includes(req.user.role)) {
+  if (next === "published" && !["system_admin"].includes(req.user.role)) {
     if (job.status !== "draft") return res.status(409).json({ error: "Only drafts can be submitted" });
     job.status = "pending";
   } else {
     job.status = next;
   }
 
-  if (next === "published" && ["admin", "system_admin"].includes(req.user.role)) {
+  if (next === "published" && ["system_admin"].includes(req.user.role)) {
     job.verificationStatus = "verified";
     job.reviewedBy = req.user.id;
   }
@@ -398,21 +400,11 @@ export const applyToJob = asyncHandler(async (req, res) => {
     emailData: { title: job.title, demo: job.demo, reference: application.reference },
   })];
 
-  if (job.hospital) {
-    try {
-      const hospital = await Hospital.findById(job.hospital).select("admins").lean();
-      for (const recipient of hospital?.admins || []) {
-        emails.push(() => sendUserEmailSafely({
-          recipient,
-          eventKey: `application:${application._id}:received:${recipient}`,
-          emailTemplate: "job_application_received",
-          emailData: { title: job.title },
-        }));
-      }
-    } catch {
-      console.warn("[medreach] Application saved; hospital email routing unavailable.");
-    }
-  }
+  try {
+    const provider = job.provider ? await ResourceProvider.findById(job.provider) : null;
+    emails.push(...await providerEmailTasks(job.hospital ? "hospital" : provider?.kind, job.hospital || job.provider,
+      `application:${application._id}:received`, "job_application_received", { title: job.title }));
+  } catch { console.warn("[medreach] Application saved; provider email routing unavailable."); }
   await runEmailBatch(emails);
   res.status(201).json({ application: await careerSubmission(application), demo: job.demo });
 });
@@ -449,7 +441,7 @@ export const jobApplications = asyncHandler(async (req, res) => {
     if (!canManageHospital(req.user, hospital)) {
       return res.status(403).json({ error: "Not assigned to this hospital" });
     }
-  } else if (!["admin", "system_admin"].includes(req.user.role)) {
+  } else if (!canManageResource(req.user, await ResourceProvider.findById(job.provider))) {
     return res.status(403).json({ error: "Not authorized to view these applications" });
   }
 
@@ -471,7 +463,7 @@ export const reviewApplication = asyncHandler(async (req, res) => {
     if (!canManageHospital(req.user, hospital)) {
       return res.status(403).json({ error: "Not assigned to this hospital" });
     }
-  } else if (!["admin", "system_admin"].includes(req.user.role)) {
+  } else if (!canManageResource(req.user, await ResourceProvider.findById(job.provider))) {
     return res.status(403).json({ error: "Not authorized to review this application" });
   }
 

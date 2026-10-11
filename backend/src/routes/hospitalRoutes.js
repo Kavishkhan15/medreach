@@ -27,21 +27,21 @@ router.get("/:slug", getHospital);
 router.post(
   "/",
   requireAuth,
-  requireRole("admin", "system_admin"),
+  requireRole("system_admin"),
   body("name").trim().notEmpty(),
   validate,
   createHospital
 );
-router.put("/:id", requireAuth, requireRole("admin", "system_admin", "hospital_admin"), updateHospital);
+router.put("/:id", requireAuth, requireRole("system_admin", "provider_admin", "hospital_admin"), updateHospital);
 router.patch(
   "/:id/beds",
   requireAuth,
-  requireRole("admin", "system_admin", "hospital_admin"),
+  requireRole("system_admin", "provider_admin", "hospital_admin"),
   body("bedsAvailable").optional().isInt({ min: 0 }),
   body("emergencyStatus").optional().isIn(["available", "limited", "full", "closed"]),
   validate,
   updateBeds
 );
-router.delete("/:id", requireAuth, requireRole("admin", "system_admin"), deleteHospital);
+router.delete("/:id", requireAuth, requireRole("system_admin"), deleteHospital);
 
 export default router;

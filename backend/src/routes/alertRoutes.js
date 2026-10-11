@@ -11,13 +11,13 @@ router.get("/", listAlerts); // public
 router.post(
   "/",
   requireAuth,
-  requireRole("admin", "system_admin", "hospital_admin"),
+  requireRole("system_admin"),
   body("title").trim().notEmpty(),
   body("body").trim().notEmpty(),
   body("severity").optional().isIn(["info", "warning", "critical"]),
   validate,
   createAlert
 );
-router.patch("/:id/deactivate", requireAuth, requireRole("admin", "system_admin", "hospital_admin"), deactivateAlert);
+router.patch("/:id/deactivate", requireAuth, requireRole("system_admin"), deactivateAlert);
 
 export default router;

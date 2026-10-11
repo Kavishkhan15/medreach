@@ -9,8 +9,8 @@ import { captureIdempotencyKey } from "../middleware/idempotency.js";
 export const jobsRouter = Router();
 jobsRouter.get("/", listJobs);
 jobsRouter.get("/organizations", listOrganizationsWithJobs);
-jobsRouter.get("/manage", requireAuth, requireRole("hospital_admin", "admin", "system_admin"), manageJobs);
-jobsRouter.post("/", requireAuth, requireRole("hospital_admin", "admin", "system_admin"),
+jobsRouter.get("/manage", requireAuth, requireRole("provider_admin", "hospital_admin", "system_admin"), manageJobs);
+jobsRouter.post("/", requireAuth, requireRole("provider_admin", "hospital_admin", "system_admin"),
   body().custom((_value, { req }) => {
     const ids = [req.body.hospital, req.body.provider].filter(Boolean);
     if (ids.length !== 1 || !mongoose.isValidObjectId(ids[0])) throw new Error("Exactly one valid hospital or provider ID is required");

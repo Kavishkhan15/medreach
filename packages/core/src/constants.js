@@ -33,3 +33,10 @@ export const FRESHNESS_THRESHOLDS_MS = {
   UPDATED_RECENTLY: 60 * 60 * 1000,
   STALE: 6 * 60 * 60 * 1000,
 };
+
+export const ROLES = { USER: "user", SYSTEM_ADMIN: "system_admin", PROVIDER_ADMIN: "provider_admin" };
+
+// UI capability only; the API independently enforces permissions.
+export function canAccessAdmin(role) {
+  return role === "system_admin";
+}

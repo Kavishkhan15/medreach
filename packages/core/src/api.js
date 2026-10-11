@@ -61,7 +61,11 @@ async function performRequest(path, opts = {}, retried = false) {
       return performRequest(path, { ...requestOptions, credentials: "omit" }, true);
     }
   }
-  if (!res.ok) throw new Error(json.error || `Request failed (${res.status})`);
+  if (!res.ok) {
+    const error = new Error(json.error || `Request failed (${res.status})`);
+    error.status = res.status;
+    throw error;
+  }
   return json;
 }
 
@@ -118,11 +122,11 @@ export const adminUpdateBeds = (id, body) =>
   req(`/api/hospitals/${id}/beds`, { method: "PATCH", body: JSON.stringify(body) });
 export const adminCreateAlert = (body) =>
   req(`/api/alerts`, { method: "POST", body: JSON.stringify(body) });
-export const adminOverview = () => req(`/api/admin/overview`);
+export const adminOverview = (options = {}) => req(`/api/admin/overview`, options);
 export const adminVerifyHospital = (id, decision) =>
   req(`/api/admin/hospitals/${id}/verify`, { method: "POST", body: JSON.stringify({ decision }) });
-export const adminListAudit = () => req(`/api/admin/audit`);
-export const adminListUsers = () => req(`/api/admin/users`);
+export const adminListAudit = (options = {}) => req(`/api/admin/audit`, options);
+export const adminListUsers = (options = {}) => req(`/api/admin/users`, options);
 export const adminSetUserStatus = (id, status) => req(`/api/admin/users/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) });
 export const adminSetUserRole = (id, role) => req(`/api/admin/users/${id}/role`, { method: "PATCH", body: JSON.stringify({ role }) });
 export const adminRevokeUserSessions = (id) => req(`/api/admin/users/${id}/revoke-sessions`, { method: "POST" });
@@ -144,3 +148,6 @@ export const sendAssistantMessage = (message, { locality, origin } = {}) =>
     method: "POST",
     body: JSON.stringify(clean({ message, locality, origin })),
   });
+
+// System Admin directory includes organisations awaiting approval.
+export const listAdminHospitals = (params = {}, options = {}) => req(`/api/admin/hospitals?${new URLSearchParams(clean(params))}`, options);

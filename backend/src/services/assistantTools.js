@@ -29,7 +29,7 @@ export function computeDistanceKm(lat1, lon1, lat2, lon2) {
 export async function searchHospitals({ locality, category, specialty, emergencyOnly = false, limit = 4, origin } = {}) {
   try {
     const escapeRegex = (value) => value.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const filter = {};
+    const filter = { approvalStatus: { $nin: ["pending", "rejected"] } };
     if (locality) {
       const escapedLoc = escapeRegex(locality);
       filter.$and = [{ $or: [
@@ -147,7 +147,7 @@ export async function searchHospitals({ locality, category, specialty, emergency
 // 2. Search Blood Banks
 export async function searchBloodBanks({ locality, bloodGroup, limit = 4, origin } = {}) {
   try {
-    const filter = { kind: "blood_bank", active: true };
+    const filter = { kind: "blood_bank", approvalStatus: { $nin: ["pending", "rejected"] }, active: true };
     if (locality) {
       const escapedLoc = locality.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       filter.$or = [
@@ -196,7 +196,7 @@ export async function searchBloodBanks({ locality, bloodGroup, limit = 4, origin
 // 3. Search Diagnostic Centres
 export async function searchDiagnostics({ locality, service, limit = 4, origin } = {}) {
   try {
-    const filter = { kind: "diagnostic", active: true };
+    const filter = { kind: "diagnostic", approvalStatus: { $nin: ["pending", "rejected"] }, active: true };
     if (locality) {
       const escapedLoc = locality.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       filter.$or = [
@@ -245,7 +245,7 @@ export async function searchDiagnostics({ locality, service, limit = 4, origin }
 // 4. Search Ambulances
 export async function searchAmbulances({ locality, providerType, limit = 4, origin } = {}) {
   try {
-    const filter = { kind: "ambulance", active: true };
+    const filter = { kind: "ambulance", approvalStatus: { $nin: ["pending", "rejected"] }, active: true };
     if (locality) {
       const escapedLoc = locality.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       filter.$or = [
@@ -342,7 +342,7 @@ export async function getHospitalDetails({ idOrSlug }) {
     if (!idOrSlug) return null;
     const isId = /^[0-9a-fA-F]{24}$/.test(idOrSlug);
     const filter = isId ? { _id: idOrSlug } : { slug: idOrSlug };
-    const h = await Hospital.findOne(filter).lean();
+    const h = await Hospital.findOne({ ...filter, approvalStatus: { $nin: ["pending", "rejected"] } }).lean();
     if (!h) return null;
 
     const facilities = await HospitalFacility.find({ hospital: h._id }).lean();

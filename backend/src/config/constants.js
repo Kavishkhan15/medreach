@@ -4,16 +4,12 @@
 // packages/core/src/constants.js for the frontend; keep the two in sync.
 
 // ---- Roles & access ----
-export const ROLES = {
-  USER: "user",
-  HOSPITAL_ADMIN: "hospital_admin",
-  SYSTEM_ADMIN: "system_admin",
-};
-// Legacy "admin" retained so pre-existing seed data / tokens remain valid.
-export const LEGACY_ADMIN = "admin";
-export const ROLE_VALUES = [ROLES.USER, ROLES.HOSPITAL_ADMIN, ROLES.SYSTEM_ADMIN, LEGACY_ADMIN];
-// Any role treated as "an administrator" for RBAC gating.
-export const ADMIN_ROLES = [ROLES.HOSPITAL_ADMIN, ROLES.SYSTEM_ADMIN, LEGACY_ADMIN];
+export const ROLES = { USER: "user", PROVIDER_ADMIN: "provider_admin", SYSTEM_ADMIN: "system_admin" };
+// Storage compatibility only. Legacy admin has no global permissions. Hospital
+// staff keep their previous assignment scope until an approved migration.
+export const LEGACY_ROLES = ["admin", "hospital_admin", "user_admin"];
+export const ROLE_VALUES = [...Object.values(ROLES), ...LEGACY_ROLES];
+export const ADMIN_ROLES = [ROLES.PROVIDER_ADMIN, ROLES.SYSTEM_ADMIN];
 
 export const ACCOUNT_STATUS = ["active", "suspended", "pending"];
 

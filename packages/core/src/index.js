@@ -9,7 +9,7 @@ export * from "./ranking.js";
 export * from "./search.js";
 export * from "./validation.js";
 export * from "./fixtures.js";
-export * from "./adminFixtures.js";
+export * from "./adminState.js";
 export * from "./assistant.js";
 export * from "./authNavigation.js";
 

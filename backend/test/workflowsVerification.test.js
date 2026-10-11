@@ -16,6 +16,8 @@ import { signSessionToken } from "./helpers/session.js";
 import { expireEmergencyRequests } from "../src/services/emergencyRequestExpiry.js";
 import { getRoute } from "../src/services/routingService.js";
 
+import { canAccessAdmin } from "../../packages/core/src/constants.js";
+
 // Core package imports
 import { validateRegister, validateLogin, sanitizeText, isEmail, minLen, nonEmpty } from "../../packages/core/src/validation.js";
 import { distanceKm, localityToCoords } from "../../packages/core/src/location.js";
@@ -194,25 +196,14 @@ test("MedReach Workflows Verification Suite", async (t) => {
   });
 
   await t.test("Core hooks access rules (useAdminAccess in packages/core/src/hooks.js)", async () => {
-    // Test useAdminAccess logic rule:
-    // systemOnly: true -> user?.role === "system_admin"
-    // systemOnly: false -> ["admin", "system_admin", "hospital_admin"].includes(user?.role)
-    const checkAccess = (userRole, systemOnly = false) => {
-      const isAdmin = ["admin", "system_admin", "hospital_admin"].includes(userRole);
-      return systemOnly ? userRole === "system_admin" : isAdmin;
-    };
+    for (const role of ["user", "provider_admin", "hospital_admin", "admin", undefined]) {
+      assert.equal(canAccessAdmin(role), false);
+      assert.equal(canAccessAdmin(role, "users"), false);
+    }
+    assert.equal(canAccessAdmin("system_admin"), true);
+    assert.equal(canAccessAdmin("user_admin"), false);
+    assert.equal(canAccessAdmin("user_admin", "users"), false);
 
-    assert.equal(checkAccess("system_admin", false), true);
-    assert.equal(checkAccess("system_admin", true), true);
-
-    assert.equal(checkAccess("hospital_admin", false), true);
-    assert.equal(checkAccess("hospital_admin", true), false); // Cannot access system-only pages
-
-    assert.equal(checkAccess("user", false), false);
-    assert.equal(checkAccess("user", true), false);
-
-    assert.equal(checkAccess(undefined, false), false);
-    assert.equal(checkAccess(undefined, true), false);
   });
 
   // =========================================================================
@@ -375,6 +366,7 @@ test("MedReach Workflows Verification Suite", async (t) => {
     assert.equal(unauthCreate.status, 403);
 
     // Public list blood banks
+    await request(app).post(`/api/admin/provider-approvals/organizations/blood_bank/${createRes.body.data._id}/approve`).set("Authorization", `Bearer ${adminToken}`);
     const listRes = await request(app).get("/api/blood-banks");
     assert.equal(listRes.status, 200);
     assert.equal(listRes.body.currentInventory, "unknown"); // Discloses honest inventory status
@@ -404,6 +396,7 @@ test("MedReach Workflows Verification Suite", async (t) => {
       });
     assert.equal(diagCreate.status, 201);
 
+    assert.equal((await request(app).post(`/api/admin/provider-approvals/organizations/diagnostic/${diagCreate.body.data._id}/approve`).set("Authorization", `Bearer ${adminToken}`)).status, 200);
     const diagList = await request(app).get("/api/diagnostics");
     assert.equal(diagList.status, 200);
     assert.ok(diagList.body.data.some((d) => d.name === "Suburban Diagnostics Bandra"));
@@ -420,6 +413,7 @@ test("MedReach Workflows Verification Suite", async (t) => {
       });
     assert.equal(ambCreate.status, 201);
 
+    assert.equal((await request(app).post(`/api/admin/provider-approvals/organizations/ambulance/${ambCreate.body.data._id}/approve`).set("Authorization", `Bearer ${adminToken}`)).status, 200);
     const ambList = await request(app).get("/api/ambulances");
     assert.equal(ambList.status, 200);
     assert.equal(ambList.body.liveDispatch, false); // Discloses honest live dispatch status

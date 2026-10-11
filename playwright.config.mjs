@@ -1,7 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const mongoUri = process.env.MEDREACH_E2E_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_e2e";
-const apiUrl = "http://localhost:4000";
+const apiPort = Number(process.env.MEDREACH_E2E_API_PORT || 4000);
+const apiUrl = `http://localhost:${apiPort}`;
+const bootstrapPort = Number(process.env.MEDREACH_BOOTSTRAP_E2E_PORT || 3000);
+const skeletonPort = Number(process.env.MEDREACH_SKELETON_E2E_PORT || 3002);
 const tailwindPort = Number(process.env.MEDREACH_TAILWIND_E2E_PORT || 3001);
 const commonEnv = {
   NODE_ENV: "test",
@@ -9,10 +12,11 @@ const commonEnv = {
   TRUST_PROXY: "127.0.0.1,::1",
   MEDREACH_E2E_MONGO_URI: mongoUri,
   MONGO_URI: mongoUri,
+  MONGODB_URI: mongoUri,
   EMAIL_ENABLED: "false",
   JWT_SECRET: "medreach-e2e-only-secret-that-is-never-used-in-production",
-  CORS_ORIGINS: `http://localhost:3000,http://localhost:${tailwindPort},http://localhost:3002`,
-  PUBLIC_APP_URL: "http://localhost:3000",
+  CORS_ORIGINS: `http://localhost:${bootstrapPort},http://localhost:${tailwindPort},http://localhost:${skeletonPort}`,
+  PUBLIC_APP_URL: `http://localhost:${bootstrapPort}`,
 };
 
 export default defineConfig({
@@ -35,18 +39,16 @@ export default defineConfig({
     {
       command: "npm --workspace @medreach/backend run start",
       url: `${apiUrl}/health/ready`,
-      env: { ...commonEnv, PORT: "4000" },
+      env: { ...commonEnv, PORT: String(apiPort) },
       reuseExistingServer: false,
       timeout: 30_000,
     },
     ...[
-      ["@medreach/variant-bootstrap", 3000],
+      ["@medreach/variant-bootstrap", bootstrapPort],
       ["@medreach/variant-tailwind", tailwindPort],
-      ["@medreach/variant-skeleton", 3002],
+      ["@medreach/variant-skeleton", skeletonPort],
     ].map(([workspace, port]) => ({
-      command: workspace === "@medreach/variant-tailwind" && port !== 3001
-        ? `npm --workspace ${workspace} exec -- next start -p ${port}`
-        : `npm --workspace ${workspace} run start`,
+      command: `npm --workspace ${workspace} exec -- next start -p ${port}`,
       url: `http://localhost:${port}`,
       env: { ...commonEnv, NEXT_PUBLIC_API_URL: apiUrl },
       reuseExistingServer: false,
@@ -54,8 +56,8 @@ export default defineConfig({
     })),
   ],
   projects: [
-    { name: "bootstrap", use: { baseURL: "http://localhost:3000" } },
+    { name: "bootstrap", use: { baseURL: `http://localhost:${bootstrapPort}` } },
     { name: "tailwind", use: { baseURL: `http://localhost:${tailwindPort}` } },
-    { name: "skeleton", use: { baseURL: "http://localhost:3002" } },
+    { name: "skeleton", use: { baseURL: `http://localhost:${skeletonPort}` } },
   ],
 });

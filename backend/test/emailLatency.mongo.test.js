@@ -1,3 +1,4 @@
+import { ProviderMembership } from "../src/models/ProviderMembership.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
@@ -42,9 +43,12 @@ test("submission email batches preserve records, recipients, tracking, retries a
       } finally { active--; }
     } }));
     const staff = await User.create([0, 1, 2].map(index => ({ name: `Batch staff ${index}`,
-      email: `staff${index}@email-batch.test`, role: "hospital_admin" })));
+      email: `staff${index}@email-batch.test`, role: "provider_admin", notificationsEnabled: true, notificationEmail: `staff${index}@email-batch.test`, notificationEmailVerifiedAt: new Date() })));
     const hospital = await Hospital.create({ name: "Isolated email batch fixture", admins: staff.map(user => user._id) });
     const bank = await ResourceProvider.create({ name: "Isolated blood fixture", kind: "blood_bank", sourceName: "Isolated QA fixture" });
+    const system = await User.create({ name: "Notification System", email: "system@email-batch.test", role: "system_admin", notificationsEnabled: true, notificationEmail: "system@email-batch.test", notificationEmailVerifiedAt: new Date() });
+    await ProviderMembership.create(staff.map((u) => ({ user: u._id, kind: "hospital", organization: hospital._id, assignedBy: system._id })));
+    await ProviderMembership.create({ user: staff[0]._id, kind: "blood_bank", organization: bank._id, assignedBy: system._id });
     const job = await Job.create({ hospital: hospital._id, title: "Isolated nurse role", category: "Nurse",
       description: "Healthcare role for isolated automated tests only.", employmentType: "full_time",
       status: "published", createdBy: staff[0]._id });
@@ -74,7 +78,7 @@ test("submission email batches preserve records, recipients, tracking, retries a
         assert.equal(response.status, 201, JSON.stringify(response.body));
         assert.equal(active, 0, "HTTP response must await all delivery attempts");
         assert.ok(peak > 1 && peak <= 3, `bounded overlap expected, observed ${peak}`);
-        const expected = bed ? 5 : blood ? 2 : 4;
+        const expected = bed ? (kind === "standard" ? 4 : 5) : blood ? (kind === "urgent" ? 3 : 2) : 4;
         assert.equal(attempts.length, expected);
         const record = bed ? response.body.request : blood ? response.body.bloodRequest : response.body.application;
         const reference = bed ? record.requestId : record.reference;

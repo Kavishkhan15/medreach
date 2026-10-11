@@ -12,6 +12,6 @@ test("hospital staff may manage only assigned hospitals", () => {
 
 test("system administrators may manage hospitals; missing user never may", () => {
   assert.equal(canManageHospital({ id: "admin", role: "system_admin" }, hospital), true);
-  assert.equal(canManageHospital({ id: "admin", role: "admin" }, hospital), true);
+  assert.equal(canManageHospital({ id: "admin", role: "admin" }, hospital), false);
   assert.equal(canManageHospital(null, hospital), false);
 });

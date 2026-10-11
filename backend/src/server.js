@@ -1,4 +1,5 @@
 // Entry point: connect DB, then start the HTTP server.
+import { startRequestNotificationWorker, stopRequestNotificationWorker } from "./services/requestNotificationWorker.js";
 import { createApp } from "./app.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 import { env } from "./config/env.js";
@@ -10,11 +11,12 @@ const app = createApp();
 connectDB()
   .then(() => {
     startEmergencyRequestExpiryWorker();
+    startRequestNotificationWorker();
     const server = app.listen(env.port, "0.0.0.0", () =>
       console.log(`[medreach] API listening on :${env.port} (${env.nodeEnv})`)
     );
     registerGracefulShutdown({ server, onStart: () => { app.locals.shuttingDown = true; },
-      stopWorkers: () => drainWorkers([stopEmergencyRequestExpiryWorker]),
+      stopWorkers: () => drainWorkers([stopEmergencyRequestExpiryWorker, stopRequestNotificationWorker]),
       disconnect: disconnectDB });
   })
   .catch((err) => {

@@ -1,3 +1,5 @@
+import { activateProvider } from "../controllers/providerActivationController.js";
+import { verifyNotificationContact } from "../controllers/notificationContactController.js";
 import { Router } from "express";
 import { body } from "express-validator";
 import { validate } from "../middleware/validate.js";
@@ -52,4 +54,6 @@ router.put("/password", requireAuth, body("currentPassword").notEmpty(),
   body("newPassword").isLength({ min: 12, max: 128 }).matches(/[a-z]/).matches(/[A-Z]/).matches(/[0-9]/),
   validate, changePassword);
 
+router.post("/activate-provider", namedLimiter("recoveryLimiter"), body("token").isLength({ min: 40, max: 128 }), strongPassword(), validate, activateProvider);
+router.post("/verify-notification-email", namedLimiter("recoveryLimiter"), body("token").isLength({ min: 40, max: 128 }), validate, verifyNotificationContact);
 export default router;

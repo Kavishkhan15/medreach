@@ -151,7 +151,7 @@ const hospitalJobTemplates = [
 export async function seedCareersFromProviders({ adminId = null } = {}) {
   let admin = adminId ? await User.findById(adminId) : null;
   if (!admin) {
-    admin = await User.findOne({ role: { $in: ["admin", "system_admin"] } });
+    admin = await User.findOne({ role: { $in: ["system_admin"] } });
   }
   if (!admin) {
     // If no admin user found, cannot seed jobs

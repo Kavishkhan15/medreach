@@ -21,8 +21,8 @@ export default function AccountSidebar() {
   };
 
   const roleItems = user ? [
-    ...(user.role === "hospital_admin" ? [{ href: "/hospital", label: "Hospital", icon: "hospital" }] : []),
-    ...(isAdmin && user.role !== "hospital_admin" ? [{ href: "/admin", label: "Admin", icon: "shield" }] : []),
+    ...(["provider_admin", "hospital_admin"].includes(user.role) ? [{ href: "/provider", label: "Provider", icon: "hospital" }] : []),
+    ...(isAdmin && user.role === "system_admin" ? [{ href: "/admin", label: "Admin", icon: "shield" }] : []),
   ] : [];
 
   const renderItem = ({ href, label, icon }) => {

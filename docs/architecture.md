@@ -61,3 +61,9 @@ seed scripts are destructive and must not target the existing dataset.
 
 See [API](api.md), [data model](data-model.md), [deployment](deployment.md),
 [assistant](ai-assistant.md) and [target architecture](MedReach_Target_Architecture.md).
+
+## Role restructuring (local implementation, rollout pending)
+
+The current code implements `system_admin`, `provider_admin` and `user`. Global legacy `admin` permissions are retired. Old hospital assignments remain scoped compatibility until separately reviewed migration. Provider membership checks are enforced by the API, and account/assignment changes invalidate sessions. Provider invitations and notification contacts use hashed single-use tokens; demo defaults are restricted to isolated local demo databases with outbound email disabled.
+
+No production migration or deployment was performed. The confirmed local development database has been inventoried; only the owner-approved local administrator conversion was applied. Actual remote inventory remains pending, and deployment requires a separately reviewed System Admin access path to prevent lockout. See [implementation and verification report](../ROLE_RESTRUCTURING.md).

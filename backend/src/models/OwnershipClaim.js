@@ -8,6 +8,7 @@ const schema = new mongoose.Schema({
   documentReference: { type: String, trim: true, maxlength: 200 },
   explanation: { type: String, trim: true, maxlength: 500 },
   status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending", index: true },
+  providerAccount: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   reviewedAt: { type: Date },
   reviewNote: { type: String, maxlength: 500 },

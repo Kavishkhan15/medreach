@@ -30,7 +30,7 @@ test("career public references persist through submission, retry, review and tra
     setEmailTransportFactoryForTests(() => ({ sendMail: async (mail) => { sent.push(mail); return { accepted: [mail.to] }; } }));
     const app = createApp();
     const applicant = await User.create({ name: "Private applicant", email: "candidate@career-reference.test" });
-    const staff = await User.create({ name: "Hospital staff", email: "staff@career-reference.test", role: "hospital_admin" });
+    const staff = await User.create({ name: "Hospital staff", email: "staff@career-reference.test", role: "hospital_admin", notificationsEnabled: true, notificationEmail: "staff@career-reference.test", notificationEmailVerifiedAt: new Date() });
     const other = await User.create({ name: "Other applicant", email: "other@career-reference.test" });
     const hospital = await Hospital.create({ name: "Career reference test hospital", slug: "career-reference-test", admins: [staff._id] });
     const job = await Job.create({ hospital: hospital._id, title: "Healthcare test role", category: "Nurse",
@@ -57,7 +57,7 @@ test("career public references persist through submission, retry, review and tra
       assert.equal(jobRecord.status, "submitted");
       assert.equal(jobRecord.applicant.toString(), applicant.id);
       assert.equal((await EmailDelivery.findOne({ eventKey: `mail:application:${jobRecord.id}:submitted` })).template, "job_applied");
-      assert.equal((await EmailDelivery.findOne({ eventKey: `mail:application:${jobRecord.id}:received:${staff.id}` })).template, "job_application_received");
+      assert.equal((await EmailDelivery.findOne({ eventKey: `application:${jobRecord.id}:received:${staff.id}` })).template, "job_application_received");
       assert.equal(await mongoose.connection.collection("notifications").countDocuments(), 0);
       const confirmation = sent.find((mail) => mail.to === applicant.email && mail.subject === "Application submitted");
       assert.ok(confirmation.text.includes(jobRecord.reference));
@@ -77,7 +77,7 @@ test("career public references persist through submission, retry, review and tra
       assert.notEqual(organizationRecord.reference, organizationRecord._id.toString());
       assert.notEqual(organizationRecord.reference, jobRecord.reference);
       assert.equal((await EmailDelivery.findOne({ eventKey: `mail:org_application:${organizationRecord.id}:submitted` })).template, "org_applied");
-      assert.equal((await EmailDelivery.findOne({ eventKey: `mail:org_application:${organizationRecord.id}:received:${staff.id}` })).template, "org_application_received");
+      assert.equal((await EmailDelivery.findOne({ eventKey: `org_application:${organizationRecord.id}:received:${staff.id}` })).template, "org_application_received");
       const confirmation = sent.find((mail) => mail.to === applicant.email && mail.text.includes(organizationRecord.reference));
       assert.ok(confirmation.text.includes(`/track?type=career&reference=${organizationRecord.reference}`));
       assert.equal(confirmation.text.includes(organizationRecord._id.toString()), false);

@@ -22,7 +22,7 @@ try {
     { $setOnInsert: { ...item, sourceName: "MedReach demo fixture — simulation only", confidence: "UNKNOWN",
       verificationStatus: "unverified", demo: true } }, { upsert: true, runValidators: true });
   const hospital = await Hospital.findOne().sort({ name: 1 }).lean();
-  const admin = await User.findOne({ role: { $in: ["admin", "system_admin"] } }).lean();
+  const admin = await User.findOne({ role: { $in: ["system_admin"] } }).lean();
   if (hospital && admin) await Job.findOneAndUpdate({ hospital: hospital._id, title: "DEMO • Emergency Nurse" },
     { $setOnInsert: { hospital: hospital._id, title: "DEMO • Emergency Nurse", category: "Nurse",
       description: "Simulation listing for MedReach product evaluation. No real employment offer or application delivery to this hospital.",

@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 
 const bloodRequestSchema = new mongoose.Schema(
   {
+  notificationVersion: Number,
+  notificationRoutedAt: Date,
+  notificationRouting: { type: String, enum: ["recorded", "no_eligible_recipients"] },
     reference: {
       type: String,
       required: true,
@@ -133,4 +136,5 @@ bloodRequestSchema.set("toJSON", {
   },
 });
 
+bloodRequestSchema.index({ notificationVersion: 1, notificationRoutedAt: 1 });
 export const BloodRequest = mongoose.model("BloodRequest", bloodRequestSchema);

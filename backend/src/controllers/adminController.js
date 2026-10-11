@@ -16,11 +16,12 @@ import { resolveStoredField } from "../services/hospitalFieldFusion.js";
 
 // GET /api/admin/overview — dashboard cards.
 export const overview = asyncHandler(async (_req, res) => {
-  const [hospitals, verified] = await Promise.all([
+  const [hospitals, verified, verificationQueue] = await Promise.all([
     Hospital.countDocuments(),
     Hospital.countDocuments({ verificationStatus: "verified" }),
+    Hospital.countDocuments({ verificationStatus: { $ne: "verified" }, approvalStatus: { $ne: "rejected" } }),
   ]);
-  res.json({ hospitals, verified, verificationQueue: hospitals - verified });
+  res.json({ hospitals, verified, verificationQueue });
 });
 
 // POST /api/admin/hospitals/:id/verify — approve/reject/override/mark_stale (audited).

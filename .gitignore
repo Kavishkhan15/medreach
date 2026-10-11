@@ -16,6 +16,7 @@ node_modules/
 
 # Next.js & Deployment
 .next/
+.next-security-test/
 out/
 build/
 dist/

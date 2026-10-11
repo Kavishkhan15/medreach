@@ -23,7 +23,7 @@ export async function enrichHospitalData(hospitalIdOrSlug) {
     ? { _id: hospitalIdOrSlug }
     : { slug: hospitalIdOrSlug };
 
-  const hospital = await Hospital.findOne(query).lean();
+  const hospital = await Hospital.findOne({ ...query, approvalStatus: { $nin: ["pending", "rejected"] } }).lean();
   if (!hospital) {
     return null;
   }

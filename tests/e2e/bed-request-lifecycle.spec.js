@@ -3,7 +3,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { createHash, randomUUID } from "node:crypto";
 
-const API = "http://localhost:4000";
+const API = process.env.MEDREACH_HOME_TEST_API_URL || "http://localhost:4000";
 const PASSWORD = "E2E_SafePassword_123!";
 const execute = promisify(execFile);
 test.setTimeout(100_000);
@@ -148,7 +148,7 @@ test("hospital rejection and patient cancellation close requests with real timel
   } finally { await staff.context.close(); }
 });
 
-test("staff lost response retry records one transition; patient status outage recovers", async ({ page, browser }, testInfo) => {
+test("staff verifies an unconfirmed response without repeating the write; patient status outage recovers", async ({ page, browser }, testInfo) => {
   const clean = runtimeGuard(page);
   const { reference } = await submit(page, false, testInfo.project.name);
   const staff = await staffPage(browser, new URL(page.url()).origin);
@@ -163,9 +163,15 @@ test("staff lost response retry records one transition; patient status outage re
     const card = staff.page.getByRole("article", { name: reference });
     await card.getByLabel("Message to patient").fill("Review persisted once");
     await card.getByRole("button", { name: "Start review", exact: true }).click();
-    await expect(card.getByRole("alert")).toContainText("Response lost after save");
-    await card.getByRole("button", { name: "Start review", exact: true }).click();
-    await expect(card.getByRole("status")).toContainText("Response recorded");
+    await expect(card.getByRole("alert")).toContainText("The action may have completed");
+    await expect(card.getByRole("alert")).not.toContainText("Response lost after save");
+    await expect(card.getByRole("button", { name: "Start review", exact: true })).toBeDisabled();
+    await card.getByRole("button", { name: "Refresh current status", exact: true }).click();
+    await expect(card).toContainText("Under review");
+    await expect(card.getByRole("button", { name: "Start review", exact: true })).toHaveCount(0);
+    await expect(card.getByRole("button", { name: "Request information", exact: true })).toBeDisabled();
+    await card.getByRole("button", { name: "I checked the current status", exact: true }).click();
+    await expect(card.getByRole("button", { name: "Request information", exact: true })).toBeEnabled();
     await refresh(page, "Under review");
     await expect(page.getByRole("region", { name: "Request lifecycle" }).locator("ol li")).toHaveCount(3);
     await page.route(routePattern, (route) => route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: "Status service temporarily unavailable" }) }));

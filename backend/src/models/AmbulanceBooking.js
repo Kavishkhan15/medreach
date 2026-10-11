@@ -14,6 +14,7 @@ export const DELIVERY_STATES = [
   "pending",
   "sent",
   "failed",
+  "uncertain",
   "disabled",
 ];
 
@@ -43,6 +44,10 @@ const deliverySchema = new mongoose.Schema({
 }, { _id: false });
 
 const schema = new mongoose.Schema({
+  notificationVersion: Number,
+  notificationRoutedAt: Date,
+  notificationRouting: { type: String, enum: ["recorded", "no_eligible_recipients"] },
+  isEmergency: { type: Boolean, default: false },
   reference: { type: String, required: true, unique: true, index: true, trim: true },
   provider: { type: mongoose.Schema.Types.ObjectId, ref: "ResourceProvider", required: true, index: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
@@ -71,4 +76,5 @@ schema.index({ user: 1, createdAt: -1 });
 schema.index({ provider: 1, createdAt: -1 });
 schema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
 
+schema.index({ notificationVersion: 1, notificationRoutedAt: 1 });
 export const AmbulanceBooking = mongoose.model("AmbulanceBooking", schema);

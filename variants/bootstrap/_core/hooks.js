@@ -3,6 +3,7 @@
 // identical hooks and supplies its own UI, so behavior is held constant.
 
 import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from "react";
+import { canAccessAdmin } from "./constants.js";
 import * as api from "./api.js";
 import { createAuthSession } from "./authSession.js";
 import { searchHospitals } from "./search.js";
@@ -155,15 +156,13 @@ export function useAuth() {
     authSession.setUser(null);
   }, []);
 
-  const isAdmin = ["admin", "system_admin", "hospital_admin"].includes(user?.role);
+  const isAdmin = ["system_admin", "provider_admin"].includes(user?.role);
   return { user, ready, loading: !ready, login, register, logout, isAdmin };
 }
 
-export function useAdminAccess(systemOnly = false) {
-  const { user, ready, isAdmin } = useAuth();
-  return { ready, allowed: systemOnly
-    ? user?.role === "system_admin"
-    : isAdmin };
+export function useAdminAccess() {
+  const { user, ready } = useAuth();
+  return { ready, allowed: canAccessAdmin(user?.role) };
 }
 
 // AI Assistant chat state. Headless — owns the message list, sending state,

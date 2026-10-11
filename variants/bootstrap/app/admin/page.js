@@ -1,34 +1,19 @@
 "use client";
-import { useHospitals, freshnessLabel } from "@medreach/core";
-import { toneClass } from "../../lib/tone";
+import { adminOverview, adminOverviewData, adminList, loadAdminHospitals, useAdminResource, useAdminAccess, freshnessLabel } from "@medreach/core";
 import AdminGuard from "../../components/AdminGuard";
-
+import AdminDataState from "../../components/AdminDataState";
+const loadTotals = (signal) => adminOverview({ signal });
+const validateHospitals = adminList("hospital");
 export default function AdminOverviewPage() {
-  const { data, loading } = useHospitals({}, { sort: "updated" });
-  const tracked = data.length;
-  const recentlyUpdated = data.filter((h) => ["RECENT", "UPDATED_RECENTLY"].includes(freshnessLabel(h.lastUpdated))).length;
-  const stale = data.filter((h) => ["STALE", "OUTDATED", "UNKNOWN"].includes(freshnessLabel(h.lastUpdated))).length;
-  const pending = data.filter((h) => h.verificationStatus !== "verified").length;
-
-  const cards = [
-    { t: "Hospitals tracked", v: tracked, tone: "info" },
-    { t: "Recently updated", v: recentlyUpdated, tone: "success" },
-    { t: "Stale / unknown", v: stale, tone: "warning" },
-    { t: "Verification queue", v: pending, tone: "danger" },
-  ];
-
-  return (
-    <AdminGuard title="Admin dashboard" subtitle="Overview of tracked hospitals, data freshness, and verification.">
-      <div className="row g-3">
-        {cards.map((c) => (
-          <div className="col-6 col-lg-3" key={c.t}>
-            <div className="surface h-100">
-              <div className="h2 mb-0">{loading ? "—" : c.v}</div>
-              <span className={`status-pill ${toneClass[c.tone]}`}>{c.t}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </AdminGuard>
-  );
+  const { allowed } = useAdminAccess();
+  const totals = useAdminResource(loadTotals, adminOverviewData, allowed);
+  const hospitals = useAdminResource(loadAdminHospitals, validateHospitals, allowed);
+  return <AdminGuard title="Admin dashboard" subtitle="Hospital totals, data freshness and verification.">
+    <section className="surface mb-3" aria-label="Hospital totals"><AdminDataState resource={totals} label="hospital totals">
+      {(data) => <>{data.hospitals === 0 && <p>No hospitals are stored.</p>}<div className="row row-cols-2 row-cols-lg-4 g-3">{[["Hospitals tracked", data.hospitals], ["Verified hospitals", data.verified], ["Verification queue", data.verificationQueue]].map(([label, value]) => <div key={label}><span className="h2">{value}</span><p>{label}</p></div>)}</div></>}
+    </AdminDataState></section>
+    <section className="surface mb-3" aria-label="Data freshness"><h2>Data freshness</h2><AdminDataState resource={hospitals} label="data freshness" emptyMessage="No hospitals to assess.">
+      {(data) => <div className="row row-cols-2 row-cols-lg-4 g-3">{[["Recently updated", data.filter((h) => ["RECENT", "UPDATED_RECENTLY"].includes(freshnessLabel(h.lastUpdated))).length], ["Stale / unknown", data.filter((h) => ["STALE", "OUTDATED", "UNKNOWN"].includes(freshnessLabel(h.lastUpdated))).length]].map(([label, value]) => <div key={label}><span className="h2">{value}</span><p>{label}</p></div>)}</div>}
+    </AdminDataState></section>
+  </AdminGuard>;
 }

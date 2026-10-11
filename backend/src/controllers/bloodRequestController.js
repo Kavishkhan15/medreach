@@ -1,7 +1,8 @@
+import { routeRequestSafely } from "../services/requestNotifications.js";
 import crypto from "crypto";
 import { BloodRequest } from "../models/BloodRequest.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { sendEmailEvent, SYSTEM_NOTIFICATION_EMAIL } from "../services/emailService.js";
+import { sendEmailEvent } from "../services/emailService.js";
 import { TRACKING_TOKEN_HEADER, generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, verifyTrackingToken } from "../utils/trackingToken.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
@@ -58,7 +59,7 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
 
   let provider;
   if (providerId) {
-    provider = await ResourceProvider.findOne({ _id: providerId, kind: "blood_bank", active: { $ne: false } });
+    provider = await ResourceProvider.findOne({ _id: providerId, kind: "blood_bank", approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } });
     if (!provider) return res.status(400).json({ error: "Active blood bank provider not found" });
   }
 
@@ -91,6 +92,7 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
   let bloodRequest;
   try {
     bloodRequest = await BloodRequest.create({
+    notificationVersion: 1,
     reference,
     type,
     provider: provider?._id,
@@ -148,33 +150,7 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
     });
   }
 
-  // 2. MedReach admin notification to medreachforyou@gmail.com
-  emails.push(async () => {
-    try {
-      await sendEmailEvent({
-        eventKey: `blood_request_admin_${bloodRequest.reference}`,
-        to: SYSTEM_NOTIFICATION_EMAIL,
-        template: "blood_request_admin_notification",
-        data: {
-          type: bloodRequest.type,
-          name: bloodRequest.patientOrDonorName,
-          bloodGroup: bloodRequest.bloodGroup,
-          bloodBankName: bloodRequest.bloodBankName,
-          reference: bloodRequest.reference,
-          units: bloodRequest.units,
-          urgency: bloodRequest.urgency,
-          hospitalName: bloodRequest.hospitalName,
-          preferredDate: bloodRequest.preferredDate ? bloodRequest.preferredDate.toDateString() : undefined,
-          contactPhone: bloodRequest.contactPhone,
-          contactEmail: effectiveEmail || "Not provided",
-          notes: bloodRequest.notes,
-        },
-      });
-    } catch (err) {
-      console.warn("Failed to dispatch blood request admin notification email:", err.message);
-    }
-  });
-  await runEmailBatch(emails);
+  await routeRequestSafely(bloodRequest, "BloodRequest", emails);
 
   res.status(201).json({
     bloodRequest,
@@ -188,7 +164,7 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
 
 // GET /api/blood-requests — list blood requests (admin views all; user views own)
 export const listBloodRequests = asyncHandler(async (req, res) => {
-  const isAdmin = req.user && ["admin", "system_admin"].includes(req.user.role);
+  const isAdmin = req.user && ["system_admin"].includes(req.user.role);
   const filter = {};
 
   if (!isAdmin) {
@@ -196,7 +172,8 @@ export const listBloodRequests = asyncHandler(async (req, res) => {
     if (!userId) {
       return res.status(401).json({ error: "Authentication required to view requests" });
     }
-    filter.user = userId;
+    if (["provider_admin", "hospital_admin"].includes(req.user.role)) filter.provider = { $in: req.user.providerIds || [] };
+    else filter.user = userId;
   }
 
   const { type, status, bloodGroup } = req.query;
@@ -228,10 +205,11 @@ export const getBloodRequest = asyncHandler(async (req, res) => {
   const userId = req.user?._id || req.user?.id;
   const requestOwnerId = bloodRequest.user?._id || bloodRequest.user;
   const isOwner = Boolean(userId && requestOwnerId && String(userId) === String(requestOwnerId));
-  const isAdmin = Boolean(req.user && ["admin", "system_admin"].includes(req.user.role));
+  const isAdmin = Boolean(req.user && ["system_admin"].includes(req.user.role));
   const hasGuestToken = !bloodRequest.user
     && verifyTrackingToken(req.get(TRACKING_TOKEN_HEADER), bloodRequest.trackingTokenHash);
-  if (!isOwner && !isAdmin && !hasGuestToken) {
+  const isProvider = Boolean(req.user?.providerIds?.includes(String(bloodRequest.provider)));
+  if (!isOwner && !isAdmin && !isProvider && !hasGuestToken) {
     return res.status(403).json({ error: "Access denied" });
   }
 

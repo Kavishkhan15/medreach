@@ -15,7 +15,7 @@ router.get("/:id/availability", getAvailability);
 router.post(
   "/:id/availability",
   requireAuth,
-  requireRole("admin", "system_admin", "hospital_admin"),
+  requireRole("system_admin", "provider_admin", "hospital_admin"),
   body("facility").isIn(FACILITY_TYPES),
   body("status").isIn(AVAILABILITY_STATUS),
   body("quantity").optional().isInt({ min: 0 }),

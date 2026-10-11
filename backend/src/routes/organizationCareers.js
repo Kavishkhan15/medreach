@@ -40,7 +40,7 @@ organizationCareersRouter.post(
 organizationCareersRouter.get(
   '/:id/applications',
   requireAuth,
-  requireRole('hospital_admin', 'admin', 'system_admin'),
+  requireRole('provider_admin', 'hospital_admin', 'system_admin'),
   param('id').isMongoId(),
   validate,
   organizationApplications

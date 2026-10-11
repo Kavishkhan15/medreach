@@ -9,9 +9,9 @@ import { enrichHospitalData } from "../services/hospitalEnrichmentService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 // GET /api/hospitals — public search + filter + pagination + optional geo "nearest".
-export const listHospitals = asyncHandler(async (req, res) => {
+const hospitalListing = (includeUnapproved) => asyncHandler(async (req, res) => {
   const { q, region, city, status, specialty, lat, lng, page = 1, limit = 12 } = req.query;
-  const filter = {};
+  const filter = includeUnapproved ? {} : { approvalStatus: { $nin: ["pending", "rejected"] } };
   if (region) filter.region = region;
   if (city) filter.city = city;
   if (specialty) filter.departments = specialty;
@@ -50,9 +50,11 @@ export const listHospitals = asyncHandler(async (req, res) => {
 
   res.json({ data, page: Number(page), perPage, total });
 });
+export const listHospitals = hospitalListing(false);
+export const listAdminHospitals = hospitalListing(true);
 
 export const getHospital = asyncHandler(async (req, res) => {
-  const hospital = await Hospital.findOne({ slug: req.params.slug }).select("-admins").lean();
+  const hospital = await Hospital.findOne({ slug: req.params.slug, approvalStatus: { $nin: ["pending", "rejected"] } }).select("-admins").lean();
   if (!hospital) return res.status(404).json({ error: "Hospital not found" });
   const [view] = await withHospitalData([hospital]);
   res.json({ hospital: view });
@@ -70,7 +72,7 @@ export const createHospital = asyncHandler(async (req, res) => {
     .filter(([field]) => field !== "departments")
     .map(([field, value]) => [field, HOSPITAL_CLAIM_FIELDS.includes(field) ? normalizeFieldValue(field, value) : value])
     .filter(([, value]) => value !== null));
-  const hospital = await Hospital.create({ ...clean, admins: [req.user.id] });
+  const hospital = await Hospital.create({ ...clean, approvalStatus: "pending", admins: [req.user.id] });
   const source = await DataSource.create({ name: `Hospital staff verified fields: ${hospital._id}`,
     type: "manual_verification", accessMethod: "manual", enabled: false, hospital: hospital._id });
   await recordHospitalFieldClaims({ hospitalId: hospital._id, source, values: submitted,
@@ -86,7 +88,7 @@ export const updateHospital = asyncHandler(async (req, res) => {
   if (!hospital) return res.status(404).json({ error: "Hospital not found" });
   if (!canManageHospital(req.user, hospital)) return res.status(403).json({ error: "Not assigned to this hospital" });
   const staffFields = ["description", "address", "locality", "pincode", "phone", "emergencyPhone", "website", "specialties", "departments", "operatingHours", "hours"];
-  const patch = req.user.role === "hospital_admin"
+  const patch = req.user.role !== "system_admin"
     ? Object.fromEntries(Object.entries(req.body).filter(([key]) => staffFields.includes(key)))
     : req.body;
   const claimValues = { ...patch, specialties: patch.specialties ?? patch.departments };
