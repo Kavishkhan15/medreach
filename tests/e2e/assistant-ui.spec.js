@@ -44,7 +44,8 @@ async function openOptions(page) {
 test.beforeEach(async ({ context }, testInfo) => {
   // Separate controlled test clients so the real assistant limiter stays enabled.
   const variant = ["bootstrap", "tailwind", "skeleton"].indexOf(testInfo.project.name) + 1;
-  await context.setExtraHTTPHeaders({ "X-Forwarded-For": `198.19.${process.pid % 200 + 3}.${variant}` });
+  // Scope rate-limit test identities to the API, never Google Maps requests.
+  await context.route(`${process.env.MEDREACH_HOME_TEST_API_URL || "http://localhost:4000"}/**`, (route) => route.continue({ headers: { ...route.request().headers(), "x-forwarded-for": `198.19.${process.pid % 200 + 3}.${variant}` } }));
 });
 
 test("assistant has opaque fixed chrome and fits desktop and mobile without covering SOS", async ({ page }, testInfo) => {
@@ -193,7 +194,7 @@ test("blood, ambulance, diagnostics and career result actions remain available",
   await expect(panelFor(page).getByRole("button", { name: "Book Ambulance", exact: true })).toBeFocused();
   const diagnostics = await ask(page, "Find diagnostics");
   expect(diagnostics.diagnostics.length).toBeGreaterThan(0);
-  await expect(panelFor(page).getByRole("region", { name: "Diagnostics", exact: true }).getByRole("link", { name: "Directory ›", exact: true })).toHaveAttribute("href", "/diagnostics");
+  await expect(panelFor(page).getByRole("region", { name: "Diagnostics", exact: true }).getByRole("link", { name: "Directory ›", exact: true }).first()).toHaveAttribute("href", "/diagnostics");
   const career = await ask(page, "Find jobs");
   expect(career.jobs.length).toBeGreaterThan(0);
   const apply = panelFor(page).getByRole("region", { name: "Healthcare jobs", exact: true }).getByRole("link", { name: "View & Apply", exact: true });

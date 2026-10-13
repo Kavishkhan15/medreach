@@ -15,7 +15,7 @@ export default function AssistantHospitalCard({ hospital, emergency = false }) {
   return <div className={styles.resultCard}>
     <div className={styles.cardHeader}>
       <h4><Link href={`/hospitals/${slug}`}>{hospital.name}</Link></h4>
-      {hospital.verificationStatus === "verified" && <span className={`${styles.badge} ${styles.verified}`}><EmergencyIcon name="verified" size={12} />Verified</span>}
+
     </div>
     <div className={styles.cardMeta}><EmergencyIcon name="pin" size={12} /><span>{hospital.locality || "Mumbai"}</span>
       {hospital.distanceKm != null && <span>· {hospital.distanceKm.toFixed(1)} km</span>}
@@ -23,7 +23,7 @@ export default function AssistantHospitalCard({ hospital, emergency = false }) {
     </div>
     {hospital.facilityDetail && <div className={styles.facility}>
       <p><strong>{hospital.facilityDetail.facility}:</strong> {hospital.facilityDetail.status === "unknown" ? "Status unconfirmed" : hospital.facilityDetail.status}</p>
-      {hospital.facilityDetail.retrievedAtRelative && <p>Updated {hospital.facilityDetail.retrievedAtRelative}</p>}
+      {hospital.facilityDetail.retrievedAtRelative && <p>Availability observed {hospital.facilityDetail.retrievedAtRelative}</p>}
     </div>}
     {hospital.specialties?.length > 0 && <div className={styles.cardTags}>{hospital.specialties.slice(0, 3).map(specialty => <span key={specialty} className={styles.badge}>{specialty}</span>)}</div>}
     <div className={styles.actionRow}>

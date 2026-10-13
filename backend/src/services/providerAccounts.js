@@ -28,35 +28,36 @@ export async function addAssignment(user, { kind, organizationId }, actor, allow
     after: { user: user._id, kind, organization: org._id } });
   return membership;
 }
-export async function provisionProvider({ kind, organizationId, loginEmail, notificationEmail, demo = false, provisioningKey }, actor, allowPending = false) {
+export async function provisionProvider({ kind, organizationId, loginEmail, notificationEmail, demo = false, provisioningKey }, actor, allowPending = false, { deferInvitation = false } = {}) {
   if (!PROVIDER_KINDS.includes(kind)) fail("Invalid provider type");
   const organization = await findOrganization(kind, organizationId);
   if (!organization || (organization.verificationStatus !== "verified" || organization.approvalStatus === "rejected" || (!allowPending && organization.approvalStatus === "pending"))) fail("Approve the organisation before provisioning", 409);
   if (demo && !isolatedDemoEnabled()) fail("Demo accounts require an isolated demo database with email disabled", 403);
-  const email = (loginEmail || (demo ? demoLoginEmail(organization, kind) : "")).trim().toLowerCase();
-  if (!email || (!demo && !validContact(email))) fail("A real login email is required outside demo mode");
+  const email = (loginEmail || demoLoginEmail(organization, kind)).trim().toLowerCase();
+  if (!email || (!demo && loginEmail && !validContact(email))) fail("A real login email is required outside demo mode");
   if (notificationEmail && !validContact(notificationEmail)) fail("A real notification contact is required");
-  if (!demo && !validContact(notificationEmail || email)) fail("A real invitation recipient is required");
+  if (!demo && !deferInvitation && !validContact(notificationEmail || email)) fail("A real invitation recipient is required");
   const previous = provisioningKey && await User.findOne({ provisioningKey }).select("+provisioningOrganization");
   if (previous) {
     if (previous.role !== "provider_admin" || previous.email !== email || previous.provisioningOrganization !== `${kind}:${organizationId}`) fail("Provisioning details changed; review the existing account", 409);
     await addAssignment(previous, { kind, organizationId }, actor, allowPending);
     let invitation = "check_delivery_status";
-    if (!previous.demoAccount && previous.accountStatus === "pending" && previous.activationDeliveryStatus === "pending") {
+    if (!deferInvitation && !previous.demoAccount && previous.accountStatus === "pending" && previous.activationDeliveryStatus === "pending") {
       try { invitation = (await issueProviderActivation(previous)).status; } catch { invitation = "failed"; }
     }
     return { account: await accountView(previous), invitation };
   }
   if (await User.exists({ email })) fail("This login email already exists. Use explicit assignment management; credentials will not be overwritten", 409);
-  const user = new User({ name: organization.name, email, provisioningKey, provisioningOrganization: `${kind}:${organizationId}`, role: "provider_admin", activationDeliveryStatus: demo ? "not_required" : "pending", accountStatus: demo ? "active" : "pending",
-    notificationEmail: notificationEmail || (demo ? undefined : email), notificationsEnabled: false });
+  const user = new User({ name: organization.name, email, provisioningKey, provisioningOrganization: `${kind}:${organizationId}`, role: "provider_admin", activationDeliveryStatus: demo ? "not_required" : deferInvitation ? "unknown" : "pending", accountStatus: demo ? "active" : "pending",
+    notificationEmail: notificationEmail || (demo || deferInvitation ? undefined : email), notificationsEnabled: false });
   if (demo) await setDemoPassword(user);
   await user.save();
   await addAssignment(user, { kind, organizationId }, actor, allowPending);
   await writeAudit({ user: actor, action: "create", entityType: "ProviderAccount", entityId: user._id,
     after: { role: user.role, organization: organization._id, demo: Boolean(demo) } });
   let invitation = "not_required";
-  if (!demo) { try { invitation = (await issueProviderActivation(user)).status; } catch { invitation = "failed"; } }
+  if (deferInvitation) invitation = "contact_required";
+  else if (!demo) { try { invitation = (await issueProviderActivation(user)).status; } catch { invitation = "failed"; } }
   return { account: await accountView(user), invitation };
 }
 export async function revokeProviderAccess(user) {

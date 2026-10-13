@@ -19,7 +19,7 @@ export default function FacilityStatus({ facilities = [] }) {
         <tbody>
           {facilities.map((f) => (
             <tr key={f.facility}>
-              <th scope="row" className="fw-semibold">{f.facility}{f.capabilityProvenance && <details className="small fw-normal mt-1"><summary>Source evidence</summary><div className="disclaimer mt-1">{f.capabilityProvenance.source?.name || "Source unknown"} · {f.capabilityProvenance.verificationStatus} · {f.capabilityProvenance.confidence}<br />Observed {f.capabilityProvenance.observedAt ? new Date(f.capabilityProvenance.observedAt).toLocaleString() : "unknown"}{f.capabilityProvenance.evidenceText && <><br />“{f.capabilityProvenance.evidenceText}”</>}{f.capabilityProvenance.sourcePageUrl?.startsWith("http") && <><br /><a href={f.capabilityProvenance.sourcePageUrl} target="_blank" rel="noopener noreferrer">View source page</a></>}</div></details>}</th>
+              <th scope="row" className="fw-semibold">{f.facility}</th>
               <td>{f.capability === "yes" ? "Yes" : f.capability === "no" ? "No" : "Unknown"}{f.capabilityConflict ? " (disputed)" : ""}</td>
               <td><StatusPill status={f.status} />{Number.isInteger(f.count) && <span className="small ms-2">{f.count} reported</span>}</td>
               <td className="disclaimer">{f.observedAt ? relativeTime(f.observedAt) : "unknown"}</td>

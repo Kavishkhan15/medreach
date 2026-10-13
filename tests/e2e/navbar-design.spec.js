@@ -92,7 +92,7 @@ test("all navigation links reach real routes and update the active item", async 
   await expect(page).toHaveURL(/\/map$/);
 });
 
-test("landing Login hides on downward scroll and returns on upward scroll or another route", async ({ page }) => {
+test("landing Login stays available during scrolling and after navigation", async ({ page }) => {
   for (const width of [1440, 375]) {
     await page.setViewportSize({ width, height: 700 });
     await page.goto("/");
@@ -103,17 +103,17 @@ test("landing Login hides on downward scroll and returns on upward scroll or ano
     const logo = nav(page).locator(".navbar-brand img");
     const initial = await logo.boundingBox();
     await page.evaluate(() => window.scrollTo({ top: 600, behavior: "instant" }));
-    await expect(login).toBeHidden();
+    await expect(login).toBeVisible();
     await expect(nav(page).getByRole("link", { name: "Hospitals", exact: true })).toBeVisible();
     expect((await logo.boundingBox()).x).toBe(initial.x);
     await page.evaluate(() => window.scrollTo({ top: 350, behavior: "instant" }));
     await expect(login).toBeVisible();
     await page.evaluate(() => window.scrollTo({ top: 700, behavior: "instant" }));
-    await expect(login).toBeHidden();
+    await expect(login).toBeVisible();
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
     await expect(login).toBeVisible();
     await page.evaluate(() => window.scrollTo({ top: 600, behavior: "instant" }));
-    await expect(login).toBeHidden();
+    await expect(login).toBeVisible();
     await nav(page).getByRole("link", { name: "Track request", exact: true }).click();
     await expect(page).toHaveURL(/\/track$/);
     if (width < 1400) await toggle.click();

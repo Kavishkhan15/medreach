@@ -90,6 +90,10 @@ behavior, not only route names. See [architecture](docs/architecture.md) and
 
 ## Run locally
 
+This machine's recovered local dataset uses `/home/anonymous/medreach/data`.
+See [local MongoDB recovery and service setup](LOCAL_MONGODB_SETUP.md) for the
+verified backup, service installation and retained recovery sources.
+
 Start MongoDB separately, then from the repository root:
 
 ```sh
@@ -157,6 +161,8 @@ live checks and deployment blockers. This documentation does not imply deploymen
 | [Release QA](docs/release-qa.md) · [Parity](docs/PARITY_VERIFICATION.md) | Current evidence and scope |
 | [Latency](docs/latency-verification.md) | Benchmark and concurrency limits |
 | [Implementation inventory](docs/MedReach_Implementation_Inventory.md) | Capabilities and remaining gaps |
+| [Local full-stack verification](FULLSTACK_IMPLEMENTATION.md) | Onboarding, permissions, test evidence and pending local actions |
+| [Local provider account roster](LOCAL_PROVIDER_ACCOUNTS.md) | Provisioned usernames, assignments and activation status; local use only |
 | [Target architecture](docs/MedReach_Target_Architecture.md) | Direction and milestone context |
 | [Research plan](docs/MedReach_Corrected_Plan.md) · [Evaluation](evaluation/README.md) | Proposed comparison and tools |
 | [Historical results](docs/RESULTS-prelim.md) | Scaffolding measurements, not current results |

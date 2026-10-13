@@ -17,11 +17,15 @@ node_modules/
 # Next.js & Deployment
 .next/
 .next-security-test/
+.next-*/
 out/
 build/
 dist/
 .vercel/
 .migration-backups/
+
+# Local MongoDB storage and personal data (never commit)
+/data/
 
 # Evaluation raw outputs (can be large / regenerated)
 data/raw/

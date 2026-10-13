@@ -162,7 +162,7 @@ export default function MapPage() {
             categoryLabel={categories[category]}
           />
           <p className="disclaimer mt-2">
-            Markers use verified geographic coordinates. Providers without coordinates remain available in the list. Directions open directly in Google Maps navigation.
+            Markers use recorded geographic coordinates. Providers without coordinates remain available in the list. Directions open directly in Google Maps navigation.
           </p>
 
           {/* Full Provider Detail Card Below Map matching Hospital Experience */}
@@ -192,8 +192,6 @@ export default function MapPage() {
                     >
                       ER {selectedItem.emergencyStatus}
                     </span>
-                  ) : selectedItem.verificationStatus === "verified" ? (
-                    <span className="status-pill tone-success">Verified Provider</span>
                   ) : selectedItem.operatingHours ? (
                     <span className="status-pill tone-neutral">{selectedItem.operatingHours}</span>
                   ) : null}
@@ -321,7 +319,7 @@ export default function MapPage() {
                     </p>
                   )}
                   <p className="disclaimer mt-2 mb-0">
-                    Testing services verified through accreditation records. Fast-track emergency pathology and imaging available on-site.
+                    Review the listed testing services and contact the provider to confirm appointment arrangements.
                   </p>
                 </div>
               )}
@@ -397,16 +395,12 @@ export default function MapPage() {
                 </div>
               )}
 
-              {/* Source & Verification Metadata */}
+              {/* Provider website */}
               <div
                 className="pt-2 flex justify-between items-center flex-wrap gap-2 text-secondary disclaimer"
                 style={{ borderTop: "1px solid var(--color-border)" }}
               >
-                <span>
-                  {selectedItem.sourceName ? `Source: ${selectedItem.sourceName}` : "Official Directory Listing"}
-                  {selectedItem.confidence ? ` · Confidence: ${selectedItem.confidence}` : ""}
-                  {selectedItem.demo ? " · DEMO" : ""}
-                </span>
+                {selectedItem.demo && <span>DEMO</span>}
                 {selectedItem.website && (
                   <a href={selectedItem.website} target="_blank" rel="noopener noreferrer">
                     Official Website ↗
@@ -457,10 +451,6 @@ export default function MapPage() {
                         style={{ fontSize: "1.1rem" }}
                       >
                         {item.emergencyStatus}
-                      </span>
-                    ) : item.verificationStatus === "verified" ? (
-                      <span className="status-pill tone-success" style={{ fontSize: "1.1rem" }}>
-                        Verified
                       </span>
                     ) : item.operatingHours === "24/7" ? (
                       <span className="status-pill tone-neutral" style={{ fontSize: "1.1rem" }}>

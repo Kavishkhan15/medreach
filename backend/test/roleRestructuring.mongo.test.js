@@ -42,8 +42,8 @@ test("three-role permissions, provisioning, assignments and notification routing
     const demo = new User({ email: "admin@medreach.com", name: "Demo System", role: "system_admin" });
     assert.equal(isolatedDemoEnabled(), true); await setDemoPassword(demo); await demo.save();
     const stored = await User.findById(demo._id).select("+passwordHash");
-    assert.equal(stored.passwordHash.includes("Admin@medreach786"), false);
-    assert.equal((await request(app).post("/api/auth/login").send({ email: demo.email, password: "Admin@medreach786" })).status, 200);
+    assert.equal(stored.passwordHash.includes("Admin@Medreach786"), false);
+    assert.equal((await request(app).post("/api/auth/login").send({ email: demo.email, password: "Admin@Medreach786" })).status, 200);
     await User.deleteOne({ _id: demo._id });
   });
   await t.test("Retired User Admin has no administrative permissions", async () => {
@@ -61,10 +61,10 @@ test("three-role permissions, provisioning, assignments and notification routing
       const response = await request(app).post("/api/admin/provider-accounts").set(bearer(systemToken)).send({ kind: org.kind, organizationId: org._id, demo: true });
       assert.equal(response.status, 201, JSON.stringify(response.body));
       assert.match(response.body.account.email, /^admin@.+\.example$/);
-      assert.equal(response.body.account.credentialLabel, "Demo default: Provider@medreach786");
+      assert.equal(response.body.account.credentialLabel, "Demo default: Provider@Medreach786");
       assert.equal(response.body.account.organizations[0].organizationId, String(org._id));
       const stored = await User.findById(response.body.account._id).select("+passwordHash");
-      assert.equal(stored.passwordHash.includes("Provider@medreach786"), false);
+      assert.equal(stored.passwordHash.includes("Provider@Medreach786"), false);
       if (org.kind === "hospital") provider = stored;
     }
     providerToken = await signSessionToken(provider);
@@ -75,7 +75,7 @@ test("three-role permissions, provisioning, assignments and notification routing
   await t.test("Demo defaults are rejected outside the isolated database and when email is enabled", async () => {
     const prior = env.emailEnabled; env.emailEnabled = true;
     try {
-      assert.equal((await request(app).post("/api/auth/login").send({ email: provider.email, password: "Provider@medreach786" })).status, 401);
+      assert.equal((await request(app).post("/api/auth/login").send({ email: provider.email, password: "Provider@Medreach786" })).status, 401);
       assert.equal((await request(app).get("/api/providers/mine").set(bearer(providerToken))).status, 401);
       assert.equal((await request(app).post("/api/admin/provider-accounts").set(bearer(systemToken)).send({ kind: "hospital", organizationId: otherHospital._id, demo: true })).status, 403); }
     finally { env.emailEnabled = prior; }
@@ -107,7 +107,7 @@ test("three-role permissions, provisioning, assignments and notification routing
     assert.equal(mine.body.data.length, 1); assert.equal((await User.findById(staff._id)).role, "hospital_admin");
   });
   await t.test("Changing a demo password reports custom without disclosing it", async () => {
-    const changed = await request(app).put("/api/auth/password").set(bearer(providerToken)).send({ currentPassword: "Provider@medreach786", newPassword: "PersonalPassword123" });
+    const changed = await request(app).put("/api/auth/password").set(bearer(providerToken)).send({ currentPassword: "Provider@Medreach786", newPassword: "PersonalPassword123" });
     assert.equal(changed.status, 200);
     const list = await request(app).get("/api/admin/provider-accounts").set(bearer(systemToken));
     assert.equal(list.body.data.find((r) => r._id === String(provider._id)).credentialLabel, "Custom password set");

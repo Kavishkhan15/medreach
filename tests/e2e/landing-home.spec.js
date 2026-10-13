@@ -66,7 +66,7 @@ test("directory categories, search, locality and services filter real API record
   await expect(panel.locator(".home-provider-card")).toHaveCount(4);
 });
 
-test("provider selection preserves contact, directions, provenance and standard bed route", async ({ page, request }) => {
+test("provider selection preserves contact, directions and standard bed route", async ({ page, request }) => {
   await openHome(page);
   const hospital = card(page, "MedReach E2E Hospital");
   await hospital.getByRole("button").click();
@@ -89,7 +89,7 @@ test("blood and ambulance provider actions open the existing request modals", as
   await panel.getByRole("button", { name: "Blood Banks", exact: true }).click();
   const blood = card(page, "MedReach E2E Blood Bank");
   await blood.getByRole("button").click();
-  await expect(blood.getByText(/Source: E2E controlled fixture/)).toBeVisible();
+  await expect(blood.getByText(/Source: E2E controlled fixture/)).toHaveCount(0);
   await blood.getByRole("button", { name: "Request / Donate", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Blood Services: MedReach E2E Blood Bank", exact: true })).toBeVisible();
   await page.locator(".modal").getByRole("button", { name: "Close", exact: true }).click();

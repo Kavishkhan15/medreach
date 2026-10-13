@@ -25,7 +25,6 @@ export default function Navbar() {
   const { user, isAdmin, logout } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [loginHidden, setLoginHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef(null);
 
@@ -39,30 +38,17 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    setLoginHidden(false);
-    if (pathname !== "/") return;
-    let previousY = Math.max(0, window.scrollY);
-    const update = () => {
-      const currentY = Math.max(0, window.scrollY);
-      if (currentY <= 24) setLoginHidden(false);
-      else if (currentY !== previousY) setLoginHidden(currentY > previousY);
-      previousY = currentY;
-    };
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
-  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
     const closeOnEscape = (event) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape") { event.stopPropagation();
         setOpen(false);
         toggleRef.current?.focus();
       }
     };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    document.addEventListener("keydown", closeOnEscape, true);
+    return () => document.removeEventListener("keydown", closeOnEscape, true);
   }, [open]);
 
   const renderLink = ({ href, label, icon }) => {
@@ -71,7 +57,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`app-navbar${scrolled ? " is-scrolled" : ""}`} aria-label="Primary">
+    <nav className={`app-navbar${scrolled ? " is-scrolled" : ""}`} aria-label="Primary" onKeyDown={(event) => { if (event.key === "Escape" && open) { setOpen(false); toggleRef.current?.focus(); } }}>
       <div className="skeleton-nav-shell">
         <Link className="navbar-brand" href="/" onClick={() => setOpen(false)}>
           <Image src="/logo.png" alt="MedReach" width={128} height={128} priority />
@@ -84,7 +70,7 @@ export default function Navbar() {
           <ul className="skeleton-nav-links skeleton-nav-right">
             {RIGHT_LINKS.map(renderLink)}
             {user ? <li><button className="nav-logout" type="button" onClick={() => { setOpen(false); logout(); }}><EmergencyIcon name="user" size={20} /><span>Logout ({user.name.split(" ")[0]})</span></button></li> :
-              <li><Link className={`nav-login${pathname === "/" && loginHidden ? " is-scroll-hidden" : ""}`} href="/login" onClick={() => setOpen(false)}><EmergencyIcon name="user" size={20} /><span>Login</span></Link></li>}
+              <li><Link className={`nav-login`} href="/login" onClick={() => setOpen(false)}><EmergencyIcon name="user" size={20} /><span>Login</span></Link></li>}
           </ul>
           {user && <ul className="skeleton-account-links" aria-label="Your account">
             {renderLink({ href: "/dashboard", label: "Dashboard", icon: "document" })}

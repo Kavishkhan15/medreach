@@ -273,8 +273,8 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
                 <h4 className="text-base font-bold text-gray-900 mb-1">Authentication Required</h4>
                 <p className="text-xs text-gray-600 mb-4 max-w-sm mx-auto">
                   {activeTab === "request"
-                    ? "Sign in to submit a verified clinical blood requisition and receive live donor tracking."
-                    : "Sign in to schedule your voluntary blood donation pledge with this verified blood centre."}
+                    ? "Sign in to submit a clinical blood requisition and receive live donor tracking."
+                    : "Sign in to schedule your voluntary blood donation pledge with this blood centre."}
                 </p>
                 <div className="flex justify-center gap-2">
                   <Link

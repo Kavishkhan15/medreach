@@ -11,6 +11,9 @@ const careerTracking = (d) => d.reference
   : "";
 
 const templates = {
+  provider_request_updated: (d) => ["MedReach request status updated", `Request ${d.reference} is now ${d.status}. Contact the provider to confirm any care, donation or transport arrangements. This message is a status update, not a dispatch or availability guarantee.`],
+  provider_application: (d) => ["MedReach provider application update", `Your application for ${d.name} is ${d.status}. ${d.status === "approved" ? "Your organisation was approved. Use the separate activation invitation to establish your own password before signing in." : d.status === "rejected" ? "Your application was not approved." : "The System Admin will review your application. Submission does not grant login access or publish the organisation."}${d.note ? `\nReview note: ${d.note}` : ""}`],
+  provider_application_review: (d) => ["Provider application awaiting review", `${d.name} (${d.kind}) has applied to join MedReach. Review at ${env.publicAppUrl}/admin/provider-approvals.`],
   notification_email: (d) => ["Verify your MedReach notification address", `Confirm this address to receive MedReach notifications: ${d.url}`],
   provider_activation: (d) => ["Activate your MedReach provider account", `Set your personal password and activate your organisation access: ${d.url}`],
   provider_request: (d) => ["Provider request needs review", `Request ${d.reference} for ${d.organization} needs review. Open ${env.publicAppUrl}/provider. This message does not confirm availability or acceptance.`],
@@ -41,40 +44,6 @@ const templates = {
       ? `Dear ${d.name || "Donor"},\n\nYour pledge to donate blood (${d.bloodGroup}) at ${d.bloodBankName} was recorded by MedReach.\nYour Reference ID: ${d.reference}\nPreferred Date: ${d.preferredDate || "As scheduled"}\n\nContact the blood bank directly to confirm eligibility and an appointment.\n\nWarm regards,\nMedReach Health Network`
       : `Dear ${d.name || "Requester"},\n\nYour blood request for ${d.units || 1} unit(s) of ${d.bloodGroup} at ${d.bloodBankName} was recorded by MedReach.\nYour Reference ID: ${d.reference}\nUrgency: ${d.urgency || "URGENT"}\nHospital: ${d.hospitalName || "Not specified"}\n\nThe request is available for MedReach administrator review. Contact the blood bank directly to confirm inventory and fulfillment.\n\nWarm regards,\nMedReach Emergency Response`,
   ],
-  bed_request_admin_notification: (d) => [
-    `New Bed Request: ${d.reference} - ${d.hospital}`,
-    `A new ${d.isEmergency ? "emergency" : "routine"} bed request has been submitted on MedReach.\n\n` +
-    `Reference ID: ${d.reference}\n` +
-    `Hospital: ${d.hospital}\n` +
-    `Type: ${d.isEmergency ? "Emergency Bed Request" : "Standard Hospital Bed Request"}\n` +
-    `Emergency / Care Category: ${d.emergencyType || "General"}\n` +
-    `Facility Required: ${d.requiredFacility || "Emergency Department"}\n` +
-    `Contact Phone: ${d.contactPhone || "N/A"}\n` +
-    `Contact Email: ${d.contactEmail || "Not provided"}\n` +
-    `Ambulance Required: ${d.ambulanceRequired ? `Yes (Pickup: ${d.ambulancePickupAddress || "Not specified"})` : "No"}\n` +
-    `Patient Reference: ${d.patientReference || "N/A"}\n` +
-    `Patient Age Group: ${d.patientAgeGroup || "N/A"}\n` +
-    `Patient Summary: ${d.patientSummary || "None"}\n` +
-    `Locality: ${d.locality || "N/A"}\n\n` +
-    `Please review in MedReach administrator panel.`,
-  ],
-  blood_request_admin_notification: (d) => [
-    `New Blood ${d.type === "DONATION" ? "Donation Pledge" : "Requisition"}: ${d.reference} (${d.bloodGroup})`,
-    `A new blood ${d.type === "DONATION" ? "donation pledge" : "request"} has been received on MedReach.\n\n` +
-    `Reference ID: ${d.reference}\n` +
-    `Type: ${d.type === "DONATION" ? "Blood Donation Pledge" : "Blood Requisition"}\n` +
-    `Blood Group: ${d.bloodGroup}\n` +
-    `Units: ${d.units || 1}\n` +
-    `Blood Bank: ${d.bloodBankName}\n` +
-    `Urgency: ${d.urgency || "Normal"}\n` +
-    `Patient / Donor Name: ${d.name}\n` +
-    `Contact Phone: ${d.contactPhone}\n` +
-    `Contact Email: ${d.contactEmail || "Not provided"}\n` +
-    `Hospital: ${d.hospitalName || "Not specified"}\n` +
-    `Preferred Date: ${d.preferredDate || "N/A"}\n` +
-    `Notes: ${d.notes || "None"}\n\n` +
-    `Please review in MedReach administrator panel.`,
-  ],
   ambulance_booking_confirmation: (d) => [
     `MedReach Ambulance Booking Confirmation: ${d.reference}`,
     `Dear ${d.patientName || "User"},\n\n` +
@@ -90,33 +59,6 @@ const templates = {
     `For acute life-threatening emergencies, dial 108 or 112 immediately.\n\n` +
     `Warm regards,\nMedReach Emergency Response`,
   ],
-  ambulance_booking_admin_notification: (d) => [
-    `New Ambulance Booking: ${d.reference} - ${d.providerName}`,
-    `A new ambulance booking request has been submitted on MedReach.\n\n` +
-    `Reference ID: ${d.reference}\n` +
-    `Ambulance Provider: ${d.providerName}\n` +
-    `Provider Phone: ${d.providerPhone || "N/A"}\n` +
-    `Patient Name: ${d.patientName}\n` +
-    `Patient Age: ${d.patientAge}\n` +
-    `Ambulance Required: ${d.ambulanceRequired ? "Yes" : "No"}\n` +
-    `Pickup Address: ${d.pickupAddress || "Not specified"}\n` +
-    `Contact Phone: ${d.contactPhone || "Not provided"}\n` +
-    `Contact Email: ${d.contactEmail || "Not provided"}\n` +
-    `Notes: ${d.notes || "None"}\n\n` +
-    `Please review in MedReach administrator panel.`,
-  ],
-  ambulance_booking_provider_notification: (d) => [
-    `New Ambulance Booking Request: ${d.reference}`,
-    `A new ambulance booking request has been recorded for ${d.providerName}.\n\n` +
-    `Reference ID: ${d.reference}\n` +
-    `Patient Name: ${d.patientName}\n` +
-    `Patient Age: ${d.patientAge}\n` +
-    `Pickup Address: ${d.pickupAddress || "Not specified"}\n` +
-    `Contact Phone: ${d.contactPhone || "Not provided"}\n` +
-    `Contact Email: ${d.contactEmail || "Not provided"}\n` +
-    `Notes: ${d.notes || "None"}\n\n` +
-    `Please contact the requester directly to confirm availability and next steps. This message does not confirm dispatch.`,
-  ],
   org_applied: (d) => [
     "Application submitted",
     `Your application to ${d.organizationName} was submitted. Open MedReach to track it.` + careerTracking(d)
@@ -130,8 +72,6 @@ const templates = {
     `Your application to ${d.organizationName} is now ${d.status}.`
   ],
 };
-
-export const SYSTEM_NOTIFICATION_EMAIL = env.systemEmail || "medreachforyou@gmail.com";
 
 let transporter;
 let transportFactory = (options) => nodemailer.createTransport(options);

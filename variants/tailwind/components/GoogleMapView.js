@@ -152,6 +152,7 @@ export default function GoogleMapView({
 
           {selectedItem && selectedPos && (
             <InfoWindow
+              shouldFocus={false}
               position={selectedPos}
               onCloseClick={() => onSelect("")}
               pixelOffset={[0, -36]}
@@ -180,11 +181,6 @@ export default function GoogleMapView({
                     >
                       <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1" />
                       {selectedItem.emergencyStatus}
-                    </span>
-                  ) : selectedItem.verificationStatus === "verified" ? (
-                    <span className="text-xs font-semibold text-green-700">
-                      <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1" />
-                      Verified
                     </span>
                   ) : selectedItem.operatingHours ? (
                     <span className="text-xs text-[var(--color-muted)] font-medium">

@@ -21,7 +21,7 @@ export default function HospitalsPage() {
         <span className="eyebrow">Mumbai care network</span>
         <h1>Hospital directory</h1>
         <p>
-          Information and discovery directory for {total || "verified"} hospitals in Mumbai.
+          Information and discovery directory for {total || "listed"} hospitals in Mumbai.
         </p>
       </header>
 

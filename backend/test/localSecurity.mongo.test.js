@@ -210,4 +210,13 @@ test("local security and reliable notification regressions", { skip: !isolated, 
     assert.equal(wrote, false);
   });
 
+  await t.test("retired fallback templates cannot create new administrator or provider emails", async () => {
+    const before = await EmailDelivery.countDocuments();
+    for (const template of ["bed_request_admin_notification", "blood_request_admin_notification", "ambulance_booking_admin_notification", "ambulance_booking_provider_notification"]) {
+      const result = await sendEmailEvent({ eventKey: `retired:${template}`, to: "approved@company.com", template });
+      assert.equal(result.status, "failed"); assert.equal(result.errorCode, "INVALID_EMAIL_EVENT");
+    }
+    assert.equal(await EmailDelivery.countDocuments(), before);
+  });
+
 });

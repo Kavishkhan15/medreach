@@ -6,7 +6,8 @@ const provider = (page, name) => directory(page).locator("article[data-provider-
 
 test.beforeEach(async ({ context }, testInfo) => {
   const client = [...`${testInfo.project.name}:${testInfo.title}`].reduce((sum, char) => (sum + char.charCodeAt(0)) % 250, 1);
-  await context.setExtraHTTPHeaders({ "X-Forwarded-For": `198.21.16.${client}` });
+  const api = process.env.MEDREACH_HOME_TEST_API_URL || "http://localhost:4000";
+  await context.route(`${api}/**`, (route) => route.continue({ headers: { ...route.request().headers(), "x-forwarded-for": `198.21.16.${client}` } }));
 });
 
 test("homepage keeps Bootstrap's section order, real data and working actions", async ({ page }) => {
@@ -15,7 +16,7 @@ test("homepage keeps Bootstrap's section order, real data and working actions", 
   await page.goto("/");
   await expect(provider(page, "MedReach E2E Hospital")).toBeVisible();
   const sectionIds = await page.locator("main section[id]").evaluateAll((sections) => sections.map((section) => section.id));
-  expect(sectionIds).toEqual(["discover", "about", "services", "emergency", "blood", "ambulance", "careers", "insights"]);
+  expect(sectionIds).toEqual(["discover", "about", "services", "emergency", "blood", "ambulance", "careers", "insights", "join-network"]);
   await expect(page.getByRole("link", { name: "Explore healthcare", exact: true })).toHaveAttribute("href", "/hospitals");
   await expect(page.getByRole("main").getByRole("link", { name: "Emergency care", exact: true })).toHaveAttribute("href", "/emergency");
   await expect(page.getByRole("link", { name: "Full Map View →", exact: true })).toHaveAttribute("href", "/map");
@@ -71,7 +72,7 @@ test("navbar remains usable across desktop and mobile widths", async ({ page }) 
   const login = nav(page).getByRole("link", { name: "Login", exact: true });
   await expect(login).toBeVisible();
   await page.evaluate(() => window.scrollTo({ top: 600, behavior: "instant" }));
-  await expect(login).toBeHidden();
+  await expect(login).toBeVisible();
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await expect(login).toBeVisible();
 });

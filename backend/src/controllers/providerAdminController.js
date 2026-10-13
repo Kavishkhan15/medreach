@@ -1,3 +1,6 @@
+import { createHmac } from "node:crypto";
+import { env } from "../config/env.js";
+import { notifyProviderApplicationSafely } from "../services/providerApplicationNotifications.js";
 import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/User.js";
@@ -13,6 +16,7 @@ import { guardSystemAdminMutation } from "../services/adminMutationGuard.js";
 import { writeAudit } from "../utils/audit.js";
 import { issueAuthToken } from "../services/authTokenService.js";
 const account = async (id) => User.findOne({ _id: id, role: "provider_admin" }).select("+authVersion +passwordHash");
+const sameText = (value) => ({ $regex: `^\\s*${value.trim().split(/\s+/).map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+")}\\s*$`, $options: "i" });
 export const listAccounts = asyncHandler(async (_req, res) => {
   const users = await User.find({ role: "provider_admin" }).sort({ createdAt: -1 });
   res.json({ data: await Promise.all(users.map(accountView)), demoEnabled: isolatedDemoEnabled() });
@@ -78,9 +82,25 @@ export const approveOrganization = asyncHandler(async (req, res) => {
   res.json({ ok: true, organization: { _id: org._id, name: org.name, kind: req.params.kind, verificationStatus: org.verificationStatus } });
 });
 export const submitProvider = asyncHandler(async (req, res) => {
-  const { kind, name, address, phone, website, contactEmail, explanation } = req.body;
-  const application = await ProviderApplication.create({ kind, name, address, phone, website, contactEmail, explanation, requester: req.user.id });
-  res.status(201).json({ ok: true, application });
+  const { kind, name, address, phone, website, contactEmail, explanation, contactName, city } = req.body;
+  const submissionFingerprint = createHmac("sha256", env.jwtSecret).update(JSON.stringify([
+    kind, name.toLowerCase().replace(/\s+/g, " "), address.toLowerCase().replace(/\s+/g, " "), (city || "Mumbai").toLowerCase().replace(/\s+/g, " "),
+  ])).digest("hex");
+  let application = await ProviderApplication.findOne({ submissionFingerprint });
+  if (!application) {
+    try {
+      application = await ProviderApplication.create({ kind, name, address, phone, website, contactEmail, explanation,
+        contactName, city, requester: req.user?.id, submissionFingerprint, notificationVersion: 1 });
+    } catch (error) {
+      if (error.code !== 11000) throw error;
+      application = await ProviderApplication.findOne({ submissionFingerprint });
+      if (!application) throw error;
+    }
+  }
+  await notifyProviderApplicationSafely(application);
+  // Public receipts never expose another applicant's records, account or review history.
+  const ownsApplication = req.user && String(application.requester) === String(req.user.id);
+  res.status(ownsApplication ? 201 : 202).json({ ok: true, ...(ownsApplication ? { application } : {}), message: "Application recorded for System Admin review. This does not grant provider access. Email confirmation may be delayed; do not submit again." });
 });
 export const providerApplications = asyncHandler(async (_req, res) => res.json({ data: await ProviderApplication.find().sort({ createdAt: -1 }).lean() }));
 export const reviewProvider = asyncHandler(async (req, res) => {
@@ -88,17 +108,29 @@ export const reviewProvider = asyncHandler(async (req, res) => {
   await guardSystemAdminMutation(req.user.id, async () => {
     const application = await ProviderApplication.findById(req.params.id);
     if (!application) { result = { status: 404, error: "Provider submission not found" }; return; }
-    if (application.status !== "pending") { result = { status: 409, error: "Provider submission already reviewed" }; return; }
+    if (application.status !== "pending") {
+      if (application.status === (req.body.decision === "approve" ? "approved" : "rejected")) {
+        await notifyProviderApplicationSafely(application);
+        result = { ok: true, application, ...(application.account ? { account: await accountView(await account(application.account)) } : {}) };
+      } else result = { status: 409, error: "Provider submission already reviewed" };
+      return;
+    }
     if (req.body.decision === "reject") {
-      application.status = "rejected"; application.reviewedBy = req.user.id; await application.save();
+      application.status = "rejected"; application.reviewedBy = req.user.id; application.reviewedAt = new Date(); application.reviewNote = req.body.note; application.notificationCompletedAt = undefined; await application.save();
+      await notifyProviderApplicationSafely(application);
       await writeAudit({ user: req.user.id, action: "reject", entityType: "ProviderApplication", entityId: application._id });
       result = { ok: true, application }; return;
     }
     const Model = application.kind === "hospital" ? Hospital : ResourceProvider;
     // Reserved ID makes retries reuse the new organisation without touching existing records.
     let org = await Model.findById(application.organization);
+    if (!org && await Model.exists({ name: sameText(application.name), address: sameText(application.address),
+      $or: [{ city: sameText(application.city || "Mumbai") }, { city: { $in: [null, ""] } }],
+      ...(application.kind === "hospital" ? {} : { kind: application.kind }) })) {
+      result = { status: 409, error: "An existing organisation matches this application. Review its assignments in Provider Accounts before provisioning." }; return;
+    }
     if (!org) org = await Model.create({ _id: application.organization, name: application.name, address: application.address,
-      phone: application.phone, website: application.website, city: "Mumbai", kind: application.kind === "hospital" ? undefined : application.kind,
+      phone: application.phone, website: application.website, city: application.city || "Mumbai", kind: application.kind === "hospital" ? undefined : application.kind,
       sourceName: "Manually approved provider submission", verificationStatus: "verified", approvalStatus: "pending" });
     let provisioning;
     if (application.account) {
@@ -106,13 +138,15 @@ export const reviewProvider = asyncHandler(async (req, res) => {
       if (!previous) throw new Error("Provisioning requires review");
       provisioning = { account: await accountView(previous), invitation: "check_delivery_status" };
     } else {
-      provisioning = await provisionProvider({ kind: application.kind, organizationId: org._id, loginEmail: req.body.loginEmail,
+      const loginEmail = req.body.loginEmail?.trim() || undefined;
+      provisioning = await provisionProvider({ kind: application.kind, organizationId: org._id, loginEmail,
         notificationEmail: application.contactEmail, demo: req.body.demo === true, provisioningKey: `application:${application._id}` }, req.user.id, true);
       application.account = provisioning.account._id;
       await application.save();
     }
     org.approvalStatus = "approved"; await org.save();
-    application.status = "approved"; application.reviewedBy = req.user.id; await application.save();
+    application.status = "approved"; application.reviewedBy = req.user.id; application.reviewedAt = new Date(); application.reviewNote = req.body.note?.trim() || undefined; application.notificationCompletedAt = undefined; await application.save();
+    await notifyProviderApplicationSafely(application);
     await writeAudit({ user: req.user.id, action: "verify", entityType: "ProviderApplication", entityId: application._id, after: { organization: org._id, account: application.account } });
     result = { ok: true, application, ...provisioning };
   });

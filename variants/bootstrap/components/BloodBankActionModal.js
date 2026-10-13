@@ -266,7 +266,7 @@ export default function BloodBankActionModal({ bloodBank, onClose }) {
                     <h5 className="fw-bold mb-2">Login Required</h5>
                     <p className="text-secondary mb-3">
                       {activeTab === "request"
-                        ? "You must be signed in to submit a verified blood requisition to this blood bank."
+                        ? "You must be signed in to submit a blood requisition to this blood bank."
                         : "You must be signed in to submit a blood donation pledge and schedule an appointment."}
                     </p>
                     <div className="d-flex justify-content-center gap-2">

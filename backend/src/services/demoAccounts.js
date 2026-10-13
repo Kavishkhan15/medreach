@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { env } from "../config/env.js";
-export const DEMO_PASSWORDS = { system_admin: "Admin@medreach786", provider_admin: "Provider@medreach786" };
+export const DEMO_PASSWORDS = { system_admin: "Admin@Medreach786", provider_admin: "Provider@Medreach786" };
 export function isolatedDemoEnabled() {
   return ["development", "test"].includes(env.nodeEnv) && !env.emailEnabled
     && ["127.0.0.1", "localhost", "::1"].includes(mongoose.connection.host)

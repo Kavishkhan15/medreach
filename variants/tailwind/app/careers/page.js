@@ -337,7 +337,7 @@ export default function Careers() {
       <header className="page-head mb-4 pb-2 border-bottom">
         <span className="eyebrow d-block mb-1">MedReach Healthcare Network</span>
         <h1 className="fw-bold text-dark mb-2">
-          Mumbai Healthcare Careers Portal — Verified Opportunities Across Hospitals, Labs, Blood Banks & EMS
+          Mumbai Healthcare Careers Portal — Opportunities Across Hospitals, Labs, Blood Banks & EMS
         </h1>
         <p className="lead text-secondary mb-3">
           Explore and apply directly for clinical, diagnostic, and emergency services positions across discovered Mumbai healthcare organizations. Applications are tracked in real-time.
@@ -448,7 +448,7 @@ export default function Careers() {
       {/* Results Counter & Active Filter Indicators */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <span className="fw-bold text-dark">{filteredOrgs.length}</span> verified{" "}
+          <span className="fw-bold text-dark">{filteredOrgs.length}</span>{" "}
           {filteredOrgs.length === 1 ? "organization" : "organizations"} available
         </div>
         {(searchQuery || orgTypeFilter !== "All") && (
@@ -468,7 +468,7 @@ export default function Careers() {
           <div className="spinner-border text-danger me-2" role="status" style={{ width: "1.75rem", height: "1.75rem" }}>
             <span className="visually-hidden">Loading opportunities...</span>
           </div>
-          <span className="text-secondary fw-semibold">Loading verified healthcare organizations across Mumbai...</span>
+          <span className="text-secondary fw-semibold">Loading healthcare organizations across Mumbai...</span>
         </div>
       )}
 
@@ -488,7 +488,7 @@ export default function Careers() {
       {!loading && !error && filteredOrgs.length === 0 && (
         <div className="surface text-center py-5 px-3 my-4">
           <div className="mb-3 text-muted"><EmergencyIcon name="search" size={48} /></div>
-          <h2 className="h4 fw-bold text-dark mb-2">No Verified Organizations Found</h2>
+          <h2 className="h4 fw-bold text-dark mb-2">No Organizations Found</h2>
           <p className="text-secondary mx-auto mb-4" style={{ maxWidth: "480px" }}>
             No healthcare organizations match your selected filters. Try broadening your keywords or resetting filters.
           </p>
@@ -527,11 +527,7 @@ export default function Careers() {
                         <span className={`status-pill ${getOrgTypeBadgeTone(org.type)}`}>
                           {getOrgTypeDisplay(org.type)}
                         </span>
-                        {org.verificationStatus !== "verified" && (
-                          <span className="badge bg-light text-secondary border">
-                            Registered
-                          </span>
-                        )}
+
                       </div>
 
                       {/* Org Name */}
@@ -620,11 +616,7 @@ export default function Careers() {
                   <div className="p-3 mb-4 rounded-2 bg-light border d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div>
                       <span className={`badge ${getOrgTypeBadgeTone(selectedOrg.type)}`}>{getOrgTypeDisplay(selectedOrg.type)}</span>
-                      {selectedOrg.verificationStatus !== "verified" && (
-                        <span className="badge bg-secondary-subtle text-secondary-emphasis border ms-2">
-                          Registered
-                        </span>
-                      )}
+
                     </div>
                   </div>
 

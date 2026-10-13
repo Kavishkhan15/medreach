@@ -63,9 +63,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
             <article className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-4 h-full flex flex-col">
               <div className="flex justify-between items-start gap-2">
                 <h2 className="text-base font-bold text-[var(--color-text)] mb-0">{item.name}</h2>
-                {item.verificationStatus && item.verificationStatus !== "verified" && (
-                  <span className="status-pill tone-neutral">{item.verificationStatus}</span>
-                )}
+
               </div>
               <p className="text-xs text-gray-500 mb-2">
                 {item.address || item.locality || "Address not supplied"}
@@ -74,22 +72,9 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                 {item.services?.length ? item.services.join(" · ") : item.providerType || "Services not specified"}
               </p>
               <p className="text-[11px] text-gray-400 mb-2">
-                Hours: {item.operatingHours || "Unknown"} · Source: {item.sourceName}{item.demo ? " · DEMO" : ""}
+                Hours: {item.operatingHours || "Unknown"}{item.demo ? " · DEMO" : ""}
               </p>
-              {item.serviceEvidence?.length > 0 && (
-                <details className="text-xs text-gray-700 mb-2">
-                  <summary>Why this provider is listed</summary>
-                  {item.serviceEvidence.map((entry, i) => (
-                    <p className="text-[11px] text-gray-400 mb-1" key={i}>
-                      {entry.service}: {entry.sourceName} · {entry.verificationStatus} · {entry.confidence}
-                      {entry.evidenceText && <> · “{entry.evidenceText}”</>}
-                      {entry.sourcePageUrl?.startsWith("http") && (
-                        <> · <a href={entry.sourcePageUrl} target="_blank" rel="noopener noreferrer">Source</a></>
-                      )}
-                    </p>
-                  ))}
-                </details>
-              )}
+
               {kind === "blood-banks" && (
                 <p className="text-[11px] text-gray-400">Current blood inventory: unknown</p>
               )}

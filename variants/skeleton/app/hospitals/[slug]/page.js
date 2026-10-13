@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useHospital, availabilityMeta, saveHospital, useAuth } from "@medreach/core";
 import { toneClass } from "../../../lib/tone";
 import FacilityStatus from "../../../components/FacilityStatus";
-import DataFreshness from "../../../components/DataFreshness";
+
 import { productApi } from "../../../lib/productApi";
 import { useEffect, useState } from "react";
 
@@ -68,8 +68,8 @@ export default function HospitalPage() {
       </div>
 
       <div className="flex flex-wrap gap-2 my-2">
-        {hospital.verificationStatus === "verified" && <span className="status-pill tone-success"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polyline points="20 6 9 17 4 12"/></svg>Verified</span>}
-        <DataFreshness timestamp={hospital.lastUpdated} />
+
+
       </div>
 
       <div className="grid-detail mt-1">
@@ -117,15 +117,10 @@ export default function HospitalPage() {
             </div>
             <hr />
             <p className="disclaimer mb-0">
-              Verification: {hospital.verificationStatus || "unverified"}. Availability reflects the
-              last known observation and may have changed. Confirm by phone before travelling.
+              Availability may have changed. Confirm by phone before travelling.
             </p>
-            {(enrichedData?.sourceName || enrichedData?.sourceUrl || hospital.website) && (
-              <p className="disclaimer mt-2 mb-0">
-                Source: {enrichedData?.sourceName || "Hospital directory"}
-                {(enrichedData?.sourceUrl || hospital.website) && <> · <a href={enrichedData?.sourceUrl || hospital.website} target="_blank" rel="noopener noreferrer">Original source</a></>}
-              </p>
-            )}
+            {(hospital.website || baseHospital?.website) && <p><a href={hospital.website || baseHospital.website} target="_blank" rel="noopener noreferrer">Official website ↗</a></p>}
+
           </div>
         </div>
       </div>

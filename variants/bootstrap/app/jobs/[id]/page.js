@@ -277,9 +277,7 @@ export default function JobDetailPage() {
                 <span className="status-pill tone-info">
                   {job.employmentType?.replaceAll("_", " ")}
                 </span>
-                <span className="status-pill tone-success">
-                  {job.verificationStatus}
-                </span>
+
                 {job.demo && <span className="status-pill tone-warning">DEMO ROLE</span>}
               </div>
 

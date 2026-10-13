@@ -63,7 +63,7 @@ export default function HospitalsPage() {
           <div className="w-1/2 md:w-1/6 px-1 mb-2">
             <label htmlFor="sort" className={label}>Sort</label>
             <select id="sort" className={control} value={sort} onChange={(e) => setSort(e.target.value)}>
-              {SORT_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+              {SORT_OPTIONS.filter((s) => s.value !== "updated").map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
             </select>
           </div>
         </div>

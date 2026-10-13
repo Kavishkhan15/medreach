@@ -26,6 +26,8 @@ const records = {
   ownership: (r) => text(r.status) && object(r.hospital) && text(r.hospital.name) && reference(r.requester) && optionalText(r, ["hospitalEmail", "officialDomain", "explanation"]),
   job: (r) => text(r.title) && text(r.status) && optionalText(r, ["description", "category", "employmentType"]) && reference(r.hospital) && reference(r.provider),
   request: (r) => text(r.requestId) && text(r.status) && reference(r.hospital),
+  // Read-only summaries retain unavailable hospitals and unclassified closed legacy history.
+  emergencyRequest: (r) => text(r.requestId) && text(r.status) && (typeof r.isEmergency === "boolean" || (r.isEmergency === undefined && ["EXPIRED", "CANCELLED", "COMPLETED", "REJECTED"].includes(r.status))) && (r.hospital === null || text(r.hospital) || (object(r.hospital) && text(r.hospital._id) && reference(r.hospital))) && optionalText(r, ["createdAt"]),
   staffRequest: (r) => text(r.requestId) && text(r.status) && (text(r.hospital) || (object(r.hospital) && text(r.hospital._id) && reference(r.hospital))) && optionalText(r, ["emergencyType", "requiredFacility", "contactPhone", "createdAt", "patientSummary", "hospitalResponse"]) && Array.isArray(r.timeline) && r.timeline.every((event) => object(event) && optionalText(event, ["actorRole", "note"])) && text(r.expiresAt),
   claim: (r) => text(r.facility) && text(r.capability) && text(r.verificationStatus) && optionalText(r, ["evidenceText", "sourcePageUrl", "observedAt", "confidence"]) && reference(r.source) && reference(r.hospital),
   candidate: (r) => text(r.facility) && text(r.status) && text(r.candidateCapability) && text(r.evidenceExcerpt) && optionalText(r, ["model", "sourcePageUrl"]) && reference(r.source) && reference(r.hospital),
@@ -196,4 +198,10 @@ export function useAdminAction() {
     setState({ busy: false, uncertain: false, message: "Current status checked. Submit again only if the action is still needed.", kind: "info" });
   }, []);
   return { ...state, disabled: state.busy || state.uncertain, run, acknowledge };
+}
+
+export function providerReportData(response) {
+  const r = response?.data;
+  if (!object(r) || !text(r.organizationId) || !text(r.kind) || !text(r.generatedAt) || !count(r.applications) || (r.observations !== null && !count(r.observations)) || !Array.isArray(r.requests) || r.requests.some((row) => !object(row) || !text(row._id) || !count(row.count))) throw invalidAdminResponse();
+  return r;
 }

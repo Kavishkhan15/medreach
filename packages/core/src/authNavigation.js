@@ -13,7 +13,9 @@ export function safeReturnTo(candidate, fallback = "/") {
 }
 
 export function profileDestination(user, returnTo = "/") {
+  if (user?.role === "system_admin") return "/admin";
+  if (user?.role === "provider_admin") return "/provider";
   const destination = safeReturnTo(returnTo);
-  if (typeof user?.region === "string" && user.region.trim()) return destination;
+  if (typeof user?.region === "string" && user.region.trim()) return destination === "/" ? "/dashboard" : destination;
   return `/profile?onboarding=1&returnTo=${encodeURIComponent(destination)}`;
 }

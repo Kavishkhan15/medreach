@@ -1,7 +1,8 @@
+import { updateProviderRequestStatus } from "../services/providerRequestStatus.js";
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { validate } from "../middleware/validate.js";
-import { optionalAuth, requireAuth } from "../middleware/auth.js";
+import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import {
   createBloodRequest,
   listBloodRequests,
@@ -125,6 +126,8 @@ router.post(
 
 // Listing requires authentication (admins see all; users see own)
 router.get("/", requireAuth, listBloodRequests);
+
+router.patch("/:id/status", requireAuth, requireRole("system_admin", "provider_admin"), param("id").isMongoId(), body("status").isIn(["CONFIRMED", "REJECTED", "COMPLETED", "CANCELLED"]), validate, updateProviderRequestStatus("blood"));
 
 // Get by reference or ID
 router.get("/:reference", trackingLimiter, optionalAuth, getBloodRequest);

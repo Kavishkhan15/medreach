@@ -80,8 +80,6 @@ export default function HospitalPage() {
   const specialties = (hospital.specialties && hospital.specialties.length > 0)
     ? hospital.specialties
     : (baseHospital?.specialties?.length ? baseHospital.specialties : (baseHospital?.departments?.length ? baseHospital.departments : ["Not available."]));
-  const sourceName = hospital.sourceName || (baseHospital?.locality ? "Verified Hospital Profile" : "Official Directory");
-  const sourceUrl = hospital.sourceUrl || baseHospital?.website;
 
   const emergencyDial =
     hospital.emergencyPhone ||
@@ -147,19 +145,7 @@ export default function HospitalPage() {
             </dl>
           </div>
 
-          {/* Source Transparency */}
-          <div className="p-3 bg-light rounded border text-muted small">
-            <div className="fw-semibold mb-1">Source &amp; Verification</div>
-            <p className="mb-1">
-              Source: {sourceName}
-              {sourceUrl && (
-                <> · <a href={sourceUrl} target="_blank" rel="noopener noreferrer">Original Source Reference ↗</a></>
-              )}
-            </p>
-            <p className="mb-0">
-              Information is continuously normalized from public health registries and official hospital records.
-            </p>
-          </div>
+          {(hospital.website || baseHospital?.website) && <p><a href={hospital.website || baseHospital.website} target="_blank" rel="noopener noreferrer">Official website ↗</a></p>}
         </div>
 
         {/* Hospital actions sidebar */}

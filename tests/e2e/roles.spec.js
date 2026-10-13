@@ -20,7 +20,7 @@ test("System Admin retains the main dashboard and provisions a pending real prov
   await page.goto("/admin"); await expect(page.getByRole("link", { name: "Provider Accounts", exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Provider Accounts", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Provider Accounts", exact: true })).toBeVisible();
-  await page.getByLabel("Organisation", { exact: true }).selectOption({ label: "MedReach E2E Hospital · hospital · verified" });
+  await page.getByLabel("Organisation", { exact: true }).selectOption({ label: "MedReach E2E Hospital · hospital" });
   const email = `${info.project.name}.${Date.now()}@provider-company.com`;
   await page.getByLabel("Login email", { exact: true }).fill(email);
   await page.getByLabel("Real notification / invitation email", { exact: true }).fill(`contact.${email}`);

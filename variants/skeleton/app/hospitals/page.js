@@ -59,7 +59,7 @@ export default function HospitalsPage() {
           <div>
             <label htmlFor="sort" className="form-label fw-semibold">Sort</label>
             <select id="sort" className="form-select" value={sort} onChange={(e) => setSort(e.target.value)}>
-              {SORT_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+              {SORT_OPTIONS.filter((s) => s.value !== "updated").map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
             </select>
           </div>
         </div>

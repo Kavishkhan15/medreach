@@ -5,15 +5,15 @@ import { useAuth } from "@medreach/core";
 
 const LINKS = [
   { href: "/admin", label: "Overview" },
+  { href: "/admin/provider-approvals", label: "Provider Approvals" },
   { href: "/admin/provider-accounts", label: "Provider Accounts" },
-  { href: "/admin/provider-approvals", label: "Provider approvals" },
+  { href: "/admin/emergency", label: "Emergency Requests" },
   { href: "/admin/hospitals", label: "Hospitals" },
-  { href: "/admin/verification", label: "Verification" },
   { href: "/admin/alerts", label: "Alerts" },
   { href: "/admin/audit", label: "Audit" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/security", label: "Security & auth" },
-  { href: "/admin/operations", label: "Operations" },
+  { href: "/admin/operations", label: "Activity & Settings" },
 ];
 
 export default function AdminNav() {

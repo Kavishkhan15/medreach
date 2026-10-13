@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 export const AMBULANCE_BOOKING_STATES = [
+  "REJECTED",
   "RECORDED",
   "UNDER_REVIEW",
   "CONFIRMED",

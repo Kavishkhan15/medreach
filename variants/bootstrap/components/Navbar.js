@@ -22,7 +22,6 @@ export default function Navbar() {
   const { user } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [loginHidden, setLoginHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef(null);
 
@@ -36,30 +35,17 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    setLoginHidden(false);
-    if (pathname !== "/") return;
-    let previousY = Math.max(0, window.scrollY);
-    const updateLoginVisibility = () => {
-      const currentY = Math.max(0, window.scrollY);
-      if (currentY <= 24) setLoginHidden(false);
-      else if (currentY !== previousY) setLoginHidden(currentY > previousY);
-      previousY = currentY;
-    };
-    window.addEventListener("scroll", updateLoginVisibility, { passive: true });
-    return () => window.removeEventListener("scroll", updateLoginVisibility);
-  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
     const closeOnEscape = (event) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape") { event.stopPropagation();
         setOpen(false);
         toggleRef.current?.focus();
       }
     };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    document.addEventListener("keydown", closeOnEscape, true);
+    return () => document.removeEventListener("keydown", closeOnEscape, true);
   }, [open]);
 
   const renderLink = ({ href, label, icon }) => {
@@ -68,7 +54,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`navbar navbar-expand-xxl app-navbar sticky-top${scrolled ? " is-scrolled" : ""}`} aria-label="Primary">
+    <nav className={`navbar navbar-expand-xxl app-navbar sticky-top${scrolled ? " is-scrolled" : ""}`} aria-label="Primary" onKeyDown={(event) => { if (event.key === "Escape" && open) { setOpen(false); toggleRef.current?.focus(); } }}>
       <div className="medreach-nav-shell">
         <Link className="navbar-brand" href="/" onClick={() => setOpen(false)}>
           <Image src="/logo.png" alt="MedReach" width={128} height={128} priority />
@@ -94,7 +80,7 @@ export default function Navbar() {
                 </Link>
               </li>
             ) : (
-              <li className="nav-item"><Link className={`btn btn-sm btn-primary nav-login${pathname === "/" && loginHidden ? " is-scroll-hidden" : ""}`} href="/login" onClick={() => setOpen(false)}><EmergencyIcon name="user" size={22} /><span>Login</span></Link></li>
+              <li className="nav-item"><Link className={`btn btn-sm btn-primary nav-login`} href="/login" onClick={() => setOpen(false)}><EmergencyIcon name="user" size={22} /><span>Login</span></Link></li>
             )}
           </ul>
         </div>

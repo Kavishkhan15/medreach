@@ -90,11 +90,11 @@ export default function GoogleMapView({ items = [], selected = "", onSelect = ()
             <Pin background={chosen ? "#10151a" : markerColors[item.category || category] || color} borderColor="#fff" glyphColor="#fff" scale={chosen ? 1.25 : 1} />
           </AdvancedMarker>;
         })}
-        {selectedItem && selectedPos && <InfoWindow position={selectedPos} onCloseClick={() => onSelect("")} pixelOffset={[0, -36]}>
+        {selectedItem && selectedPos && <InfoWindow shouldFocus={false} position={selectedPos} onCloseClick={() => onSelect("")} pixelOffset={[0, -36]}>
           <div className="skeleton-map-popup">
             <div className="skeleton-map-popup-top">
               <span className="skeleton-map-category" style={{ background: color }}>{selectedCategory === "blood-banks" ? "Blood Bank" : selectedCategory === "diagnostics" ? "Diagnostic Centre" : selectedCategory === "ambulances" ? "Ambulance Provider" : "Hospital"}</span>
-              {selectedItem.emergencyStatus ? <span>{selectedItem.emergencyStatus}</span> : selectedItem.verificationStatus === "verified" ? <span>Verified</span> : selectedItem.operatingHours ? <span>{selectedItem.operatingHours}</span> : null}
+              {selectedItem.emergencyStatus ? <span>{selectedItem.emergencyStatus}</span> : selectedItem.operatingHours ? <span>{selectedItem.operatingHours}</span> : null}
             </div>
             <h3>{selectedItem.name}</h3>
             <p>{selectedItem.address || selectedItem.locality || selectedItem.city || "Mumbai"}</p>

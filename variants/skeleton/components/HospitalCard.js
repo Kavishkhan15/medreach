@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { availabilityMeta } from "@medreach/core";
 import { toneClass } from "../lib/tone";
-import DataFreshness from "./DataFreshness";
+
 
 function edStatus(h) {
   return (h.facilities || []).find((f) => f.facility === "Emergency Department")?.status ?? "unknown";
@@ -12,7 +12,7 @@ export default function HospitalCard({ hospital, rank }) {
   const ed = edStatus(hospital);
   const edMeta = availabilityMeta(ed);
   const r = rank || hospital._rank;
-  const verified = hospital.verificationStatus === "verified";
+
   const detailsUrl = `/hospitals/${hospital.slug}`;
 
   return (
@@ -31,7 +31,7 @@ export default function HospitalCard({ hospital, rank }) {
         </div>
 
         <div className="flex flex-wrap gap-1 mb-2">
-          {verified && <span className="status-pill tone-success"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block mr-1"><polyline points="20 6 9 17 4 12"/></svg>Verified</span>}
+
           {hospital.hospitalType && <span className="chip">{hospital.hospitalType}</span>}
           <span className="chip">{hospital.locality || hospital.city}</span>
         </div>
@@ -51,12 +51,12 @@ export default function HospitalCard({ hospital, rank }) {
 
         {r?.reasons?.length ? (
           <ul className="reasons mb-2">
-            {r.reasons.slice(0, 2).map((reason, i) => <li key={i}>{reason}</li>)}
+            {r.reasons.filter((reason) => !/verif|fresh|confidence|updated|stale|outdated|scrap/i.test(reason)).slice(0, 2).map((reason, i) => <li key={i}>{reason}</li>)}
           </ul>
         ) : null}
 
         <div className="mt-auto">
-          <div className="mb-2"><DataFreshness timestamp={hospital.lastUpdated} showChip={false} /></div>
+
           {(() => {
             const coords = hospital.location?.coordinates || [];
             const hasCoords = coords.length === 2 && Number.isFinite(coords[0]) && Number.isFinite(coords[1]);

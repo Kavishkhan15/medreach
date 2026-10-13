@@ -229,3 +229,8 @@ body:has(.landing-home) .landing-footer-links { display: grid; grid-template-col
 @media (prefers-reduced-motion: reduce) {
   .landing-home *, .landing-home *::before, .landing-home *::after { scroll-behavior: auto !important; transition: none !important; }
 }
+
+/* Website recording stays inside the existing About illustration frame. */
+.home-about-art.home-about-demo { padding: 0; overflow: hidden; }
+.home-about-demo video { display: block; width: 100%; height: 335px; object-fit: contain; background: #e5f3f6; }
+@media (max-width: 575px) { .home-about-demo video { height: 255px; } }

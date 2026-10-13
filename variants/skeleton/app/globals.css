@@ -107,6 +107,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .p-0 { padding: 0; }
 .p-4 { padding: 2rem; }
 .text-start { text-align: left; }
+.text-end { text-align: right !important; }
 .h-100 { height: 100%; }
 .w-auto { width: auto; }
 .text-center { text-align: center; }
@@ -219,8 +220,8 @@ select.w-auto { width: auto; display: inline-block; }
 .app-navbar .skeleton-account-links { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; border-top: 1px solid #e4edf6; padding-top: 10px; }
 .app-navbar a:focus-visible, .app-navbar button:focus-visible { outline: 3px solid #0967b9; outline-offset: 3px; }
 @media (min-width: 1400px) {
-  .skeleton-nav-shell { grid-template-columns: minmax(0, 4fr) auto minmax(0, 5.2fr); gap: 0 6px; min-height: 80px; padding: 8px 16px; position: relative; isolation: isolate; background: transparent; border-color: transparent; box-shadow: none; max-width: 1380px; }
-  .app-navbar.is-scrolled .skeleton-nav-shell { min-height: 64px; padding: 4px 14px; }
+  .skeleton-nav-shell { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 0 6px; min-height: 80px; padding: 8px 16px; position: relative; isolation: isolate; background: transparent; border-color: transparent; box-shadow: none; }
+  .app-navbar.is-scrolled .skeleton-nav-shell { min-height: 64px; padding: 4px 16px; }
   .skeleton-nav-shell::before { content: ""; position: absolute; z-index: -1; inset: 25% -1px; border: 1px solid #e0eaf5; border-radius: inherit; background: #fff; box-shadow: 0 6px 24px rgba(24,65,104,.06); transition: all 0.25s ease; }
   .skeleton-nav-shell:has(.skeleton-account-links)::before { top: 32px; bottom: -1px; }
   .app-navbar .navbar-brand { grid-column: 2; grid-row: 1; align-self: stretch; position: relative; padding-inline: 4px; }
@@ -228,7 +229,7 @@ select.w-auto { width: auto; display: inline-block; }
   .app-navbar .navbar-brand::before { left: -1px; }
   .app-navbar .navbar-brand::after { right: -1px; }
   .app-navbar .navbar-brand img { width: 128px; }
-  .app-navbar.is-scrolled .navbar-brand img { width: 104px; }
+  .app-navbar.is-scrolled .navbar-brand img { width: 128px; }
   .app-navbar .navbar-toggler { display: none; }
   .app-navbar .skeleton-nav-content, .app-navbar .skeleton-nav-content.is-open { display: contents; }
   .app-navbar .skeleton-nav-left { grid-column: 1; grid-row: 1; justify-content: flex-end; }
@@ -563,3 +564,13 @@ select.w-auto { width: auto; display: inline-block; }
 
 /* Footer columns appear on the landing page only. */
 .skeleton-landing-footer-links { display: none; }
+
+/* Skeleton uses a 10px root scale; size desktop navigation accordingly. */
+@media (min-width: 1400px) {
+  .app-navbar .nav-link { font-size: 1.4rem; padding-inline: 5px; gap: 4px; }
+  .app-navbar .nav-link svg { width: 18px; height: 18px; }
+  .app-navbar .nav-login, .app-navbar .nav-logout { font-size: 1.4rem; padding-inline: 10px; }
+}
+
+/* Responsive dimensions change immediately; interaction feedback keeps motion. */
+.skeleton-nav-shell, .app-navbar .nav-link, .app-navbar .nav-login, .app-navbar .nav-link svg { transition: color .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease; }

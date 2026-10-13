@@ -2,12 +2,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { productApi } from "./productApi";
 
-const endpoints = { profile: "/api/auth/me", requests: "/api/emergency-requests", applications: "/api/applications/mine" };
+const endpoints = {
+  profile: "/api/auth/me",
+  requests: "/api/emergency-requests",
+  blood: "/api/blood-requests",
+  ambulance: "/api/ambulances/bookings",
+  applications: "/api/applications/mine",
+};
 const initialSection = () => ({ data: null, loading: true, error: "", status: null });
 
 export function useDashboard() {
   const [sections, setSections] = useState(() => Object.fromEntries(Object.keys(endpoints).map((key) => [key, initialSection()])));
-  const generations = useRef({ profile: 0, requests: 0, applications: 0 });
+  const generations = useRef({ profile: 0, requests: 0, blood: 0, ambulance: 0, applications: 0 });
   const retry = useCallback(async (key) => {
     const generation = ++generations.current[key];
     setSections((previous) => ({ ...previous, [key]: { ...previous[key], loading: true, error: "", status: null } }));
@@ -22,7 +28,8 @@ export function useDashboard() {
   }, []);
   useEffect(() => {
     Object.keys(endpoints).forEach(retry);
-    return () => { Object.keys(endpoints).forEach((key) => { generations.current[key] += 1; }); };
+    const gens = generations.current;
+    return () => { Object.keys(endpoints).forEach((key) => { gens[key] += 1; }); };
   }, [retry]);
   return { ...sections, retry };
 }

@@ -7,7 +7,8 @@ const PASSWORD = "E2E_SafePassword_123!";
 test.beforeEach(async ({ context }, testInfo) => {
   const variant = ["bootstrap", "tailwind", "skeleton"].indexOf(testInfo.project.name) + 1;
   const journey = [...testInfo.title].reduce((hash, character) => (hash * 31 + character.charCodeAt(0)) % 253, 0) + 1;
-  await context.setExtraHTTPHeaders({ "X-Forwarded-For": `198.19.${variant}.${journey}` });
+  // Scope rate-limit test identities to the API, never Google Maps requests.
+  await context.route(`${process.env.MEDREACH_HOME_TEST_API_URL || "http://localhost:4000"}/**`, (route) => route.continue({ headers: { ...route.request().headers(), "x-forwarded-for": `198.19.${variant}.${journey}` } }));
 });
 
 function attachRuntimeGuard(page) {

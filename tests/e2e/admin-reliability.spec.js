@@ -42,24 +42,18 @@ test("audit distinguishes loading, records, outage, malformed response, retry an
   await expect(page.getByText("No audit records found.")).toBeVisible();
 });
 
-test("overview keeps true totals independent of unavailable freshness and reads every directory page", async ({ page }) => {
-  let unavailable = true; const pages = [];
+test("overview keeps true totals without fetching retired scraping freshness panels", async ({ page }) => {
+  let directoryReads = 0;
   await page.route("**/api/admin/overview", (route) => json(route, { hospitals: 51, verified: 1, verificationQueue: 50 }));
-  await page.route("**/api/admin/hospitals?**", (route) => {
-    const pageNumber = Number(new URL(route.request().url()).searchParams.get("page")); pages.push(pageNumber);
-    if (unavailable) return json(route, { error: "Unavailable" }, 503);
-    const rows = Array.from({ length: pageNumber === 1 ? 50 : 1 }, (_, i) => ({ ...hospital, _id: `${pageNumber}-${i}`, name: `Hospital ${pageNumber}-${i}` }));
-    return json(route, { data: rows, total: 51, page: pageNumber, perPage: 50 });
-  });
+  await page.route("**/api/admin/hospitals?**", (route) => { directoryReads++; return json(route, { error: "Unavailable" }, 503); });
   await page.goto("/admin");
   await expect(page.getByRole("region", { name: "Hospital totals" }).getByText("51", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Retry data freshness" })).toBeVisible();
-  unavailable = false; await page.getByRole("button", { name: "Retry data freshness" }).click();
-  await expect(page.getByRole("region", { name: "Data freshness" }).getByText("51", { exact: true })).toBeVisible();
-  expect(pages).toContain(2);
+  await expect(page.getByRole("region", { name: "Data freshness" })).toHaveCount(0);
+  await expect(page.getByText("Verified hospitals", { exact: true })).toHaveCount(0);
+  expect(directoryReads).toBe(0);
 });
 
-for (const [path, label, empty] of [["hospitals", "hospitals", "No hospitals found."], ["verification", "verification queue", "Nothing awaiting verification."]]) {
+for (const [path, label, empty] of [["hospitals", "hospitals", "No hospitals found."], ["verification", "hospitals", "No hospitals found."]]) {
   test(`${path} never reports empty on failed or malformed reads`, async ({ page }) => {
     let mode = "error";
     await page.route("**/api/admin/hospitals?**", (route) => json(route, mode === "error" ? { error: "Failure" } : mode === "malformed" ? { data: null } : { data: [], total: 0, page: 1, perPage: 50 }, mode === "error" ? 503 : 200));
@@ -73,17 +67,18 @@ for (const [path, label, empty] of [["hospitals", "hospitals", "No hospitals fou
   });
 }
 
-test("verification prevents duplicate writes and keeps confirmed success when refresh fails", async ({ page }) => {
+test("provider approvals prevent duplicate writes and keep confirmed success when refresh fails", async ({ page }) => {
   let readsFail = false, writes = 0; const gate = deferred();
-  await page.route("**/api/admin/hospitals?**", (route) => json(route, readsFail ? { error: "Failure" } : { data: [hospital], total: 1, page: 1, perPage: 50 }, readsFail ? 503 : 200));
-  await page.route("**/api/admin/hospitals/*/verify", async (route) => { writes++; await gate.promise; readsFail = true; return json(route, { hospital: { ...hospital, verificationStatus: "verified" } }); });
-  await page.goto("/admin/verification");
-  const approve = page.getByRole("button", { name: "Approve", exact: true });
+  const submission = { _id: "666666666666666666666666", name: "Provider application", kind: "hospital", status: "pending", contactEmail: "controlled@example.com", address: "Test street" };
+  await page.route("**/api/admin/provider-approvals", (route) => json(route, readsFail ? { error: "Failure" } : { data: [submission] }, readsFail ? 503 : 200));
+  await page.route("**/api/admin/provider-approvals/*/review", async (route) => { writes++; await gate.promise; readsFail = true; return json(route, { ok: true }); });
+  await page.goto("/admin/provider-approvals");
+  const approve = page.getByRole("button", { name: "Approve and provision", exact: true });
   await approve.click(); await expect(approve).toBeDisabled();
   await approve.evaluate((element) => element.dispatchEvent(new MouseEvent("click", { bubbles: true })));
   expect(writes).toBe(1); gate.resolve();
-  await expect(page.getByText(/Verification decision confirmed\. The updated view could not be loaded/)).toBeVisible();
-  await expect(page.getByRole("button", { name: "Retry verification queue" })).toBeVisible();
+  await expect(page.getByText(/Provider review confirmed.*The updated view could not be loaded/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Retry provider submissions" })).toBeVisible();
   expect(writes).toBe(1);
 });
 
@@ -253,7 +248,7 @@ test("every Operations panel distinguishes loading, malformed responses and real
   mode = "empty";
   for (const [, label] of operationPanels) await page.getByRole("button", { name: `Retry ${label}`, exact: true }).click();
   for (const message of ["No pending requests.", "No pending jobs.", "No requests yet.", "No source excerpts available.", "No refinement suggestions."]) await expect(page.getByText(message, { exact: true })).toBeVisible();
-  await expect(page.getByRole("region", { name: "Operational analytics" }).getByText("0", { exact: true })).toHaveCount(4);
+  await expect(page.getByRole("region", { name: "Operational analytics" }).getByText("0", { exact: true })).toHaveCount(3);
 });
 
 test("unconfirmed applicant review refreshes applicants before the admin enables further changes", async ({ page }) => {
@@ -319,5 +314,44 @@ test("protected hospital views include pending and rejected records without publ
   }
   await page.goto("/admin/verification");
   await expect(page.getByText("Pending admin hospital", { exact: true })).toBeVisible();
-  await expect(page.getByText("Rejected admin hospital", { exact: true })).toHaveCount(0);
+  await expect(page).toHaveURL(/\/admin\/hospitals$/);
+  await expect(page.getByText("Rejected admin hospital", { exact: true })).toBeVisible();
+});
+
+test("emergency bed overview preserves missing-hospital history and isolates loading, errors, malformed data and Retry", async ({ page }) => {
+  const historical = { _id: "history", requestId: "MR-HISTORY", status: "EXPIRED", isEmergency: true, hospital: null, createdAt: "2026-10-01T12:00:00Z", timeline: [], expiresAt: "2026-10-02T12:00:00Z" };
+  const current = { ...historical, _id: "current", requestId: "MR-CURRENT", hospital, status: "REQUESTED" };
+  const ordinary = { ...current, _id: "ordinary", requestId: "MR-ORDINARY", isEmergency: false };
+  const closedLegacy = { ...historical, _id: "legacy", requestId: "MR-UNCLASSIFIED", isEmergency: undefined };
+  let mode = "loading", bedReads = 0, bloodReads = 0, ambulanceReads = 0;
+  const gate = deferred();
+  await page.route("**/api/emergency-requests", async (route) => {
+    bedReads++;
+    if (mode === "loading") await gate.promise;
+    return json(route, mode === "error" ? { error: "Controlled service outage" } : mode === "malformed" ? { data: [{ ...historical, status: "REQUESTED", isEmergency: undefined }] } : { data: mode === "empty" ? [] : [historical, current, ordinary, closedLegacy] }, mode === "error" ? 503 : 200);
+  });
+  await page.route("**/api/blood-requests", (route) => { bloodReads++; return json(route, { data: [] }); });
+  await page.route("**/api/ambulances/bookings", (route) => { ambulanceReads++; return json(route, { data: [] }); });
+  await page.goto("/admin/emergency");
+  const beds = page.getByRole("heading", { name: "Emergency bed requests", exact: true }).locator("..");
+  await expect(beds.getByRole("status")).toHaveText("Loading emergency bed requests…");
+  await expect(beds.getByText("No recorded emergencies in this category.")).toHaveCount(0);
+  mode = "success"; gate.resolve();
+  await expect(beds.getByRole("heading", { name: "MR-HISTORY", exact: true })).toBeVisible();
+  await expect(beds.getByText("Provider record unavailable", { exact: true })).toBeVisible();
+  await expect(beds.getByText(hospital.name, { exact: true })).toBeVisible();
+  await expect(beds.getByText("MR-ORDINARY", { exact: true })).toHaveCount(0);
+  await expect(beds.getByText("MR-UNCLASSIFIED", { exact: true })).toHaveCount(0);
+  for (const failure of ["error", "malformed"]) {
+    mode = failure; await page.reload();
+    await expect(beds.getByRole("alert")).toBeVisible();
+    await expect(beds.getByText("No recorded emergencies in this category.")).toHaveCount(0);
+    const before = { bedReads, bloodReads, ambulanceReads };
+    mode = "success"; await beds.getByRole("button", { name: "Retry emergency bed requests", exact: true }).click();
+    await expect(beds.getByRole("heading", { name: "MR-HISTORY", exact: true })).toBeVisible();
+    expect(bedReads).toBe(before.bedReads + 1); expect(bloodReads).toBe(before.bloodReads); expect(ambulanceReads).toBe(before.ambulanceReads);
+  }
+  mode = "empty"; await page.reload();
+  await expect(beds.getByText("No recorded emergencies in this category.")).toBeVisible();
+  await expect(beds.getByRole("alert")).toHaveCount(0);
 });

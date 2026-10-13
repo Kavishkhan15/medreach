@@ -1,3 +1,4 @@
+import { updateProviderRequestStatus } from "../services/providerRequestStatus.js";
 import { Router } from "express";
 import { body, param } from "express-validator";
 import { validate } from "../middleware/validate.js";
@@ -44,6 +45,7 @@ export const resourceRouter = (kind) => {
       validate,
       bookAmbulance
     );
+    router.patch("/bookings/:id/status", requireAuth, requireRole("system_admin", "provider_admin"), param("id").isMongoId(), body("status").isIn(["UNDER_REVIEW", "CONFIRMED", "REJECTED", "DISPATCHED", "CANCELLED", "COMPLETED"]), validate, updateProviderRequestStatus("ambulance"));
     router.get("/bookings", requireAuth, listAmbulanceBookings);
     router.get(
       "/bookings/:reference",

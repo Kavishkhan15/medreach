@@ -63,9 +63,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
             <article className="surface h-100 d-flex flex-column">
               <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem" }}>
                 <h2 className="h5">{item.name}</h2>
-                {item.verificationStatus && item.verificationStatus !== "verified" && (
-                  <span className="status-pill tone-neutral">{item.verificationStatus}</span>
-                )}
+
               </div>
               <p className="small text-secondary mb-2">
                 {item.address || item.locality || "Address not supplied"}
@@ -74,22 +72,9 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                 {item.services?.length ? item.services.join(" · ") : item.providerType || "Services not specified"}
               </p>
               <p className="disclaimer mb-2">
-                Hours: {item.operatingHours || "Unknown"} · Source: {item.sourceName}{item.demo ? " · DEMO" : ""}
+                Hours: {item.operatingHours || "Unknown"}{item.demo ? " · DEMO" : ""}
               </p>
-              {item.serviceEvidence?.length > 0 && (
-                <details className="small mb-2">
-                  <summary>Why this provider is listed</summary>
-                  {item.serviceEvidence.map((entry, i) => (
-                    <p className="disclaimer mb-1" key={i}>
-                      {entry.service}: {entry.sourceName} · {entry.verificationStatus} · {entry.confidence}
-                      {entry.evidenceText && <> · “{entry.evidenceText}”</>}
-                      {entry.sourcePageUrl?.startsWith("http") && (
-                        <> · <a href={entry.sourcePageUrl} target="_blank" rel="noopener noreferrer">Source</a></>
-                      )}
-                    </p>
-                  ))}
-                </details>
-              )}
+
               {kind === "blood-banks" && (
                 <p className="disclaimer">Current blood inventory: unknown</p>
               )}

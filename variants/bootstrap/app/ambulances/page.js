@@ -17,7 +17,7 @@ export default function Ambulances() {
         kind="ambulances"
         title="Ambulance providers"
         label="ambulances"
-        intro="Contact listed ambulance providers directly. MedReach displays verified directory contacts and navigation coordinates for Mumbai ambulance fleets."
+        intro="Contact listed ambulance providers directly. MedReach displays listed directory contacts and navigation coordinates for Mumbai ambulance fleets."
       />
     </div>
   );

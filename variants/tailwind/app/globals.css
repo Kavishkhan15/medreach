@@ -520,15 +520,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .tw-nav-account { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; padding-top: 10px; border-top: 1px solid #e4edf6; }
 .tw-navbar :is(a,button):focus-visible { outline: 3px solid #0967b9; outline-offset: 3px; }
 @media (min-width: 1400px) {
-  .tw-nav-shell { grid-template-columns: minmax(0, 4fr) auto minmax(0, 5.2fr); gap: 0 6px; background: transparent; border-color: transparent; box-shadow: none; max-width: 1380px; }
-  .tw-navbar.is-scrolled .tw-nav-shell { min-height: 64px; padding: 4px 14px; }
+  .tw-nav-shell { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 0 6px; background: transparent; border-color: transparent; box-shadow: none; }
+  .tw-navbar.is-scrolled .tw-nav-shell { min-height: 64px; padding: 4px 16px; }
   .tw-nav-shell::before { content: ""; position: absolute; z-index: -1; inset: 25% -1px; border: 1px solid #e0eaf5; border-radius: 18px; background: #fff; box-shadow: 0 6px 24px rgba(24,65,104,.06); transition: all 0.25s ease; }
   .tw-nav-shell:has(.tw-nav-account)::before { top: 32px; bottom: -1px; }
   .tw-nav-brand { grid-column: 2; padding: 0 4px; position: relative; }
   .tw-nav-brand::before, .tw-nav-brand::after { content: ""; position: absolute; top: 25%; bottom: 25%; width: 1px; background: #e4edf6; }
   .tw-nav-brand::before { left: -1px; } .tw-nav-brand::after { right: -1px; }
   .tw-nav-brand img { width: 128px; }
-  .tw-navbar.is-scrolled .tw-nav-brand img { width: 104px; }
+  .tw-navbar.is-scrolled .tw-nav-brand img { width: 128px; }
   .tw-nav-toggle { display: none; }
   .tw-nav-panel, .tw-nav-panel.is-open { display: contents; }
   .tw-nav-left, .tw-nav-right { flex-direction: row; align-items: center; gap: 2px; }
@@ -548,3 +548,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 @media (max-width: 575px) { .tw-nav-panel.is-open { grid-template-columns: 1fr; } }
 .tw-landing-footer-links { display: none; }
+
+/* Fit the desktop actions on both sides of the centered brand. */
+@media (min-width: 1400px) {
+  .tw-navbar .tw-nav-link { font-size: .875rem; padding-inline: 5px; gap: 4px; }
+  .tw-navbar .tw-nav-link svg { width: 18px; height: 18px; }
+  .tw-navbar .tw-nav-login, .tw-navbar .tw-nav-logout { font-size: .875rem; padding-inline: 10px; }
+}
+
+/* Responsive dimensions change immediately; interaction feedback keeps motion. */
+.tw-nav-shell, .tw-nav-link, .tw-nav-login, .tw-nav-link svg { transition: color .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease; }

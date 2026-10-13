@@ -11,7 +11,7 @@ import HealthcareAssistant from "../components/HealthcareAssistant";
 export const metadata = {
   title: "MedReach — Emergency care, when every second matters",
   description:
-    "Find and contact emergency hospitals in Mumbai. Deterministic, transparent hospital discovery with verified data, freshness, and rule-based ranking.",
+    "Find and contact emergency hospitals in Mumbai. Deterministic, transparent hospital discovery with healthcare listings and rule-based ranking.",
   icons: {
     icon: { url: "/logo.png?v=057ffc8008e8", type: "image/png" },
     shortcut: "/logo.png?v=057ffc8008e8",

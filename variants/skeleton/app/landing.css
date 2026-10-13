@@ -212,3 +212,8 @@ body:has(.skeleton-home) .skeleton-landing-footer-links { display: grid; grid-te
 @media (prefers-reduced-motion: reduce) {
   .skeleton-home *, .skeleton-home *::before, .skeleton-home *::after { scroll-behavior: auto !important; }
 }
+
+/* Website recording stays inside the existing About illustration frame. */
+.sk-home-about-art.sk-home-about-demo { padding: 0; overflow: hidden; }
+.sk-home-about-demo video { display: block; width: 100%; height: 335px; object-fit: contain; background: #e5f3f6; }
+@media (max-width: 575px) { .sk-home-about-demo video { height: 255px; } }

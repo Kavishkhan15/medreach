@@ -10,6 +10,8 @@ import GoogleMapView from "../components/GoogleMapView";
 import AmbulanceBookingModal from "../components/AmbulanceBookingModal";
 import BloodBankActionModal from "../components/BloodBankActionModal";
 import "./landing.css";
+import ProviderApplicationForm from "../components/ProviderApplicationForm";
+import WebsiteDemo from "../components/WebsiteDemo";
 
 const CATEGORIES = [
   { value: "all", label: "All", icon: "pin" },
@@ -40,7 +42,7 @@ function ProviderCard({ item, selected, onSelect, onBlood, onAmbulance }) {
   const category = CATEGORIES.find((entry) => entry.value === item.category);
   const coords = item.location?.coordinates;
   const hasCoordinates = coords?.length === 2 && coords.every(Number.isFinite);
-  const updated = recordDate(item.observedAt || item.updatedAt);
+
   return (
     <article className={`sk-home-provider-card ${selected ? "is-selected" : ""}`} data-provider-id={String(item._id)}>
       <button className="sk-home-provider-select" type="button" aria-pressed={selected} onClick={onSelect}>
@@ -48,12 +50,12 @@ function ProviderCard({ item, selected, onSelect, onBlood, onAmbulance }) {
         <span><span className="sk-home-provider-kind">{category.singular}</span><strong>{item.name}</strong><span className="sk-home-provider-address">{item.locality || item.address || item.city || "Location not recorded"}</span></span>
       </button>
       <div className="sk-home-provider-badges">
-        <span className={item.verificationStatus === "verified" ? "sk-home-status is-verified" : "sk-home-status"}>{item.verificationStatus || "Verification unknown"}</span>
+
         {(item.specialties || item.services || []).slice(0, 2).map((service) => <span className="sk-home-status" key={service}>{service}</span>)}
       </div>
       {selected && <div className="sk-home-provider-detail">
         {item.address && <p>{item.address}</p>}
-        <p className="sk-home-source">{item.sourceName ? `Source: ${item.sourceName}` : item.category === "hospitals" ? "Source evidence is available on the hospital details page." : "Source not recorded."}{updated && <><br />{item.observedAt ? "Observed" : "Record updated"} {updated}</>}</p>
+
         <div className="sk-home-provider-actions">
           {item.phone && <a className="btn btn-sm btn-primary" href={`tel:${item.phone}`}><EmergencyIcon name="phone" size={14} /> Call</a>}
           {hasCoordinates && <a className="btn btn-sm btn-outline-secondary" href={`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`} target="_blank" rel="noopener noreferrer"><EmergencyIcon name="navigate" size={14} /> Directions</a>}
@@ -192,8 +194,8 @@ export default function HomePage() {
       </section>
 
       <section className="sk-home-section sk-home-about" id="about" aria-labelledby="about-title"><div className="sk-home-container sk-split">
-        <div className="sk-grid-item"><div className="sk-home-about-art"><span className="sk-home-about-cross" aria-hidden="true">+</span><div><span className="sk-home-label">Care, connected</span><strong>A clearer next step.</strong><p>Discover a provider. Review the information. Reach out directly.</p></div></div></div>
-        <div className="sk-grid-item"><span className="sk-home-label">About us</span><h2 id="about-title">People and healthcare,<br />closer together.</h2><p className="sk-home-muted">From finding a hospital to following a request, MedReach brings useful information and practical actions into one place.</p><div className="sk-two-grid"><div className="sk-grid-item"><div className="sk-home-info-card"><EmergencyIcon name="pin" size={24} /><h3>Care discovery</h3><p>Provider details, contact information and directions to help you decide what to do next.</p></div></div><div className="sk-grid-item"><div className="sk-home-info-card"><EmergencyIcon name="verified" size={24} /><h3>Information with context</h3><p>Review each listing’s source and verification status. Unknown information stays unknown.</p></div></div></div></div>
+        <div className="sk-grid-item"><div className="sk-home-about-art sk-home-about-demo"><WebsiteDemo /></div></div>
+        <div className="sk-grid-item"><span className="sk-home-label">About us</span><h2 id="about-title">People and healthcare,<br />closer together.</h2><p className="sk-home-muted">From finding a hospital to following a request, MedReach brings useful information and practical actions into one place.</p><div className="sk-two-grid"><div className="sk-grid-item"><div className="sk-home-info-card"><EmergencyIcon name="pin" size={24} /><h3>Care discovery</h3><p>Provider details, contact information and directions to help you decide what to do next.</p></div></div><div className="sk-grid-item"><div className="sk-home-info-card"><EmergencyIcon name="document" size={24} /><h3>Information with context</h3><p>Review contact details and listed services. Contact the provider to confirm availability.</p></div></div></div></div>
       </div></section>
 
       <section className="sk-home-section" id="services" aria-labelledby="services-title"><div className="sk-home-container"><SectionHead id="services-title" label="Our services" title={<>Everything you need<br />to reach care.</>}><p>Choose a service and move into its existing MedReach directory or request flow.</p></SectionHead><div className="sk-home-services">{SERVICE_LINKS.map((service) => <Link key={service.href} href={service.href} className="sk-home-service"><span className="sk-home-service-icon"><EmergencyIcon name={service.icon} size={26} /></span><h3>{service.title}</h3><p>{service.description}</p><span className="sk-home-service-arrow" aria-hidden="true">↗</span></Link>)}</div></div></section>
@@ -211,10 +213,11 @@ export default function HomePage() {
         {resourcesLoading && <p className="sk-home-empty" role="status">Loading healthcare jobs…</p>}
         {!resourcesLoading && resourceErrors.jobs && <div className="sk-home-empty" role="alert"><p>Job listings could not be loaded.</p><button className="btn btn-sm btn-outline-secondary" type="button" onClick={() => setRevision((value) => value + 1)}>Retry jobs</button></div>}
         {!resourcesLoading && !resourceErrors.jobs && !filteredJobs.length && <div className="sk-home-empty"><p>{jobSearch ? "No jobs match your search." : "No healthcare jobs are currently listed."}</p>{jobSearch && <button className="sk-home-text-button" type="button" onClick={() => setJobSearch("")}>Clear job search</button>}<Link className="sk-home-text-link sk-block-link" href="/careers">Open Careers →</Link></div>}
-        {filteredJobs.map((job) => <Link key={job._id} className="sk-home-job-card" href={`/jobs/${job._id}`}><h4>{job.title}</h4><p>{job.organizationName || "Organization details on job page"}{(job.locality || job.location) && ` · ${job.locality || job.location}`}</p><div><span>{job.employmentType?.replaceAll("_", " ") || "Type not recorded"} · {job.verificationStatus || "Verification unknown"}</span><strong>View / Apply →</strong></div></Link>)}
+        {filteredJobs.map((job) => <Link key={job._id} className="sk-home-job-card" href={`/jobs/${job._id}`}><h4>{job.title}</h4><p>{job.organizationName || "Organization details on job page"}{(job.locality || job.location) && ` · ${job.locality || job.location}`}</p><div><span>{job.employmentType?.replaceAll("_", " ") || "Type not recorded"}</span><strong>View / Apply →</strong></div></Link>)}
       </div></div></div></div></section>
 
-      <section className="sk-home-section" id="insights" aria-labelledby="insights-title"><div className="sk-home-container"><SectionHead id="insights-title" label="Using MedReach" title={<>Useful context for<br />your healthcare journey.</>}><p>Understand the information on a listing, choose the right request and keep track of what happens after submission.</p></SectionHead><div className="sk-home-insights"><article className="sk-home-insight"><span className="sk-home-label">Provider information</span><h3>Understand sources and verification.</h3><p>Provider listings show sources and verification where available. Unknown availability stays unknown.</p></article><Link className="sk-home-insight" href="/hospitals"><span className="sk-home-label">Finding care</span><h3>Start with the hospital listing.</h3><p>Review specialties, recorded facilities and contact details before starting a standard bed request.</p><strong>Explore hospital listings →</strong></Link><Link className="sk-home-insight" href="/track"><span className="sk-home-label">After submission</span><h3>Keep your request reference close.</h3><p>Check request status using your reference. Keep any private tracking link safe for access to personal details.</p><strong>Track a request →</strong></Link></div></div></section>
+      <section className="sk-home-section" id="insights" aria-labelledby="insights-title"><div className="sk-home-container"><SectionHead id="insights-title" label="Using MedReach" title={<>Useful context for<br />your healthcare journey.</>}><p>Understand the information on a listing, choose the right request and keep track of what happens after submission.</p></SectionHead><div className="sk-home-insights"><article className="sk-home-insight"><span className="sk-home-label">Provider information</span><h3>Understand the provider listing.</h3><p>Review listed services and contact information. Confirm availability directly with the provider.</p></article><Link className="sk-home-insight" href="/hospitals"><span className="sk-home-label">Finding care</span><h3>Start with the hospital listing.</h3><p>Review specialties, recorded facilities and contact details before starting a standard bed request.</p><strong>Explore hospital listings →</strong></Link><Link className="sk-home-insight" href="/track"><span className="sk-home-label">After submission</span><h3>Keep your request reference close.</h3><p>Check request status using your reference. Keep any private tracking link safe for access to personal details.</p><strong>Track a request →</strong></Link></div></div></section>
+      <ProviderApplicationForm />
       {bookingAmbulance && <AmbulanceBookingModal provider={bookingAmbulance} onClose={() => setBookingAmbulance(null)} />}
       {actionBloodBank && <BloodBankActionModal bloodBank={actionBloodBank} onClose={() => setActionBloodBank(null)} />}
     </div>
