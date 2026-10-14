@@ -7,6 +7,7 @@ import {
   emailConfiguration,
   sendEmailEvent,
   setEmailTransportFactoryForTests,
+  setResendFetchForTests,
 } from "../src/services/emailService.js";
 
 const testDbUri = process.env.MEDREACH_EMAIL_TEST_MONGO_URI || "mongodb://127.0.0.1:27017/medreach_google_email_test";
@@ -21,6 +22,8 @@ test("Google / Gmail SMTP email authentication and delivery test suite", async (
     smtpPassword: env.smtpPassword,
     smtpFrom: env.smtpFrom,
     smtpFromName: env.smtpFromName,
+    resendApiKey: env.resendApiKey,
+    resendFrom: env.resendFrom,
   };
 
   t.before(async () => {
@@ -31,6 +34,7 @@ test("Google / Gmail SMTP email authentication and delivery test suite", async (
   t.after(async () => {
     Object.assign(env, originalEnv);
     setEmailTransportFactoryForTests();
+    setResendFetchForTests();
     try {
       if (mongoose.connection?.readyState === 1) {
         await mongoose.connection.dropDatabase();
@@ -183,5 +187,33 @@ test("Google / Gmail SMTP email authentication and delivery test suite", async (
     assert.doesNotMatch(captured[1].text, /administrators were notified/i);
     assert.match(captured[0].text, /confirmation is pending/i);
     assert.match(captured[1].text, /recorded by MedReach/i);
+  });
+
+  await t.test("Resend uses HTTPS, a stable idempotency key and a verified-domain sender", async () => {
+    Object.assign(env, { emailEnabled: true, emailProvider: "resend", resendApiKey: "isolated-test-key",
+      resendFrom: "notifications@mail.medreachforyou.com", smtpFromName: "MedReach" });
+    let request;
+    setResendFetchForTests(async (url, options) => {
+      request = { url, options };
+      return { ok: true, json: async () => ({ id: "resend-accepted-id" }) };
+    });
+    assert.deepEqual(emailConfiguration(), { enabled: true, configured: true, provider: "resend", mode: "resend" });
+    const delivery = await sendEmailEvent({ eventKey: "resend-https-test", to: "controlled@example.test", template: "welcome" });
+    assert.equal(delivery.status, "sent");
+    assert.equal(request.url, "https://api.resend.com/emails");
+    assert.equal(request.options.headers["Idempotency-Key"], String(delivery._id));
+    assert.equal(JSON.parse(request.options.body).from, "MedReach <notifications@mail.medreachforyou.com>");
+    assert.equal(JSON.stringify(delivery).includes("isolated-test-key"), false);
+  });
+
+  await t.test("Resend rejection fails safely and an unknown outcome stays uncertain", async () => {
+    setResendFetchForTests(async () => ({ ok: false, status: 403 }));
+    const rejected = await sendEmailEvent({ eventKey: "resend-rejected-test", to: "controlled@example.test", template: "welcome" });
+    assert.equal(rejected.status, "failed");
+    assert.equal(rejected.errorCode, "RESEND_HTTP_403");
+    setResendFetchForTests(async () => { throw new Error("network outcome unknown isolated-test-key"); });
+    const unknown = await sendEmailEvent({ eventKey: "resend-uncertain-test", to: "controlled@example.test", template: "welcome" });
+    assert.equal(unknown.status, "uncertain");
+    assert.equal(JSON.stringify(unknown).includes("isolated-test-key"), false);
   });
 });

@@ -75,6 +75,7 @@ const templates = {
 
 let transporter;
 let transportFactory = (options) => nodemailer.createTransport(options);
+let resendFetch = (...args) => fetch(...args);
 const NON_REPLAYABLE_TEMPLATES = new Set(["verify_email", "password_reset", "provider_activation", "notification_email"]);
 const leaseDurationMs = 60_000;
 
@@ -128,10 +129,38 @@ async function claimDelivery(id, actorId) {
   return delivery ? { delivery, leaseToken } : null;
 }
 
+async function sendResend(delivery, message) {
+  const response = await resendFetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.resendApiKey}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": String(delivery._id),
+    },
+    body: JSON.stringify({ from: `${env.smtpFromName} <${env.resendFrom}>`, to: [message.to],
+      subject: message.subject, text: message.text }),
+    signal: AbortSignal.timeout(env.smtpConnectionTimeoutMs),
+  });
+  if (!response.ok) {
+    const error = new Error("Resend request was not accepted");
+    error.code = `RESEND_HTTP_${response.status}`;
+    error.uncertain = response.status >= 500;
+    throw error;
+  }
+  const result = await response.json().catch(() => null);
+  if (!result?.id) {
+    const error = new Error("Resend acceptance could not be confirmed");
+    error.code = "RESEND_RESPONSE_UNCONFIRMED";
+    error.uncertain = true;
+    throw error;
+  }
+}
+
 async function finishDelivery({ delivery, leaseToken, message }) {
   let accepted = false;
   try {
-    await getTransporter().sendMail({ from: { name: env.smtpFromName, address: env.smtpFrom },
+    if (env.emailProvider === "resend") await sendResend(delivery, message);
+    else await getTransporter().sendMail({ from: { name: env.smtpFromName, address: env.smtpFrom },
       to: message.to, subject: message.subject, text: message.text });
     accepted = true;
     const result = await EmailDelivery.findOneAndUpdate({ _id: delivery._id, leaseToken }, {
@@ -141,11 +170,12 @@ async function finishDelivery({ delivery, leaseToken, message }) {
     return result || { _id: delivery._id, status: "uncertain", errorCode: "DELIVERY_OUTCOME_UNKNOWN" };
   } catch (error) {
     const code = String(error?.code || "SMTP_DELIVERY_FAILED").replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
-    const uncertain = accepted || (error?.command === "DATA" && ["ETIMEDOUT", "ECONNRESET", "ESOCKET"].includes(code));
+    const uncertain = accepted || error?.uncertain || (env.emailProvider === "resend" && !code.startsWith("RESEND_HTTP_"))
+      || (error?.command === "DATA" && ["ETIMEDOUT", "ECONNRESET", "ESOCKET"].includes(code));
     try { const result = await EmailDelivery.findOneAndUpdate({ _id: delivery._id, leaseToken }, {
       $set: { status: uncertain ? "uncertain" : "failed", errorCode: uncertain ? "DELIVERY_OUTCOME_UNKNOWN" : code,
         ...(uncertain ? { lastError: "Delivery may have completed. Check the recipient inbox before sending again" } : {
-        lastError: code === "EAUTH" ? "SMTP authentication failed" :
+        lastError: env.emailProvider === "resend" ? "Resend rejected the email request" : code === "EAUTH" ? "SMTP authentication failed" :
           code.includes("TIME") ? "SMTP connection timed out" : "SMTP delivery failed" }) },
       $unset: { leaseToken: 1, leaseUntil: 1 },
     }, { new: true });
@@ -157,6 +187,11 @@ async function finishDelivery({ delivery, leaseToken, message }) {
 }
 
 export function emailConfiguration() {
+  if (env.emailProvider === "resend") {
+    return { enabled: env.emailEnabled,
+      configured: Boolean(env.resendApiKey && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.resendFrom)),
+      provider: "resend", mode: env.emailEnabled ? "resend" : "disabled" };
+  }
   const isGoogle =
     (env.smtpHost && env.smtpHost.includes("gmail")) ||
     ["google", "gmail"].includes((env.emailProvider || "").toLowerCase());
@@ -195,8 +230,8 @@ export async function sendEmailEvent({ eventKey, to, template, data = {}, source
     if (!env.emailEnabled || delivery.status === "disabled") return delivery;
     if (!emailConfiguration().configured) {
       delivery.status = "failed";
-      delivery.errorCode = "SMTP_CONFIG_INCOMPLETE";
-      delivery.lastError = "SMTP configuration incomplete";
+      delivery.errorCode = env.emailProvider === "resend" ? "RESEND_CONFIG_INCOMPLETE" : "SMTP_CONFIG_INCOMPLETE";
+      delivery.lastError = env.emailProvider === "resend" ? "Resend configuration incomplete" : "SMTP configuration incomplete";
       await delivery.save();
       return delivery;
     }
@@ -205,14 +240,14 @@ export async function sendEmailEvent({ eventKey, to, template, data = {}, source
     return finishDelivery({ ...claim, message: { to, subject, text } });
   } catch (error) {
     // Persist only a bounded category. Provider messages can echo usernames or hosts.
-    const code = String(error?.code || "SMTP_DELIVERY_FAILED").replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
+    const code = String(error?.code || (env.emailProvider === "resend" ? "RESEND_DELIVERY_FAILED" : "SMTP_DELIVERY_FAILED")).replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
     try {
       const delivery = await EmailDelivery.findOne({ eventKey });
       if (delivery && !["sent", "uncertain"].includes(delivery.status) && !delivery.leaseUntil && !(delivery.status === "pending" && delivery.attempts > 0)) {
         delivery.status = "failed";
         delivery.attempts += delivery.attempts ? 0 : 1;
         delivery.errorCode = code;
-        delivery.lastError = code === "EAUTH" ? "SMTP authentication failed" :
+        delivery.lastError = env.emailProvider === "resend" ? "Resend delivery failed" : code === "EAUTH" ? "SMTP authentication failed" :
           code.includes("TIME") ? "SMTP connection timed out" : "SMTP delivery failed";
         await delivery.save();
         return delivery;
@@ -289,4 +324,8 @@ export async function retryEmailDelivery({ deliveryId, actorId }) {
 export function setEmailTransportFactoryForTests(factory) {
   transportFactory = factory || ((options) => nodemailer.createTransport(options));
   transporter = undefined;
+}
+
+export function setResendFetchForTests(factory) {
+  resendFetch = factory || ((...args) => fetch(...args));
 }

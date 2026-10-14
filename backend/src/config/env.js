@@ -51,6 +51,8 @@ export const env = {
   aiModel: process.env.AI_MODEL ?? "",
   emailProvider: (process.env.EMAIL_PROVIDER || "").toLowerCase(),
   emailEnabled: process.env.EMAIL_ENABLED === "true",
+  resendApiKey: process.env.RESEND_API_KEY || "",
+  resendFrom: process.env.RESEND_FROM || process.env.EMAIL_FROM || process.env.SMTP_FROM || "",
   smtpHost:
     process.env.SMTP_HOST ||
     (["google", "gmail"].includes((process.env.EMAIL_PROVIDER || "").toLowerCase()) ||
