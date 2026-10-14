@@ -25,7 +25,7 @@ test.describe("MEDREACH Footer Reveal Animation & Layout Parity", () => {
   for (const vp of VIEWPORTS) {
     test(`[${vp.name}] Footer reveal wordmark renders, dominates bottom, and prevents horizontal overflow`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await page.goto("/", { waitUntil: "networkidle" });
+      await page.goto("/");
 
       const footer = page.locator("footer.app-footer, footer.tw-site-footer");
       await expect(footer).toBeAttached();
@@ -73,7 +73,7 @@ test.describe("MEDREACH Footer Reveal Animation & Layout Parity", () => {
 
   test("Existing footer links remain interactive and reachable", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/", { waitUntil: "networkidle" });
+    await page.goto("/");
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await page.waitForTimeout(100);
 

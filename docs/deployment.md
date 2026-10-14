@@ -4,6 +4,8 @@ The selected stack is **Vercel frontends + Railway API + MongoDB Atlas**.
 Follow the [cloud deployment guide](cloud-deployment.md) for service settings,
 verified dataset migration and the rollout order.
 
+![Deployment Architecture](diagrams/deployment-architecture.svg)
+
 MedReach runs three frontend variants, one Express API and the existing MongoDB
 dataset. The API starts no acquisition scheduler or website crawler. Keep the
 provider, job, claim and historical provenance collections intact during deployment.

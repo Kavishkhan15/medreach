@@ -1,172 +1,376 @@
-# Backend REST API
+# MedReach Backend REST API Specification
 
-The Express + Mongoose backend serves all three frontend variants. Clients use `NEXT_PUBLIC_API_URL` (local default `http://localhost:4000`) and credentials for cookie sessions. Set the public API origin before production builds; see [deployment](deployment.md).
+The MedReach platform exposes an isomorphic REST API powering all three frontend variants (Bootstrap, Tailwind, and Skeleton). The API is built on Express 4 with MongoDB/Mongoose persistence, adhering to deterministic healthcare data integrity and strict multi-tenant access control.
 
-Responses use endpoint-specific envelopes such as `{data}`, `{hospital}`, `{request}`, `{application}` and `{record}`. Errors generally use `{error, details?}`. A saved request is distinct from a completed email attempt, hospital acceptance or ambulance dispatch.
+---
 
-## Access conventions
+## Global API Conventions
 
-- **Public** routes work without login. **Optional auth** permits no credential, but rejects a presented invalid, expired or revoked credential.
-- **User** routes require a valid account/session. **Hospital staff** operations require assignment to the relevant hospital, not merely an administrator role.
-- Active roles are `user`, `provider_admin` and `system_admin`. System Admin manages regular users and provider accounts. Provider Admin requires explicit organisation assignments. System Admin controls global approvals, role changes, security and reports. Legacy `admin` has no global privileges; legacy hospital assignments remain temporarily compatible pending a reviewed migration.
-- Private guest request access uses `X-MedReach-Tracking-Token`. It is separate from public reference-only status lookup.
-- Bed, blood, ambulance and career submissions accept an optional `Idempotency-Key` (8–200 allowed characters). Keep the same opaque key when retrying one submission, and use a fresh key for a new submission. Replays are ownership checked; conflicts can return 409. Do not expose these keys in logs or public links.
+### Base URL & Environment
+- **Local Development:** `http://localhost:4000`
+- **Hosted / Production:** Configured via `NEXT_PUBLIC_API_URL` (e.g., `https://api.medreach.example`). Frontends embed this during build time.
 
-## Health
+### Transport & Encoding
+- All requests must use HTTPS in production.
+- Request payloads must be JSON (`Content-Type: application/json`).
+- Standard response envelopes:
+  - Success collections: `{ data: [...] }` or entity-specific `{ hospital: {...} }`, `{ request: {...} }`
+  - Mutation feedback: `{ success: true, message: "...", record?: {...} }`
+  - Error responses: `{ error: "Error message", details?: [...] }`
 
-- `GET /health` — process liveness plus database connection state.
-- `GET /health/live` — process liveness.
-- `GET /health/ready` — 200 only when MongoDB is connected and shutdown is not draining; otherwise 503. This does not verify SMTP, maps or external sources.
+### Authentication & Sessions
+- **Session Transport:** HttpOnly, Secure, SameSite cookies:
+  - `medreach.token`: Short-lived access JWT (default 15 minutes).
+  - `medreach.refresh`: Hashed rotating refresh token (default 7 days).
+- **Bearer Tokens:** Accepted in `Authorization: Bearer <jwt>` for automated API clients.
+- **CSRF & Isolation:** Protected by CORS whitelisting (`CORS_ORIGINS`) and credentials isolation (`credentials: "include"`).
 
-## Authentication
+### Idempotency Keys
+Mutating submissions (bed requests, blood requisitions, ambulance dispatch, job applications) accept an optional `Idempotency-Key` header (8–200 characters). Duplicate submissions with the same key replay the original response without executing duplicate database mutations or sending redundant notification emails.
 
-- `POST /api/auth/register`, `POST /api/auth/login` — password credentials; purpose-specific rate limits.
-- `POST /api/auth/refresh` — rotate refresh cookie; reuse revokes the session family.
-- `POST /api/auth/logout` — revoke session family and clear cookies.
-- `GET /api/auth/me` — current user and saved hospitals.
-- `GET /api/auth/sessions`, `DELETE /api/auth/sessions/:id` — own session metadata/revocation.
-- `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`.
-- `POST /api/auth/request-verification` (user), `POST /api/auth/verify-email`.
-- `PUT /api/auth/profile`, `PUT /api/auth/password` (user).
+---
 
-Access JWTs are delivered in httpOnly cookies, or accepted as Bearer tokens for API clients. They are checked against account status, auth version and an active refresh family. Google OAuth endpoints are intentionally absent.
+## 1. Health & Diagnostics
 
-## Hospitals and availability
+### `GET /health`
+Liveness and MongoDB connection status.
+- **Access:** Public
+- **Response (200 OK):**
+```json
+{
+  "status": "healthy",
+  "database": "connected",
+  "timestamp": "2026-10-14T08:00:00.000Z"
+}
+```
 
-- `GET /api/hospitals` — public; implemented query parameters: `q`, `region`, `city`, `status`, `specialty`, `lat`, `lng`, `page`, `limit` (maximum 50). `status` filters the composed public availability view, not a legacy default.
-- `GET /api/hospitals/:slug` — public detail.
-- `GET /api/hospitals/:idOrSlug/enriched` — public enriched detail/provenance.
-- `POST /api/hospitals`, `DELETE /api/hospitals/:id` — `system_admin`.
-- `PUT /api/hospitals/:id` — authorized administrator; hospital staff are scoped to assignment.
-- `PATCH /api/hospitals/:id/beds` — compatibility route; authorized requests return **410** because legacy bed updates are retired.
-- `GET /api/hospitals/:id/facilities`, `GET /api/hospitals/:id/availability` — public composed capability and observation views.
-- `POST /api/hospitals/:id/availability` — authorized administrator/staff; append a validated facility/status observation. Use this instead of legacy bed writes.
+### `GET /health/ready`
+Kubernetes / Railway readiness probe. Returns `200 OK` only when MongoDB connection is active and server is not draining. Returns `503 Service Unavailable` during shutdown or disconnection.
 
-Current availability requires a recent verified observation; missing/stale information remains unknown. See [data model](data-model.md).
+---
 
-## Bed requests and hospital response
+## 2. Authentication & User Profile (`/api/auth`)
 
-Both modes use the `EmergencyRequest` collection and lifecycle service:
+### `POST /api/auth/register`
+Register a new citizen account.
+- **Access:** Public
+- **Body:**
+```json
+{
+  "name": "Priya Sharma",
+  "email": "priya.sharma@example.com",
+  "password": "SecurePassword123!"
+}
+```
+- **Response (201 Created):** Sets session cookies and returns `{ user: {...} }`.
 
-- `POST /api/emergency-requests/emergency` — optional auth; forces emergency mode.
-- `POST /api/emergency-requests/standard` — user; forces standard mode.
-- `POST /api/emergency-requests` — compatibility endpoint requiring explicit boolean `isEmergency`; standard mode still requires login.
-- `GET /api/emergency-requests` — authenticated, scoped request list.
-- `GET /api/emergency-requests/:id` — private detail with timeline and `emailHistory`; owner, authorized staff/admin or permitted guest token access.
-- `PATCH /api/emergency-requests/:id` — authorized lifecycle transition or patient reply; supports `status`, `note`, `hospitalResponse`, `expectedStatus` and `expectedTimelineLength`. Stale/invalid transitions return 409.
+### `POST /api/auth/login`
+Authenticate using email and password.
+- **Access:** Public (Rate-limited: 5 attempts / 15 min per IP)
+- **Body:**
+```json
+{
+  "email": "priya.sharma@example.com",
+  "password": "SecurePassword123!"
+}
+```
+- **Response (200 OK):** Sets `medreach.token` and `medreach.refresh` cookies, returns `{ user: {...} }`.
 
-Submission validates `hospitalId`, `emergencyType`, `requiredFacility`, contact details and optional patient/ambulance fields. It returns `{request, trackingToken?}`; the public reference is `request.requestId` (`MR-…`). Keep a returned guest token private. Bed forms request hospital-arranged transport using a flag/pickup address rather than choosing an ambulance provider.
+### `POST /api/auth/refresh`
+Rotate refresh token family and issue fresh access token.
+- **Access:** Public (requires `medreach.refresh` cookie)
+- **Response (200 OK):** Returns `{ success: true }`. *If token reuse is detected, the entire session family is revoked immediately.*
 
-Lifecycle states: `REQUESTED`, `SENT`, `UNDER_REVIEW`, `INFORMATION_REQUESTED`, `ACCEPTED`, `REJECTED`, `COMPLETED`, `CANCELLED`, `EXPIRED`. `SENT` records routing to connected staff, not proof that staff read or accepted the request. See [full lifecycle and permissions](bed-request-lifecycle.md).
+### `POST /api/auth/logout`
+Revoke active session family and clear client cookies.
+- **Access:** Authenticated
+- **Response (200 OK):** `{ message: "Logged out" }`.
 
-## Blood requests and campaigns
+### `GET /api/auth/me`
+Retrieve currently authenticated user and saved hospital favorites.
+- **Access:** Authenticated
+- **Response (200 OK):**
+```json
+{
+  "user": {
+    "_id": "670c...",
+    "name": "Priya Sharma",
+    "email": "priya.sharma@example.com",
+    "role": "user",
+    "region": "Mumbai",
+    "savedHospitals": ["670d..."],
+    "regionOnboardingRequired": false
+  }
+}
+```
 
-- `POST /api/blood-requests/standard` — optional auth; active listed blood-bank `providerId` required; type `REQUEST` or `DONATION`.
-- `POST /api/blood-requests/urgent` — optional auth; type `REQUEST` only; separate urgent-blood flow.
-- `POST /api/blood-requests` — compatibility endpoint requiring explicit `isUrgent`.
-- `GET /api/blood-requests` — authenticated; own records, or global administrators' records.
-- `GET /api/blood-requests/:reference` — private record; owner, `system_admin`, or guest token for a guest record. Compatibility accepts an internal ID but user tracking uses its public reference.
+### `PUT /api/auth/profile`
+Update user profile and locality.
+- **Access:** Authenticated
+- **Body:** `{ "name": "Priya S.", "region": "Mumbai", "emergencyContact": "+91 98765 40000" }`
 
-Normal request urgency: `3 days`, `1 week`. Urgent request urgency: `within 6 hours`, `12 hours`, `18 hours`, `24 hours`, `up to 2 days`. Request quantities are 1–50; donation age/weight/date fields have their own validation. Blood group and contact details are validated server-side. Public references use `BR-…` for requests and `BDP-…` for pledges. No bed request endpoint handles urgent blood.
+---
 
-Campaign routes are mounted at both `/api/blood-campaigns` and `/api/blood-banks/campaigns`:
+## 3. Hospital Directory & Live Facilities (`/api/hospitals`)
 
-- `GET /`, `GET /:id` — optional auth; public statuses are active/upcoming/completed. Unpublished details require creator/admin access, and only admins can list unpublished states. Public responses omit creator account identity.
-- `POST /`, `POST /propose` — rate-limited validated proposals, optional auth. An account email is not implicitly published as campaign contact.
-- `PATCH /:id` — authenticated owner/authorized editing; creator content edits return the campaign to pending review.
-- `PATCH /:id/status` — `system_admin` moderation.
+### `GET /api/hospitals`
+Search and filter verified hospitals.
+- **Access:** Public
+- **Query Parameters:**
+  - `q`: Free-text search matching name, specialties, locality, or services.
+  - `city`: Filter by city (e.g., `Mumbai`).
+  - `locality`: Filter by ward/locality (e.g., `Parel`).
+  - `specialty`: Filter by medical specialty (e.g., `Cardiology`).
+  - `lat`, `lng`: Geolocation coordinates for proximity sorting (`2dsphere`).
+  - `page`: Page index (default: `1`).
+  - `limit`: Number of items (default: `20`, max: `50`).
+- **Response (200 OK):**
+```json
+{
+  "hospitals": [
+    {
+      "_id": "670c...",
+      "name": "King Edward Memorial Hospital (KEM)",
+      "slug": "kem-hospital-mumbai-12345",
+      "hospitalType": "Municipal",
+      "locality": "Parel",
+      "city": "Mumbai",
+      "location": { "type": "Point", "coordinates": [72.8427, 18.9986] },
+      "specialties": ["Emergency Medicine", "Cardiology", "Trauma Care"],
+      "emergencyDepartmentStatus": "available",
+      "ambulanceStatus": "available",
+      "verificationStatus": "verified"
+    }
+  ],
+  "total": 30,
+  "page": 1,
+  "pages": 2
+}
+```
 
-## Provider directories and ambulance bookings
+### `GET /api/hospitals/:slug`
+Retrieve hospital detail, verified facilities, and contact information.
+- **Access:** Public
 
-- `GET /api/blood-banks`, `/api/diagnostics`, `/api/ambulances` — public provider lists; implemented filters are `q`, `locality`, `service`, and `bloodGroup` for blood banks. Responses explicitly retain unknown current inventory and do not assert live dispatch.
-- `GET /api/blood-banks/:id`, `/api/diagnostics/:id`, `/api/ambulances/:id` — public provider detail.
-- `POST /api/admin/resources`, `PATCH /api/admin/resources/:id` — `system_admin` provider management.
-- `POST /api/ambulances/book` — optional auth; validates an active ambulance provider, patient name/age, contact details and pickup requirement. Saves the booking first, then attempts emails.
-- `GET /api/ambulances/bookings` — authenticated; own bookings or global administrator list.
-- `GET /api/ambulances/bookings/:reference` — private booking; owner, global administrator or valid private tracking token.
+### `GET /api/hospitals/:id/availability`
+Retrieve real-time append-only facility status observations.
+- **Access:** Public
+- **Response (200 OK):**
+```json
+{
+  "observations": [
+    {
+      "facility": "ICU",
+      "status": "available",
+      "quantity": 4,
+      "retrievedAt": "2026-10-14T08:15:00.000Z",
+      "confidence": "HIGH"
+    }
+  ]
+}
+```
 
-Booking responses include `recorded`, `reference` (`AMB-…`), booking metadata, per-recipient `delivery` states and a guest `trackingToken` when applicable. A recorded booking or sent email does not confirm availability or dispatch. Ambulance state enums exist in the model; no general booking status-update API is currently exposed.
+### `POST /api/hospitals/:id/availability`
+Submit verified facility observation report (e.g. ICU bed census).
+- **Access:** Authenticated (`system_admin` or assigned `provider_admin`)
+- **Body:** `{ "facility": "ICU", "status": "limited", "quantity": 2, "confidence": "HIGH" }`
 
-## Careers and applications
+---
 
-- `GET /api/jobs`, `GET /api/jobs/organizations`, `GET /api/jobs/:id` — public published listings.
-- `GET /api/jobs/manage`, `POST /api/jobs` — authorized job managers.
-- `PATCH /api/jobs/:id`, `POST /api/jobs/:id/status` — controller-enforced organization scope and publication/review permissions.
-- `POST /api/jobs/:id/apply` — user; validates application fields and a 10–4000 character statement/SOP.
-- `GET /api/jobs/:id/applications` — authorized organization manager.
-- `GET /api/organizations/careers` — public healthcare organizations accepting expressions of interest.
-- `POST /api/organizations/:id/apply` — user; validates organization type, role of interest and application fields.
-- `GET /api/organizations/:id/applications` — authorized organization manager.
-- `GET /api/applications/mine` — user; own job and organization application history.
-- `PATCH /api/applications/:id`, `PATCH /api/organization-applications/:id` — authorized manager; review status `under_review`, `shortlisted` or `rejected`.
+## 4. Bed Requisitions & Emergency Triage (`/api/emergency-requests`)
 
-Submissions return `{application, ...}` with server-generated unique `CAR-J…` (job) or `CAR-O…` (organization) references. Submission/history serialization keeps the application document `_id` internal. Confirmation emails and dashboard tracking links use the public reference. Reference generation retries collisions; legacy history serialization assigns a persistent reference when missing. A public career status lookup does not return a resume or applicant contact details.
+### `POST /api/emergency-requests/emergency`
+Submit high-priority emergency bed requisition.
+- **Access:** Public / Guest permitted
+- **Headers:** `Idempotency-Key` (Optional)
+- **Body:**
+```json
+{
+  "hospitalId": "670c...",
+  "emergencyType": "Acute Myocardial Infarction",
+  "requiredFacility": "ICU",
+  "patientAgeGroup": "adult",
+  "patientReference": "Suresh Sharma",
+  "patientSummary": "Severe chest pain, SpO2 91%",
+  "contactPhone": "+91 98765 40000",
+  "contactEmail": "family@example.com",
+  "ambulanceRequired": true,
+  "ambulancePickupAddress": "Worli, Mumbai"
+}
+```
+- **Response (201 Created):**
+```json
+{
+  "request": {
+    "requestId": "REQ-EMG-2026-081",
+    "status": "REQUESTED",
+    "hospital": "670c...",
+    "expiresAt": "2026-10-14T10:15:00.000Z"
+  },
+  "trackingToken": "tok_sec_9918237461928"
+}
+```
+*Note: The plain-text `trackingToken` is returned only once upon guest submission. The database stores only its SHA-256 hash.*
 
-## Reference-only tracking
+### `POST /api/emergency-requests/standard`
+Submit routine or elective admission request. Requires logged-in citizen account.
 
-`GET /api/tracking/:type/:reference` is public, rate limited and `Cache-Control: no-store`.
+### `GET /api/emergency-requests`
+List requests scoped to caller:
+- Citizens receive their own submitted requests.
+- `provider_admin` receives requests assigned to their hospital.
+- `system_admin` receives all requests across the network.
 
-| Type | Public reference |
-|------|------------------|
-| `blood` | `BR-YYYYMMDD-XXXXXX` or `BDP-YYYYMMDD-XXXXXX` |
-| `bed` | `MR-…` request ID |
-| `career` | `CAR-J` / `CAR-O` followed by 14 hexadecimal characters |
-| `ambulance` | `AMB-…` booking reference |
+### `PATCH /api/emergency-requests/:id`
+Advance request lifecycle state.
+- **Access:** Assigned `provider_admin` or `system_admin`
+- **Body:**
+```json
+{
+  "status": "ACCEPTED",
+  "hospitalResponse": "ICU Bed 12 reserved. Triage team alerted."
+}
+```
 
-Response: `{record: {reference, status, updatedAt}}`. Invalid formats return 400; missing records return 404. This endpoint does not expose document IDs, contacts, provider names, patient summaries, resumes or mutation access. All variants' `/track` pages use this summary contract.
+---
 
-## Assistant and routing
+## 5. Blood Bank Directory & Requisitions (`/api/blood-requests` & `/api/blood-banks`)
 
-- `POST /api/assistant/message` — public, 20 requests/5 minutes/IP; body `{message, locality?, origin?: {lat, lng}}` with a 500-character message cap.
-- Response includes `reply`, `intent`, `source`, `hospitals`, `bloodBanks`, `diagnostics`, `ambulances`, `jobs`, `suggestedActions`, `suggestedPrompts` and context fields. Intents cover emergency, hospital/bed discovery, normal/urgent blood, ambulance, diagnostics, careers and general guidance.
-- Data comes from stored providers and composed hospital observations. Provider phrasing failure falls back to rule-based replies; a broader failure returns safe contact actions with `unavailable: true`. [Assistant design](ai-assistant.md).
-- `GET /api/routing/hospital/:id?lat=&lng=` — public; validated origin coordinates and configured routing provider. Missing routing data must not be presented as an invented ETA.
+### `GET /api/blood-banks`
+Search licensed blood component centers with group inventory filters.
+- **Access:** Public
 
-## Administration and stored evidence
+### `POST /api/blood-requests/urgent`
+Dispatch high-priority 6-hour urgent blood requisition.
+- **Access:** Public / Citizen
+- **Body:**
+```json
+{
+  "providerId": "670e...",
+  "bloodGroup": "O+",
+  "patientOrDonorName": "Suresh Sharma",
+  "units": 2,
+  "urgency": "Immediate / 6 hours",
+  "contactPhone": "+91 98765 40000"
+}
+```
+- **Response (201 Created):** Returns `{ reference: "BLD-REQ-2026-099", status: "REQUESTED" }`.
 
-- `/api/hospital-admin/hospitals`, `/ownership-claims` and `/hospitals/:id/facility-claims` — authenticated ownership/assigned-hospital operations.
-- `GET /api/admin/hospitals` — System Admin-only paginated listing including pending/rejected records. Public discovery excludes those records.
-- `/api/admin/overview`, `/hospitals/:id/verify` — System Admin-only; verification queue counts non-verified hospitals excluding rejected approvals.
-- `/api/admin/audit`, `/ownership-claims`, `/facility-claims`, `/data-conflicts`, `/hospital-field-claims`, `/hospital-field-conflicts` — system administrator only. Review endpoints and user status/role/revocation/recovery actions are audited.
-- `/api/admin/refinement/status`, `/candidates`, `/claims/:id`, `/candidates/:id/review` — `system_admin`; optional refinement suggestions do not directly change canonical availability.
-- `GET /api/analytics/overview` — `system_admin`.
-- `GET /api/alerts` — public infrastructure/public notices; `POST` and `PATCH /:id/deactivate` have administrator checks and scope. These alerts are separate from the removed personal notification inbox.
+### `POST /api/blood-requests/pledge`
+Record citizen voluntary blood donation appointment pledge.
+- **Access:** Public / Citizen
 
-## Email operations
+---
 
-All `/api/email/*` endpoints require `system_admin`:
+## 6. Ambulance Dispatch & Bookings (`/api/ambulances`)
 
-- `GET /api/email/status` — sanitized configuration/enablement status.
-- `GET /api/email/deliveries` — recent delivery metadata, without raw retry envelopes.
-- `POST /api/email/deliveries/:id/retry` — controlled replay of eligible failed/pending deliveries; leases prevent concurrent duplicate sends. Recovery/verification templates are reissued, not replayed. Uncertain delivery outcomes return a conflict and must be checked before preparing a fresh message.
+### `GET /api/ambulances`
+List certified ambulance providers and vehicle capabilities (ALS, BLS, Neonatal).
+- **Access:** Public
 
-Bed, blood and career submission emails use up to three concurrent independent tasks per submission, and responses still await attempted deliveries. Saved primary records survive secondary email failures. See [email operations](api.md#email-operations) and [local latency evidence](latency-verification.md).
+### `POST /api/ambulances/book`
+Dispatch or schedule ambulance transport.
+- **Access:** Public / Citizen
+- **Body:**
+```json
+{
+  "providerId": "670f...",
+  "isEmergency": true,
+  "patientName": "Suresh Sharma",
+  "patientAge": 54,
+  "pickupAddress": "Worli, Mumbai",
+  "contactPhone": "+91 98765 40000",
+  "notes": "ALS defibrillator required."
+}
+```
+- **Response (201 Created):** Returns `{ reference: "AMB-2026-012", status: "RECORDED" }`.
 
-## Saved hospitals
+---
 
-- `GET /api/users/me/saved` (user).
-- `POST /api/users/me/saved/:hospitalId` (user).
-- `DELETE /api/users/me/saved/:hospitalId` (user).
+## 7. Medical Careers & Staffing (`/api/careers`)
 
-Google OAuth and `/api/notifications` are intentionally removed. All email functionality remains. Current checks and live-verification limits are recorded in [release QA](release-qa.md).
+### `GET /api/careers/jobs`
+Search verified hospital and diagnostic clinical job postings.
+- **Access:** Public
+- **Query Parameters:** `category` (`Doctor`, `Nurse`, `Technician`), `employmentType`, `city`.
 
-### Security response behavior
+### `POST /api/careers/apply`
+Submit employment application for a clinical position.
+- **Access:** Public / Citizen
+- **Body:** `{ "jobId": "670g...", "candidateName": "Dr. Ananya Roy", "candidateEmail": "ananya@example.com", "phone": "+91 98111 22233", "sop": "MBBS with 4 years trauma experience." }`
+- **Response (201 Created):** Returns `{ reference: "CAR-APP-2026-004", status: "submitted" }`.
 
-Nested/repeated/operator query parameters return 400; all current query filters
-are scalars. Protected and optional-auth routes both reject revoked, expired or
-missing server sessions with 401. A signed session token cannot authorize access
-while MongoDB is disconnected (503). Sensitive/auth/tracking responses disable
-caching. Career resume aliases accept HTTP(S) links and base64 PDF/Word uploads;
-HTML/SVG/executable/local URL schemes return validation errors.
+---
 
-## Provider administration
+## 8. Provider Onboarding & Administration (`/api/providers`)
 
-All account/approval management requires System Admin. `GET/POST /api/admin/provider-accounts` lists/provisions separate Provider Admin accounts. `POST /:id/actions` supports activate, deactivate, invite and reset. `POST /:id/assignments` adds an explicit approved organisation; `PATCH /:id/assignments/:membershipId` changes assignment access.
+### `POST /api/providers/register`
+Submit self-service provider onboarding application.
+- **Access:** Public / Healthcare Provider
+- **Body:**
+```json
+{
+  "kind": "diagnostic",
+  "name": "Apex Advanced Diagnostic & Imaging Centre",
+  "address": "Powai, Mumbai",
+  "phone": "+91 22 6700 3300",
+  "contactEmail": "admin@apexdiagnostics.example",
+  "contactName": "Dr. Sarah Chen",
+  "city": "Mumbai",
+  "explanation": "NABH-accredited 24/7 imaging center."
+}
+```
 
-`GET /api/admin/provider-approvals` lists submissions; `POST /:id/review` approves with account provisioning or rejects. `/organizations` lists existing organisations and `/organizations/:kind/:id/approve` explicitly approves one. New submissions use `POST /api/providers/applications`; assigned organisations use `GET /api/providers/mine`.
+### `GET /api/providers/mine`
+List organizations assigned to the currently authenticated `provider_admin`.
+- **Access:** `provider_admin`
 
-`POST /api/auth/activate-provider` accepts a single-use invitation and personal password. `PATCH /api/admin/users/:id/notifications` configures a real notification address; `POST /api/auth/verify-notification-email` verifies it. API responses never return password hashes or raw emailed tokens.
+### `GET /api/providers/:kind/:id/report`
+Aggregate metrics for an assigned organization (request counts, fulfillment rate, occupancy).
+- **Access:** Assigned `provider_admin` or `system_admin`
 
-All account management and global admin endpoints are System Admin-only. The retired `user_admin` role has no administrative access. Scoped Provider Admin resource updates and request/application reads enforce organisation membership on the server.
+---
 
-See [role restructuring](../ROLE_RESTRUCTURING.md) for demo isolation, notifications, legacy compatibility and the mandatory reviewed rollout boundary.
+## 9. System Administration (`/api/admin`)
+
+### `GET /api/admin/overview`
+High-level dashboard KPIs: registered providers, pending applications, active emergency requests, and audit logs.
+- **Access:** `system_admin`
+
+### `GET /api/admin/provider-approvals`
+List pending provider registration applications.
+- **Access:** `system_admin`
+
+### `POST /api/admin/provider-approvals/:id/approve`
+Approve application, instantiate the organization record, and automatically provision administrator credentials.
+- **Access:** `system_admin`
+
+### `POST /api/admin/provider-approvals/:id/reject`
+Reject application with reason code.
+- **Access:** `system_admin`
+
+### `GET /api/admin/emergency`
+Unified oversight queue showing all emergency and normal requests (bed, blood, diagnostic, ambulance).
+- **Access:** `system_admin`
+
+---
+
+## 10. Universal Request Tracking (`/api/tracking`)
+
+### `GET /api/tracking/lookup?ref=<reference>`
+Public, non-sensitive status check by reference ID.
+- **Access:** Public
+- **Response (200 OK):**
+```json
+{
+  "reference": "REQ-EMG-2026-081",
+  "kind": "bed",
+  "status": "ACCEPTED",
+  "updatedAt": "2026-10-14T08:20:00.000Z"
+}
+```
+*Note: Public lookup exposes only reference, kind, status, and timestamp. All clinical notes, patient names, and addresses remain protected.*
+
+### `GET /api/tracking/private/:reference`
+Retrieve detailed triage notes and hospital responses.
+- **Access:** Requires either account ownership OR the secret `X-MedReach-Tracking-Token` header.
