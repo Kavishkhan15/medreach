@@ -38,3 +38,5 @@ export {
 export * from "./bedRequests.js";
 
 export * from "./providerApplication.js";
+
+export * from "./scrollAnimation.js";

@@ -1,4 +1,4 @@
-import { isolatedDemoEnabled } from "../services/demoAccounts.js";
+import { isolatedDemoEnabled, localManualCredentialsEnabled } from "../services/demoAccounts.js";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { User } from "../models/User.js";
@@ -80,7 +80,7 @@ export const login = asyncHandler(async (req, res) => {
     await audit(req, { user: user?._id, action: "login_failed", entityType: "AuthSession" });
     return res.status(401).json({ error: "Invalid email or password" });
   }
-  if (user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled())) {
+  if (user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled()) || (user.credentialDelivery === "manual" && !localManualCredentialsEnabled())) {
     await audit(req, { user: user._id, action: "login_failed", entityType: "AuthSession" });
     return res.status(401).json({ error: "Invalid email or password" });
   }

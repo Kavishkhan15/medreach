@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
     demoAccount: { type: Boolean, default: false },
     activationDeliveryStatus: { type: String, enum: ["not_required", "pending", "sent", "failed", "disabled", "uncertain", "unknown"] },
     credentialState: { type: String, enum: ["demo_default", "custom", "unknown"], default: "unknown" },
+    credentialDelivery: { type: String, enum: ["invitation", "manual"] },
     notificationEmail: { type: String, trim: true, lowercase: true, maxlength: 150 },
     notificationsEnabled: { type: Boolean, default: false },
     notificationEmailVerifiedAt: { type: Date },

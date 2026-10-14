@@ -558,3 +558,58 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 /* Responsive dimensions change immediately; interaction feedback keeps motion. */
 .tw-nav-shell, .tw-nav-link, .tw-nav-login, .tw-nav-link svg { transition: color .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease; }
+
+/* ============================================================================
+   MEDREACH Oversized Footer Reveal Animation (Tailwind)
+   ============================================================================ */
+.medreach-footer-reveal {
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden;
+  background-color: #ffffff;
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(0, 71, 171, 0.08);
+}
+
+.medreach-footer-reveal-stage {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(2rem, 5vw, 4rem) 0 clamp(1rem, 3vw, 2rem);
+  box-sizing: border-box;
+}
+
+.medreach-footer-wordmark {
+  display: block;
+  font-family: var(--font-sans, "Inter", system-ui, -apple-system, sans-serif);
+  font-size: clamp(4.5rem, 20vw, 26rem);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  color: #0047ab;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+  margin: 0;
+  padding: 0;
+  will-change: transform, opacity;
+  transform-origin: center bottom;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .medreach-footer-wordmark {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

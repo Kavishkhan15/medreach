@@ -1,7 +1,7 @@
 import { User } from "../models/User.js";
 import { ProviderMembership, PROVIDER_KINDS } from "../models/ProviderMembership.js";
 import { findOrganization } from "./providerAccess.js";
-import { credentialLabel, demoLoginEmail, isolatedDemoEnabled, setDemoPassword } from "./demoAccounts.js";
+import { credentialLabel, demoLoginEmail, isolatedDemoEnabled, setDemoPassword, localManualCredentialsEnabled } from "./demoAccounts.js";
 import { issueProviderActivation } from "./providerInvitation.js";
 import { revokeAllSessions } from "./authTokenService.js";
 import { writeAudit } from "../utils/audit.js";
@@ -15,7 +15,10 @@ export async function accountView(user) {
   }));
   return { _id: String(user._id), name: user.name, email: user.email, role: user.role, accountStatus: user.accountStatus,
     organizations, invitationStatus: user.activationDeliveryStatus || (user.demoAccount ? "not_required" : "unknown"), notificationEmail: user.notificationEmail || "", notificationsEnabled: Boolean(user.notificationsEnabled),
-    notificationContactVerified: Boolean(user.notificationEmailVerifiedAt), credentialLabel: credentialLabel(user), demo: isolatedDemoEnabled() && user.demoAccount };
+    notificationContactVerified: Boolean(user.notificationEmailVerifiedAt), credentialLabel: credentialLabel(user), demo: isolatedDemoEnabled() && user.demoAccount,
+    demoLoginId: /\.example$/i.test(user.email), passwordSet: Boolean(user.passwordHash),
+    passwordStatus: user.passwordHash ? "Set (secure hash only)" : "Not set",
+    credentialRevision: Number(user.authVersion || 0), credentialDelivery: user.credentialDelivery || "invitation" };
 }
 export async function addAssignment(user, { kind, organizationId }, actor, allowPending = false) {
   if (user.role !== "provider_admin" || !PROVIDER_KINDS.includes(kind)) fail("Invalid provider assignment");
@@ -28,16 +31,17 @@ export async function addAssignment(user, { kind, organizationId }, actor, allow
     after: { user: user._id, kind, organization: org._id } });
   return membership;
 }
-export async function provisionProvider({ kind, organizationId, loginEmail, notificationEmail, demo = false, provisioningKey }, actor, allowPending = false, { deferInvitation = false } = {}) {
+export async function provisionProvider({ kind, organizationId, loginEmail, notificationEmail, demo = false, provisioningKey }, actor, allowPending = false, { deferInvitation = false, manualLogin = false } = {}) {
   if (!PROVIDER_KINDS.includes(kind)) fail("Invalid provider type");
   const organization = await findOrganization(kind, organizationId);
   if (!organization || (organization.verificationStatus !== "verified" || organization.approvalStatus === "rejected" || (!allowPending && organization.approvalStatus === "pending"))) fail("Approve the organisation before provisioning", 409);
   if (demo && !isolatedDemoEnabled()) fail("Demo accounts require an isolated demo database with email disabled", 403);
   const email = (loginEmail || demoLoginEmail(organization, kind)).trim().toLowerCase();
-  if (!email || (!demo && loginEmail && !validContact(email))) fail("A real login email is required outside demo mode");
+  const manualIdentifier = manualLogin && deferInvitation && localManualCredentialsEnabled() && /^admin@[a-z0-9-]+-[a-f0-9]{24}\.example$/.test(email);
+  if (!email || (!demo && loginEmail && !validContact(email) && !manualIdentifier)) fail("A real login email is required outside demo mode");
   if (notificationEmail && !validContact(notificationEmail)) fail("A real notification contact is required");
   if (!demo && !deferInvitation && !validContact(notificationEmail || email)) fail("A real invitation recipient is required");
-  const previous = provisioningKey && await User.findOne({ provisioningKey }).select("+provisioningOrganization");
+  const previous = provisioningKey && await User.findOne({ provisioningKey }).select("+provisioningOrganization +passwordHash +authVersion");
   if (previous) {
     if (previous.role !== "provider_admin" || previous.email !== email || previous.provisioningOrganization !== `${kind}:${organizationId}`) fail("Provisioning details changed; review the existing account", 409);
     await addAssignment(previous, { kind, organizationId }, actor, allowPending);

@@ -3,8 +3,8 @@ import { test, expect } from "@playwright/test";
 const hospital = { _id: "111111111111111111111111", slug: "admin-test-hospital", name: "Admin test hospital", verificationStatus: "unverified", hospitalType: "Private", facilities: [], lastUpdated: "2026-01-01T00:00:00Z" };
 const audit = { _id: "222222222222222222222222", action: "verify", entityType: "Hospital", createdAt: "2026-01-01T00:00:00Z", user: { name: "Reviewer", role: "system_admin" } };
 const user = { _id: "333333333333333333333333", name: "Example user", email: "example@medreach.test", role: "user", accountStatus: "active", providers: { password: true } };
-const job = { _id: "444444444444444444444444", title: "Nurse role", status: "pending", category: "Nurse", description: "Test listing", hospital: { name: hospital.name } };
-const analytics = { hospitals: { total: 23, verified: 12 }, conflicts: { facility: 2, field: 1 }, resources: [], emergencyRequests: [], jobs: [], applications: [] };
+
+
 const json = (route, body, status = 200) => route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) });
 const deferred = () => { let resolve; const promise = new Promise((r) => { resolve = r; }); return { promise, resolve }; };
 
@@ -127,51 +127,11 @@ test("security panels recover independently and never report no events during an
   expect(emails).toBe(1);
 });
 
-const operationPanels = [
-  ["/api/admin/provider-accounts", "provider accounts", { data: [] }],
-  ["/api/analytics/overview", "analytics", analytics],
-  ["/api/admin/ownership-claims", "ownership requests", { data: [] }],
-  ["/api/jobs/manage", "job moderation", { data: [job] }],
-  ["/api/emergency-requests", "request outcomes", { data: [] }],
-  ["/api/admin/refinement/status", "refinement configuration", { configured: false }],
-  ["/api/admin/facility-claims", "source evidence", { data: [] }],
-  ["/api/admin/refinement/candidates", "refinement suggestions", { data: [] }],
-];
-async function mockOperations(page, failedPath, counts = {}) {
-  let failing = true;
-  for (const [path, , body] of operationPanels) await page.route(`**${path}`, (route) => {
-    counts[path] = (counts[path] || 0) + 1;
-    return json(route, failing && path === failedPath ? {} : body, failing && path === failedPath ? 503 : 200);
-  });
-  return () => { failing = false; };
-}
-for (const [path, label] of operationPanels) {
-  test(`Operations isolates ${label} failures and retries only that resource`, async ({ page }) => {
-    const counts = {}; const recover = await mockOperations(page, path, counts);
-    await page.goto("/admin/operations");
-    await expect(page.getByRole("button", { name: `Retry ${label}`, exact: true })).toBeVisible();
-    if (label !== "analytics") await expect(page.getByRole("region", { name: "Operational analytics" }).getByText("23", { exact: true })).toBeVisible();
-    if (label !== "job moderation") await expect(page.getByText("Nurse role", { exact: true })).toBeVisible();
-    await expect.poll(() => Object.keys(counts).length).toBe(operationPanels.length);
-    await page.waitForTimeout(1200);
-    for (const [panel] of operationPanels) expect(counts[panel]).toBe(1);
-    const before = { ...counts };
-    recover(); await page.getByRole("button", { name: `Retry ${label}`, exact: true }).click();
-    await expect(page.getByRole("button", { name: `Retry ${label}`, exact: true })).toHaveCount(0);
-    for (const [other] of operationPanels) expect(counts[other]).toBe(before[other] + (other === path ? 1 : 0));
-  });
-}
 
-test("provider creation confirms its response and prevents duplicate submits", async ({ page }) => {
-  await mockOperations(page, "none"); const gate = deferred(); let writes = 0;
-  await page.route("**/api/admin/resources", async (route) => { writes++; await gate.promise; return json(route, { data: { _id: "provider", name: "Test provider", kind: "blood_bank" } }); });
-  await page.goto("/admin/operations");
-  await page.getByLabel("Provider name", { exact: true }).fill("Test provider");
-  await page.getByRole("button", { name: "Add provider", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Add provider", exact: true })).toBeDisabled();
-  await page.locator("form").evaluate((form) => form.requestSubmit()); expect(writes).toBe(1);
-  gate.resolve(); await expect(page.getByText("Provider creation confirmed.", { exact: true })).toBeVisible();
-});
+
+
+
+
 
 test("workspace assignment failures do not masquerade as no hospitals and independent access history survives", async ({ page }) => {
   let failed = true;
@@ -230,26 +190,7 @@ test("unauthorized roles do not fetch protected admin resources", async ({ page 
   expect(reads).toBe(0);
 });
 
-test("every Operations panel distinguishes loading, malformed responses and real empty responses", async ({ page }) => {
-  const gate = deferred(); let mode = "loading";
-  for (const [path, , body] of operationPanels) await page.route(`**${path}`, async (route) => {
-    if (mode === "loading") { await gate.promise; return json(route, {}); }
-    const empty = path === "/api/analytics/overview" ? { ...analytics, hospitals: { total: 0, verified: 0 }, conflicts: { facility: 0, field: 0 } }
-      : path === "/api/admin/refinement/status" ? body : { data: [] };
-    return json(route, empty);
-  });
-  await page.goto("/admin/operations");
-  for (const [, label] of operationPanels) await expect(page.getByText(`Loading ${label}…`, { exact: true })).toBeVisible();
-  await expect(page.getByText("No pending jobs.", { exact: true })).toHaveCount(0);
-  await expect(page.getByRole("region", { name: "Operational analytics" }).getByText("0", { exact: true })).toHaveCount(0);
-  gate.resolve();
-  for (const [, label] of operationPanels) await expect(page.getByRole("button", { name: `Retry ${label}`, exact: true })).toBeVisible();
-  await expect(page.getByText("The service returned an unexpected response. Please retry.", { exact: true })).toHaveCount(8);
-  mode = "empty";
-  for (const [, label] of operationPanels) await page.getByRole("button", { name: `Retry ${label}`, exact: true }).click();
-  for (const message of ["No pending requests.", "No pending jobs.", "No requests yet.", "No source excerpts available.", "No refinement suggestions."]) await expect(page.getByText(message, { exact: true })).toBeVisible();
-  await expect(page.getByRole("region", { name: "Operational analytics" }).getByText("0", { exact: true })).toHaveCount(3);
-});
+
 
 test("unconfirmed applicant review refreshes applicants before the admin enables further changes", async ({ page }) => {
   const applicant = { _id: "applicant", candidateName: "Review candidate", status: "submitted" };

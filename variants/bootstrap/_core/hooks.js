@@ -302,3 +302,10 @@ export function useAssistant() {
     closeModals,
   };
 }
+
+export {
+  calculateScrollProgress,
+  mapProgressToTransform,
+  attachFooterScrollDriver,
+  useFooterScrollAnimation,
+} from "./scrollAnimation.js";

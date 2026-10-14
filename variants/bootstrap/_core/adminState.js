@@ -45,12 +45,7 @@ export function adminOverviewData(r) {
   if (!object(r) || ![r.hospitals, r.verified, r.verificationQueue].every(count)) throw invalidAdminResponse();
   return r;
 }
-export function adminAnalyticsData(r) {
-  const groups = [r?.resources, r?.emergencyRequests, r?.jobs, r?.applications];
-  if (!object(r?.hospitals) || ![r.hospitals.total, r.hospitals.verified, r?.conflicts?.facility, r?.conflicts?.field].every(count)
-    || groups.some((rows) => !Array.isArray(rows) || rows.some((row) => !object(row) || !count(row.count) || (row._id !== null && typeof row._id !== "string")))) throw invalidAdminResponse();
-  return r;
-}
+
 export function adminEmailData(r) {
   if (!object(r) || !text(r.mode) || typeof r.configured !== "boolean") throw invalidAdminResponse();
   return r;
@@ -59,10 +54,7 @@ export function adminAvailabilityData(r) {
   if (!object(r) || !count(r.observations) || !Array.isArray(r.latest) || r.latest.some((f) => !object(f) || !text(f.facility) || !text(f.status))) throw invalidAdminResponse();
   return r;
 }
-export function adminRefinementData(r) {
-  if (!object(r) || typeof r.configured !== "boolean" || (r.configured && !text(r.model))) throw invalidAdminResponse();
-  return r;
-}
+
 export function adminEntity(key) {
   return (r) => {
     const entity = r?.[key];
@@ -82,10 +74,7 @@ export function adminAcknowledgement(r) {
   if (!object(r) || r.ok !== true) throw invalidAdminResponse();
   return r;
 }
-export function adminRefinementResult(r) {
-  if (!object(r) || !Array.isArray(r.candidates) || r.candidates.some((c) => !object(c) || !text(c._id) || !records.candidate(c))) throw invalidAdminResponse();
-  return r;
-}
+
 
 export function adminErrorMessage(error, mutation = false) {
   const status = error?.status;

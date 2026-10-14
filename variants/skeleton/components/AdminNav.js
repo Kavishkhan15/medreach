@@ -13,7 +13,6 @@ const LINKS = [
   { href: "/admin/audit", label: "Audit" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/security", label: "Security & auth" },
-  { href: "/admin/operations", label: "Activity & Settings" },
 ];
 
 export default function AdminNav() {

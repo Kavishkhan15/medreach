@@ -6,8 +6,20 @@ import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 import { PROVIDER_KINDS } from "../models/ProviderMembership.js";
 import * as controller from "../controllers/providerAdminController.js";
+import { prepareManualProviderAccounts, generateManualProviderCredentials } from "../services/manualProviderCredentials.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 export const providerAccountRouter = Router();
 providerAccountRouter.use(requireAuth, requireRole("system_admin"));
+providerAccountRouter.use((_req, res, next) => { res.set("Cache-Control", "private, no-store, max-age=0"); next(); });
+const localTransport = (req, res, next) => ["127.0.0.1", "::1", "::ffff:127.0.0.1"].includes(req.socket.remoteAddress)
+  ? next() : res.status(403).json({ error: "Manual demo credentials require a local connection" });
+providerAccountRouter.post("/manual-provision", localTransport,
+  body("kind").optional().isIn(PROVIDER_KINDS), body("organizationId").optional().isMongoId(),
+  body("organizationId").custom((id, { req }) => Boolean(id) === Boolean(req.body.kind)), validate,
+  asyncHandler(async (req, res) => res.json(await prepareManualProviderAccounts(req.user.id, req.body))));
+providerAccountRouter.post("/:id/credentials", localTransport, param("id").isMongoId(),
+  body("mode").isIn(["generate", "reset"]), body("expectedRevision").isInt({ min: 0 }).toInt(), validate,
+  asyncHandler(async (req, res) => res.json(await generateManualProviderCredentials(req.user.id, req.params.id, req.body))));
 providerAccountRouter.get("/", controller.listAccounts);
 providerAccountRouter.post("/", captureIdempotencyKey("provider-account"), body("kind").isIn(PROVIDER_KINDS), body("organizationId").isMongoId(),
   body("loginEmail").optional({ checkFalsy: true }).isEmail(), body("notificationEmail").optional({ checkFalsy: true }).isEmail(),

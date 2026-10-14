@@ -1,4 +1,4 @@
-import { isolatedDemoEnabled } from "./demoAccounts.js";
+import { isolatedDemoEnabled, localManualCredentialsEnabled } from "./demoAccounts.js";
 import { randomBytes, randomUUID, createHash } from "node:crypto";
 import { AuthToken } from "../models/AuthToken.js";
 import { User } from "../models/User.js";
@@ -63,7 +63,7 @@ export async function rotateSession(token, context = {}) {
     return { error: "replay", userId: existing.user };
   }
   const user = await User.findById(existing.user).select("+authVersion +passwordHash");
-  if (!user || user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled()) || Number(existing.metadata?.authVersion || 0) !== Number(user.authVersion || 0)) {
+  if (!user || user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled()) || (user.credentialDelivery === "manual" && !localManualCredentialsEnabled()) || Number(existing.metadata?.authVersion || 0) !== Number(user.authVersion || 0)) {
     await AuthToken.updateMany({ familyId: existing.familyId, purpose: "refresh_session" },
       { $set: { revokedAt: new Date(), revokeReason: "account_changed" } });
     return { error: "invalid" };

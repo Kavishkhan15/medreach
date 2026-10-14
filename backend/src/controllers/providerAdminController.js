@@ -11,15 +11,15 @@ import { ProviderApplication } from "../models/ProviderApplication.js";
 import { accountView, addAssignment, provisionProvider, revokeProviderAccess, validContact } from "../services/providerAccounts.js";
 import { findOrganization } from "../services/providerAccess.js";
 import { issueProviderActivation } from "../services/providerInvitation.js";
-import { isolatedDemoEnabled } from "../services/demoAccounts.js";
+import { isolatedDemoEnabled, localManualCredentialsEnabled } from "../services/demoAccounts.js";
 import { guardSystemAdminMutation } from "../services/adminMutationGuard.js";
 import { writeAudit } from "../utils/audit.js";
 import { issueAuthToken } from "../services/authTokenService.js";
 const account = async (id) => User.findOne({ _id: id, role: "provider_admin" }).select("+authVersion +passwordHash");
 const sameText = (value) => ({ $regex: `^\\s*${value.trim().split(/\s+/).map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+")}\\s*$`, $options: "i" });
 export const listAccounts = asyncHandler(async (_req, res) => {
-  const users = await User.find({ role: "provider_admin" }).sort({ createdAt: -1 });
-  res.json({ data: await Promise.all(users.map(accountView)), demoEnabled: isolatedDemoEnabled() });
+  const users = await User.find({ role: "provider_admin" }).select("+passwordHash +authVersion").sort({ createdAt: -1 });
+  res.json({ data: await Promise.all(users.map(accountView)), demoEnabled: isolatedDemoEnabled(), manualCredentialsEnabled: localManualCredentialsEnabled() });
 });
 export const createAccount = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async () => res.status(201).json({ ok: true, ...await provisionProvider({ ...req.body, provisioningKey: req.idempotencyKeyHash }, req.user.id) })));
 export const accountAction = asyncHandler(async (req, res) => {
@@ -29,7 +29,8 @@ export const accountAction = asyncHandler(async (req, res) => {
     if (!user) return;
     const action = req.body.action;
     if (action === "activate") {
-      if (!user.passwordHash || !user.emailVerifiedAt) { result = { error: "The representative must accept the activation invitation first", status: 409 }; return; }
+      const manual = user.credentialDelivery === "manual" && localManualCredentialsEnabled();
+      if (!user.passwordHash || (!user.emailVerifiedAt && !manual)) { result = { error: "The representative must accept the activation invitation first", status: 409 }; return; }
       user.accountStatus = "active";
       await revokeProviderAccess(user);
     } else if (action === "deactivate") {

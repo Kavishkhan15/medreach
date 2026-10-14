@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { adminList, adminOverviewData, adminAnalyticsData, adminEntity, adminErrorMessage, adminAvailabilityData, loadAdminHospitals } from '../../packages/core/src/adminState.js';
+import { adminList, adminOverviewData, adminEntity, adminErrorMessage, adminAvailabilityData, loadAdminHospitals } from '../../packages/core/src/adminState.js';
 
 test('admin lists accept explicit empty results and reject absent, null and malformed records', () => {
   const parse = adminList('audit');
@@ -12,7 +12,6 @@ test('admin lists accept explicit empty results and reject absent, null and malf
 test('counts must be genuine non-negative integer response values', () => {
   assert.equal(adminOverviewData({ hospitals: 0, verified: 0, verificationQueue: 0 }).hospitals, 0);
   for (const hospitals of [undefined, null, '0', -1, NaN, Infinity]) assert.throws(() => adminOverviewData({ hospitals, verified: 0, verificationQueue: 0 }));
-  assert.throws(() => adminAnalyticsData({ hospitals: { total: 0, verified: 0 }, conflicts: { facility: 0, field: 0 }, resources: null, jobs: [], applications: [], emergencyRequests: [] }));
 });
 test('write confirmations require an expected entity or acknowledgement', () => {
   for (const response of [{}, { hospital: null }, { hospital: { _id: 'h' } }]) assert.throws(() => adminEntity('hospital')(response));
