@@ -586,8 +586,8 @@ select.w-auto { width: auto; display: inline-block; }
   display: block;
   position: relative;
   box-sizing: border-box;
-  margin-top: 2rem;
-  border-top: 1px solid rgba(0, 71, 171, 0.08);
+  margin-top: 0;
+  border-top: 0;
 }
 
 .medreach-footer-reveal-stage {
@@ -596,7 +596,7 @@ select.w-auto { width: auto; display: inline-block; }
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: clamp(3.2rem, 5vw, 6.4rem) 0 clamp(1.6rem, 3vw, 3.2rem);
+  padding: clamp(3.2rem, 5vw, 6.4rem) 0 max(2.4rem, env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 

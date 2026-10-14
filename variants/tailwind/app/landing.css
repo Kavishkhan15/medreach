@@ -139,7 +139,7 @@ body:has(.tw-landing) #main { max-width: none; width: 100%; padding: 0; }
 .tw-home-insight h3 { margin-bottom: 14px; font-size: 1.35rem; line-height: 1.3; }
 .tw-home-insight p { color: var(--tw-muted); font-size: .9rem; }
 .tw-home-insight strong { margin-top: auto; color: #075f7d; font-size: .85rem; }
-body:has(.tw-landing) .tw-site-footer { margin-top: 0; padding: 40px 0 calc(5rem + env(safe-area-inset-bottom)); border: 0; background: #0c5877; color: #e2f1f7; }
+body:has(.tw-landing) .tw-site-footer { margin-top: 0; padding: 40px 0; border: 0; background: #0c5877; color: #e2f1f7; }
 body:has(.tw-landing) .tw-site-footer :is(h2,a) { color: #fff; }
 .tw-landing-footer-links { display: none; }
 body:has(.tw-landing) .tw-landing-footer-links { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 28px; width: min(1180px,92%); margin: 24px auto 0; padding-top: 32px; border-top: 1px solid #4a8098; }
