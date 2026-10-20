@@ -19,7 +19,7 @@ import { signSessionToken } from "./helpers/session.js";
 import { retryEmailDelivery, setEmailTransportFactoryForTests } from "../src/services/emailService.js";
 
 const uri = process.env.MEDREACH_PRODUCT_TEST_MONGO_URI;
-test("submission email batches preserve records, recipients, tracking, retries and delivery completion", {
+test("inline submission email batches preserve records, recipients, tracking, retries and delivery completion", {
   skip: !uri || !/\/medreach_product_integration(?:\?|$)/.test(uri), timeout: 60000,
 }, async (t) => {
   await connectDB(uri);

@@ -12,6 +12,7 @@ const schema = new mongoose.Schema({
   sentAt: { type: Date },
   retryable: { type: Boolean, default: false, index: true },
   retryEnvelope: { type: String, select: false },
+  queued: { type: Boolean },
   leaseToken: { type: String, select: false },
   leaseUntil: { type: Date },
   lastAttemptAt: { type: Date },

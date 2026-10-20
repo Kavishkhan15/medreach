@@ -58,9 +58,17 @@ export default function AmbulanceBookingModal({ provider, onClose }) {
       if (res.trackingToken) {
         window.sessionStorage.setItem(`medreach:ambulance-booking-token:${res.reference}`, res.trackingToken);
       }
-      const providerMessage = res.delivery?.provider?.sent
-        ? "The provider notification email was sent. Call to confirm dispatch."
-        : "The provider notification email was not sent. Call the provider directly to confirm availability.";
+      const delivery = res.delivery?.provider;
+      let providerMessage;
+      if (delivery?.status === "pending") {
+        providerMessage = "The provider notification email is queued. Call the provider to confirm availability and dispatch.";
+      } else if (delivery?.status === "uncertain") {
+        providerMessage = "The provider notification outcome is unconfirmed. Call the provider directly to confirm availability.";
+      } else if (delivery?.status === "sent" || delivery?.sent) {
+        providerMessage = "The mail service accepted the provider notification. Call to confirm dispatch.";
+      } else {
+        providerMessage = "The provider notification email was not sent. Call the provider directly to confirm availability.";
+      }
       setTracking({ reference: res.reference, token: res.trackingToken });
       setSuccessMsg(`Request ${res.reference} was recorded. ${providerMessage}`);
     } catch (err) {

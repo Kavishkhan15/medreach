@@ -5,18 +5,23 @@ import { connectDB, disconnectDB } from "./config/db.js";
 import { env } from "./config/env.js";
 import { startEmergencyRequestExpiryWorker, stopEmergencyRequestExpiryWorker } from "./services/emergencyRequestExpiry.js";
 import { drainWorkers, registerGracefulShutdown } from "./services/gracefulShutdown.js";
+import { startEmailDeliveryWorker, stopEmailDeliveryWorker } from "./services/emailDeliveryWorker.js";
 
 const app = createApp();
 
 connectDB()
   .then(() => {
     startEmergencyRequestExpiryWorker();
+    startEmailDeliveryWorker();
     startRequestNotificationWorker();
     const server = app.listen(env.port, "0.0.0.0", () =>
       console.log(`[medreach] API listening on :${env.port} (${env.nodeEnv})`)
     );
     registerGracefulShutdown({ server, onStart: () => { app.locals.shuttingDown = true; },
-      stopWorkers: () => drainWorkers([stopEmergencyRequestExpiryWorker, stopRequestNotificationWorker]),
+      stopWorkers: async () => {
+        await drainWorkers([stopEmergencyRequestExpiryWorker, stopRequestNotificationWorker]);
+        await stopEmailDeliveryWorker();
+      },
       disconnect: disconnectDB });
   })
   .catch((err) => {

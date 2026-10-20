@@ -78,6 +78,8 @@ let transportFactory = (options) => nodemailer.createTransport(options);
 let resendFetch = (...args) => fetch(...args);
 const NON_REPLAYABLE_TEMPLATES = new Set(["verify_email", "password_reset", "provider_activation", "notification_email"]);
 const leaseDurationMs = 60_000;
+let queueEnabled = false;
+export function setEmailQueueEnabled(enabled) { queueEnabled = Boolean(enabled); }
 
 function envelopeKey() {
   return createHash("sha256").update(env.jwtSecret).digest();
@@ -217,6 +219,7 @@ export async function sendEmailEvent({ eventKey, to, template, data = {}, source
       try {
         delivery = await EmailDelivery.create({ eventKey, recipient: to, template, subject,
           status: env.emailEnabled ? "pending" : "disabled", retryable, retryEnvelope,
+          ...(queueEnabled && retryable ? { queued: true } : {}),
           ...(source?.model && source?.id && source?.channel ? {
             sourceModel: source.model,
             sourceId: source.id,
@@ -235,6 +238,9 @@ export async function sendEmailEvent({ eventKey, to, template, data = {}, source
       await delivery.save();
       return delivery;
     }
+    // Persist first. Only messages with an encrypted, replay-safe envelope
+    // enter the outbox. Activation/recovery links retain their existing path.
+    if (delivery.queued) return delivery;
     const claim = await claimDelivery(delivery._id);
     if (!claim) return EmailDelivery.findById(delivery._id);
     return finishDelivery({ ...claim, message: { to, subject, text } });

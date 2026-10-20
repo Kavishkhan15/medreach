@@ -9,6 +9,10 @@ import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { ProviderMembership } from "../src/models/ProviderMembership.js";
 import { Job } from "../src/models/Job.js";
 import { signSessionToken } from "./helpers/session.js";
+import { env } from "../src/config/env.js";
+import { sendEmailEvent, setEmailTransportFactoryForTests } from "../src/services/emailService.js";
+import { EmailDelivery } from "../src/models/EmailDelivery.js";
+import { RequestNotification } from "../src/models/RequestNotification.js";
 
 const uri = process.env.MEDREACH_PERFORMANCE_TEST_MONGO_URI;
 const isolated = Boolean(uri && /^mongodb:\/\/(127\.0\.0\.1|localhost):\d+\/medreach_performance_test$/.test(uri));
@@ -66,5 +70,122 @@ test("directory performance preserves response contracts and private data bounda
     const privateResponse = await request(app).get("/api/jobs").set(auth).set("Accept-Encoding", "gzip");
     assert.match(privateResponse.headers["cache-control"], /no-store/);
     assert.equal(privateResponse.headers["content-encoding"], undefined);
+  });
+  await t.test("durable queued notifications return before transport, survive worker restart and deduplicate sends", async () => {
+    const { startEmailDeliveryWorker, stopEmailDeliveryWorker, flushQueuedEmails } = await import("../src/services/emailDeliveryWorker.js");
+    const previous = { emailEnabled: env.emailEnabled, emailProvider: env.emailProvider, smtpHost: env.smtpHost, smtpFrom: env.smtpFrom };
+    Object.assign(env, { emailEnabled: true, emailProvider: "smtp", smtpHost: "127.0.0.1", smtpFrom: "sender@performance.test" });
+    let calls = 0, release;
+    const gate = new Promise(resolve => { release = resolve; });
+    setEmailTransportFactoryForTests(() => ({ sendMail: async () => { calls++; await gate; } }));
+    try {
+      startEmailDeliveryWorker({ intervalMs: 60000 });
+      const event = { eventKey: "performance-queued", to: "fixture@performance.test", template: "welcome", data: { name: "Unique private fixture name" } };
+      const pending = await sendEmailEvent(event);
+      assert.equal(pending.status, "pending");
+      assert.equal(calls, 0, "HTTP workflows must await persistence, not transport");
+      await stopEmailDeliveryWorker();
+      const stored = await EmailDelivery.findById(pending._id).select("+retryEnvelope").lean();
+      assert.equal(stored.queued, true);
+      assert.ok(stored.retryEnvelope && !JSON.stringify(stored).includes(event.data.name));
+      startEmailDeliveryWorker({ intervalMs: 60000 });
+      const processing = flushQueuedEmails();
+      while (!calls) await new Promise(resolve => setImmediate(resolve));
+      const duplicate = await sendEmailEvent(event);
+      assert.equal(String(duplicate._id), String(pending._id));
+      release(); await processing;
+      assert.equal((await EmailDelivery.findById(pending._id)).status, "sent");
+      await flushQueuedEmails();
+      assert.equal(calls, 1);
+      // Definitive pre-send failures retry after backoff; ambiguous acceptance
+      // never causes an automatic second send.
+      let fail = true;
+      setEmailTransportFactoryForTests(() => ({ sendMail: async () => {
+        calls++;
+        if (fail) throw Object.assign(new Error("Controlled transport outage"), { code: "ECONNECTION" });
+      } }));
+      const retryable = await sendEmailEvent({ ...event, eventKey: "performance-retry" });
+      await flushQueuedEmails();
+      assert.equal((await EmailDelivery.findById(retryable._id)).status, "failed");
+      const afterFailure = calls;
+      await flushQueuedEmails(); assert.equal(calls, afterFailure);
+      await EmailDelivery.updateOne({ _id: retryable._id }, { $set: { lastAttemptAt: new Date(Date.now() - 31000) } });
+      fail = false; await flushQueuedEmails();
+      assert.equal((await EmailDelivery.findById(retryable._id)).status, "sent");
+      assert.equal(calls, afterFailure + 1);
+      setEmailTransportFactoryForTests(() => ({ sendMail: async () => {
+        calls++; throw Object.assign(new Error("Controlled ambiguous outcome"), { code: "ETIMEDOUT", command: "DATA" });
+      } }));
+      const uncertain = await sendEmailEvent({ ...event, eventKey: "performance-uncertain" });
+      await flushQueuedEmails();
+      assert.equal((await EmailDelivery.findById(uncertain._id)).status, "uncertain");
+      const afterAmbiguous = calls;
+      await flushQueuedEmails(); assert.equal(calls, afterAmbiguous);
+      // A token-bearing email keeps the existing inline, non-replayable path.
+      setEmailTransportFactoryForTests(() => ({ sendMail: async () => { calls++; } }));
+      const sensitive = await sendEmailEvent({ eventKey: "performance-recovery", to: event.to,
+        template: "password_reset", data: { url: "https://example.test/reset?token=isolated-secret" } });
+      assert.equal(sensitive.status, "sent");
+      const sensitiveRow = await EmailDelivery.findById(sensitive._id).select("+retryEnvelope").lean();
+      assert.equal(sensitiveRow.queued, undefined);
+      assert.equal(sensitiveRow.retryEnvelope, undefined);
+      assert.ok(!JSON.stringify(sensitiveRow).includes("isolated-secret"));
+    } finally {
+      release(); await stopEmailDeliveryWorker(); Object.assign(env, previous);
+      setEmailTransportFactoryForTests();
+    }
+  });
+  await t.test("real queued request routes preserve tracking, recipient policy and delivery reconciliation", async () => {
+    const { startEmailDeliveryWorker, stopEmailDeliveryWorker, flushQueuedEmails } = await import("../src/services/emailDeliveryWorker.js");
+    const previous = { emailEnabled: env.emailEnabled, emailProvider: env.emailProvider, smtpHost: env.smtpHost, smtpFrom: env.smtpFrom };
+    Object.assign(env, { emailEnabled: true, emailProvider: "smtp", smtpHost: "127.0.0.1", smtpFrom: "sender@performance.test" });
+    const sent = [];
+    setEmailTransportFactoryForTests(() => ({ sendMail: async mail => { sent.push(mail.to); } }));
+    const staff = await User.findOne({ role: "provider_admin" });
+    await User.updateOne({ _id: staff._id }, { $set: { notificationsEnabled: true, notificationEmail: "provider@performance.test", notificationEmailVerifiedAt: new Date() } });
+    await User.updateOne({ _id: system._id }, { $set: { notificationsEnabled: true, notificationEmail: "system@performance.test", notificationEmailVerifiedAt: new Date() } });
+    const ambulance = await ResourceProvider.create({ kind: "ambulance", name: "Queued ambulance", sourceName: "Isolated fixture" });
+    for (const [kind, org] of [["hospital", hospital], ["blood_bank", resource], ["ambulance", ambulance]]) {
+      await ProviderMembership.updateOne({ user: staff._id, kind, organization: org._id },
+        { $set: { active: true, assignedBy: system._id } }, { upsert: true });
+    }
+    try {
+      startEmailDeliveryWorker({ intervalMs: 60000 });
+      for (const kind of ["standard", "emergency", "blood", "urgent", "ambulance", "emergency-ambulance"]) {
+        const patient = await User.create({ name: "Queued patient", email: `${kind}@performance.test` });
+        const contact = { contactEmail: patient.email, contactPhone: "+91 9876543210" };
+        const bed = ["standard", "emergency"].includes(kind);
+        const blood = ["blood", "urgent"].includes(kind);
+        const emergency = ["emergency", "urgent", "emergency-ambulance"].includes(kind);
+        const [path, body] = bed
+          ? [`/api/emergency-requests/${kind}`, { ...contact, hospitalId: hospital.id, requiredFacility: "ICU", emergencyType: "General care" }]
+          : blood ? [`/api/blood-requests/${kind === "urgent" ? "urgent" : "standard"}`, { ...contact, type: "REQUEST", providerId: resource.id,
+            bloodBankName: resource.name, bloodGroup: "O+", patientOrDonorName: patient.name, units: 1, urgency: emergency ? "within 6 hours" : "3 days" }]
+          : ["/api/ambulances/book", { ...contact, providerId: ambulance.id, patientName: patient.name, patientAge: 35,
+            ambulanceRequired: true, isEmergency: emergency, bookingPickup: "Isolated test address" }];
+        sent.length = 0;
+        const headers = { Authorization: `Bearer ${await signSessionToken(patient)}`, "Idempotency-Key": `queued-http-${kind}` };
+        const response = await request(app).post(path).set(headers).send(body);
+        assert.equal(response.status, 201, `${kind}: ${JSON.stringify(response.body)}`);
+        assert.equal(sent.length, 0, "Request must complete before any transport attempt");
+        const reference = bed ? response.body.request.requestId : blood ? response.body.bloodRequest.reference : response.body.reference;
+        assert.ok(reference);
+        assert.equal((await request(app).get(`/api/tracking/${bed ? "bed" : blood ? "blood" : "ambulance"}/${reference}`)).status, 200);
+        // Revoke a recipient after queuing to exercise dispatch-time scope checks.
+        const revoked = kind === "emergency-ambulance";
+        if (revoked) await ProviderMembership.updateOne({ user: staff._id, kind: "ambulance", organization: ambulance._id }, { $set: { active: false } });
+        for (let i = 0; i < 4 && await EmailDelivery.exists({ queued: true, status: "pending" }); i++) await flushQueuedEmails();
+        assert.ok(sent.includes(patient.email));
+        assert.equal(sent.includes("provider@performance.test"), !revoked, kind);
+        assert.equal(sent.includes("system@performance.test"), emergency, kind);
+        assert.equal(new Set(sent).size, sent.length);
+        if (!revoked) assert.equal(await RequestNotification.countDocuments({ status: "pending" }), 0);
+        const replay = await request(app).post(path).set(headers).send(body);
+        assert.equal(replay.status, 200);
+        const before = sent.length; await flushQueuedEmails(); assert.equal(sent.length, before);
+      }
+    } finally {
+      await stopEmailDeliveryWorker(); Object.assign(env, previous); setEmailTransportFactoryForTests();
+    }
   });
 });

@@ -1,6 +1,6 @@
 // Independent emails may overlap, but cap each request's batch at three.
-// Await every task: responses still reflect completed delivery attempts and
-// failed deliveries retain the existing durable retry records.
+// Await every task: the normal server persists queued notifications here;
+// inline callers await transport. Both paths retain durable failure records.
 export async function runEmailBatch(tasks) {
   const results = new Array(tasks.length);
   let next = 0;
