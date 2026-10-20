@@ -7,6 +7,7 @@ import { applySecurity } from "./middleware/security.js";
 import { notFound, errorHandler } from "./middleware/error.js";
 import { requestId } from "./middleware/requestId.js";
 import { requestLogger } from "./middleware/logging.js";
+import { publicCompression } from "./middleware/publicCompression.js";
 
 import { providerAccountRouter, providerRouter, providerApprovalRouter } from "./routes/providerAdmin.js";
 import healthRouter from "./routes/health.js";
@@ -39,6 +40,7 @@ export function createApp() {
 
   // Shared, identical security posture for every variant (plan §4, §6).
   applySecurity(app);
+  app.use(publicCompression());
 
   // Health (both /health and /api/v1/health style).
   app.use("/health", healthRouter);

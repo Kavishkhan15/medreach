@@ -56,9 +56,14 @@ export const listJobs = asyncHandler(async (req, res) => {
     ];
   }
 
-  const data = await Job.find(filter)
-    .populate("hospital", "name slug locality city address phone hospitalType verificationStatus")
-    .populate("provider", "name kind locality city address phone providerType verificationStatus")
+  const query = Job.find(filter);
+  if (req.query.view === "summary") {
+    query.select("title department organizationName organizationType location employmentType createdAt");
+  } else {
+    query.populate("hospital", "name slug locality city address phone hospitalType verificationStatus")
+      .populate("provider", "name kind locality city address phone providerType verificationStatus");
+  }
+  const data = await query
     .sort({ createdAt: -1 })
     .limit(150)
     .lean();

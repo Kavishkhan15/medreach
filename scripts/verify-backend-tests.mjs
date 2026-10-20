@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 
 const databaseConfig = [
+  ["MEDREACH_PERFORMANCE_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_performance_test", "medreach_performance_test"],
   ["MEDREACH_MANUAL_CREDENTIALS_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_provider_credentials_test", "medreach_provider_credentials_test"],
   ["MEDREACH_ROLE_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_roles_test", "medreach_roles_test"],
   ["MEDREACH_LOCAL_SECURITY_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_local_security_test", "medreach_local_security_test"],
@@ -31,9 +32,13 @@ function databaseName(uri, variable) {
   return name;
 }
 
-const testEnv = { ...process.env, NODE_ENV: "test", EMAIL_ENABLED: "false" };
+const testPort = process.env.MEDREACH_TEST_MONGO_PORT || "27017";
+if (!/^\d+$/.test(testPort) || Number(testPort) < 1 || Number(testPort) > 65535) {
+  throw new Error("MEDREACH_TEST_MONGO_PORT must be a port between 1 and 65535");
+}
+const testEnv = { ...process.env, NODE_ENV: "test", EMAIL_ENABLED: "false", AI_PROVIDER: "rule_based" };
 for (const [variable, fallback, expectedDatabase] of databaseConfig) {
-  const uri = process.env[variable] || fallback;
+  const uri = process.env[variable] || fallback.replace(":27017/", `:${testPort}/`);
   const actualDatabase = databaseName(uri, variable);
   if (actualDatabase !== expectedDatabase) {
     throw new Error(`${variable} must target the isolated database ${expectedDatabase}; received ${actualDatabase}`);

@@ -8,7 +8,7 @@ import { Hospital } from "../models/Hospital.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
 import { ProviderMembership } from "../models/ProviderMembership.js";
 import { ProviderApplication } from "../models/ProviderApplication.js";
-import { accountView, addAssignment, provisionProvider, revokeProviderAccess, validContact } from "../services/providerAccounts.js";
+import { accountView, accountViews, addAssignment, provisionProvider, revokeProviderAccess, validContact } from "../services/providerAccounts.js";
 import { findOrganization } from "../services/providerAccess.js";
 import { issueProviderActivation } from "../services/providerInvitation.js";
 import { isolatedDemoEnabled, localManualCredentialsEnabled } from "../services/demoAccounts.js";
@@ -19,7 +19,7 @@ const account = async (id) => User.findOne({ _id: id, role: "provider_admin" }).
 const sameText = (value) => ({ $regex: `^\\s*${value.trim().split(/\s+/).map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+")}\\s*$`, $options: "i" });
 export const listAccounts = asyncHandler(async (_req, res) => {
   const users = await User.find({ role: "provider_admin" }).select("+passwordHash +authVersion").sort({ createdAt: -1 });
-  res.json({ data: await Promise.all(users.map(accountView)), demoEnabled: isolatedDemoEnabled(), manualCredentialsEnabled: localManualCredentialsEnabled() });
+  res.json({ data: await accountViews(users), demoEnabled: isolatedDemoEnabled(), manualCredentialsEnabled: localManualCredentialsEnabled() });
 });
 export const createAccount = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async () => res.status(201).json({ ok: true, ...await provisionProvider({ ...req.body, provisioningKey: req.idempotencyKeyHash }, req.user.id) })));
 export const accountAction = asyncHandler(async (req, res) => {

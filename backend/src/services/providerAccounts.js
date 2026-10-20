@@ -1,5 +1,7 @@
 import { User } from "../models/User.js";
 import { ProviderMembership, PROVIDER_KINDS } from "../models/ProviderMembership.js";
+import { Hospital } from "../models/Hospital.js";
+import { ResourceProvider } from "../models/ResourceProvider.js";
 import { findOrganization } from "./providerAccess.js";
 import { credentialLabel, demoLoginEmail, isolatedDemoEnabled, setDemoPassword, localManualCredentialsEnabled } from "./demoAccounts.js";
 import { issueProviderActivation } from "./providerInvitation.js";
@@ -7,18 +9,38 @@ import { revokeAllSessions } from "./authTokenService.js";
 import { writeAudit } from "../utils/audit.js";
 const fail = (message, status = 400) => { throw Object.assign(new Error(message), { status }); };
 export const validContact = (email) => typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !/\.(example|test|invalid|localhost)$/i.test(email);
-export async function accountView(user) {
-  const assignments = await ProviderMembership.find({ user: user._id }).lean();
-  const organizations = await Promise.all(assignments.map(async (r) => {
-    const org = await findOrganization(r.kind, r.organization);
-    return { _id: String(r._id), organizationId: String(r.organization), kind: r.kind, name: org?.name || "Organisation unavailable", active: r.active };
-  }));
+function serializeAccount(user, organizations) {
   return { _id: String(user._id), name: user.name, email: user.email, role: user.role, accountStatus: user.accountStatus,
     organizations, invitationStatus: user.activationDeliveryStatus || (user.demoAccount ? "not_required" : "unknown"), notificationEmail: user.notificationEmail || "", notificationsEnabled: Boolean(user.notificationsEnabled),
     notificationContactVerified: Boolean(user.notificationEmailVerifiedAt), credentialLabel: credentialLabel(user), demo: isolatedDemoEnabled() && user.demoAccount,
     demoLoginId: /\.example$/i.test(user.email), passwordSet: Boolean(user.passwordHash),
     passwordStatus: user.passwordHash ? "Set (secure hash only)" : "Not set",
     credentialRevision: Number(user.authVersion || 0), credentialDelivery: user.credentialDelivery || "invitation" };
+}
+export async function accountViews(users) {
+  if (!users.length) return [];
+  const assignments = await ProviderMembership.find({ user: { $in: users.map(user => user._id) } }).lean();
+  const hospitals = assignments.filter(row => row.kind === "hospital").map(row => row.organization);
+  const providers = assignments.filter(row => row.kind !== "hospital").map(row => row.organization);
+  const [hospitalRows, providerRows] = await Promise.all([
+    hospitals.length ? Hospital.find({ _id: { $in: hospitals } }).select("name").lean() : [],
+    providers.length ? ResourceProvider.find({ _id: { $in: providers } }).select("name kind").lean() : [],
+  ]);
+  const names = new Map([
+    ...hospitalRows.map(row => [`hospital:${row._id}`, row.name]),
+    ...providerRows.map(row => [`${row.kind}:${row._id}`, row.name]),
+  ]);
+  const byUser = new Map();
+  for (const row of assignments) {
+    const key = String(row.user);
+    if (!byUser.has(key)) byUser.set(key, []);
+    byUser.get(key).push({ _id: String(row._id), organizationId: String(row.organization), kind: row.kind,
+      name: names.get(`${row.kind}:${row.organization}`) || "Organisation unavailable", active: row.active });
+  }
+  return users.map(user => serializeAccount(user, byUser.get(String(user._id)) || []));
+}
+export async function accountView(user) {
+  return (await accountViews([user]))[0];
 }
 export async function addAssignment(user, { kind, organizationId }, actor, allowPending = false) {
   if (user.role !== "provider_admin" || !PROVIDER_KINDS.includes(kind)) fail("Invalid provider assignment");
