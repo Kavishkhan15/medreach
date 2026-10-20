@@ -43,12 +43,12 @@ Before empirical use, publish measured inputs and sources, justify normalization
 
 ## 6. Current application architecture and parity
 
-- Three active Next.js 15.5.24/React 18.3.1 frontends use one Express/MongoDB backend; Node.js >=22.19.0 is required.
+- Three active Next.js/React frontends use one Express/MongoDB backend; Node.js >=22.19.0 is required. Package manifests and the lockfile record installed versions.
 - Frameworks are Bootstrap 5.3.3, Tailwind CSS 4 and Skeleton CSS 2.0.4.
 - Bootstrap aliases `@medreach/core` to local `_core/`; Tailwind/Skeleton use the workspace core. JavaScript/component equivalence must be checked, not assumed.
-- Real discovery data retains provenance and verification/freshness distinctions. Unknown availability stays unknown; fixture data belongs only in isolated tests/studies.
+- Real discovery data retains stored provenance and availability rules. Scraping verification/freshness badges are removed from the frontend. Unknown availability stays unknown; fixture data belongs only in isolated tests/studies.
 - Password/session authentication, RBAC, private detailed tracking and transactional emails remain. Google OAuth and the in-app notification system are intentionally removed.
-- Shared submission-email concurrency improves request wait time without changing frontend-specific logic. See [latency scope](latency-verification.md).
+- Shared backend notification queuing reduces transport waits without changing frontend-specific business rules. See [latency scope](latency-verification.md).
 
 [Variant guide](../variants/README.md) and [parity verification](PARITY_VERIFICATION.md) describe actual workflow coverage. Skeleton's career tracking copy/manual-selection control is an intentional difference. Successful builds or matching routes do not demonstrate functional or experimental identity.
 

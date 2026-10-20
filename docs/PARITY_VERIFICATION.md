@@ -1,32 +1,36 @@
-# MedReach frontend parity
+# Frontend parity scope
 
-Bootstrap is the functional reference. Tailwind and Skeleton preserve their own
-design systems while using the same backend APIs and authorization contracts.
-Matching routes or successful builds do not prove complete functional parity.
+Bootstrap is the reference for common product behavior. Each frontend retains
+its own framework styles and components. Successful builds do not prove
+identical interactions or isolate CSS as the only research variable.
 
-## Shared journeys
+## Shared workflows
 
-- Hospital discovery/details, maps and contact/navigation actions.
-- Guest emergency and signed-in standard bed requests, hospital review,
-  information exchange, acceptance/rejection, completion, cancellation and expiry.
-- Blood requests/donations, urgent blood, ambulance booking and tracking.
-- Job and organization applications with public `CAR-...` references.
-- Authentication, profile onboarding, recovery, verification and administration.
-- Assistant actions, private detailed tracking and independent dashboard retries.
+Discovery/detail/maps; provider applications and approval; common login;
+organisation-scoped provider administration; standard/emergency bed requests;
+normal/urgent blood requests and blood donation; ambulance bookings; jobs and
+applications; reference tracking; user history and grounded assistant actions.
 
-Career dashboard history exposes the reference with copy and tracking actions.
-Skeleton's career tracking card also provides a copy action and manual-copy
-fallback. Bootstrap and Tailwind tracking cards keep their existing behavior.
-In-app notifications and Google OAuth are removed; all transactional emails,
-email delivery history and controlled retries remain supported.
+Loading, true empty, failure and targeted Retry behavior must remain distinct.
+The homepage and dashboard now publish successful resources independently.
 
-## Historical verification — 2026-10-03
+## Intentional differences
 
-At that time, 247 backend tests, 112 offline crawler tests, three production builds and 87
-Chromium journeys passed. The browser suite includes the former 66 journeys and
-later regression coverage for failures, responsive navigation, references and
-clipboard denial. No tests in the local backend/browser suites were skipped.
+- Bootstrap has local manual credential handover, generated password visibility
+  and copy controls. The six tests in `provider-manual-credentials.spec.js`
+  target that implementation; Tailwind/Skeleton keep invitation administration.
+- Skeleton provides an additional career-tracking copy/manual-selection control.
+- Existing Bootstrap-specific navbar, footer and demo-video regression tests
+  are explicitly scoped; shared navigation/responsive journeys cover all three.
+- Bootstrap aliases its local `_core`; the other variants use the workspace
+  core. Homepage orchestration is deliberately shared.
 
-See [release QA](release-qa.md) for test scope, repeatable commands and live
-deployment requirements. These results do not claim exhaustive interaction,
-accessibility, production SMTP, remote CI or hosted-deployment verification.
+## Verification ownership
+
+[Release QA](release-qa.md) owns current counts, commands and limitations.
+[Research plan](MedReach_Corrected_Plan.md) explains experimental confounds.
+Historical crawler/build totals are not current test results.
+
+Crawler execution, Google OAuth, in-app notification inboxes, User Admin pages
+and `/admin/operations` are retired. Keep maps, email, provider approvals,
+stored provenance and the main `/admin` dashboard.

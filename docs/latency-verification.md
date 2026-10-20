@@ -1,64 +1,98 @@
-# Submission latency verification
+# Performance verification
 
-## Change — 2026-10-03
+Local measurements, 21 October 2026. These describe the tested repository,
+not a hosted latency guarantee.
 
-Bed requests (standard and guest emergency), blood requests/donation pledges,
-and career applications now attempt independent emails concurrently, with a
-limit of three tasks per submission. This replaces serial SMTP waits shared by
-all three frontends. Email order is no longer guaranteed across recipients.
+## Implemented improvements
 
-The primary record is saved first. The API still waits for every delivery
-attempt before responding. Existing event keys, delivery records, leases,
-encrypted retry payloads, access checks and tracking references are retained.
-A failed recipient does not prevent other recipients from being attempted.
-Job application staff-routing lookup failures still return the saved application
-and attempt the applicant confirmation.
+| Area | Change |
+| --- | --- |
+| Provider Accounts | One user read plus batched memberships, hospitals and providers replaces per-account organisation lookups |
+| Homepage | Independent resource updates; jobs/campaigns load near their sections; retries reload only the failed resource |
+| Job preview | `GET /api/jobs?view=summary` omits full descriptions/populated organisations while retaining published filtering |
+| JavaScript | Homepage map and booking/blood modal code split from the initial page module |
+| Public API transfer | gzip-compatible compression and ETag revalidation on public directory index reads |
+| Notifications | Persist replay-safe messages in an encrypted outbox; send outside the HTTP response path |
+| Booking feedback | Distinguish queued, transport-accepted and uncertain notifications without implying dispatch |
+| History reliability | Independent bed, blood and ambulance loading/error/empty/retry states; malformed responses are errors |
 
-This is a per-submission concurrency limit, not a global SMTP rate limiter.
-Hosted load testing should verify the provider's connection/rate limits before
-increasing traffic. Authentication emails and ambulance delivery handling are
-unchanged.
+Authenticated/private responses remain uncacheable. Availability receives no
+stale TTL cache. Password hashing strength, real healthcare data and backend
+permission checks are preserved.
 
-## Local measurement
+## Same-machine before/after
 
-Real Express routes and MongoDB, isolated disposable fixtures, one request at a
-time, five samples per endpoint, three assigned hospital staff accounts. SMTP
-was replaced with a local transport that waits 150 ms per email. No live emails
-were sent, and no test providers/jobs were added to product data.
+Original dataset, read-only queries with Mongoose automatic collection/index
+creation disabled. Provider Accounts compares the implementation at HEAD with
+the updated serializer against the same 55 provider accounts, three samples each.
 
-| Submission | Before median | After median | Reduction |
-| --- | ---: | ---: | ---: |
-| Standard bed | 778 ms | 320 ms | 59% |
-| Standard blood | 312 ms | 161 ms | 48% |
-| Job application | 621 ms | 317 ms | 49% |
-| Organization application | 624 ms | 314 ms | 50% |
+| Metric | Before | After |
+| --- | ---: | ---: |
+| Provider Accounts database reads | 111 | 4 |
+| Provider Accounts time, median | 75 ms | 11 ms |
+| Provider Accounts samples | 99 / 75 / 59 ms | 11 / 11 / 10 ms |
+| Homepage job response, 150 rows, raw | 136,869 bytes | 49,471 bytes |
+| Homepage job response, gzip | 13,156 bytes if compressed | 3,240 bytes, compression enabled |
+| Public job response Content-Encoding | absent in baseline audit | gzip |
+| Public job cache policy | absent in baseline audit | public, no-cache |
 
-The same 5/2/4/4 email attempts completed before and after the change. Concurrent
-delivery peaked at 3/2/3/3 after the change, compared with one before. These are
-small local samples with simulated SMTP delay, not production latency promises.
-Page rendering, external Maps, network distance and real SMTP delivery times
-are outside this benchmark. A slow SMTP attempt still contributes to response
-time because the API continues to await delivery outcomes.
+The combined compact/compressed response is about 97.6% smaller than the
+baseline uncompressed job payload. The standard full Careers endpoint remains
+available; it now compresses to 13,156 bytes in this sample.
 
-Reproduce after starting local MongoDB:
+### Initial homepage script assets
 
-```sh
-NODE_ENV=test EMAIL_ENABLED=false AI_PROVIDER=rule_based \
-  node backend/scripts/measureSubmissionLatency.js
-```
+Unique script URLs in each production homepage HTML, summed from emitted files;
+gzip sizes calculated locally. This includes runtime/polyfills and is not a
+Core Web Vitals score or a measured browser cache miss.
 
-The benchmark deletes and recreates only `medreach_latency_test`; an optional
-`MEDREACH_LATENCY_TEST_MONGO_URI` must name exactly that isolated database.
-Do not run concurrent copies against the same database.
+| Variant | Before raw / gzip | After raw / gzip |
+| --- | ---: | ---: |
+| Bootstrap | 673,922 / 207,197 bytes | 622,177 / 190,391 bytes |
+| Tailwind | 682,594 / 208,661 bytes | 627,473 / 191,385 bytes |
+| Skeleton | 674,791 / 207,301 bytes | 624,791 / 190,895 bytes |
 
-## Regression checks
+Next.js build estimates report approximately 137 kB first-load JavaScript for
+the updated homepage in each variant. Different measurement methods count
+different assets; do not equate this estimate with the table above.
 
-`backend/test/emailBatch.test.js` verifies overlapping work, the concurrency
-limit, waiting for completion, empty batches and isolation of thrown/rejected
-tasks. `backend/test/emailLatency.mongo.test.js` verifies standard/guest emergency
-bed, standard/urgent blood, job and organization submissions; actual saved/public
-references; recipient counts; durable failure/retry; idempotent submissions; and
-staff-routing outages. Concurrency assertions avoid timing-based flaky tests.
+## Notification evidence
 
-See [Release QA](release-qa.md) for the full local regression results and the
-remaining live deployment checks.
+`backend/test/performance.mongo.test.js` verifies persistent queued content,
+restart recovery, encrypted payloads, duplicate suppression, failure backoff and
+uncertain outcomes. Real HTTP tests cover standard/emergency bed, normal/urgent
+blood and ordinary/emergency ambulance requests. They assert that responses and
+tracking succeed before transport, and that delayed sends recheck provider access.
+
+These use mock transport in a disposable database. No test email was sent to
+real recipients. Sent means provider acceptance, not confirmed delivery.
+
+Account activation, address verification and recovery links retain inline,
+non-replayable delivery. They can still wait for a transport timeout. The
+existing inline batching tests cover direct `createApp()` usage; normal
+`server.js` startup enables the outbox.
+
+## Earlier audit and remaining limits
+
+The preceding audit observed hosted hospital index responses of
+3,749 / 2,232 / 1,104 ms versus local 39 / 13 / 8 ms. This is a small,
+uncontrolled sample. It suggests inspecting hosting/database/network latency
+before assigning a cause; no hosting settings were changed here.
+
+The same audit measured a local login median of 289 ms across seven samples;
+bcrypt verification at the existing cost accounted for about 270 ms.
+Do not weaken hashing to improve a stopwatch measurement.
+
+No production p95/INP/CLS claim, load-capacity claim, live email receipt or
+post-deployment performance comparison is established by these checks.
+Queue age, transport rate limits and database/hosting regions require
+environment-specific verification.
+
+## Dependency
+
+Added `compression` ^1.8.2 to the backend, using
+[Express's middleware](https://expressjs.com/en/resources/middleware/compression/).
+It reduces public JSON transfer size at the cost of server compression work.
+It adds no frontend JavaScript. No animation, media or map dependencies were added.
+
+[Release QA](release-qa.md) owns current test/build results.

@@ -58,6 +58,6 @@ Before a real deployment, define and implement:
 - TLS, database/backup encryption, restricted credentials and tested recovery.
 - Appropriate agreements and assessment for SMTP, hosting, map/routing and optional AI processors.
 
-Fixtures used by local tests are isolated test data; a banner or a seeded record must not be treated as proof that a deployment uses only demo data. Provider freshness, provenance and unknown availability remain visible as their own data-quality controls.
+Fixtures used by local tests are isolated test data; a banner or a seeded record must not be treated as proof that a deployment uses only demo data. Stored provenance and availability rules remain in the data layer; scraping verification and freshness badges are removed from the frontend. Missing availability remains unknown.
 
 Current local evidence and live verification requirements are maintained in [release QA](release-qa.md) and [deployment](deployment.md).

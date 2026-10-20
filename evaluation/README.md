@@ -21,7 +21,7 @@ Run from the repository root with workspace dependencies installed:
 
 ## Submission latency
 
-[Latency verification](../docs/latency-verification.md) records real local API/database measurements with simulated SMTP waits. The shared backend attempts independent submission emails concurrently, capped at three per submission. This is distinct from bundle size, browser rendering speed and hosted latency.
+[Latency verification](../docs/latency-verification.md) records local query, payload and script measurements. The normal server queues replay-safe notifications before transport; account links retain inline delivery. The older submission benchmark exercises the inline path with simulated SMTP waits. These measurements are distinct from hosted latency or a controlled browser performance study.
 
 ## Proposed research measurements
 

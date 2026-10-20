@@ -3,7 +3,7 @@
 
 # Hospital Data Fusion & Verification — evidence report
 
-## Current status note — 2026-10-03
+## Historical status note — 2026-10-03
 
 This is a **historical evidence report from 2026-09-14**. The database counts,
 conflict counts, backup path, skipped-suite counts and parity limitations below

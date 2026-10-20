@@ -4,7 +4,7 @@ The supplied artwork is shared by Bootstrap, Tailwind and Skeleton.
 
 | Asset | Canonical file | Usage |
 | --- | --- | --- |
-| Wordmark | [`brand-word-mark.png`](../brand-word-mark.png) | Website navigation, footers and the repository README |
+| Wordmark | [`brand-word-mark.png`](../brand-word-mark.png) | Website navigation and footers |
 | Shield symbol | [`logo.png`](../logo.png) | Browser favicon and Apple touch icon |
 
 ![MedReach wordmark](../brand-word-mark.png)
@@ -15,4 +15,4 @@ Root layout metadata uses `/logo.png` directly for browser, shortcut and Apple t
 
 Each frontend’s `public/favicon.ico` is derived from the shield symbol, with 16, 32 and 48 pixel sizes. The public ICO remains available at `/favicon.ico` for browsers that request that path automatically. It lives in `public/` rather than `app/` so Next.js does not add an additional ICO link alongside the explicit PNG favicon. There is no root `favicon.ico`.
 
-When replacing branding, update the canonical files, all three public copies, all three ICO files and the icon version in all three root layouts together. Check the README image, navigation, footer and browser icons, including narrow-screen navigation.
+When replacing branding, update the canonical files, all three public copies, all three ICO files and the icon version in all three root layouts together. Check navigation, footer and browser icons, including narrow-screen navigation.

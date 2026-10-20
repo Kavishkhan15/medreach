@@ -1,156 +1,98 @@
-# MedReach System Architecture & Technical Design
+# Architecture
 
-This document details the software architecture, design patterns, and runtime topologies of the MedReach healthcare discovery and emergency coordination platform.
-
----
-
-## 1. Architectural Overview
-
-MedReach is designed around a single authoritative Express/MongoDB backend serving three distinct, independently built frontend variants: **Bootstrap 5**, **Tailwind CSS 4**, and **Skeleton CSS 2**.
+## Data flow
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                             FRONTEND VARIANTS                               │
-│                                                                             │
-│   ┌─────────────────────┐   ┌─────────────────────┐   ┌─────────────────┐   │
-│   │ Bootstrap (Port 3000)│   │  Tailwind (Port 3001)│   │Skeleton (Port 3002)│   │
-│   │ - Functional Ref    │   │  - Modern Utility   │   │- Minimalist Raw │   │
-│   │ - Bootstrap 5.3.3   │   │  - Tailwind CSS 4   │   │- Skeleton CSS 2 │   │
-│   └──────────┬──────────┘   └──────────┬──────────┘   └────────┬────────┘   │
-│              │                         │                       │            │
-│              └─────────────────────────┼───────────────────────┘            │
-│                                        ▼                                    │
-│                    ┌───────────────────────────────────────┐                │
-│                    │     @medreach/core (Shared Library)   │                │
-│                    │  Isomorphic Client, Auth, Validation  │                │
-│                    └───────────────────┬───────────────────┘                │
-└────────────────────────────────────────┼────────────────────────────────────┘
-                                         │ HTTPS / JSON / Cookies
-                                         ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                            SHARED BACKEND API                               │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                        Express 4 HTTP Server                        │   │
-│   │    CORS Whitelist · Rate Limiting · JWT / Refresh Cookies · RBAC    │   │
-│   └───────┬───────────────────────────┬─────────────────────────┬───────┘   │
-│           │                           │                         │           │
-│           ▼                           ▼                         ▼           │
-│   ┌──────────────────┐        ┌───────────────┐        ┌────────────────┐   │
-│   │ Lifecycle Service│        │ Email Dispatch│        │ Expiry Worker  │   │
-│   │ Triage & Leases  │        │ SMTP Batches  │        │ Background 60s │   │
-│   └───────┬──────────┘        └───────┬───────┘        └────────┬───────┘   │
-└───────────┼───────────────────────────┼─────────────────────────┼───────────┘
-            │                           │                         │
-            └───────────────────────────┼─────────────────────────┘
-                                        ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                             DATA & SERVICES                                 │
-│                                                                             │
-│   ┌─────────────────────────────────────────┐     ┌─────────────────────┐   │
-│   │             MongoDB 7.0+                │     │   SMTP Mailer       │   │
-│   │  2dsphere Geo · Full-Text · Append-Only │     │   Transactional     │   │
-│   └─────────────────────────────────────────┘     └─────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────┘
+Existing healthcare dataset
+        ↓
+     MongoDB
+        ↕
+ Express API + background workers
+        ↕
+Bootstrap / Tailwind / Skeleton
 ```
 
-A full high-resolution diagram is available at [`docs/diagrams/system-architecture.svg`](diagrams/system-architecture.svg).
+No service crawls external provider websites. Stored source URLs and observations
+document historical provenance. Provider records and availability are never
+invented to compensate for a failed API.
 
----
+## Code map
 
-## 2. Frontend Variants & Parity Philosophy
+| Location | Responsibility |
+| --- | --- |
+| `backend/src/app.js` | Express composition, security and routes; no listening or DB initialization |
+| `backend/src/server.js` | Database connection, HTTP startup and worker lifecycle |
+| `backend/src/controllers` | Validation outcomes, response contracts and workflow coordination |
+| `backend/src/services` | Permissions, provisioning, request lifecycle, evidence and email |
+| `backend/src/models` | Mongoose schemas and declared indexes |
+| `packages/core/src` | Shared client, hooks, ranking, validation and presentation helpers |
+| `variants/bootstrap/_core` | Bootstrap's local core mirror |
+| `variants/*/app` | Independent Next.js routes and framework styling |
+| `tests/e2e`, `backend/test`, `tests/unit` | Browser, backend and focused unit tests |
 
-MedReach implements three complete frontends to facilitate rigorous human-computer interaction (HCI) and responsive web design research (extending Almeida & Sousa, 2026):
+Bootstrap aliases `@medreach/core` to its local mirror. Tailwind and Skeleton
+resolve the workspace package. Homepage resource orchestration is shared through
+`homeResources.js`; framework markup remains independent.
 
-| Dimension | Bootstrap 5 (`variants/bootstrap`) | Tailwind CSS 4 (`variants/tailwind`) | Skeleton CSS 2 (`variants/skeleton`) |
-| :--- | :--- | :--- | :--- |
-| **Design System** | Classic component classes (`.btn`, `.card`, `.alert`) | Utility-first tokens (`flex`, `p-4`, `rounded-xl`) | Minimalist lightweight typographic grids |
-| **Grid Engine** | Flexbox 12-column grid system | CSS Grid & Flexbox utilities | Pure CSS lightweight column classes |
-| **Bundle Architecture** | Local bundled `_core` copy | Workspace dependency on `@medreach/core` | Workspace dependency on `@medreach/core` |
-| **Visual Character** | Structured, enterprise medical aesthetic | Contemporary, rounded, shadow-depth polish | Raw, fast, high-contrast typography |
-| **Default Port** | `http://localhost:3000` | `http://localhost:3001` | `http://localhost:3002` |
+## Access boundaries
 
-### Parity Invariant
-All three variants consume identical backend endpoints, preserve identical route hierarchies (`/hospitals`, `/emergency`, `/admin`, `/provider`, `/dashboard`, `/requests`, `/track`), and enforce complete functional parity. No capability exists in one variant that is absent from another.
+New accounts use `system_admin`, `provider_admin` or `user`.
+System Admin retains `/admin`. Provider Admin uses `/provider` and active
+`ProviderMembership` assignments keyed by organisation type and ID.
+Server checks apply to direct API calls as well as UI actions.
 
----
+Legacy `hospital_admin` assignment compatibility remains for existing hospital
+relationships; legacy global `admin` and `user_admin` values do not confer
+platform privileges. Account migrations require an explicit inventory and
+approval. See [security](security.md).
 
-## 3. Shared Core Library (`packages/core`)
+## Requests and onboarding
 
-The shared `@medreach/core` workspace package provides isomorphic primitives used across the entire ecosystem:
-- **`api.js`:** Resilient `fetch` wrapper handling base URLs, credentials, automatic idempotency key generation, and seamless token refresh retries.
-- **`authSession.js`:** Reactive browser session state using the Pub/Sub pattern to synchronize authentication across components without React Context re-render cascades.
-- **`validation.js`:** Pure client-side validation rules mirrored from backend Mongoose validators (email formats, password strength, request constraints).
-- **`location.js` & `ranking.js`:** Proximity distance calculation (Haversine formula), geo-sorting, and deterministic provider scoring.
-- **`scrollAnimation.js`:** Hardware-accelerated scroll reveal calculations driving the oversized bottom wordmark animation.
+Public provider applications persist as pending. System Admin review approves or
+rejects them. Approval provisions the organisation and its associated account
+through the existing retry-aware workflow; it does not grant access before
+activation. Request histories and provider reports are scoped to their actor.
 
----
+Ordinary requests notify eligible providers and the user. Explicit emergencies
+also notify configured active System Admins. An ambulance-required flag alone
+does not classify a request as an emergency.
 
-## 4. Role-Based Access Control (RBAC) & Multi-Tenancy
+## Background work
 
-MedReach enforces three distinct operational roles:
+- Request expiry advances expired bed requests.
+- Notification recovery reconciles new-version request/application notifications.
+- The email outbox processes explicitly queued, replay-safe delivery records,
+  at most three per batch, with a one-second polling interval.
+- Account activation, address verification and password recovery retain their
+  inline, non-replayable delivery path.
 
-```text
-┌─────────────────┐      ┌───────────────────────────────┐      ┌───────────────────────────────┐
-│   system_admin  │      │        provider_admin         │      │             user              │
-│                 │      │                               │      │                               │
-│ - Global KPIs   │      │ - Scoped to Organization      │      │ - Search & Filter             │
-│ - Approvals     │      │ - Bed Triage & Allocation     │      │ - Emergency Bed Requisitions  │
-│ - User Accounts │      │ - Blood Requisition Status    │      │ - Blood Pledges & Requests    │
-│ - System Logs   │      │ - Ambulance Dispatch Status   │      │ - Ambulance Bookings          │
-│ - Audit Feeds   │      │ - Staff Job Postings          │      │ - Request Timeline Tracking   │
-└─────────────────┘      └───────────────────────────────┘      └───────────────────────────────┘
-```
+HTTP handlers await durable notification storage, rather than SMTP/Resend
+delivery, for queued messages. Email states retain pending, failed, uncertain,
+disabled and sent distinctions. `sent` means provider acceptance.
 
-The detailed role and capability permission matrix is diagrammed at [`docs/diagrams/role-permission-matrix.svg`](diagrams/role-permission-matrix.svg).
+Shutdown marks readiness false, drains HTTP and workers, then disconnects
+MongoDB. The existing shutdown deadline still applies. No external queue service
+is required.
 
-### Multi-Tenant Isolation
-- `system_admin` users possess global visibility across all providers, requests, and audit logs.
-- `provider_admin` users are restricted strictly to organizations granted via active `ProviderMembership` documents. When querying `/api/emergency-requests`, the query filter dynamically injects `{ hospital: { $in: userAssignedHospitalIds } }`. Direct ID manipulation returns `403 Forbidden`.
+## Performance boundaries
 
----
+Provider Accounts batch memberships and organisation names. Directory hospital
+enrichment was already batched and remains intact. The homepage publishes each
+resource independently and defers jobs/campaigns until their sections approach
+the viewport. Job summaries omit full descriptions and populated provider
+objects; normal Careers responses retain their existing contract.
 
-## 5. Security & Authentication Architecture
+Compression/revalidation applies to public directory index GET/HEAD responses.
+Authenticated and private responses retain `no-store`. No stale availability
+cache is introduced. See [measurements](latency-verification.md).
 
-Authentication uses short-lived JWT access tokens and long-lived rotating refresh sessions:
+## Intentional differences and limitations
 
-![Authentication Flow](diagrams/auth-flow.svg)
+Bootstrap has the local manual credential handover UI. Tailwind and Skeleton
+retain email-invitation administration. These are not identical interfaces.
+See [parity scope](PARITY_VERIFICATION.md).
 
-1. **Credentials Verification:** Passwords verified against bcrypt hashes (cost factor 12).
-2. **Token Issuance:** Access token (15-minute lifespan) and refresh token (7-day lifespan) delivered in `httpOnly`, `Secure`, `SameSite: Lax` (or `None` for cross-site) cookies.
-3. **Session Rotation & Family Revocation:** Each refresh token belongs to a cryptographic `familyId`. When a refresh token is used, it is invalidated and replaced by a successor. If an already-used token is presented (replay attack), the entire family is revoked immediately, forcing re-authentication.
-
----
-
-## 6. Healthcare Workflows
-
-### Emergency Bed & Ambulance Dispatch Flow
-
-![Request Flow](diagrams/request-notification-flow.svg)
-
-1. **Submission:** Patient or bystander submits emergency request via `/emergency` (or routine via hospital page).
-2. **Idempotency Check:** Backend checks `idempotencyKeyHash`. If seen within lease window, cached response is returned.
-3. **Database Insertion:** Request saved in `EmergencyRequest` with `status: "REQUESTED"`.
-4. **Notification Routing:** Multi-channel notification engine routes transactional emails to assigned hospital provider admins and opted-in system admins.
-5. **Staff Triage:** Hospital staff reviews vitals, updates status to `UNDER_REVIEW`, `ACCEPTED`, or `REJECTED` with clinical notes.
-6. **Patient Tracking:** Requester tracks live dispatch via `/track` using authenticated session or guest tracking token.
-
-### Provider Onboarding & Approval Flow
-
-![Provider Onboarding](diagrams/provider-onboarding.svg)
-
-1. Healthcare organization submits self-service enrollment at `/provider/register`.
-2. Request lands in System Admin approval queue at `/admin/provider-approvals`.
-3. System Admin inspects credentials and clicks **Approve**.
-4. Backend executes an atomic transaction:
-   - Organization record is marked `approved` in `Hospital` or `ResourceProvider`.
-   - `User` account (`role: "provider_admin"`) is automatically provisioned with a generated username.
-   - `ProviderMembership` link is created.
-   - Welcome invitation email with activation token is dispatched.
-
----
-
-## 7. Background Workers & Graceful Shutdown
-
-- **Request Expiry Worker:** A deterministic 60-second timer runs in the backend process (`backend/src/workers/emergencyExpiry.js`), transitioning expired requests past `expiresAt` from `REQUESTED` to `EXPIRED`.
-- **Zero-Downtime Draining:** Upon receiving `SIGTERM` or `SIGINT`, the Express server stops accepting new connections, allows in-flight HTTP requests and transactional email batches up to 30 seconds to complete, closes MongoDB connections gracefully, and terminates cleanly.
+The local standalone database does not make every multi-document workflow
+transactional. Durable delivery records and recovery reduce failure impact;
+a crash before an intent is persisted remains a limitation. Hosted performance,
+mailbox receipt and deployment configuration require separate checks.

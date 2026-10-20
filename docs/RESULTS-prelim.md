@@ -20,7 +20,7 @@ Correction: the reported raw CSS ratio is about 25.6× (223.0/8.7); the gzip rat
 
 ## Historical dependency report
 
-The scaffold report recorded one critical and one high vulnerability in an earlier shared toolchain, including Next.js 14.2.5 and PostCSS. It did not retain complete raw advisory evidence in this document. Do not attribute those findings to the current Next.js 15.5.24/React 18.3.1 build or infer a framework-specific causal result from the shared dependency graph.
+The scaffold report recorded one critical and one high vulnerability in an earlier shared toolchain, including Next.js 14.2.5 and PostCSS. It did not retain complete raw advisory evidence in this document. Do not attribute those findings to the currently installed build or infer a framework-specific causal result from the shared dependency graph. Consult the lockfile and current audit output.
 
 Current audit evidence is linked from [Release QA](release-qa.md). A fresh raw audit must be checked for registry/report failures and advisory coverage. Dependency scans detect known package advisories; a source-level vulnerability can be reported when its affected package/version is in the advisory database. The historical claim that such bugs categorically cannot appear in `npm audit` was too broad.
 
