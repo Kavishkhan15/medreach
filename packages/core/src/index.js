@@ -40,3 +40,4 @@ export * from "./bedRequests.js";
 export * from "./providerApplication.js";
 
 export * from "./scrollAnimation.js";
+export * from "./homeResources.js";

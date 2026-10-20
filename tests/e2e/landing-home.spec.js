@@ -103,6 +103,7 @@ test("blood and ambulance provider actions open the existing request modals", as
 
 test("career search uses published API jobs and opens their existing application pages", async ({ page }) => {
   await openHome(page);
+  await page.locator("#careers").scrollIntoViewIfNeeded();
   const jobs = page.locator(".home-jobs-panel");
   await expect(jobs.getByRole("link").filter({ hasText: "E2E Emergency Nurse" })).toBeVisible();
   await jobs.getByRole("searchbox", { name: "Search healthcare jobs" }).fill("unlisted job");
@@ -119,6 +120,7 @@ test("career search uses published API jobs and opens their existing application
 test("partial failure retains directory results and targeted retries recover jobs", async ({ page }) => {
   await page.route(`${API}/api/jobs*`, (route) => route.abort("failed"));
   await openHome(page);
+  await page.locator("#careers").scrollIntoViewIfNeeded();
   const jobs = page.locator(".home-jobs-panel");
   await expect(jobs.getByText("Job listings could not be loaded.", { exact: true })).toBeVisible();
   await expect(directory(page).locator(".home-provider-card")).toHaveCount(4);

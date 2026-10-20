@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useHospitals, MUMBAI_LOCALITIES } from "@medreach/core";
+import { useHospitals, MUMBAI_LOCALITIES, useHomeResources } from "@medreach/core";
 import { productApi } from "../lib/productApi";
 import EmergencyIcon from "../components/EmergencyIcons";
-import GoogleMapView from "../components/GoogleMapView";
-import AmbulanceBookingModal from "../components/AmbulanceBookingModal";
-import BloodBankActionModal from "../components/BloodBankActionModal";
+const GoogleMapView = dynamic(() => import("../components/GoogleMapView"), { ssr: false });
+const AmbulanceBookingModal = dynamic(() => import("../components/AmbulanceBookingModal"));
+const BloodBankActionModal = dynamic(() => import("../components/BloodBankActionModal"));
 import "./landing.css";
 import ProviderApplicationForm from "../components/ProviderApplicationForm";
 import WebsiteDemo from "../components/WebsiteDemo";
@@ -72,10 +73,7 @@ function ProviderCard({ item, selected, onSelect, onBlood, onAmbulance }) {
 
 export default function HomePage() {
   const { data: hospitals, loading: hospitalsLoading, error: hospitalsError, retry: retryHospitals } = useHospitals({}, { sort: "updated" });
-  const [resources, setResources] = useState({ "blood-banks": [], diagnostics: [], ambulances: [], campaigns: [], jobs: [] });
-  const [resourcesLoading, setResourcesLoading] = useState(true);
-  const [resourceErrors, setResourceErrors] = useState({});
-  const [revision, setRevision] = useState(0);
+  const { resources, resourcesLoading, resourceLoading, resourceErrors, retryResource, careersRef, campaignsRef } = useHomeResources(productApi);
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [locality, setLocality] = useState("all");
@@ -87,29 +85,6 @@ export default function HomePage() {
   const [actionBloodBank, setActionBloodBank] = useState(null);
   const resultsRef = useRef(null);
 
-  useEffect(() => {
-    let active = true;
-    setResourcesLoading(true);
-    setResourceErrors({});
-    const endpoints = [
-      ["blood-banks", "/api/blood-banks"], ["diagnostics", "/api/diagnostics"],
-      ["ambulances", "/api/ambulances"], ["campaigns", "/api/blood-banks/campaigns?status=active"],
-      ["jobs", "/api/jobs"],
-    ];
-    Promise.allSettled(endpoints.map(([, path]) => productApi(path))).then((results) => {
-      if (!active) return;
-      const next = {}, errors = {};
-      results.forEach((result, index) => {
-        const key = endpoints[index][0];
-        next[key] = result.status === "fulfilled" ? result.value?.data || result.value?.jobs || [] : [];
-        if (result.status === "rejected") errors[key] = result.reason?.message || "Temporarily unavailable.";
-      });
-      setResources(next);
-      setResourceErrors(errors);
-      setResourcesLoading(false);
-    });
-    return () => { active = false; };
-  }, [revision]);
 
   const providers = useMemo(() => [
     ...(hospitals || []).map((item) => ({ ...item, category: "hospitals" })),
@@ -149,7 +124,10 @@ export default function HomePage() {
   const loading = hospitalsLoading || resourcesLoading;
   const directoryErrors = [hospitalsError && "Hospitals", ...["blood-banks", "diagnostics", "ambulances"].filter((key) => resourceErrors[key]).map((key) => CATEGORIES.find((entry) => entry.value === key).label)].filter(Boolean);
   const resetFilters = () => { setSearchQuery(""); setCategory("all"); setLocality("all"); setSpecialty("all"); setEmergencyOnly(false); setSelected(""); };
-  const retryDirectory = () => { retryHospitals(); setRevision((value) => value + 1); };
+  const retryDirectory = () => {
+    if (hospitalsError) retryHospitals();
+    ["blood-banks", "diagnostics", "ambulances"].filter(key => resourceErrors[key]).forEach(retryResource);
+  };
   const mapCategoryLabel = category === "all" ? "Healthcare resources" : CATEGORIES.find((entry) => entry.value === category).label;
 
   return (
@@ -202,17 +180,17 @@ export default function HomePage() {
 
       <section className="tw-home-section tw-home-emergency" id="emergency" aria-labelledby="emergency-title"><div className="tw-home-container"><SectionHead id="emergency-title" label="Emergency care" title={<>A clearer path to<br />critical care.</>}><p>For immediate danger, call 112 or 108. Recording a request does not confirm a bed or arrange emergency dispatch.</p></SectionHead><div className="grid items-center gap-7 lg:grid-cols-2"><div className="min-w-0"><div className="tw-home-photo-panel"><Image src="/landing/emergency.jpg" alt="Healthcare staff walking through a hospital; illustrative photograph" fill sizes="(max-width: 991px) 92vw, 560px" /><div className="tw-home-photo-caption"><strong>Emergency hospital discovery</strong><span>Find a listed provider and contact them directly.</span></div></div></div><div className="min-w-0"><h3 className="tw-home-feature-title">When time matters,<br />keep the next step clear.</h3><p className="tw-home-muted">Use the dedicated emergency bed request flow. You can submit an emergency request without signing in; ambulance assistance within a bed request is arranged by the hospital.</p><div className="tw-home-inline-actions"><Link className="tw-action tw-action-danger" href="/emergency">Find emergency care →</Link><a className="tw-action tw-action-outline" href="tel:112"><EmergencyIcon name="phone" size={16} /> Call 112</a><a className="tw-action tw-action-outline" href="tel:108">Call 108</a></div></div></div></div></section>
 
-      <section className="tw-home-section" id="blood" aria-labelledby="blood-title"><div className="tw-home-container"><SectionHead id="blood-title" label="Blood services" title={<>Blood support with<br />clear next steps.</>}><p>Normal requests, urgent requirements and donation pledges have their own flows. Contact the blood bank to confirm inventory.</p></SectionHead><div className="grid gap-4 sm:grid-cols-2"><div className="min-w-0"><div className="tw-home-blood-card"><EmergencyIcon name="blood" size={30} /><h3>Request blood units</h3><p>Find a blood bank and submit a normal request. For urgent requirements, use the dedicated urgent blood flow.</p><div className="tw-home-inline-actions"><Link className="tw-action tw-action-primary" href="/blood-banks">Request blood →</Link><Link className="tw-action tw-action-outline-danger" href="/urgent-blood">Urgent blood →</Link></div></div></div><div className="min-w-0"><div className="tw-home-blood-card"><EmergencyIcon name="cardiac" size={30} /><h3>Make a donation pledge</h3><p>Explore blood banks and their listed services, then use Request / Donate for your selected provider.</p><Link className="tw-action tw-action-outline" href="/blood-banks">Find blood banks →</Link></div></div></div>
+      <section className="tw-home-section" id="blood" ref={campaignsRef} aria-labelledby="blood-title"><div className="tw-home-container"><SectionHead id="blood-title" label="Blood services" title={<>Blood support with<br />clear next steps.</>}><p>Normal requests, urgent requirements and donation pledges have their own flows. Contact the blood bank to confirm inventory.</p></SectionHead><div className="grid gap-4 sm:grid-cols-2"><div className="min-w-0"><div className="tw-home-blood-card"><EmergencyIcon name="blood" size={30} /><h3>Request blood units</h3><p>Find a blood bank and submit a normal request. For urgent requirements, use the dedicated urgent blood flow.</p><div className="tw-home-inline-actions"><Link className="tw-action tw-action-primary" href="/blood-banks">Request blood →</Link><Link className="tw-action tw-action-outline-danger" href="/urgent-blood">Urgent blood →</Link></div></div></div><div className="min-w-0"><div className="tw-home-blood-card"><EmergencyIcon name="cardiac" size={30} /><h3>Make a donation pledge</h3><p>Explore blood banks and their listed services, then use Request / Donate for your selected provider.</p><Link className="tw-action tw-action-outline" href="/blood-banks">Find blood banks →</Link></div></div></div>
         {resources.campaigns.length > 0 && <div className="tw-home-campaigns"><h3>Listed donation campaigns</h3><div className="grid gap-4 sm:grid-cols-2">{resources.campaigns.slice(0, 2).map((campaign) => <div className="min-w-0" key={campaign._id}><article className="tw-home-info-card"><h4>{campaign.name}</h4><p>{[campaign.organizer, campaign.location].filter(Boolean).join(" · ")}</p>{recordDate(campaign.date) && <p>{recordDate(campaign.date)}</p>}{campaign.targetDonors > 0 && <p>Organizer’s target: {campaign.targetDonors} donors</p>}<Link className="tw-home-text-link" href="/blood-banks">View donation options →</Link></article></div>)}</div></div>}
-        {resourceErrors.campaigns && <div className="tw-home-inline-error" role="alert">Donation campaigns are temporarily unavailable. <button type="button" className="tw-home-text-button" onClick={() => setRevision((value) => value + 1)}>Retry campaigns</button></div>}
+        {resourceErrors.campaigns && <div className="tw-home-inline-error" role="alert">Donation campaigns are temporarily unavailable. <button type="button" className="tw-home-text-button" onClick={() => retryResource("campaigns")}>Retry campaigns</button></div>}
       </div></section>
 
       <section className="tw-home-section tw-home-ambulance" id="ambulance" aria-labelledby="ambulance-title"><div className="tw-home-container"><SectionHead id="ambulance-title" label="Ambulance providers" title={<>Reach the right provider<br />without the hunt.</>}><p>Choose a provider, review its contact details and record a booking request. Confirm availability and dispatch directly.</p></SectionHead><div className="tw-home-photo-panel tw-home-wide-photo"><Image src="/landing/medreach-ambulance.png" alt="MedReach-branded ambulance at a hospital entrance; illustrative image" fill sizes="92vw" style={{ objectPosition: "60% center" }} /><div className="tw-home-photo-caption"><div><span className="tw-home-label">Provider-specific assistance</span><strong>Start with the provider. Choose your next action.</strong></div><Link className="tw-action tw-action-light" href="/ambulances">Explore ambulance providers →</Link></div></div></div></section>
 
-      <section className="tw-home-section tw-home-careers" id="careers" aria-labelledby="careers-title"><div className="tw-home-container"><SectionHead id="careers-title" label="Healthcare careers" title={<>Grow your career<br />in healthcare.</>}><p>Explore roles listed by healthcare organizations. Review the job and its organization before applying.</p></SectionHead><div className="tw-home-career-grid"><div className="tw-home-career-photo"><Image src="/landing/careers.jpg" alt="Two people discussing work; illustrative photograph" fill sizes="(max-width: 991px) 92vw, 600px" /><div className="tw-home-career-copy"><span className="tw-home-label">Healthcare careers</span><h3>Find work that<br />makes an impact.</h3><p>Clinical, diagnostic, operations and support opportunities from the MedReach job portal.</p><Link className="tw-action tw-action-light" href="/careers">Explore jobs →</Link></div></div><div className="tw-home-jobs-panel" aria-busy={resourcesLoading}><div className="tw-home-jobs-heading"><h3>Listed opportunities</h3><span aria-live="polite">{resourcesLoading ? "Loading…" : resourceErrors.jobs ? "Unavailable" : matchesLabel(filteredJobs.length)}</span></div><label className="sr-only" htmlFor="tw-home-job-search">Search healthcare jobs</label><div className="tw-home-search"><EmergencyIcon name="search" size={17} /><input id="tw-home-job-search" type="search" placeholder="Search role, organization or location..." value={jobSearch} onChange={(event) => setJobSearch(event.target.value)} /></div><div className="tw-home-job-list">
-        {resourcesLoading && <p className="tw-home-empty" role="status">Loading healthcare jobs…</p>}
-        {!resourcesLoading && resourceErrors.jobs && <div className="tw-home-empty" role="alert"><p>Job listings could not be loaded.</p><button className="tw-action tw-action-sm tw-action-outline" type="button" onClick={() => setRevision((value) => value + 1)}>Retry jobs</button></div>}
-        {!resourcesLoading && !resourceErrors.jobs && !filteredJobs.length && <div className="tw-home-empty"><p>{jobSearch ? "No jobs match your search." : "No healthcare jobs are currently listed."}</p>{jobSearch && <button className="tw-home-text-button" type="button" onClick={() => setJobSearch("")}>Clear job search</button>}<Link className="tw-home-text-link mt-2 block" href="/careers">Open Careers →</Link></div>}
+      <section className="tw-home-section tw-home-careers" id="careers" ref={careersRef} aria-labelledby="careers-title"><div className="tw-home-container"><SectionHead id="careers-title" label="Healthcare careers" title={<>Grow your career<br />in healthcare.</>}><p>Explore roles listed by healthcare organizations. Review the job and its organization before applying.</p></SectionHead><div className="tw-home-career-grid"><div className="tw-home-career-photo"><Image src="/landing/careers.jpg" alt="Two people discussing work; illustrative photograph" fill sizes="(max-width: 991px) 92vw, 600px" /><div className="tw-home-career-copy"><span className="tw-home-label">Healthcare careers</span><h3>Find work that<br />makes an impact.</h3><p>Clinical, diagnostic, operations and support opportunities from the MedReach job portal.</p><Link className="tw-action tw-action-light" href="/careers">Explore jobs →</Link></div></div><div className="tw-home-jobs-panel" aria-busy={resourceLoading.jobs}><div className="tw-home-jobs-heading"><h3>Listed opportunities</h3><span aria-live="polite">{resourceLoading.jobs ? "Loading…" : resourceErrors.jobs ? "Unavailable" : matchesLabel(filteredJobs.length)}</span></div><label className="sr-only" htmlFor="tw-home-job-search">Search healthcare jobs</label><div className="tw-home-search"><EmergencyIcon name="search" size={17} /><input id="tw-home-job-search" type="search" placeholder="Search role, organization or location..." value={jobSearch} onChange={(event) => setJobSearch(event.target.value)} /></div><div className="tw-home-job-list">
+        {resourceLoading.jobs && <p className="tw-home-empty" role="status">Loading healthcare jobs…</p>}
+        {!resourceLoading.jobs && resourceErrors.jobs && <div className="tw-home-empty" role="alert"><p>Job listings could not be loaded.</p><button className="tw-action tw-action-sm tw-action-outline" type="button" onClick={() => retryResource("jobs")}>Retry jobs</button></div>}
+        {!resourceLoading.jobs && !resourceErrors.jobs && !filteredJobs.length && <div className="tw-home-empty"><p>{jobSearch ? "No jobs match your search." : "No healthcare jobs are currently listed."}</p>{jobSearch && <button className="tw-home-text-button" type="button" onClick={() => setJobSearch("")}>Clear job search</button>}<Link className="tw-home-text-link mt-2 block" href="/careers">Open Careers →</Link></div>}
         {filteredJobs.map((job) => <Link key={job._id} className="tw-home-job-card" href={`/jobs/${job._id}`}><h4>{job.title}</h4><p>{job.organizationName || "Organization details on job page"}{(job.locality || job.location) && ` · ${job.locality || job.location}`}</p><div><span>{job.employmentType?.replaceAll("_", " ") || "Type not recorded"}</span><strong>View / Apply →</strong></div></Link>)}
       </div></div></div></div></section>
 

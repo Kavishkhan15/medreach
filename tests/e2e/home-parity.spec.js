@@ -89,6 +89,7 @@ test("provider filters, jobs search and the map use live listings", async ({ pag
   await expect(provider(page, "MedReach E2E Diagnostics")).toBeVisible();
   await panel.getByRole("button", { name: "Reset filters" }).click();
   await expect(page.getByRole("region", { name: /^(Map|Map unavailable)$/ }).first()).toBeVisible();
+  await page.locator("#careers").scrollIntoViewIfNeeded();
   const jobs = page.locator('[class*="home-jobs-panel"]');
   await expect(jobs.getByRole("link").filter({ hasText: "E2E Emergency Nurse" })).toBeVisible();
   await jobs.getByRole("searchbox", { name: "Search healthcare jobs" }).fill("unlisted role");
@@ -103,6 +104,7 @@ test("a failed jobs request leaves the directory usable and a targeted retry rec
   await page.goto("/");
   await expect(provider(page, "MedReach E2E Hospital")).toBeVisible();
   const jobs = page.locator('[class*="home-jobs-panel"]');
+  await page.locator("#careers").scrollIntoViewIfNeeded();
   await expect(jobs.getByText("Job listings could not be loaded.")).toBeVisible();
   await page.unroute(`${api}/api/jobs*`);
   await jobs.getByRole("button", { name: "Retry jobs" }).click();
