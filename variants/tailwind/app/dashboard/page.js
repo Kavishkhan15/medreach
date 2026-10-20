@@ -16,7 +16,6 @@ function SectionFeedback({ section, title, onRetry, children }) {
 export default function Dashboard() {
   const { profile, requests, blood, ambulance, applications, retry } = useDashboard();
   const user = profile.data;
-  const hasRequests = (requests.data?.length || 0) + (blood?.data?.length || 0) + (ambulance?.data?.length || 0) > 0;
 
   return <>
     <nav aria-label="User dashboard sections"><Link href="/dashboard">Home</Link> · <Link href="/hospitals">Find Services</Link> · <Link href="/requests">My Requests</Link> · <Link href="/blood-banks">Blood Donation</Link> · <Link href="/careers">Careers</Link> · <Link href="/profile">My Profile</Link></nav>
@@ -25,7 +24,7 @@ export default function Dashboard() {
       <section className="bg-white rounded-lg border border-[var(--color-border)] shadow-sm p-5" aria-labelledby="dashboard-requests">
       <h2 id="dashboard-requests" className="text-lg font-bold mb-2">Emergency requests</h2>
       <SectionFeedback section={requests} title="Emergency requests" onRetry={() => retry("requests")}>
-        {hasRequests ? (
+        {requests.data?.length ? (
           <div className="space-y-2">
             {requests.data?.slice(0, 3).map((request) => (
               <div key={request._id} className="text-sm">
@@ -35,24 +34,28 @@ export default function Dashboard() {
                 <div className="text-xs text-gray-500">{request.hospital?.name || "Hospital"} · <Link href={`/requests/${request._id}`} className="underline" aria-label={`Track bed request ${request.requestId}`}>Track</Link></div>
               </div>
             ))}
-            {blood?.data?.slice(0, 2).map((b) => (
+          </div>
+        ) : <p>No bed requests yet.</p>}
+      </SectionFeedback>
+      <SectionFeedback section={blood} title="Blood requests" onRetry={() => retry("blood")}>
+            {blood.data?.length ? blood.data.slice(0, 2).map((b) => (
               <div key={b._id} className="text-sm">
                 <div>
                   <Link href={`/track?type=blood&reference=${encodeURIComponent(b.reference)}`} className="font-semibold text-[var(--color-text)] hover:underline">{b.reference}</Link> · <span className={`text-xs px-2 py-0.5 rounded ${b.isUrgent ? "bg-red-100 text-red-800 font-medium" : "bg-purple-100 text-purple-800 font-medium"}`}>{b.isUrgent ? "Urgent Blood" : b.type === "DONATION" ? "Donation" : "Normal Blood"}</span> · {b.status}
                 </div>
                 <div className="text-xs text-gray-500">{b.bloodBankName || "Blood bank"} · <Link href={`/track?type=blood&reference=${encodeURIComponent(b.reference)}`} className="underline" aria-label={`Track blood request ${b.reference}`}>Track</Link></div>
               </div>
-            ))}
-            {ambulance?.data?.slice(0, 2).map((a) => (
+            )) : <p>No blood requests or donation pledges recorded.</p>}
+      </SectionFeedback>
+      <SectionFeedback section={ambulance} title="Ambulance requests" onRetry={() => retry("ambulance")}>
+            {ambulance.data?.length ? ambulance.data.slice(0, 2).map((a) => (
               <div key={a._id} className="text-sm">
                 <div>
                   <Link href={`/track?type=ambulance&reference=${encodeURIComponent(a.reference)}`} className="font-semibold text-[var(--color-text)] hover:underline">{a.reference}</Link> · <span className={`text-xs px-2 py-0.5 rounded ${a.isEmergency ? "bg-red-100 text-red-800 font-medium" : "bg-amber-100 text-amber-800 font-medium"}`}>{a.isEmergency ? "Emergency Ambulance" : "Normal Ambulance"}</span> · {a.status}
                 </div>
                 <div className="text-xs text-gray-500">{a.providerSnapshot?.name || "Ambulance"} · <Link href={`/track?type=ambulance&reference=${encodeURIComponent(a.reference)}`} className="underline" aria-label={`Track ambulance request ${a.reference}`}>Track</Link></div>
               </div>
-            ))}
-          </div>
-        ) : <p>No requests yet.</p>}
+            )) : <p>No ambulance requests recorded.</p>}
       </SectionFeedback>
       <Link className="inline-block mt-3 border border-[var(--color-emergency)] text-[var(--color-emergency)] rounded-md px-4 py-1.5 text-sm font-semibold" href="/requests">View requests</Link>
     </section>

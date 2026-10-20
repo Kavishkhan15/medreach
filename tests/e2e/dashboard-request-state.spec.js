@@ -58,7 +58,7 @@ test("pending blood history is loading, then a successful empty response becomes
   });
   await page.goto("/dashboard");
   const panel = page.getByRole("region", { name: "Emergency requests", exact: true });
-  await expect(panel.getByRole("status")).toContainText("Loading blood requests");
+  await expect(panel.getByRole("status").filter({ hasText: "Loading blood requests" })).toBeVisible();
   await expect(panel).not.toContainText(resources.blood.empty);
   release();
   for (const resource of Object.values(resources)) await expect(panel).toContainText(resource.empty);

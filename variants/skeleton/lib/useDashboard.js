@@ -19,8 +19,13 @@ export function useDashboard() {
     setSections((previous) => ({ ...previous, [key]: { ...previous[key], loading: true, error: "", status: null } }));
     try {
       const result = await productApi(endpoints[key]);
+      const data = key === "profile" ? result?.user : result?.data;
+      if (key === "profile" ? !data || typeof data !== "object" || Array.isArray(data) : !Array.isArray(data)
+        || data.some(row => !row || typeof row !== "object" || (typeof row._id !== "string" && typeof row.reference !== "string"))) {
+        throw new Error("This section returned an unexpected response. Please retry.");
+      }
       if (generation !== generations.current[key]) return;
-      setSections((previous) => ({ ...previous, [key]: { data: key === "profile" ? result.user : result.data || [], loading: false, error: "", status: null } }));
+      setSections((previous) => ({ ...previous, [key]: { data, loading: false, error: "", status: null } }));
     } catch (error) {
       if (generation !== generations.current[key]) return;
       setSections((previous) => ({ ...previous, [key]: { ...previous[key], loading: false, error: error.message || "Could not load this section.", status: error.status } }));
