@@ -14,6 +14,7 @@ const commonEnv = {
   MONGO_URI: mongoUri,
   MONGODB_URI: mongoUri,
   EMAIL_ENABLED: "false",
+  AI_PROVIDER: "rule_based",
   JWT_SECRET: "medreach-e2e-only-secret-that-is-never-used-in-production",
   CORS_ORIGINS: `http://localhost:${bootstrapPort},http://localhost:${tailwindPort},http://localhost:${skeletonPort}`,
   PUBLIC_APP_URL: `http://localhost:${bootstrapPort}`,
@@ -31,6 +32,7 @@ export default defineConfig({
   globalSetup: "./tests/e2e/global-setup.mjs",
   use: {
     ...devices["Desktop Chrome"],
+    ...(process.env.MEDREACH_PLAYWRIGHT_CHANNEL ? { channel: process.env.MEDREACH_PLAYWRIGHT_CHANNEL } : {}),
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",

@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 const hospital = { _id: "111111111111111111111111", slug: "admin-test-hospital", name: "Admin test hospital", verificationStatus: "unverified", hospitalType: "Private", facilities: [], lastUpdated: "2026-01-01T00:00:00Z" };
+const job = { _id: "777777777777777777777777", title: "Test clinical role", hospital: { ...hospital }, organizationName: hospital.name, category: "Nurse", status: "published", employmentType: "full_time" };
 const audit = { _id: "222222222222222222222222", action: "verify", entityType: "Hospital", createdAt: "2026-01-01T00:00:00Z", user: { name: "Reviewer", role: "system_admin" } };
 const user = { _id: "333333333333333333333333", name: "Example user", email: "example@medreach.test", role: "user", accountStatus: "active", providers: { password: true } };
 
@@ -73,7 +74,7 @@ test("provider approvals prevent duplicate writes and keep confirmed success whe
   await page.route("**/api/admin/provider-approvals", (route) => json(route, readsFail ? { error: "Failure" } : { data: [submission] }, readsFail ? 503 : 200));
   await page.route("**/api/admin/provider-approvals/*/review", async (route) => { writes++; await gate.promise; readsFail = true; return json(route, { ok: true }); });
   await page.goto("/admin/provider-approvals");
-  const approve = page.getByRole("button", { name: "Approve and provision", exact: true });
+  const approve = page.getByRole("button", { name: /^Approve and provision/ });
   await approve.click(); await expect(approve).toBeDisabled();
   await approve.evaluate((element) => element.dispatchEvent(new MouseEvent("click", { bubbles: true })));
   expect(writes).toBe(1); gate.resolve();

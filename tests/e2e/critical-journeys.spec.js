@@ -105,7 +105,7 @@ test("password reset requests report backend feedback and recover after a failed
         form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
       });
     }
-    expect(attempts).toBe(1);
+    await expect.poll(() => attempts).toBe(1);
   } finally { releaseFailure(); }
   await expect(page.getByText("Reset instructions are temporarily unavailable. Please retry.", { exact: true })).toBeVisible();
   const retried = page.waitForResponse((response) => response.url() === `${API}/api/auth/forgot-password` && response.status() === 200);

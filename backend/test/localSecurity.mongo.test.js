@@ -24,7 +24,13 @@ const isolated = Boolean(uri && /^mongodb:\/\/(?:127\.0\.0\.1|localhost):\d+\/me
 test("local security and reliable notification regressions", { skip: !isolated, timeout: 120000 }, async (t) => {
   await mongoose.connect(uri); await mongoose.connection.dropDatabase();
   await Promise.all([User, Hospital, AuthToken, EmailDelivery, RequestNotification, ProviderMembership, EmergencyRequest].map((M) => M.init()));
-  t.after(async () => { setEmailTransportFactoryForTests(); await mongoose.connection.dropDatabase(); await mongoose.disconnect(); });
+  // SMTP mocks must not depend on a developer's .env or contact a live provider.
+  const previousEmail = { emailProvider: env.emailProvider, smtpHost: env.smtpHost, smtpFrom: env.smtpFrom, emailEnabled: env.emailEnabled };
+  Object.assign(env, { emailProvider: "smtp", smtpHost: "mock.smtp.test", smtpFrom: "security@fixture.test", emailEnabled: false });
+  t.after(async () => {
+    setEmailTransportFactoryForTests(); Object.assign(env, previousEmail);
+    await mongoose.connection.dropDatabase(); await mongoose.disconnect();
+  });
   const app = createApp();
   let sequence = 0;
   async function user(role = "user", extra = {}) {
@@ -101,7 +107,7 @@ test("local security and reliable notification regressions", { skip: !isolated, 
     ]);
     assert.ok(responses.some((r) => r.status !== 200)); assert.ok(await User.countDocuments({ role: "system_admin", accountStatus: "active" }) >= 1);
   });
-  await t.test("pending SMTP send stays pending; recovery reconciles completion without a duplicate send", async () => {
+  await t.test("pending SMTP send stays pending; recovery reconciles completion without a duplicate send", { timeout: 5000 }, async () => {
     const prior = env.emailEnabled; env.emailEnabled = true;
     let release, ready, sends = 0;
     const started = new Promise((resolve) => { ready = resolve; }); const blocked = new Promise((resolve) => { release = resolve; });

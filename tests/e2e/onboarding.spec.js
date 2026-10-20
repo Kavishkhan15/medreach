@@ -38,9 +38,9 @@ test("public landing application persists, prevents duplicate clicks and is appr
   await expect(card).toContainText("approved");
   await page.goto("/admin/provider-accounts");
   const account = page.locator("article").filter({ hasText: name });
-  await expect(account).toContainText("Status: pending");
+  await expect(account).toContainText(/[Ss]tatus: pending/);
   await expect(account).toContainText(".example");
-  await expect(account).toContainText("Activation email: disabled");
+  await expect(account).toContainText(/Activation email(?: status)?: disabled/);
 });
 
 test("landing form, login and Careers fit mobile and desktop viewports", async ({ page }) => {

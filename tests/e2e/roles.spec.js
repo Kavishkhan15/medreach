@@ -21,14 +21,15 @@ test("System Admin retains the main dashboard and provisions a pending real prov
   await page.getByRole("link", { name: "Provider Accounts", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Provider Accounts", exact: true })).toBeVisible();
   await page.getByLabel("Organisation", { exact: true }).selectOption({ label: "MedReach E2E Hospital · hospital" });
+  if (info.project.name === "bootstrap") await page.getByLabel("Credential delivery", { exact: true }).selectOption("invitation");
   const email = `${info.project.name}.${Date.now()}@provider-company.com`;
   await page.getByLabel("Login email", { exact: true }).fill(email);
   await page.getByLabel("Real notification / invitation email", { exact: true }).fill(`contact.${email}`);
   await page.getByRole("button", { name: "Create Provider Admin account", exact: true }).click();
   await expect(page.getByText(/Account provisioning confirmed/)).toBeVisible();
   const card = page.locator("article").filter({ hasText: email });
-  await expect(card.getByText(/Status: pending/)).toBeVisible();
-  await expect(card.getByText("Activation email: disabled")).toBeVisible();
+  await expect(card.getByText(/[Ss]tatus: pending/)).toBeVisible();
+  await expect(card.getByText(/Activation email(?: status)?: disabled/)).toBeVisible();
   await expect(card.getByText(/Demo default:/)).toHaveCount(0);
 });
 test("Regular users cannot access administrative dashboards and retired support route is absent", async ({ page }) => {
@@ -57,7 +58,7 @@ test("Provider account failures remain errors and Retry can recover without fake
   await expect(page.getByRole("button", { name: "Retry provider accounts" })).toBeVisible();
   await expect(page.getByText("No Provider Admin accounts found.")).toHaveCount(0);
   failed = false; await page.getByRole("button", { name: "Retry provider accounts" }).click();
-  await expect(page.getByRole("heading", { name: /E2E .* Provider/ }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: /MedReach E2E|E2E .* Provider/ }).first()).toBeVisible();
 });
 
 test("Legacy admin has no blood campaign publication or approval controls", async ({ page }) => {

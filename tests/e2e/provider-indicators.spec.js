@@ -5,7 +5,7 @@ const resources = { 'blood-banks': { ...hospital, _id: '222222222222222222222222
 const json = (route, data) => route.fulfill({ json: data });
 test.beforeEach(async ({ page }) => {
   page.__runtimeErrors = []; page.on('pageerror', e => page.__runtimeErrors.push(e.message));
-  await page.route('**/api/**', route => {
+  await page.route(url => url.hostname === 'localhost' && url.pathname.startsWith('/api/'), route => {
     const p = new URL(route.request().url()).pathname;
     if(p === '/api/auth/me') return json(route,{user:{_id:'555555555555555555555555',name:'Test account',role:'system_admin',region:'Mumbai',email:'admin@example.test'}});
     if(p === '/api/admin/overview') return json(route,{hospitals:1,verified:1,verificationQueue:0});
@@ -52,9 +52,9 @@ test('System Admin hospital listings and overview hide scraping indicators while
   await page.route('**/api/admin/provider-approvals',r=>json(r,{data:applications}));
   await page.route('**/api/admin/provider-approvals/*/review',r=>{const body=r.request().postDataJSON();expect(['approve','reject']).toContain(body.decision);const target=r.request().url().split('/').at(-2);applications=applications.map(a=>a._id===target?{...a,status:body.decision==='approve'?'approved':'rejected'}:a);return json(r,{ok:true});});
   await page.goto('/admin/provider-approvals');
-  await page.locator('article').filter({hasText:'Application approve'}).getByRole('button',{name:'Approve and provision'}).click();
+  await page.locator('article').filter({hasText:'Application approve'}).getByRole('button',{name:/^Approve and provision/}).click();
   await expect(page.locator('article').filter({hasText:'Application approve'})).toContainText('approved');
-  await page.locator('article').filter({hasText:'Application reject'}).getByRole('button',{name:'Reject',exact:true}).click();
+  await page.locator('article').filter({hasText:'Application reject'}).getByRole('button',{name:/^Reject Application reject/}).click();
   await expect(page.locator('article').filter({hasText:'Application reject'})).toContainText('rejected');
 });
 
