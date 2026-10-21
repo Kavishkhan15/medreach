@@ -1,5 +1,7 @@
 # Proposed usability and accessibility study
 
+[Documentation](../docs/README.md) · [Project overview](../README.md)
+
 This folder contains planning materials and draft questionnaires. No participant study or institutional ethics approval is established by the repository. Automated browser journeys in [Release QA](../docs/release-qa.md) are separate from human usability evidence.
 
 Proposed design: between subjects, one assigned Bootstrap/Tailwind/Skeleton variant per participant to reduce learning effects. A target of at least 30 participants (about 10 per variant), mixed experience and accessibility needs is a recruitment proposal; determine the final sample through a documented study design and feasibility review.

@@ -1,5 +1,7 @@
 # Archived preliminary results — initial scaffolding
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 **Historical record, not current release evidence.** The earlier scaffold report recorded the figures below without a retained collection timestamp/commit in this document. They have not been remeasured during the documentation update. Current verification belongs in [Release QA](release-qa.md); current local submission timings belong in [Latency verification](latency-verification.md).
 
 ## Historical backend checks

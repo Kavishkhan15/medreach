@@ -1,6 +1,8 @@
 # MedReach — research plan and implementation boundary
 
-Updated 2026-10-03. This document is a proposed research design, not a release-status report or a completed study. Current product evidence belongs in [Release QA](release-qa.md); archived scaffolding measurements belong in [Preliminary results](RESULTS-prelim.md).
+[Documentation](README.md) · [Project overview](../README.md)
+
+Documentation reviewed 22 October 2026. This document remains a proposed research design, not a release-status report or a completed study. Current product evidence belongs in [Release QA](release-qa.md); archived scaffolding measurements belong in [Preliminary results](RESULTS-prelim.md).
 
 ## 1. Research context
 

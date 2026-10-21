@@ -1,5 +1,7 @@
 # Privacy and Stored Data
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 MedReach stores personal data and may store sensitive health-related information submitted in requests. The account profile is small, but the whole platform does **not** satisfy a “no medical/PHI data stored” claim. This document describes current behavior, not a regulatory compliance certification.
 
 ## Data held in MongoDB
@@ -34,7 +36,7 @@ Provider coordinates/addresses are stored directory data. A patient-entered ambu
 
 Email verification, password reset, confirmations, status changes and provider/staff/admin emails remain enabled when configured. The in-app notification inbox/model/API is intentionally removed; this does not remove email data or delivery records.
 
-Request details required by a template are sent to its recipients and SMTP provider. Replayable messages retain encrypted retry envelopes; token-bearing verification/reset emails are not replayable and fresh links must be issued. SMTP acceptance does not prove inbox delivery. Email content and stored subjects can themselves contain personal information, even when an administrative API omits the message body.
+Request details required by a template are sent to its recipients and the configured SMTP or Resend provider. Replayable messages retain encrypted retry envelopes; token-bearing verification/reset emails are not replayable and fresh links must be issued. Transport acceptance does not prove inbox delivery. Email content and stored subjects can themselves contain personal information, even when an administrative API omits the message body.
 
 The assistant defaults to a local rule-based provider. If an external AI phrasing provider is configured, it receives the user's message, inferred locality/intent and selected directory results/actions. Assistant conversation history is not persisted in a backend conversation collection; that does not control browser state or external-provider retention. Do not instruct users to submit sensitive records to the assistant, and review the provider's data-processing terms before enabling it.
 

@@ -1,5 +1,7 @@
 # Frontend parity scope
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 Bootstrap is the reference for common product behavior. Each frontend retains
 its own framework styles and components. Successful builds do not prove
 identical interactions or isolate CSS as the only research variable.

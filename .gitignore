@@ -56,4 +56,14 @@ PRIVATE.md
 *.swo
 
 
-docs/
+# Keep private/local documentation notes ignored. Publish only the curated
+# documentation entry point and reviewed public-page screenshots added here.
+/docs/*
+!/docs/README.md
+!/docs/screenshots/
+/docs/screenshots/*
+!/docs/screenshots/README.md
+!/docs/screenshots/current/
+/docs/screenshots/current/*
+!/docs/screenshots/current/*.jpg
+!/docs/screenshots/current/manifest.json

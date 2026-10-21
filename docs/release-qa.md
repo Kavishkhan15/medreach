@@ -1,163 +1,164 @@
-# Local verification
+# Release verification
 
-Evidence date: 21 October 2026. Dataset-changing checks use isolated local fixtures.
-A successful build is not evidence of hosted readiness or real email receipt.
+[Documentation](README.md) · [Project overview](../README.md)
 
-## Latest checks
+This guide owns dated test results and safe reproduction commands.
+Documentation capture on 22 October 2026 does not imply the full product suite
+was rerun that day. The completed code verification below belongs to baseline
+[`1f870b4`](https://github.com/kasim672/medreach/commit/1f870b401f63ac5612217a1626259acfd278b913),
+verified on **21 October 2026**.
+
+## Completed release checks
 
 | Check | Result |
 | --- | --- |
-| Backend strict database gate | 352 passed, 0 failed, 0 skipped; all 14 database gates enabled |
-| Focused unit tests | 15 passed, 0 failed |
-| ESLint | 0 errors; 12 existing hook dependency warnings |
-| Bootstrap production build | Passed |
-| Tailwind production build | Passed |
-| Skeleton production build | Passed |
-| Browser matrix, offline Maps build | 266 passed, 0 failed, 40 explicit scope skips across 306 project cases |
-| Final booking feedback regression | 12 passed across all three variants after the final message changes; includes 3 new project cases |
-| Dependency audit | `npm audit --audit-level=high`: 0 vulnerabilities; compression 1.8.2 installed |
-| CI email fixture regression | 18 tests passed with SMTP settings explicitly absent before fixture setup |
-| Database inventory | 60 users, 30 hospitals, 28 resource providers, 256 jobs, 56 memberships |
-| Documentation links / whitespace | 126 local link targets resolve across 31 tracked Markdown files; `git diff --check` passes |
+| Strict backend database gate | **352 passed**, 0 failed, 0 skipped; all 14 database gates enabled |
+| Focused unit tests | **15 passed**, 0 failed |
+| ESLint | **0 errors**, 12 existing hook dependency warnings |
+| Production builds | Bootstrap, Tailwind and Skeleton passed |
+| Complete browser matrix | **269 passed**, 0 failed, 40 explicit scope skips; 309 project cases |
+| Dependency gate | `npm audit --audit-level=high`: **0 vulnerabilities** at collection time |
+| Disposable backup/restore | **16 collections, 539 test documents** restored; no restore failures |
+| Patch whitespace | `git diff --check` passed |
+| GitHub Actions | All 10 Action jobs successful across CI and evaluate workflows |
+| Vercel checks | All 3 deployment status checks successful |
+
+[Successful CI run](https://github.com/kasim672/medreach/actions/runs/39489882190)
+· [Evaluation run](https://github.com/kasim672/medreach/actions/runs/39489882189)
+
+The 40 scope skips are Bootstrap-only UI: 12 manual-credential cases and 28
+navbar/footer/homepage/demo-media cases on Tailwind/Skeleton. Shared workflows
+still execute across all three variants. See [parity scope](PARITY_VERIFICATION.md).
+
+The earlier `929a101` CI failure included a pending-SMTP fixture relying on
+developer environment settings. That failure reproduced with SMTP configuration
+absent. The fixture now supplies isolated mock settings; the focused regression
+passed **18 tests** under the same condition. Browser fixtures/selectors and
+independent request-history states were also corrected. Historical commit
+badges retain their historical results; they do not describe later commits.
 
 ## Reproduce safely
 
-Requires Node.js >=22.19.0, installed workspace dependencies and a disposable
-local MongoDB service. Tests drop their own databases. Never use the recovered
-`medreach` database, a remote database or an existing provider dataset.
+Use Node.js ≥22.19.0, installed workspace dependencies and a **disposable local
+MongoDB instance**. CI uses Node.js 24. These suites recreate fixture databases.
+Never point them at the recovered `medreach` database or any remote dataset.
 
-The strict backend runner lists each URI variable and exact database name in
-`scripts/verify-backend-tests.mjs`. There are 14 gates. Individual URI overrides
-must retain the expected names. A port override changes default loopback URIs:
+The strict runner lists 14 URI variables and exact database names in
+`scripts/verify-backend-tests.mjs`. A port override changes their default
+loopback addresses while preserving the guarded database names:
 
 ```sh
-MEDREACH_TEST_MONGO_PORT=27129 npm run backend:test:db
 npm run lint
 node --test tests/unit/*.test.mjs
+MEDREACH_TEST_MONGO_PORT=27129 npm run backend:test:db
+npm audit --audit-level=high
 git diff --check
 ```
 
-The runner forces rule-based AI and disables real email. Tests explicitly
-enable mock transports where needed; no SMTP credentials are displayed or
-changed.
+The runner forces rule-based AI and disables real email. Email tests explicitly
+enable mock transports. Plain `npm test` permits database suites to skip and is
+not the strict verification gate.
 
-### Browser setup
+### Production builds and browser journeys
 
-Install Playwright's Chromium using `npx playwright install chromium`, or install
-`npx playwright install ffmpeg` and use an already installed Chrome with
-`MEDREACH_PLAYWRIGHT_CHANNEL=chrome`.
-The latter was used for these local checks.
+Install Playwright Chromium with `npx playwright install chromium`.
+An installed Chrome can alternatively be selected with
+`MEDREACH_PLAYWRIGHT_CHANNEL=chrome`; install Playwright FFmpeg for configured
+video artifacts using `npx playwright install ffmpeg`.
 
-An example isolated configuration, from the repository root:
+With a disposable MongoDB already listening on `27129`:
 
 ```sh
-export MEDREACH_E2E_MONGO_URI=mongodb://127.0.0.1:27129/medreach_e2e_performance
+export MEDREACH_E2E_MONGO_URI=mongodb://127.0.0.1:27129/medreach_e2e_verification
 export MEDREACH_E2E_API_PORT=4400
 export MEDREACH_HOME_TEST_API_URL=http://localhost:4400
 export MEDREACH_BOOTSTRAP_E2E_PORT=3400
 export MEDREACH_TAILWIND_E2E_PORT=3401
 export MEDREACH_SKELETON_E2E_PORT=3402
-export MEDREACH_E2E_DIST_DIR=.next-performance-offline
+export MEDREACH_E2E_DIST_DIR=.next-verification
 export NEXT_PUBLIC_API_URL=http://localhost:4400
 export NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=''
-export MEDREACH_PLAYWRIGHT_CHANNEL=chrome
 npm run build:variants
 npm run test:e2e
 ```
 
-Build and browser API URLs must match. Global setup recreates only the
-explicitly named E2E fixture database. The harness starts and stops its own
-servers; do not reuse a normal application server connected to real data.
-The empty Maps key applies only to the test build, verifies the unavailable-map
-fallback and prevents external quota usage. It does not change normal env files.
+Build-time API URLs and browser server URLs must match. The harness manages its
+own servers; do not reuse a normal backend connected to real data. The empty
+Maps key applies only to this test build, verifying the honest map fallback
+without external quota. A configured live map needs a separate check.
 
-## Coverage and evidence
+### Complete release gate
 
-- Role checks, direct API denial, provider isolation, provisioning, account
-  activation/recovery, session revocation and last-System-Admin protection.
-- Provider application persistence, approval/rejection, duplicate prevention
-  and confirmed mutation feedback despite refresh failure.
-- Standard/emergency bed, normal/urgent blood, donation, ambulance, Careers,
-  user request histories and private/public tracking boundaries.
-- Loading, true empty, failed/malformed responses and targeted Retry.
-- Independent homepage resources, delayed below-fold loading and targeted retry.
-- Provider Account query batching, compact job contracts, public compression,
-  ETag revalidation and unchanged private no-store policy.
-- Queued notification persistence, restart, backoff, encryption, recipient
-  revocation, duplicate control and ambiguous transport outcomes.
-- Responsive navigation, homepage/demo media, assistant and account workflows.
+After setting the browser variables above, also provide disposable backup and
+restore targets and the backend test port:
 
-### Test-first evidence and test maintenance
+```sh
+export MEDREACH_TEST_MONGO_PORT=27129
+export MEDREACH_BACKUP_SOURCE_URI="$MEDREACH_E2E_MONGO_URI"
+export MEDREACH_RESTORE_VERIFY_URI=mongodb://127.0.0.1:27129/medreach_restore_verify_verification
+npm run release:check
+```
 
-Before production edits, existing dashboard tests reproduced missing
-resource-specific states. New tests also failed on unbatched account reads,
-full job previews, missing compression and the absent durable outbox.
-The corresponding focused regression tests passed after implementation.
+The restore target must be an explicitly disposable `restore_verify` database.
+Read `scripts/verify-mongo-backup.mjs` before running: it **drops the target
+database** after validating its name. A `restore_verify` marker does not prove
+that the existing records are disposable; confirm the exact target yourself.
+The combined command runs backend,
+audit, three builds, browser journeys, backup/restore verification and whitespace
+checks. Lint and focused unit tests are separate commands, also run by CI.
 
-Old browser failures also included undefined job fixtures, outdated accessible
-button names/account labels, Maps scripts intercepted as API JSON, and
-Bootstrap-only credential tests scheduled against other variants. These were
-corrected without weakening product authorization or hiding real errors.
+## Coverage
 
-The first updated browser matrix completed with 261 passes, 5 failures and 40
-explicit scope skips. Those five failures were test expectations: the old
-single loading-status selector and job assertions before scrolling to the
-new deferred section.
+### Documentation refresh — 22 October 2026
 
-A subsequent configured-Maps run had 263 passes, 3 failures and 40 scope skips:
-one asynchronous test-counter assertion was corrected and passed a targeted
-three-variant rerun; two Skeleton cases reported Google's Maps demo quota error.
-The final matrix uses an isolated offline-Maps build to test deterministic
-fallbacks. Live map rendering remains a separate environment check.
+- 33 Markdown guides checked; 263 local link/anchor/image targets resolve.
+- GitHub's GFM renderer accepted the README, including its tables, image alt
+  text and collapsible setup section.
+- 14 actual public-page JPEG captures across all variants; about 1.6 MB total,
+  no horizontal overflow in the captured desktop/mobile states.
+- Capture-script syntax and four URL safety guards passed; remote origins,
+  credential-bearing URLs, paths and query strings were refused.
+- Lint rerun: 0 errors, the same 12 warnings. Focused unit rerun: 15 passed.
+- All 34 canonical collection document hashes/counts matched before/after capture.
 
-The completed offline matrix passed 102 Bootstrap, 82 Tailwind and 82 Skeleton
-journeys. Each of Tailwind and Skeleton has 20 explicit Bootstrap-only scope
-skips. No unscoped test failures remain in that matrix.
+Backend suites, full browser regression tests and production builds were not
+rerun for this documentation-only refresh. The screenshots used the existing
+production builds from the recorded code baseline above.
 
-A subsequent notification-feedback review corrected ambulance confirmation copy
-to distinguish queued, accepted and uncertain delivery. All three frontends
-were rebuilt. The new three-variant regression and nine affected booking
-journeys passed: 12 checks, no failures/skips. Combined with the full matrix,
-269 distinct applicable project cases have been verified. The complete
-current discovery contains 309 cases including the 40 intentional scope skips.
+### Product regression coverage
 
-Manual credential UI tests are explicitly Bootstrap-only (12 project cases
-skipped). Existing Bootstrap-only navbar/footer/video cases account for the
-other 28 scope skips. Shared responsive, navigation and workflow tests still
-run in all three variants. See [parity scope](PARITY_VERIFICATION.md).
+- Roles, direct API denial, organisation isolation, provisioning, activation,
+  recovery, session revocation and last-System-Admin protection.
+- Provider application persistence, approval/rejection, duplicate prevention and
+  confirmed mutation feedback when a later refresh fails.
+- Standard/emergency beds, normal/urgent blood, donation, ambulance, Careers,
+  user request history and private/public tracking boundaries.
+- Loading, genuine empty, failed/malformed reads and targeted Retry.
+- Independent homepage loading, deferred jobs/campaigns and resource-specific retries.
+- Account query batching, compact jobs, public compression/ETags and private no-store.
+- Durable notification persistence, recovery, encryption, recipient eligibility,
+  deduplication, bounded retries and uncertain transport outcomes.
+- Responsive navigation, assistant, demo media and account workflows.
 
-## CI regression review
+## Data preservation
 
-The previous `929a101` GitHub run passed all three builds but failed backend
-and browser jobs. Backend logs showed the pending-SMTP test timing out because
-its mock relied on developer environment settings. With SMTP configuration
-explicitly cleared, the problem reproduced locally; the suite now supplies
-isolated mock settings and all 18 checks pass under that same condition.
+Recorded canonical inventory: **60 users, 30 hospitals, 28 resource providers,
+256 jobs and 56 memberships**. The 3-user count in the local recovery report is
+a historical snapshot before later approved provisioning, not a target to reset to.
 
-Browser failures included missing job fixtures, obsolete selectors, collapsed
-dashboard history states and Bootstrap-only credential expectations scheduled
-against the other variants. Their fixes are covered by the results above.
-CI now also runs lint and focused unit tests. Its browser build uses an empty
-Maps key to test the fallback without consuming external quotas.
+Release tests and the restore drill used a separate MongoDB process under `/tmp`
+on port `27129`. That process was stopped afterward. No recovered accounts,
+password hashes, healthcare records, assignments or backups were migrated/reset.
 
-The GitHub status of a historical commit remains historical. New commit checks
-must be inspected separately; local passes alone do not establish remote CI success.
+The documentation refresh uses public, read-only previews. Its capture method,
+manifest and data-integrity comparison are documented in the
+[screenshot gallery](screenshots/README.md).
 
-## Data preservation and limits
+## Limits
 
-Only the confirmed local canonical database was read for before/after counts
-and query/payload measurements. Database-changing tests used a separate MongoDB
-process and directory under `/tmp`, on port 27129. No recovered accounts,
-password hashes, assignments, healthcare records or backups were migrated/reset.
-
-Ignored personal/local documentation notes were preserved. Superseded tracked
-implementation reports, duplicate deployment guides and retired crawler
-instructions were consolidated into the current architecture, security,
-deployment and data guides. Historical fusion evidence and research protocols
-remain explicitly historical/proposed.
-
-Not verified here: hosted browser cookies/CORS/proxies, real Resend/SMTP receipt,
-production load capacity, external AI quality, live Maps credentials, full
-assistive-technology coverage or a production migration/restore. The combined
-`release:check` command additionally requires explicit backup/restore targets;
-that destructive-to-fixtures restore drill was not run against recovered data.
+Local tests and green deployment checks do not establish real inbox receipt,
+hosted cookies/CORS/proxy correctness, production p95 latency, load capacity,
+external AI quality, live Maps credentials, complete assistive-technology
+coverage or a production restore. Evaluation risk inputs remain placeholders.
+See [deployment checks](deployment.md), [performance evidence](latency-verification.md)
+and [research limits](../evaluation/README.md).

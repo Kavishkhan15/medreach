@@ -1,5 +1,7 @@
 # Data model
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 MongoDB is the source of truth. Schemas live in `backend/src/models`;
 this guide groups their responsibilities rather than duplicating every field.
 

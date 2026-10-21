@@ -1,5 +1,7 @@
 # Draft task flows — MedReach usability study
 
+[Documentation](../../docs/README.md) · [Project overview](../../README.md)
+
 For a proposed between-subjects study, randomly assign each participant one frontend. Complete ethics review, consent and piloting before collection. The variants share major workflows but are not identical implementations; record differences and use equivalent task inputs.
 
 Use a dedicated study instance with approved isolated fixtures, prepared accounts and a known `CAR-...` reference. No real patient details, production data mutations or external mail are required. Facilitators should read agreed prompts without hints and record time, errors, path and success/partial/failure.

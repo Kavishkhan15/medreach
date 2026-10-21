@@ -1,5 +1,7 @@
 # Paper outline — proposed MedReach study
 
+[Documentation](../docs/README.md) · [Project overview](../README.md)
+
 **Working title:** *An Empirical Evaluation of Responsive Web Design Frameworks in MedReach.* This is an outline, not a completed empirical paper.
 
 The inherited research framing references Almeida & Sousa (2026), *Security Risks in Responsive Web Design Frameworks*. Verify the bibliography, source claims and venue requirements before submission. Distinguish implemented tools, local product QA, archival measurements and future research results throughout.
@@ -32,7 +34,7 @@ Responsive frameworks, frontend/backend security, dependencies, privacy, accessi
 - Privacy: per-route third-party traffic and cookie behavior, including hosted configuration.
 - Accessibility: automated findings and manual assistive-technology observations.
 - Performance: current per-route timings and aggregate bundle sizes reported separately. [Historical figures](../docs/RESULTS-prelim.md) are not current release measurements.
-- Submission latency: [local benchmark](../docs/latency-verification.md) uses simulated SMTP waits; it is a backend concurrency result, not a framework ranking or hosted latency guarantee.
+- Submission latency: [local evidence](../docs/latency-verification.md) separates earlier simulated inline SMTP waits from the current durable-outbox workflow. Neither is a framework ranking or hosted latency guarantee.
 - Composite scores: include only after measured inputs replace placeholders.
 - Usability: include only after actual approved participant collection.
 

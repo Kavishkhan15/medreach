@@ -1,5 +1,7 @@
 # Security
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 ## Roles and organisation isolation
 
 New account roles are `system_admin`, `provider_admin` and `user`.

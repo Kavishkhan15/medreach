@@ -3,31 +3,25 @@
 
 # Hospital Data Fusion & Verification — evidence report
 
-## Historical status note — 2026-10-03
+[Documentation](README.md) · [Project overview](../README.md)
 
-This is a **historical evidence report from 2026-09-14**. The database counts,
-conflict counts, backup path, skipped-suite counts and parity limitations below
-belong to that audit; none was remeasured for this documentation update. The
-latest executed backend/database, crawler, browser and build results belong in
-[Release QA](release-qa.md), with [parity coverage](PARITY_VERIFICATION.md) and
-[deployment requirements](deployment.md) maintained separately.
+## Historical scope and current boundary
 
-Later source inspection confirms an ownership-request/review implementation in
-`backend/src/services/ownershipService.js` and an optional scheduler started by
-`backend/src/server.js`. Accordingly, the original statement that ownership
-onboarding is absent is historical, not a description of all current code.
-Ownership requests still need evidence and authorized review; they do not prove
-ownership automatically. Browser journey coverage now exists under `tests/e2e/`;
-the original absence of browser parity assertions does not describe the current
-release gate, and passing journeys still do not prove identical rendered markup.
+This is a **historical evidence report from 14 September 2026**. Database and
+conflict counts, backup paths, crawler tests and parity limitations below belong
+to that audit. They were not remeasured for this documentation refresh.
 
-Provenance and verification safeguards remain requirements: seeded/crawled
-records do not automatically become verified, static capability does not prove
-available beds, missing evidence is not reconstructed, and conflicts require
-review. Optional Gemini refinement creates evidence-bound review candidates; its
-approval alone does not change canonical claims. See [crawler](stored-data.md).
-No live provider, production deployment or new MongoDB dataset audit is claimed
-by this status note. Historical counts must not be used as current statistics.
+The acquisition crawler and its scheduler were removed on 6 October. References
+to them in the original report are historical. Current provider onboarding uses
+applications, System Admin review and account activation; stored evidence and
+ownership review remain separate from automatic approval. Frontend scraping
+badges were subsequently removed while provenance data was preserved.
+
+Static capability does not establish live beds and missing evidence is never
+reconstructed. Current backend/browser/build results belong in
+[Release QA](release-qa.md), current workflow differences in
+[parity coverage](PARITY_VERIFICATION.md), and the runtime data boundary in
+[stored data](stored-data.md). This archive is not an operational runbook.
 
 ## Original evidence report — 2026-09-14
 

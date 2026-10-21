@@ -1,5 +1,7 @@
 # test-bot
 
+[Documentation](../docs/README.md) · [Project overview](../README.md)
+
 A standalone manual smoke check for the MedReach Healthcare Assistant API.
 It is not part of the application or the deterministic release gate.
 
@@ -36,5 +38,5 @@ verification.
 
 See [assistant implementation](../docs/ai-assistant.md) for all supported domains
 and [Release QA](../docs/release-qa.md) for backend, browser and build
-coverage. No new manual or live-provider run was performed for this documentation
-update (2026-10-03).
+coverage. This documentation refresh did not run the smoke tool or contact a
+live external AI provider. Consult the dated release record for executed checks.

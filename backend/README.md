@@ -1,5 +1,7 @@
 # Backend
 
+[Documentation](../docs/README.md) · [Project overview](../README.md)
+
 One Express/Mongoose API serves all three frontends. Start it from the repository root:
 
 ```sh

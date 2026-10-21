@@ -1,5 +1,7 @@
 # Local provider account handling
 
+[Documentation](docs/README.md) · [Project overview](README.md)
+
 This is an operational guide, not a list of reusable passwords or a live
 inventory. Inspect the confirmed local database before provisioning anything.
 Never infer successful login from account creation alone.

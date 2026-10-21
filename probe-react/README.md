@@ -1,5 +1,7 @@
 # React rendering probe
 
+[Documentation](../docs/README.md) · [Project overview](../README.md)
+
 This focused probe compares React server-side text escaping with explicit raw HTML insertion. It is not a fourth MedReach frontend or an end-to-end XSS audit.
 
 From the repository root with dependencies installed:

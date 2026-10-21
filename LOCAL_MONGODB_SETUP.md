@@ -1,6 +1,14 @@
 # Local MongoDB recovery and consolidation
 
+[Documentation](docs/README.md) · [Project overview](README.md)
+
 Date: 11 October 2026. This setup affects this local workstation only.
+
+**Historical recovery receipt.** Counts and PIDs below describe the 11 October
+recovery and service correction. They are not a current inventory: later
+approved account provisioning increased the user total. Current recorded
+counts and release checks belong in [Release QA](docs/release-qa.md).
+The canonical directory and preservation rules remain applicable.
 
 ## Active dataset
 

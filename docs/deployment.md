@@ -1,5 +1,7 @@
 # Deployment
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 Selected stack: Vercel frontends → Railway Express API → MongoDB Atlas.
 This guide describes manual deployment; it does not claim a deployment was
 performed or verified.

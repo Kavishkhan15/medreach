@@ -1,5 +1,7 @@
 # Evaluation tooling and research limits
 
+[Documentation](../docs/README.md) · [Project overview](../README.md)
+
 This directory contains runnable bundle measurements, a dependency-audit summary, a React rendering probe and a proposed composite risk instrument. It does not implement the full planned security/privacy/accessibility/user-study pipeline.
 
 Current product regression evidence belongs in [Release QA](../docs/release-qa.md); historical build figures belong in [archived preliminary results](../docs/RESULTS-prelim.md). Passing functional tests is not a research result or security/accessibility certification.

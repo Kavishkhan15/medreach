@@ -1,6 +1,8 @@
 # Hospital response and request tracking
 
-This milestone covers emergency and standard bed requests in Bootstrap, Tailwind
+[Documentation](README.md) · [Project overview](../README.md)
+
+This guide covers emergency and standard bed requests in Bootstrap, Tailwind
 and Skeleton. It uses the existing request API, MongoDB state, audit records,
 durable email delivery records. In-app notifications have been removed.
 
@@ -24,7 +26,8 @@ token. Tokens are stored in session storage and can be recovered from a saved
 tracking link. The link uses a URL fragment that is removed after opening it.
 Other users and unassigned hospital staff cannot retrieve or modify requests.
 
-Assigned staff use `/hospital` to start review, send response messages, request
+Assigned staff use the hospital workspace at `/hospital` (also reached through
+their Provider Admin organisation workflow) to start review, send messages, request
 information, accept, reject and complete. Both bed-request types appear there.
 A patient may cancel an active request or reply to an information request;
 patients cannot accept or complete their own requests. Information requests must
@@ -96,25 +99,24 @@ The table records the original lifecycle pass. The expanded current backend and
 browser suites are recorded in [Release QA](release-qa.md); these older counts
 are not the current release totals.
 
-| Check | Result |
-| --- | --- |
-| `npm run backend:test:db` | PASS: 207 tests, zero failures or skips; all database gates enabled |
-| `npm run build:variants` | PASS: Bootstrap, Tailwind and Skeleton production builds |
-| `npm run test:e2e` with the isolated URI above | PASS: 42 journeys across all three variants, including 18 lifecycle journeys |
-| `git diff --check` | PASS |
+Current executed counts and code baseline are maintained in
+[Release QA](release-qa.md). Older milestone totals of 207 backend tests and
+42 journeys are superseded; they are not the size of the current release suite.
 
 Browser journeys used production frontend builds, Chromium, real local Express
 and MongoDB, isolated accounts and providers, disabled outbound SMTP, and mocked
 failure conditions. Mobile checks used a 390 × 844 viewport. Backend SMTP failure
 checks used a controlled test transport. No live hospital participation, inbox
 receipt, physical-device accessibility or hosted deployment was verified here.
-No dependencies or environment files were changed. No commit or push was made.
+These test boundaries describe the isolated lifecycle verification, not a
+claim of live provider participation.
 
 ## Remaining operational limits
 
-Bed submission email attempts now use bounded concurrent batches; all outcomes
-are awaited, and status-update emails retain their existing behavior. See
-[latency verification](latency-verification.md) for measurements and limits.
+Normal server startup queues replay-safe notifications durably before the
+response, and a bounded worker performs transport later. Account links remain
+inline and non-replayable. See [architecture](architecture.md) and
+[latency verification](latency-verification.md) for delivery states and limits.
 
 - Live SMTP receipt and real staff participation require live verification.
 - A disconnected hospital cannot receive requests through a staff inbox. The UI
@@ -123,6 +125,8 @@ are awaited, and status-update emails retain their existing behavior. See
 - Guest callers without email receive updates on their private tracking page.
 - Audit/email-store failures are logged and do not undo saved state.
   Failed email deliveries retain the existing controlled retry mechanism when
-  a delivery record could be stored. There is no transactional outbox that can
-  replay an audit or email delivery intent lost during a database write failure.
+  a delivery record could be stored. The durable outbox can recover persisted
+  replay-safe messages, but a standalone database does not make business state,
+  audit and notification intent crash-atomic across documents. An intent lost
+  before persistence cannot be replayed from that missing row.
 - Coordination does not reserve a bed, prove inventory, or confirm dispatch.

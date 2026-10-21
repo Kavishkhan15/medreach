@@ -1,5 +1,7 @@
 # Existing healthcare dataset and provenance
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 MedReach now uses the provider and workflow data already stored in MongoDB.
 The application does not run a crawler, scraper, source scheduler or external
 provider-site fetch. The data path is:

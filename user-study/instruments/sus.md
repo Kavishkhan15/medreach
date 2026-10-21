@@ -1,5 +1,7 @@
 # System Usability Scale (SUS)
 
+[Documentation](../../docs/README.md) · [Project overview](../../README.md)
+
 Draft instrument for the [proposed study](../README.md); no completed participant responses or measured scores are recorded here.
 
 Standard 10-item instrument (Brooke, 1996). Administer immediately after tasks, before the interview. 5-point scale: 1 = Strongly disagree … 5 = Strongly agree.

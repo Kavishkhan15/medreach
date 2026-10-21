@@ -1,5 +1,7 @@
 # Informed Consent — MedReach Usability & Accessibility Study
 
+[Documentation](../../docs/README.md) · [Project overview](../../README.md)
+
 **Study title:** Empirical evaluation of responsive web design frameworks (security, privacy, accessibility, responsiveness)
 **Researchers:** M1–M4, [Institution] · **Supervisor:** [Advisor] · **Ethics ref:** [IRB/ethics number]
 

@@ -1,6 +1,8 @@
 # MedReach Healthcare Assistant
 
-Current implementation reference, reviewed 2026-10-03. The assistant helps users
+[Documentation](README.md) · [Project overview](../README.md)
+
+Implementation reference, reviewed 22 October 2026. The assistant helps users
 find healthcare resources and open existing request flows. It is not a diagnosis,
 prescribing or emergency dispatch service. For executed checks and remaining
 live-provider verification, see [Release QA](release-qa.md).

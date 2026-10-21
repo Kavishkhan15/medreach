@@ -1,81 +1,171 @@
-# MedReach
+<div align="center">
 
-Healthcare discovery, provider onboarding and request tracking for Mumbai.
-Bootstrap, Tailwind and Skeleton are independent Next.js frontends backed by
-one Express API and the existing MongoDB dataset.
+<img src="brand-word-mark.png" alt="MedReach" width="300" />
 
-Requests support coordination with providers. They do not guarantee a bed,
-blood inventory, an appointment or ambulance dispatch. For an immediate
-emergency, call 112 or 108.
+# Connected healthcare for Mumbai
+
+Find a provider. Start the right request. Follow what happens next.
+
+[![CI](https://github.com/kasim672/medreach/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kasim672/medreach/actions/workflows/ci.yml)
+[![Evaluation checks](https://github.com/kasim672/medreach/actions/workflows/evaluate.yml/badge.svg?branch=main)](https://github.com/kasim672/medreach/actions/workflows/evaluate.yml)
+
+[Explore the app](https://medreachmumbai.vercel.app/) · [Documentation](docs/README.md) · [Screenshots](docs/screenshots/README.md) · [Run locally](#run-locally)
+
+</div>
+
+![MedReach Bootstrap homepage with healthcare discovery and emergency care entry points](docs/screenshots/current/bootstrap-home.jpg)
+
+MedReach brings hospital, blood-bank, diagnostic and ambulance discovery into
+one application, with provider onboarding, healthcare requests and Careers.
+Three independent Next.js frontends—**Bootstrap, Tailwind and Skeleton**—use
+the same Express API, MongoDB dataset and backend access controls.
+
+Screenshots show the actual local application and stored directory records,
+captured on **22 October 2026**. They are interface snapshots, not evidence of
+current availability, campaign dates, provider participation or live dispatch.
+
+## Explore MedReach
+
+| Find care | Coordinate and follow up | Manage the network |
+| --- | --- | --- |
+| Hospitals and provider profiles | Standard and emergency bed requests | Provider applications and approvals |
+| Blood banks and diagnostics | Normal/urgent blood requests and blood donation | Organisation-scoped Provider Admin workspace |
+| Ambulance listings and map discovery | Ambulance requests and private request history | System Admin accounts and platform oversight |
+| Directory-grounded assistant | Healthcare Careers, applications and reference tracking | Eligible provider/user email notifications |
+
+Requests support coordination. They do not guarantee a bed, blood inventory,
+an appointment or ambulance dispatch. The app is not a medical advice service.
+
+### A closer look
+
+| Hospital discovery | Provider onboarding |
+| --- | --- |
+| ![Hospital directory with search, locality filtering and contact actions](docs/screenshots/current/bootstrap-hospitals.jpg) | ![Embedded Join the MedReach Network application form](docs/screenshots/current/provider-application.jpg) |
+| Search actual stored listings and open provider details. | Apply from the homepage; review and activation precede access. |
+
+| Healthcare Careers | Hospital details |
+| --- | --- |
+| ![Healthcare Careers directory grouped by organisation type](docs/screenshots/current/careers.jpg) | ![Hospital profile with listed contact information and request action](docs/screenshots/current/hospital-detail.jpg) |
+| Browse organisations and their available application flows. | Review recorded information before contacting the provider. |
+
+See the [full screenshot gallery](docs/screenshots/README.md) for mobile views,
+emergency discovery and all three frontend variants.
+
+## Three frontends, one product
+
+| Bootstrap | Tailwind | Skeleton |
+| --- | --- | --- |
+| ![Bootstrap mobile homepage](docs/screenshots/current/bootstrap-mobile.jpg) | ![Tailwind mobile homepage](docs/screenshots/current/tailwind-mobile.jpg) | ![Skeleton mobile homepage](docs/screenshots/current/skeleton-mobile.jpg) |
+| Bootstrap 5.3 · port `3000` | Tailwind CSS 4 · port `3001` | Skeleton CSS 2 · port `3002` |
+
+Each variant keeps its own components and framework styling. Shared workflows
+use the same API and data semantics. Some UI is deliberately variant-specific,
+including Bootstrap's local manual credential handover. See
+[parity scope](docs/PARITY_VERIFICATION.md) for the exact boundaries.
+
+## Roles and access
+
+One login page routes accounts to the appropriate workspace.
+
+| Role | Workspace | Access |
+| --- | --- | --- |
+| `system_admin` | `/admin` | Platform oversight, provider approvals/accounts, users and emergencies |
+| `provider_admin` | `/provider` | Explicitly assigned organisations and their permitted workflows |
+| `user` | `/dashboard` | Own profile, requests, blood donation and applications |
+
+Public registration creates regular users. A provider application grants no
+login access before approval and activation. Backend checks enforce role and
+organisation scope, including direct API calls. Historical role values do not
+create new account options. [Security and account lifecycle →](docs/security.md)
 
 ## Run locally
 
-Requires Node.js >=22.19.0, npm and the existing local MongoDB service.
+**Requirements:** Node.js **≥22.19.0**, npm, and MongoDB with the intended dataset.
+CI uses Node.js 24. Install dependencies from the repository root.
 
 ```sh
 npm ci
 ./run.sh
 ```
 
-| Service | Local URL |
+| Service | URL |
 | --- | --- |
-| API | http://localhost:4000 |
-| Bootstrap | http://localhost:3000 |
-| Tailwind | http://localhost:3001 |
-| Skeleton | http://localhost:3002 |
+| Shared API | <http://localhost:4000> |
+| Bootstrap | <http://localhost:3000> |
+| Tailwind | <http://localhost:3001> |
+| Skeleton | <http://localhost:3002> |
+
+To run one frontend with the backend, use `./run.sh bootstrap`,
+`./run.sh tailwind` or `./run.sh skeleton`. Press `Ctrl+C` to stop the launcher.
+
+<details>
+<summary><strong>First setup and environment variables</strong></summary>
 
 Keep existing environment files. On a new machine, use the supplied
-`.env.example` files as templates; never overwrite working credentials.
-Set `NEXT_PUBLIC_API_URL` before frontend production builds.
+`.env.example` files as templates and configure the intended MongoDB connection.
+`MONGODB_URI` takes precedence over `MONGO_URI`.
 
-The recovered local database lives at `/home/anonymous/medreach/data`.
-Do not seed, reset or run browser fixtures against it.
-See [local MongoDB recovery and startup](LOCAL_MONGODB_SETUP.md).
+Set `NEXT_PUBLIC_API_URL` before production frontend builds. Maps uses a
+restricted browser API key when configured; without a usable key, provider
+lists remain available with an honest map fallback. Email and optional external
+AI configuration belong on the backend. Never expose their secrets through
+`NEXT_PUBLIC_*`.
 
-## Product
+The recovered workstation dataset is at `/home/anonymous/medreach/data`.
+Do not seed, reset or run browser fixtures against it. New installations do not
+receive a copy of that private database from Git.
 
-- Hospital, blood-bank, diagnostic and ambulance discovery, maps and contact actions.
-- Standard and emergency bed requests; blood requests and blood donation pledges;
-  ambulance booking requests; private history and limited public reference tracking.
-- Healthcare jobs, applications and application references.
-- Provider applications embedded in the homepage, System Admin review and
-  approved organisation account provisioning.
-- Password authentication, activation, recovery, revocable sessions and
-  organisation-scoped administration.
-- A directory-grounded assistant with optional external language providers.
+[Local MongoDB setup](LOCAL_MONGODB_SETUP.md) · [Deployment and email](docs/deployment.md)
 
-### Accounts
+</details>
 
-| Role | Workspace | Scope |
-| --- | --- | --- |
-| `system_admin` | `/admin` | Platform administration, approvals, accounts and emergencies |
-| `provider_admin` | `/provider` | Explicitly assigned organisations and permitted workflows |
-| `user` | `/dashboard` | Own profile, requests, donations and applications |
+## Architecture
 
-Public registration creates regular users. Provider submission alone grants
-no access. Legacy role values may remain in historical data; they are not new
-account options. See [security](docs/security.md) and
-[local provider credential handling](LOCAL_PROVIDER_ACCOUNTS.md).
+```mermaid
+flowchart LR
+    Dataset[(Existing healthcare dataset)] --> Mongo[(MongoDB)]
+    Mongo <--> API[Express API]
+    API <--> Bootstrap[Bootstrap · Next.js]
+    API <--> Tailwind[Tailwind · Next.js]
+    API <--> Skeleton[Skeleton · Next.js]
+    API --> Outbox[Durable email outbox]
+    Outbox --> Mail[Configured email transport]
+```
 
-## Documentation
+The selected hosting stack is **Vercel → Railway → MongoDB Atlas**. The API
+process owns expiry, recovery and email workers. MedReach does not crawl
+provider websites; historical acquisition provenance stays in the stored dataset.
 
-| Guide | Purpose |
+```text
+backend/          Express routes, permissions, models, services and workers
+packages/core/    Shared frontend client, hooks and data helpers
+variants/         Independent Bootstrap, Tailwind and Skeleton frontends
+tests/            Browser journeys and focused unit tests
+docs/             Architecture, operations, security and verification guides
+evaluation/       Research tooling and explicitly limited measurements
+user-study/       Proposed protocols and draft questionnaires
+```
+
+[Architecture and code map →](docs/architecture.md)
+
+## Verification
+
+Latest completed code baseline: [`1f870b4`](https://github.com/kasim672/medreach/commit/1f870b401f63ac5612217a1626259acfd278b913).
+[All 13 GitHub checks passed](https://github.com/kasim672/medreach/actions/runs/39489882190).
+
+| Check | Recorded result |
 | --- | --- |
-| [Architecture](docs/architecture.md) | Code ownership, data flow and workers |
-| [API](docs/api.md) | Route groups, authentication and response contracts |
-| [Data model](docs/data-model.md) | Collections, relationships and provenance |
-| [Deployment](docs/deployment.md) | Vercel, Railway, Atlas and email configuration |
-| [Security](docs/security.md) / [Privacy](docs/privacy.md) | Access controls and data handling |
-| [Verification](docs/release-qa.md) | Test commands, actual results and limitations |
-| [Performance](docs/latency-verification.md) | Measurements and optimizations |
-| [Frontend parity](docs/PARITY_VERIFICATION.md) | Shared workflows and intentional differences |
-| [Services and maps](docs/SERVICES_AND_MAP_GUIDE.md) | Discovery and service workflows |
-| [Bed lifecycle](docs/bed-request-lifecycle.md) | Request states and permissions |
-| [Assistant](docs/ai-assistant.md) | Grounding and fallback behavior |
-| [Stored dataset](docs/stored-data.md) | Preservation and historical provenance |
-| [Research](evaluation/README.md) | Evaluation tools and evidence limits |
+| Backend, all database gates | **352 passed**, no failures or skips |
+| Focused unit tests | **15 passed** |
+| Browser journeys | **269 passed**, 40 explicit Bootstrap-only scope skips |
+| Production builds | **Bootstrap, Tailwind and Skeleton passed** |
+| Dependency audit | **0 known vulnerabilities** at the recorded check |
+| Lint | **0 errors**, 12 existing hook dependency warnings |
+| Disposable backup/restore drill | **16 collections / 539 test documents restored** |
 
-## Verify safely
+These are dated regression results. They do not certify security, clinical
+accuracy, accessibility compliance, real inbox receipt or hosted performance.
+The workflow badges above show subsequent GitHub status.
 
 ```sh
 npm run lint
@@ -86,19 +176,33 @@ npm run test:e2e
 git diff --check
 ```
 
-Backend and browser tests recreate their own fixtures. Use a disposable local
-MongoDB instance and the exact test database names listed in
-[verification](docs/release-qa.md). Ordinary `npm test` can skip database-gated
-tests and is not the complete release check.
+**Use disposable databases for tests.** Backend/browser fixtures can delete
+their own data. Plain `npm test` may skip database-gated suites; the strict
+runner enables all gates. [Safe setup, full release check and evidence →](docs/release-qa.md)
 
-No crawler runs in MedReach. Existing healthcare records and acquisition
-provenance remain stored; removing collection code does not remove the dataset.
-Google OAuth, the in-app notification inbox and `/admin/operations` are retired.
-Email notifications, maps and the main `/admin` dashboard remain.
+## Documentation
 
-## Research materials
+Start with the [documentation hub](docs/README.md), organised by task.
 
-[Research plan](docs/MedReach_Corrected_Plan.md),
-[paper outline](paper/outline.md) and [study protocols](user-study/README.md)
-describe proposed evaluation. Historical or placeholder scores are not current
-measurements or security certifications.
+| Build and understand | Run and maintain | Product and research |
+| --- | --- | --- |
+| [Architecture](docs/architecture.md) | [Deployment and email](docs/deployment.md) | [Services and maps](docs/SERVICES_AND_MAP_GUIDE.md) |
+| [API reference](docs/api.md) | [Verification](docs/release-qa.md) | [Request lifecycle](docs/bed-request-lifecycle.md) |
+| [Data model](docs/data-model.md) | [Security](docs/security.md) · [Privacy](docs/privacy.md) | [Assistant](docs/ai-assistant.md) |
+| [Frontend variants](variants/README.md) | [Performance measurements](docs/latency-verification.md) | [Evaluation tooling](evaluation/README.md) |
+
+### Data and contribution boundaries
+
+Keep credentials, patient information, private tracking links, resumes and database
+files out of Git and screenshots. Preserve real provider data and assignments.
+Use isolated fixtures for repeatable workflows. Never add fake availability to
+make a page look populated. See [stored data](docs/stored-data.md) and
+[local provider accounts](LOCAL_PROVIDER_ACCOUNTS.md).
+
+The crawler, Google OAuth, in-app notification inbox, User Admin role and
+`/admin/operations` are intentionally retired. Maps, provider approvals, email
+and the main `/admin` dashboard remain.
+
+Research plans, draft study instruments and historical figures are labelled in
+the [research documentation](evaluation/README.md). Placeholder scores are not
+empirical results or security certifications.

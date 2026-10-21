@@ -1,6 +1,8 @@
 # Services, maps and request tracking
 
-Current contracts, reviewed 2026-10-03. Applies to Bootstrap, Tailwind and
+[Documentation](README.md) · [Project overview](../README.md)
+
+Current contracts, reviewed 22 October 2026. Applies to Bootstrap, Tailwind and
 Skeleton with their own designs. See [parity](PARITY_VERIFICATION.md) and
 [Release QA](release-qa.md) for tested coverage and live limitations.
 
@@ -112,8 +114,11 @@ presentation retains its existing behavior.
 
 ## Email reliability
 
-In-app notifications are removed; all emails remain. Bed/blood/career submission
-email attempts now overlap in batches of at most three per request, preserving
-saved records, event-key deduplication and eligible retries. Responses await
-all attempts; successful SMTP acceptance is distinct from mailbox receipt and
-provider participation. See [latency verification](latency-verification.md).
+In-app notifications are removed; email remains. During normal server startup,
+replay-safe bed, blood, ambulance and Careers notifications persist to the
+encrypted durable outbox before the API responds. A bounded worker performs
+delivery afterward, retaining event-key deduplication and eligible retries.
+Activation, address verification and recovery links keep their inline,
+non-replayable path. SMTP/Resend acceptance does not prove mailbox receipt or
+provider participation. See [architecture](architecture.md),
+[security](security.md) and [latency verification](latency-verification.md).

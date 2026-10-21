@@ -1,5 +1,7 @@
 # Frontend variants
 
+[Documentation](../docs/README.md) · [Project overview](../README.md)
+
 | Variant | Framework | Development port |
 | --- | --- | --- |
 | Bootstrap | Bootstrap 5 | 3000 |

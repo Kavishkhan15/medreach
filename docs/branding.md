@@ -1,5 +1,7 @@
 # MedReach brand assets
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 The supplied artwork is shared by Bootstrap, Tailwind and Skeleton.
 
 | Asset | Canonical file | Usage |
@@ -16,3 +18,16 @@ Root layout metadata uses `/logo.png` directly for browser, shortcut and Apple t
 Each frontend’s `public/favicon.ico` is derived from the shield symbol, with 16, 32 and 48 pixel sizes. The public ICO remains available at `/favicon.ico` for browsers that request that path automatically. It lives in `public/` rather than `app/` so Next.js does not add an additional ICO link alongside the explicit PNG favicon. There is no root `favicon.ico`.
 
 When replacing branding, update the canonical files, all three public copies, all three ICO files and the icon version in all three root layouts together. Check navigation, footer and browser icons, including narrow-screen navigation.
+
+## Documentation images
+
+The project README uses the supplied wordmark and actual public-page captures
+from [the screenshot gallery](screenshots/README.md). Current images live in
+`docs/screenshots/current/`, with route/viewport/date metadata in the manifest.
+Use relative image links so previews work both on GitHub and in a clone.
+
+Capture the real interface rather than composing fake provider cards. Do not
+publish credentials, private account pages, patient histories or tracking tokens.
+This refresh adds no external stock images, generated artwork or new font assets.
+The provenance of underlying existing brand/landing artwork is not changed or
+newly licensed by taking a screenshot.

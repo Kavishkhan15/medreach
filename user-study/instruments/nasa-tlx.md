@@ -1,5 +1,7 @@
 # NASA-TLX (Task Load Index)
 
+[Documentation](../../docs/README.md) · [Project overview](../../README.md)
+
 Draft instrument for the [proposed study](../README.md); no participant workload measurements are recorded here.
 
 Self-reported cognitive workload across six dimensions. Administer after SUS. Each rated 0–100 (low→high; Performance is good→poor).

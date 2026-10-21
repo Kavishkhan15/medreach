@@ -1,5 +1,7 @@
 # Performance verification
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 Local measurements, 21 October 2026. These describe the tested repository,
 not a hosted latency guarantee.
 
@@ -23,8 +25,10 @@ permission checks are preserved.
 ## Same-machine before/after
 
 Original dataset, read-only queries with Mongoose automatic collection/index
-creation disabled. Provider Accounts compares the implementation at HEAD with
-the updated serializer against the same 55 provider accounts, three samples each.
+creation disabled. Provider Accounts compares the pre-optimization baseline
+(`929a101`) with the batched implementation (`d37df12`) against the same
+55 provider accounts, three samples each. These are recorded measurements,
+not a fresh benchmark of whatever commit is currently checked out.
 
 | Metric | Before | After |
 | --- | ---: | ---: |

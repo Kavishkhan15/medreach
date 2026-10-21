@@ -1,5 +1,7 @@
 # Architecture
 
+[Documentation](README.md) · [Project overview](../README.md)
+
 ## Data flow
 
 ```text

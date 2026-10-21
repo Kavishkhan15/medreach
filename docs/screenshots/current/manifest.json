@@ -1,0 +1,146 @@
+{
+  "capturedAt": "2026-10-21T20:39:06.636Z",
+  "mode": "Public local pages; no sign-in, submissions, fixture seeding or external requests",
+  "captures": [
+    {
+      "file": "bootstrap-home.jpg",
+      "variant": "bootstrap",
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "bootstrap-hospitals.jpg",
+      "variant": "bootstrap",
+      "route": "/hospitals",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "bootstrap-mobile.jpg",
+      "variant": "bootstrap",
+      "route": "/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "hospital-detail.jpg",
+      "variant": "bootstrap",
+      "route": "/hospitals/apollo-hospitals-navi-mumbai",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "careers.jpg",
+      "variant": "bootstrap",
+      "route": "/careers",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "blood-banks.jpg",
+      "variant": "bootstrap",
+      "route": "/blood-banks",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "emergency.jpg",
+      "variant": "bootstrap",
+      "route": "/emergency",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "provider-application.jpg",
+      "variant": "bootstrap",
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "tailwind-home.jpg",
+      "variant": "tailwind",
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "tailwind-hospitals.jpg",
+      "variant": "tailwind",
+      "route": "/hospitals",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "tailwind-mobile.jpg",
+      "variant": "tailwind",
+      "route": "/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "skeleton-home.jpg",
+      "variant": "skeleton",
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "skeleton-hospitals.jpg",
+      "variant": "skeleton",
+      "route": "/hospitals",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "horizontalOverflow": false
+    },
+    {
+      "file": "skeleton-mobile.jpg",
+      "variant": "skeleton",
+      "route": "/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "horizontalOverflow": false
+    }
+  ]
+}
