@@ -53,9 +53,13 @@ for the separate registration/recovery limits.
 | --- | --- |
 | `/api/hospitals`, `/api/hospitals/:slug` | Hospital discovery and detail |
 | `/api/hospitals/:idOrSlug/enriched` | Composed stored hospital evidence |
-| `/api/hospitals/:id/availability` | Permitted availability reads/writes |
+| `/api/hospitals/:id/facilities` | Verified facility capabilities |
+| `/api/hospitals/:id/availability` | Permitted availability reads/writes (append-only) |
 | `/api/blood-banks`, `/api/diagnostics`, `/api/ambulances` | Resource indexes and ID details |
 | `/api/blood-banks/campaigns` | Donation campaigns and moderated proposals |
+| `/api/alerts` | Public active disaster/municipal alerts |
+| `/api/routing/hospital/:id` | Route distance and estimated driving duration |
+| `/api/users/me/saved` | Authenticated citizen saved hospital bookmarks |
 | `/api/jobs`, `/api/jobs/:id` | Published job index and detail |
 | `/api/jobs?view=summary` | Compact homepage fields; same published filtering and 150-row ceiling |
 | `/api/jobs/manage`, `/api/jobs/:id/applications` | Authorised provider job/applicant management |
@@ -68,6 +72,8 @@ for the separate registration/recovery limits.
 
 The optional job summary omits descriptions and populated hospital/provider
 objects. Ordinary `GET /api/jobs` keeps its existing full listing contract.
+Direct mutable bed updates via `PATCH /api/hospitals/:id/beds` return `410 Gone`
+to enforce append-only observations via `/api/hospitals/:id/availability`.
 Public directory indexes can gzip/revalidate with ETags; authenticated/private
 responses remain `Cache-Control: no-store`.
 

@@ -1,0 +1,49 @@
+graph TD
+    subgraph Roles["MedReach Three-Tier Role Hierarchy"]
+        SA["System Admin (system_admin)<br/>Global Governance & Operations"]
+        PA["Provider Admin (provider_admin)<br/>Scoped to Assigned Organizations"]
+        RU["Regular User (user)<br/>Public Discovery & Citizen Requests"]
+    end
+
+    subgraph ScopeBoundary["Server-Side Authorization Boundaries"]
+        GlobalScope["Global Platform Scope<br/>(Full Platform Visibility)"]
+        OrgScope["Organization Boundary Guard<br/>(Strict ProviderMembership Scoping)"]
+        UserScope["User / Session Boundary<br/>(Personal Records & Guest Tracking)"]
+    end
+
+    subgraph SAPermissions["System Admin Operations (/admin)"]
+        SA1["Review & Decide Provider Applications"]
+        SA2["Manage Provider Accounts & Invitations"]
+        SA3["Monitor Global Emergency Requests (Bed, Blood, Ambulance)"]
+        SA4["Audit Logs, Security & Mutation Locks"]
+        SA5["Hospital & Service Verification"]
+    end
+
+    subgraph PAPermissions["Provider Admin Operations (/provider)"]
+        PA1["Organization Switcher (Multi-Org Scoped)"]
+        PA2["Live Bed & Emergency Availability Controls"]
+        PA3["Process Scoped Requests (Accept, Reject, Dispatch)"]
+        PA4["Publish Jobs & Review Applicant SOP / Resumes"]
+        PA5["Download Verified Organization Activity Reports"]
+    end
+
+    subgraph RUPermissions["Regular User Operations (/dashboard, /requests)"]
+        RU1["Search Hospitals, Blood Banks, Diagnostics, Ambulances"]
+        RU2["Submit Bed Requests (Standard & Emergency Mode)"]
+        RU3["Requisition Blood Units & Pledge Donations"]
+        RU4["Book Ambulances with Live Status Updates"]
+        RU5["Apply for Healthcare Careers with Resume/SOP"]
+        RU6["Track Requests via Private Link or User Dashboard"]
+    end
+
+    SA --> GlobalScope
+    PA --> OrgScope
+    RU --> UserScope
+
+    GlobalScope --> SAPermissions
+    OrgScope --> PAPermissions
+    UserScope --> RUPermissions
+
+    %% Isolation & Denials
+    OrgScope -. "DENIED: Cannot access unassigned orgs" .-x PA
+    UserScope -. "DENIED: Cannot access admin portals" .-x RU

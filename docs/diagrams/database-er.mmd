@@ -1,0 +1,176 @@
+erDiagram
+    User ||--o{ ProviderMembership : "has assigned"
+    User ||--o{ EmergencyRequest : "submits (optional)"
+    User ||--o{ BloodRequest : "submits (optional)"
+    User ||--o{ AmbulanceBooking : "books (optional)"
+    User ||--o{ JobApplication : "applies"
+    User ||--o{ ProviderApplication : "reviews / requester"
+    User ||--o{ AuditLog : "initiates"
+
+    Hospital ||--o{ EmergencyRequest : "receives"
+    Hospital ||--o{ Job : "lists"
+    Hospital ||--o{ ResourceProvider : "parent of (optional)"
+    Hospital ||--o{ ProviderMembership : "scoped in"
+
+    ResourceProvider ||--o{ BloodRequest : "receives"
+    ResourceProvider ||--o{ AmbulanceBooking : "receives"
+    ResourceProvider ||--o{ BloodCampaign : "hosts"
+    ResourceProvider ||--o{ ProviderMembership : "scoped in"
+
+    Job ||--o{ JobApplication : "receives"
+
+    ProviderApplication ||--o| User : "provisions"
+
+    User {
+        ObjectId _id PK
+        string email UK
+        string passwordHash
+        string name
+        string role "user | provider_admin | system_admin"
+        string accountStatus "active | suspended | pending"
+        string notificationEmail
+        boolean notificationsEnabled
+        Date emailVerifiedAt
+        Date lastLogin
+        ObjectId[] savedHospitals FK
+        int authVersion
+    }
+
+    Hospital {
+        ObjectId _id PK
+        string name
+        string slug UK
+        string hospitalType "Government | Private | Trust | Municipal | Teaching | Specialty"
+        string locality
+        string city
+        Point location "2dsphere [lng, lat]"
+        string phone
+        string emergencyPhone
+        string verificationStatus "verified | unverified | pending | rejected | stale"
+        string approvalStatus "pending | approved | rejected"
+        ObjectId[] admins FK
+    }
+
+    ResourceProvider {
+        ObjectId _id PK
+        string kind "blood_bank | diagnostic | ambulance"
+        string name
+        ObjectId hospital FK "Optional parent hospital"
+        string locality
+        string city
+        Point location "2dsphere [lng, lat]"
+        string phone
+        string[] listedBloodGroups
+        string[] services
+        string verificationStatus
+        boolean active
+    }
+
+    ProviderMembership {
+        ObjectId _id PK
+        ObjectId user FK
+        ObjectId organization FK "Hospital or ResourceProvider _id"
+        string kind "hospital | blood_bank | diagnostic | ambulance"
+        boolean active
+        ObjectId assignedBy FK
+    }
+
+    ProviderApplication {
+        ObjectId _id PK
+        string kind "hospital | blood_bank | diagnostic | ambulance"
+        string name
+        string address
+        string contactEmail
+        string contactName
+        string city
+        string status "pending | approved | rejected"
+        ObjectId organization "Auto-generated org ID"
+        ObjectId account FK "Provisioned Provider Admin User"
+        ObjectId reviewedBy FK
+        Date reviewedAt
+    }
+
+    EmergencyRequest {
+        ObjectId _id PK
+        string requestId UK
+        ObjectId user FK "Optional"
+        ObjectId hospital FK
+        string emergencyType
+        string requiredFacility "ICU | NICU | OXYGEN | GENERAL"
+        string status "REQUESTED | SENT | UNDER_REVIEW | INFORMATION_REQUESTED | ACCEPTED | REJECTED | EXPIRED | CANCELLED | COMPLETED"
+        boolean isEmergency
+        boolean ambulanceRequired
+        string contactPhone
+        string contactEmail
+        Date expiresAt
+    }
+
+    BloodRequest {
+        ObjectId _id PK
+        string reference UK
+        string type "REQUEST | DONATION"
+        ObjectId provider FK
+        ObjectId user FK "Optional"
+        string bloodGroup "A+ | A- | B+ | B- | O+ | O- | AB+ | AB-"
+        int units
+        string urgency
+        boolean isUrgent
+        string status "REQUESTED | CONFIRMED | COMPLETED | CANCELLED | REJECTED"
+        string contactPhone
+        string contactEmail
+    }
+
+    AmbulanceBooking {
+        ObjectId _id PK
+        string reference UK
+        ObjectId provider FK
+        ObjectId user FK "Optional"
+        string status "RECORDED | UNDER_REVIEW | CONFIRMED | DISPATCHED | CANCELLED | COMPLETED"
+        boolean isEmergency
+        providerSnapshot providerSnapshot
+        requestSnapshot requestSnapshot
+        deliveryStatus delivery
+    }
+
+    Job {
+        ObjectId _id PK
+        ObjectId hospital FK "Optional"
+        string organizationType "hospital | blood_bank | diagnostic | ambulance"
+        string organizationName
+        string title
+        string category "Doctor | Nurse | Technician | Admin"
+        string employmentType "full_time | part_time | contract"
+        string status "draft | published | closed"
+        ObjectId createdBy FK
+    }
+
+    JobApplication {
+        ObjectId _id PK
+        ObjectId job FK
+        ObjectId applicant FK
+        string reference UK
+        string status "submitted | reviewing | shortlisted | rejected | accepted"
+        string resumeUrl
+        string statementOfPurpose
+    }
+
+    BloodCampaign {
+        ObjectId _id PK
+        ObjectId bloodBank FK
+        string name
+        Date date
+        string location
+        int targetDonors
+        string status "active | completed | cancelled"
+    }
+
+    AuditLog {
+        ObjectId _id PK
+        ObjectId actor FK
+        string action
+        string targetType
+        ObjectId targetId
+        string details
+        string ipAddress
+        Date timestamp
+    }

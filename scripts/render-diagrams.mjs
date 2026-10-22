@@ -14,7 +14,8 @@ async function main() {
     return;
   }
 
-  const browser = await chromium.launch({ headless: true });
+  const channel = process.env.MEDREACH_PLAYWRIGHT_CHANNEL || "chrome";
+  const browser = await chromium.launch({ headless: true, channel });
   const page = await browser.newPage({
     viewport: { width: 1600, height: 1200 },
     deviceScaleFactor: 2,

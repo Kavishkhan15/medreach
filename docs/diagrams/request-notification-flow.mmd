@@ -1,0 +1,64 @@
+flowchart TD
+    subgraph RequestIntake["1. Citizen / Patient Request Submission"]
+        ReqBed["Bed Request<br/>(Standard or Emergency)"]
+        ReqBlood["Blood Requisition<br/>(Normal Request, Urgent, or Pledge)"]
+        ReqAmb["Ambulance Booking<br/>(Scheduled or Urgent Dispatch)"]
+    end
+
+    subgraph BackendAPI["2. Backend Ingestion & Classification"]
+        Validate["Validate Payload & Rate Limit"]
+        GenRef["Generate Public Reference & Private Tracking Hash"]
+        Classify{"Emergency / Urgent Classification?"}
+    end
+
+    subgraph NotificationEngine["3. Durable Notification Engine"]
+        SaveReq[("Save Request to MongoDB")]
+        CheckDedupe["Deduplicate via RequestNotification Intent"]
+        
+        subgraph RoutingLogic["Notification Target Resolution"]
+            EmergRoute["Emergency Route:<br/>• Target Provider Admins<br/>• Opted-in System Admins"]
+            NormalRoute["Standard Route:<br/>• Target Provider Admins Only"]
+        end
+
+        QueueMail["Queue EmailDelivery Records"]
+        Worker["Request Notification Worker<br/>(Max 3 bounded retries, eligibility re-check)"]
+        SMTPGateway["SMTP Gateway<br/>(Deliver or mark 'uncertain')"]
+    end
+
+    subgraph ProviderActions["4. Provider Workspace Processing (/provider)"]
+        ProvDesk["Provider Admin Dashboard"]
+        ReviewReq["Review Clinical Needs & Availability"]
+        Decision{"Action Decision"}
+        StatusUpdate["Atomic Status Update<br/>(ACCEPTED / REJECTED / DISPATCHED)"]
+    end
+
+    subgraph UserFeedback["5. Patient Tracking & Feedback"]
+        UserDash["Logged-in User Dashboard (/dashboard)"]
+        GuestTrack["Public Guest Tracking (/track?ref=...&token=...)"]
+        EmailUpdate["Email Notification with Tracking Link"]
+    end
+
+    %% Flow connections
+    ReqBed --> Validate
+    ReqBlood --> Validate
+    ReqAmb --> Validate
+
+    Validate --> GenRef --> SaveReq --> Classify
+
+    Classify -- "isEmergency = true OR isUrgent = true" --> EmergRoute
+    Classify -- "Normal / Standard Request" --> NormalRoute
+
+    EmergRoute --> CheckDedupe
+    NormalRoute --> CheckDedupe
+
+    CheckDedupe --> QueueMail --> Worker --> SMTPGateway
+    SaveReq -. "Real-time Notification" .-> ProvDesk
+
+    ProvDesk --> ReviewReq --> Decision
+    Decision --> StatusUpdate
+
+    StatusUpdate --> SaveReq
+    StatusUpdate --> EmailUpdate
+    SaveReq --> UserDash
+    SaveReq --> GuestTrack
+    EmailUpdate --> GuestTrack

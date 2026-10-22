@@ -1,0 +1,48 @@
+sequenceDiagram
+    autonumber
+    actor User as Client / User
+    participant Frontend as Next.js App (Client Core)
+    participant AuthAPI as Express Auth API (/api/auth)
+    participant DB as MongoDB (User, AuthToken)
+
+    %% Login Flow
+    Note over User,DB: 1. Login & Token Issuance
+    User->>Frontend: Enters Email & Password
+    Frontend->>AuthAPI: POST /api/auth/login { email, password }
+    AuthAPI->>DB: Query User (select +passwordHash)
+    AuthAPI->>AuthAPI: bcrypt.compare(password, passwordHash)
+    alt Invalid Credentials
+        AuthAPI-->>Frontend: 401 Unauthorized
+        Frontend-->>User: Display error message
+    else Valid Credentials
+        AuthAPI->>AuthAPI: Generate Access Token (15m, typed, sub, role, authVersion)
+        AuthAPI->>AuthAPI: Generate Refresh Token (7d, cryptographically random)
+        AuthAPI->>DB: Store hashed Refresh Token & update lastLogin
+        AuthAPI-->>Frontend: Set-Cookie: token, refreshToken (HttpOnly, Secure, SameSite) + Body: { user }
+        
+        %% Role-based Routing
+        Note over Frontend,User: 2. Smart Client-Side Role Redirection
+        alt user.role == "system_admin"
+            Frontend-->>User: Navigate to /admin (System Admin Dashboard)
+        else user.role == "provider_admin"
+            Frontend-->>User: Navigate to /provider (Provider Workspace)
+        else user.role == "user"
+            alt user.region is empty
+                Frontend-->>User: Navigate to /profile (Region Onboarding Required)
+            else user.region is present
+                Frontend-->>User: Navigate to /dashboard (User Dashboard)
+            end
+        end
+    end
+
+    %% Token Refresh Flow
+    Note over Frontend,DB: 3. Silent Access Token Refresh
+    Frontend->>AuthAPI: POST /api/auth/refresh (Cookie: refreshToken)
+    AuthAPI->>DB: Validate stored token hash & check User.authVersion
+    alt Token expired or authVersion revoked
+        AuthAPI-->>Frontend: 401 Session Revoked
+        Frontend-->>User: Redirect to /login
+    else Token valid
+        AuthAPI->>AuthAPI: Issue new Access Token + Rotate Refresh Token
+        AuthAPI-->>Frontend: Return fresh token & updated Cookie
+    end

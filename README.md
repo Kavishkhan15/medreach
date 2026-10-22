@@ -24,6 +24,21 @@ Screenshots show the actual local application and stored directory records,
 captured on **22 October 2026**. They are interface snapshots, not evidence of
 current availability, campaign dates, provider participation or live dispatch.
 
+## Table of Contents
+
+- [Explore MedReach](#explore-medreach)
+  - [Feature Highlights](#explore-medreach)
+  - [Visual Tour](#a-closer-look)
+- [Three Frontends, One Product](#three-frontends-one-product)
+- [Roles and Access](#roles-and-access)
+- [Run Locally](#run-locally)
+- [Architecture & Diagrams](#architecture)
+- [Verification & Quality Checks](#verification)
+- [Documentation Hub](#documentation)
+- [Troubleshooting](#troubleshooting)
+- [Data and Contribution Boundaries](#data-and-contribution-boundaries)
+- [License](#license)
+
 ## Explore MedReach
 
 | Find care | Coordinate and follow up | Manage the network |
@@ -146,7 +161,15 @@ evaluation/       Research tooling and explicitly limited measurements
 user-study/       Proposed protocols and draft questionnaires
 ```
 
-[Architecture and code map →](docs/architecture.md)
+[Architecture and code map →](docs/architecture.md) · [Complete Diagrams Gallery →](docs/diagrams/README.md)
+
+| System Topology | Database ER Schema | Cloud Deployment |
+| :---: | :---: | :---: |
+| [![System Architecture](docs/diagrams/system-architecture.svg)](docs/diagrams/README.md#1-system-architecture) | [![Database ER](docs/diagrams/database-er.svg)](docs/diagrams/README.md#2-database-entity-relationship-er-diagram) | [![Deployment Architecture](docs/diagrams/deployment-architecture.svg)](docs/diagrams/README.md#6-deployment-architecture) |
+| Multi-tier Express/Next.js layers | 16 collections & relationships | Vercel, Railway & Atlas topology |
+
+Additional lifecycle diagrams:
+[Role Matrix](docs/diagrams/README.md#3-role-permission-matrix) · [Provider Onboarding](docs/diagrams/README.md#4-provider-onboarding-sequence) · [Request & Notification Flow](docs/diagrams/README.md#5-request-lifecycle--notification-flow) · [Authentication Flow](docs/diagrams/README.md#7-authentication--role-redirection-flow)
 
 ## Verification
 
@@ -186,10 +209,20 @@ Start with the [documentation hub](docs/README.md), organised by task.
 
 | Build and understand | Run and maintain | Product and research |
 | --- | --- | --- |
-| [Architecture](docs/architecture.md) | [Deployment and email](docs/deployment.md) | [Services and maps](docs/SERVICES_AND_MAP_GUIDE.md) |
-| [API reference](docs/api.md) | [Verification](docs/release-qa.md) | [Request lifecycle](docs/bed-request-lifecycle.md) |
-| [Data model](docs/data-model.md) | [Security](docs/security.md) · [Privacy](docs/privacy.md) | [Assistant](docs/ai-assistant.md) |
+| [Architecture](docs/architecture.md) · [Diagrams](docs/diagrams/README.md) | [Deployment and email](docs/deployment.md) | [Services and maps](docs/SERVICES_AND_MAP_GUIDE.md) |
+| [API reference](docs/api.md) | [Release QA](docs/release-qa.md) · [Testing](docs/testing.md) | [Request lifecycle](docs/bed-request-lifecycle.md) |
+| [Data model](docs/data-model.md) · [Database schema](docs/database-schema.md) | [Security](docs/security.md) · [Privacy](docs/privacy.md) | [Assistant](docs/ai-assistant.md) |
 | [Frontend variants](variants/README.md) | [Performance measurements](docs/latency-verification.md) | [Evaluation tooling](evaluation/README.md) |
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+| --- | --- | --- |
+| `EADDRINUSE: address already in use :::3000` (or `4000`) | A prior process is holding the frontend or backend port. | Find and terminate the process: `lsof -ti :3000 | xargs kill -9` (or replace with `3001`, `3002`, `4000`). |
+| `MongooseServerSelectionError: connect ECONNREFUSED 127.0.0.1:27017` | Local MongoDB daemon is not running. | Start MongoDB daemon: `mongod --dbpath /path/to/db` or verify status with `mongosh --eval "db.adminCommand('ping')"`. |
+| API returns `401 Unauthorized` on `/api/auth/me` | Refresh token expired, revoked, or cookies blocked. | Log in again at `/login`. Verify browser accepts `SameSite=Lax` / `Secure` cookies. |
+| Stale styles or missing client modules after branch switch | Next.js build cache discrepancy. | Clear `.next` build caches across variants: `rm -rf variants/*/.next`. |
+| Map fails to load or shows grey container | Missing or restricted Google Maps API key. | MedReach provides an honest list fallback without an active key. Supply `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `.env.local` if map rendering is required. |
 
 ### Data and contribution boundaries
 
@@ -206,3 +239,11 @@ and the main `/admin` dashboard remain.
 Research plans, draft study instruments and historical figures are labelled in
 the [research documentation](evaluation/README.md). Placeholder scores are not
 empirical results or security certifications.
+
+## License
+
+This project is licensed under the [MIT License](package.json).
+
+---
+
+Designed and engineered for Mumbai's connected healthcare ecosystem.

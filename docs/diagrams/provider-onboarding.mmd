@@ -1,0 +1,55 @@
+sequenceDiagram
+    autonumber
+    actor Rep as Healthcare Representative
+    participant UI as MedReach Frontend (Landing Page)
+    participant API as Express API (/api/providers/applications)
+    participant DB as MongoDB (ProviderApplication, Locks)
+    actor Admin as System Admin
+    participant Mail as Email Notification Service
+    participant ProvDB as MongoDB (Org, User, Membership)
+
+    %% Step 1: Submission
+    Note over Rep,UI: 1. Public Onboarding Submission
+    Rep->>UI: Fills "Join MedReach Network" form
+    UI->>API: POST /api/providers/applications
+    API->>API: Rate-limit check & compute unique fingerprint
+    API->>DB: Save ProviderApplication (status: pending, auto-gen OrgId)
+    API->>Mail: Queue application receipt & Admin alert
+    Mail-->>Rep: Confirmation email ("Application Received")
+    Mail-->>Admin: Alert email ("New Provider Application Pending")
+    API-->>UI: 201 Created (Receipt acknowledged)
+    UI-->>Rep: Success confirmation banner
+
+    %% Step 2: System Admin Review
+    Note over Admin,API: 2. System Admin Review & Decision
+    Admin->>UI: Navigates to /admin/provider-approvals
+    UI->>API: GET /api/admin/provider-approvals
+    API->>DB: Query pending applications
+    DB-->>API: Return pending records
+    API-->>UI: Display application cards
+    Admin->>UI: Clicks "Approve"
+    UI->>API: POST /api/admin/provider-approvals/:id/review { decision: "approve" }
+
+    %% Step 3: Atomic Provisioning & Lock
+    Note over API,ProvDB: 3. Atomic Provisioning Pipeline
+    API->>DB: Acquire AdminMutationLock (5-min renewable lease)
+    API->>ProvDB: Create Hospital or ResourceProvider (status: approved)
+    API->>API: Auto-generate username (admin@<org-slug>-<id>.example)
+    API->>ProvDB: Create User (role: provider_admin, status: pending)
+    API->>ProvDB: Create ProviderMembership (user -> org link, active: true)
+    API->>DB: Update ProviderApplication (status: approved, accountId)
+    API->>DB: Release AdminMutationLock
+    API->>Mail: Queue single-use activation invitation
+    Mail-->>Rep: Activation email with secure token link
+    API-->>UI: 200 OK (Approved & Provisioned)
+
+    %% Step 4: Account Activation
+    Note over Rep,ProvDB: 4. Account Activation & Access
+    Rep->>UI: Opens /activate-provider?token=XYZ
+    UI->>API: POST /api/auth/activate-provider { token, password }
+    API->>ProvDB: Verify token, hash password (bcrypt 12), set status: active
+    API-->>UI: 200 OK (Account Activated)
+    Rep->>UI: Logs in with credentials at /login
+    UI->>API: POST /api/auth/login
+    API-->>UI: Sets HTTP-only secure JWT cookie
+    UI-->>Rep: Redirects to /provider (Organization Workspace)

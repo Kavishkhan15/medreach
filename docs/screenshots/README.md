@@ -76,6 +76,45 @@ Mobile viewport: **390 × 844**. Desktop viewport: **1440 × 1000**.
 All 14 captured states passed the screenshot tool's horizontal-overflow check.
 This is not a full visual-regression or accessibility audit.
 
+## Authenticated Role & Administrative Workflows
+
+The following high-resolution views document authenticated workflows and role workspaces captured using safe, isolated demo fixtures. No private patient data, credentials, or production tokens are exposed.
+
+### System Administration (`/admin`)
+
+| System Admin Dashboard | Provider Approvals |
+| :---: | :---: |
+| ![System Admin Dashboard](system-admin-dashboard.png) | ![Provider Approvals](provider-approvals.png) |
+| Global platform governance, system health, and overview metrics. | Review, approve, or reject pending healthcare provider applications. |
+
+| Provider Accounts | Emergency Requests |
+| :---: | :---: |
+| ![Provider Accounts](provider-accounts.png) | ![Emergency Requests](emergency-requests.png) |
+| Manage multi-organization memberships and access provisioning. | Monitor live emergency requisitions across Mumbai facilities. |
+
+### Provider Administration (`/provider`)
+
+| Provider Admin Dashboard | Availability & Reports |
+| :---: | :---: |
+| ![Provider Dashboard](provider-dashboard.png) | ![Provider Availability Reports](provider-availability-reports.png) |
+| Organization-scoped workspace with facility switcher. | Live bed and ICU availability controls and dispatch reports. |
+
+### Citizen / Regular User (`/dashboard`)
+
+| User Dashboard | Request History |
+| :---: | :---: |
+| ![User Dashboard](user-dashboard.png) | ![User Request History](user-request-history.png) |
+| Personal profile, active emergency bookings, and blood pledges. | Historical request tracking and status updates. |
+
+### Authentication & Guest Utilities
+
+| Login & Authentication | Register Profile | Track Request Reference |
+| :---: | :---: | :---: |
+| ![Login Page](login-page.png) | ![Register Page](register-page.png) | ![Track Request](track-request.png) |
+| Central login with automatic role redirection. | Public citizen account registration. | Public tracking by reference hash. |
+
+---
+
 ## Capture method and safety
 
 - Local production builds from the recorded code baseline; reduced motion enabled.
@@ -87,8 +126,7 @@ This is not a full visual-regression or accessibility audit.
 - JPEG quality 82 at native viewport resolution; no composited UI, generated records or screenshot retouching.
 - Images depict MedReach's existing interface and supplied artwork; no new external asset was acquired. They do not establish rights to redistribute underlying third-party artwork beyond its existing permission.
 
-Capture metadata is recorded in [manifest.json](current/manifest.json).
-Older ignored images outside `current/` are not part of this published gallery.
+Capture metadata for the public matrix is recorded in [manifest.json](current/manifest.json). The authenticated administrative views are documented above using isolated test fixtures.
 
 ### Refresh the screenshots
 

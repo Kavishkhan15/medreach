@@ -1,0 +1,85 @@
+graph TB
+    subgraph Clients["Frontend Presentation Layer (Next.js 15 App Router)"]
+        UI_BS["Bootstrap Variant<br/>(variants/bootstrap · Port 3000)<br/>Classic medical portal design"]
+        UI_TW["Tailwind CSS Variant<br/>(variants/tailwind · Port 3001)<br/>Modern utility-first responsive UI"]
+        UI_SK["Skeleton CSS Variant<br/>(variants/skeleton · Port 3002)<br/>Lightweight, minimalist design"]
+    end
+
+    subgraph Core["Shared Core Library (packages/core)"]
+        Core_Val["Validation & Schemas"]
+        Core_Geo["Geo Ranking & Distances"]
+        Core_API["API Client & Session Refresh"]
+        Core_Hooks["Shared React Hooks"]
+    end
+
+    subgraph Gateway["API Security & Middleware Layer"]
+        Helmet["Helmet Security Headers"]
+        Cors["CORS Origin Validation"]
+        RateLimit["Rate Limiting & IP Verification"]
+        JWT["JWT Auth & Session Revocation"]
+        RBAC["RBAC (system_admin, provider_admin, user)"]
+        Lease["Database Mutation Lock Guard"]
+    end
+
+    subgraph Backend["Express Backend API Layer (backend · Port 4000)"]
+        R_Auth["/api/auth<br/>Login, Register, Provider Activation"]
+        R_Hosp["/api/hospitals<br/>Directory, Details, Geospatial Search"]
+        R_Emerg["/api/emergency-requests<br/>Emergency Bed Requests & Lifecycle"]
+        R_Blood["/api/blood-banks<br/>Inventory, Urgent Requisitions, Campaigns"]
+        R_Amb["/api/ambulances<br/>Bookings, Tracking & Dispatch"]
+        R_Careers["/api/jobs & /api/applications<br/>Listings, Resume/SOP Applications"]
+        R_Prov["/api/providers<br/>Provider Admin, Availability, Scoped Reports"]
+        R_Admin["/api/admin<br/>System Admin, Approvals, Accounts, Audit"]
+        R_Assist["/api/assistant<br/>Contextual Healthcare Assistant"]
+        R_Track["/api/tracking<br/>Guest Token Request Tracking"]
+    end
+
+    subgraph Workers["Background Services & Workers"]
+        W_Expiry["Emergency Request Expiry Worker"]
+        W_Notify["Request Notification Worker"]
+        W_Email["Bounded Email Retry Engine"]
+    end
+
+    subgraph Database["Data Persistence Layer (MongoDB)"]
+        DB_Users[("Users & Accounts")]
+        DB_Hosp[("Hospitals & Facilities")]
+        DB_ResProv[("ResourceProviders (Blood, Amb, Diag)")]
+        DB_Memberships[("ProviderMemberships")]
+        DB_Apps[("ProviderApplications")]
+        DB_Requests[("Bed, Blood & Ambulance Requests")]
+        DB_Jobs[("Jobs & Applications")]
+        DB_Audit[("AuditLogs & EmailDeliveries")]
+    end
+
+    subgraph External["External Integrations"]
+        Ext_GMap["Google Maps Platform<br/>(Geocoding & Static Maps)"]
+        Ext_SMTP["SMTP Mail Gateway<br/>(Nodemailer Transport)"]
+    end
+
+    %% Client to Core & Backend
+    UI_BS --> Core
+    UI_TW --> Core
+    UI_SK --> Core
+
+    UI_BS -. REST API .-> Gateway
+    UI_TW -. REST API .-> Gateway
+    UI_SK -. REST API .-> Gateway
+
+    Gateway --> Backend
+
+    %% Backend to Database
+    Backend --> DB_Users
+    Backend --> DB_Hosp
+    Backend --> DB_ResProv
+    Backend --> DB_Memberships
+    Backend --> DB_Apps
+    Backend --> DB_Requests
+    Backend --> DB_Jobs
+    Backend --> DB_Audit
+
+    %% Backend to Workers & External
+    Backend --> Workers
+    Workers --> DB_Requests
+    Workers --> DB_Audit
+    Workers --> Ext_SMTP
+    Backend --> Ext_GMap

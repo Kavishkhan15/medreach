@@ -11,11 +11,11 @@ operational instructions, dated verification and proposed research.
 | I want to… | Read |
 | --- | --- |
 | Run the project | [Quick start](../README.md#run-locally), then [backend](../backend/README.md) and [frontend variants](../variants/README.md) |
-| Understand the implementation | [Architecture and code map](architecture.md) |
+| Understand the implementation | [Architecture and code map](architecture.md) · [Diagram Gallery](diagrams/README.md) |
 | Find an endpoint or permission boundary | [API reference](api.md), [security](security.md) |
-| Understand MongoDB records and relationships | [Data model](data-model.md), [stored dataset](stored-data.md) |
+| Understand MongoDB records and relationships | [Database Schema & Dictionary](database-schema.md) · [Data model](data-model.md) · [Stored dataset](stored-data.md) |
 | Deploy the existing stack or configure email | [Vercel, Railway, Atlas and email](deployment.md) |
-| Run tests safely or inspect actual results | [Release verification](release-qa.md) |
+| Run tests safely or inspect actual results | [Testing guide](testing.md) · [Release verification](release-qa.md) |
 | Understand speed improvements | [Performance evidence](latency-verification.md) |
 | Review the interface | [Current screenshots and capture method](screenshots/README.md) |
 

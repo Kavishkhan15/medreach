@@ -1,8 +1,8 @@
 # Architecture
 
-[Documentation](README.md) · [Project overview](../README.md)
+[Documentation](README.md) · [Project overview](../README.md) · [Diagram Gallery](diagrams/README.md) · [Database Schema](database-schema.md) · [API Reference](api.md)
 
-## Data flow
+## System Overview & Visual Architecture
 
 ```text
 Existing healthcare dataset
@@ -13,6 +13,18 @@ Existing healthcare dataset
         ↕
 Bootstrap / Tailwind / Skeleton
 ```
+
+The system architecture and workflow models are visually documented in high-resolution vector format:
+- **System Topology:** [`docs/diagrams/system-architecture.svg`](diagrams/system-architecture.svg) (Source: [`.mmd`](diagrams/system-architecture.mmd))
+- **Database ER Schema:** [`docs/diagrams/database-er.svg`](diagrams/database-er.svg) (Source: [`.mmd`](diagrams/database-er.mmd))
+- **Role-Permission Matrix:** [`docs/diagrams/role-permission-matrix.svg`](diagrams/role-permission-matrix.svg) (Source: [`.mmd`](diagrams/role-permission-matrix.mmd))
+- **Provider Onboarding:** [`docs/diagrams/provider-onboarding.svg`](diagrams/provider-onboarding.svg) (Source: [`.mmd`](diagrams/provider-onboarding.mmd))
+- **Request & Notification Lifecycle:** [`docs/diagrams/request-notification-flow.svg`](diagrams/request-notification-flow.svg) (Source: [`.mmd`](diagrams/request-notification-flow.mmd))
+- **Cloud Deployment Architecture:** [`docs/diagrams/deployment-architecture.svg`](diagrams/deployment-architecture.svg) (Source: [`.mmd`](diagrams/deployment-architecture.mmd))
+- **Authentication & Role Redirection:** [`docs/diagrams/auth-flow.svg`](diagrams/auth-flow.svg) (Source: [`.mmd`](diagrams/auth-flow.mmd))
+
+See the complete [Diagram Gallery](diagrams/README.md) for full renders and component breakdowns.
+
 
 No service crawls external provider websites. Stored source URLs and observations
 document historical provenance. Provider records and availability are never
