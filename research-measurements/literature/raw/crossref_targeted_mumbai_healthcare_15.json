@@ -1,0 +1,696 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 3278787,
+    "items": [
+      {
+        "DOI": "10.69711/sharda.ijmir.v13i1.2401",
+        "title": [
+          "Examining the Role of Access to Public Healthcare Facilities in Reducing Out-of-Pocket Healthcare Expenditure of Poor People"
+        ],
+        "author": [
+          {
+            "given": "Siya",
+            "family": "Bhatia",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Mridul",
+            "family": "Dharwal",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              1,
+              2
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Management Issues and Research"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.69711/sharda.ijmir.v13i1.2401",
+        "score": 32.921486
+      },
+      {
+        "abstract": "<jats:p>Health financing in Malaysia is intensely subsidised by public funding and is increasingly sourced by household out-of-pocket financing, yet the under-five mortality rate has been gradually increasing in the last decade. In this context, this study aims to investigate the relationship between public, private, and out-of-pocket health expenditures and the under-five mortality rate in Malaysia using the autoregressive distributed lag (ARDL) estimation technique, whereby critical test values are recalculated using the response surface method for a time-series data of 22 years. The findings reveal that out-of-pocket health expenditure deteriorates the under-five mortality rate in Malaysia, while public and private health expenditures are statistically insignificant. Therefore, an effective health financing safety net may be an option to ensure an imperative child health outcome.</jats:p>",
+        "DOI": "10.3390/healthcare10030589",
+        "type": "journal-article",
+        "title": [
+          "The Impact of Public, Private, and Out-of-Pocket Health Expenditures on Under-Five Mortality in Malaysia"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0001-7676-083X",
+            "authenticated-orcid": false,
+            "given": "Renuka Devi",
+            "family": "Logarajan",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "School of Business and Economics, Universiti Putra Malaysia (UPM), Serdang 43400, Selangor, Malaysia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-8961-9261",
+            "authenticated-orcid": false,
+            "given": "Norashidah Mohamed",
+            "family": "Nor",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "School of Business and Economics, Universiti Putra Malaysia (UPM), Serdang 43400, Selangor, Malaysia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Abdalla",
+            "family": "Sirag",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "School of Business and Economics, Universiti Putra Malaysia (UPM), Serdang 43400, Selangor, Malaysia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Rusmawati",
+            "family": "Said",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "School of Business and Economics, Universiti Putra Malaysia (UPM), Serdang 43400, Selangor, Malaysia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Saifuzzaman",
+            "family": "Ibrahim",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "School of Business and Economics, Universiti Putra Malaysia (UPM), Serdang 43400, Selangor, Malaysia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare"
+        ],
+        "score": 32.307365,
+        "URL": "https://doi.org/10.3390/healthcare10030589",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              3,
+              21
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1136/bmj.i5328",
+        "title": [
+          "Clinton promises to expand healthcare access and cut out-of-pocket costs"
+        ],
+        "author": [
+          {
+            "given": "Michael",
+            "family": "McCarthy",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              9,
+              30
+            ]
+          ]
+        },
+        "container-title": [
+          "BMJ"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1136/bmj.i5328",
+        "score": 32.160797
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:sec>\n                    <jats:title>Background</jats:title>\n                    <jats:p>Increased coverage for institutional delivery (ID) is one of the essential factors for improved maternal and child health (MCH). Though, ID increased over time, out-of-pocket expenditure (OOPE) for the care-seeking families had been found to be growing, parallelly. Hence, we estimated OOPE in public and private health centres for ID, along with their sources and attributing factors and compared state and union territory-wise, so that financial risk protection can be improved for MCH related services.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Methods</jats:title>\n                    <jats:p>\n                      We used women\u2019s data from the National Family Health Survey, 2019\u20132021 (NFHS-5). Reproductive aged women (15\u201349\u00a0years) delivering one live child in last 5\u00a0years (\n                      <jats:italic>n</jats:italic>\n                      = 145,386) in any public or private institutions, were included. Descriptive statistics were presented as frequency and proportions. OOPE, was summarized as median and interquartile range (IQR). To estimate the extent for each covariate\u2019s effect, linear regression model was conducted.\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>Overall median OOPE for ID was Rs. 4066 (median OOPE: private hospitals: Rs.25600, public hospitals: Rs.2067). Health insurance was not sufficient to slash OOPE down at private facilities. Factors associated significantly to high OOPE were mothers\u2019 education, elderly pregnancy, complicated delivery, birth order of the latest child etc.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusion</jats:title>\n                    <jats:p>A standard norm for ID should be implemented as a component of overseeing and controlling inequality. Aiding the needy is probably just one side of the solution, while the focus is required to be shifted towards reducing disparity among the health facilities, so that the beneficiaries do not need to spend on essential services or during emergencies.</jats:p>\n                  </jats:sec>",
+        "DOI": "10.1186/s12889-023-16352-w",
+        "type": "journal-article",
+        "title": [
+          "Out-of-pocket expenditure and its correlates for institutional deliveries in private and public healthcare sectors in India: findings from NFHS 5"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0001-9093-1172",
+            "authenticated-orcid": false,
+            "given": "Sayantani",
+            "family": "Manna",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-3574-4398",
+            "authenticated-orcid": false,
+            "given": "Damini",
+            "family": "Singh",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-1833-3703",
+            "authenticated-orcid": false,
+            "given": "Shishirendu",
+            "family": "Ghosal",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-2377-4394",
+            "authenticated-orcid": false,
+            "given": "Tanveer",
+            "family": "Rehman",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-5647-0122",
+            "authenticated-orcid": false,
+            "given": "Srikanta",
+            "family": "Kanungo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-7717-5592",
+            "authenticated-orcid": false,
+            "given": "Sanghamitra",
+            "family": "Pati",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "BMC Public Health"
+        ],
+        "score": 32.068005,
+        "URL": "https://doi.org/10.1186/s12889-023-16352-w",
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              8,
+              2
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Access to maternal healthcare remains uneven across India despite significant improvements in national health indicators over the past two decades. Out-of-pocket expenditure (OOPE) payments made directly by households at the point of care has been widely identified as a key financial barrier that deters women, particularly those from low-income and rural households, from seeking antenatal care, institutional delivery, and postnatal care services. This paper examines how OOPE on maternal healthcare is associated with access to these services and assesses the extent of district-level variation in both expenditure and access. Drawing on secondary data from the National Family Health Survey-5 (NFHS-5, 2019-21), the National Sample Survey 75th Round on Social Consumption: Health (2017-18), and the Health Management Information System (HMIS), the paper synthesises existing evidence to explore patterns of financial burden, disparities across districts, and the socioeconomic and health-system factors associated with these variations. The paper further evaluates the effectiveness of three major government schemes the Janani Suraksha Yojana (JSY), the Janani Shishu Suraksha Karyakram (JSSK), and the Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA) in reducing OOPE and improving access. Findings from existing literature indicate that while institutional delivery rates have increased, OOPE persists in both public and private facilities and exhibits substantial spatial variation across districts, with poorer districts bearing a disproportionate burden. The paper concludes with policy recommendations focused on strengthening financial protection mechanisms and addressing supply-side gaps in underserved districts.</jats:p>",
+        "DOI": "10.2139/ssrn.6926560",
+        "type": "posted-content",
+        "title": [
+          "Out-of-Pocket Expenditure and Access to Maternal Healthcare in India: Evidence on Financial Barriers and District-Level Disparities"
+        ],
+        "author": [
+          {
+            "given": "Riya",
+            "family": "Pal",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 31.505955,
+        "URL": "https://doi.org/10.2139/ssrn.6926560",
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1787/888932337566",
+        "title": [
+          "4.5.3 Out-of-pocket and private health insurance expenditure, 2008"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.1787/888932337566",
+        "score": 31.053446
+      },
+      {
+        "abstract": "<title>Abstract</title>\n        <p><bold>Introduction</bold>: Out of Pocket Expenditure (OOPE) contributes to impoverishment and Catastrophic Health Expenditure (CHE) and restricts equitable access to healthcare in many Low and Medium Income Countries (LMICs), including India. Indian government has implemented different strategies to expand access and to reduce OOPE in public and private hospitals in its mixed healthcare system. The study aims to assess the long-term pattern of utilization, OOPE and CHE in public and private hospitals and to draw policy lessons for Universal Health Coverage in India. <bold>Methods</bold>: Indian government conducts periodic household surveys called National Sample Survey (NSS). Unit data from the last four rounds of NSS (1996 to 2017) on healthcare utilization were analysed. Multivariate analysis was used to find out determinants of utilization, choice of provider, OOPE and CHE. Propensity Score Matching was applied to find effect of specific variables on OOPE and CHE. <bold>Results</bold>: The share of public-sector in hospital-utilisation fell from 1996 to 2004 but grew consistently after 2004, reaching 51% of utilization in 2017. Socio-economically vulnerable sections were more likely to utilize public-sector. Mean OOPE per hospitalization in public-sector registered a decline from 2004 to 2017, while it increased substantially in private-sector. OOPE in private sector was around six times greater than public sector in 2017 and incidence of CHE was nine times. Utilising private-sector was an important determinant of incurring CHE. Coverage under publicly funded insurance was ineffective in reducing OOPE or CHE. <bold>Discussion</bold>: Public sector provided effective protection to the poor from financial risk. While, the structural-adjustment policies of 1990s had resulted in reduction in public-sector utilisation, the supply-side strengthening of public sector after 2005 was more effective in improving access and financial-protection. For achieving UHC, Indian health-system needs increased public funding for strengthening public-sector, especially to provide services for NCDs and injuries. Persistently high OOPE in private-sector raises doubts whether public-funding or contracting can align provider incentives with goals of UHC. The debate on public-private provider mix and financing policies continues to hold relevance for health-systems performance across LMICs.</p>",
+        "DOI": "10.21203/rs.3.rs-115173/v1",
+        "type": "posted-content",
+        "title": [
+          "Assessing the Pattern of Utilisation and Out of Pocket Expenditure in Public and Private Hospitals in India \u2013 Lessons for Universal Health Coverage from the Healthcare Rounds of National Sample Survey 1996 to 2017"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-4915-0731",
+            "authenticated-orcid": false,
+            "given": "Samir",
+            "family": "Garg",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "State Health Resource Centre, Chhattisgarh, India"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Kirtti Kumar",
+            "family": "Bebarta",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "State Health Resource Centre, Chhattisgarh, India"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Narayan",
+            "family": "Tripathi",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "State Health Resource Centre, Chhattisgarh, India"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 30.735346,
+        "URL": "https://doi.org/10.21203/rs.3.rs-115173/v1",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              12,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Out-of-pocket expenditure (OOPE) directly reflects households\u2019 financial burden for healthcare. Despite efforts to enhance accessibility and affordability through government initiatives and insurance schemes, OOPE remains problematic, especially in rural areas with inadequate public healthcare infrastructure. This study examines factors influencing OOPE in Karnataka\u2019s Dakshina Kannada, Udupi, and Shimoga districts, investigating socioeconomic characteristics, healthcare infrastructure, and accessibility to inform policies for equitable healthcare access and reduced household financial strain. Using purposive sampling, 61 semi-structured interviews were conducted in rural and urban South Karnataka, recorded in Kannada after obtaining consent, and thematically analyzed. Results revealed mixed perceptions of healthcare quality, cost, and accessibility between government and private hospitals. Government facilities were lauded for improved infrastructure and affordability, while private hospitals were preferred for quality and personalized care despite higher costs. Health insurance significantly impacted OOPE reduction. Participants emphasized the need for increased awareness of government insurance programs and improved quality in public hospitals. The study concludes that private hospitals are favored for superior care despite expenses, while government hospitals are valued for affordability. Expanding insurance coverage and improving public awareness are crucial for enhancing healthcare accessibility and affordability.</jats:p>",
+        "DOI": "10.3390/ijerph21101287",
+        "type": "journal-article",
+        "title": [
+          "\u201cPrivate Hospitals Generally Offer Better Treatment and Facilities\u201d: Out-of-Pocket Expenditure on Healthcare and the Preference for Private Healthcare Providers in South India"
+        ],
+        "author": [
+          {
+            "given": "Sagarika",
+            "family": "Kamath",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of International Health, Care and Public Health Research Institute\u2014CAPHRI, Faculty of Health, Medicine and Life Sciences, Maastricht University, 6200 MD Maastricht, The Netherlands"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0003-4286-5248",
+            "authenticated-orcid": false,
+            "given": "Mahalakshmi",
+            "family": "Poojary",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Social and Health Innovation, Prasanna School of Public Health, Manipal Academy of Higher Education, Manipal 576104, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Harshith",
+            "family": "Shetty",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Social and Health Innovation, Prasanna School of Public Health, Manipal Academy of Higher Education, Manipal 576104, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Kshithija",
+            "family": "Umesh",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Social and Health Innovation, Prasanna School of Public Health, Manipal Academy of Higher Education, Manipal 576104, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Soham",
+            "family": "Kar",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Social and Health Innovation, Prasanna School of Public Health, Manipal Academy of Higher Education, Manipal 576104, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-2473-5311",
+            "authenticated-orcid": false,
+            "given": "Vani",
+            "family": "Lakshmi Ramesh",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Data Science, Manipal Academy of Higher Education, Manipal 576104, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Gaurav",
+            "family": "Hajare",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Directorate of Online Education, Manipal Academy of Higher Education, Manipal 576104, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Albi",
+            "family": "Thomas",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Directorate of Online Education, Manipal Academy of Higher Education, Manipal 576104, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-2755-0673",
+            "authenticated-orcid": false,
+            "given": "Helmut",
+            "family": "Brand",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of International Health, Care and Public Health Research Institute\u2014CAPHRI, Faculty of Health, Medicine and Life Sciences, Maastricht University, 6200 MD Maastricht, The Netherlands"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-6290-9207",
+            "authenticated-orcid": false,
+            "given": "Selim",
+            "family": "Jahangir",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Health Information, Prasanna School of Public Health, Manipal Academy of Higher Education, Manipal 576104, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Rajesh",
+            "family": "Kamath",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Social and Health Innovation, Prasanna School of Public Health, Manipal Academy of Higher Education, Manipal 576104, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal of Environmental Research and Public Health"
+        ],
+        "score": 30.468777,
+        "URL": "https://doi.org/10.3390/ijerph21101287",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              9,
+              26
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.4103/ijph.ijph_168_15",
+        "title": [
+          "Out-of-Pocket health expenditure and sources of financing for delivery, postpartum, and neonatal health in urban slums of Bhubaneswar, Odisha, India"
+        ],
+        "author": [
+          {
+            "given": "KirtiSundar",
+            "family": "Sahu",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Bhavna",
+            "family": "Bharati",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2017
+            ]
+          ]
+        },
+        "container-title": [
+          "Indian Journal of Public Health"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.4103/ijph.ijph_168_15",
+        "score": 30.322933
+      },
+      {
+        "DOI": "10.21956/wellcomeopenres.14239.r30080",
+        "title": [
+          "Peer Review Report For: Healthcare choices in Mumbai slums: A cross-sectional study [version 1; peer review: 3 approved with reservations]"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              2,
+              15
+            ]
+          ]
+        },
+        "type": "peer-review",
+        "URL": "https://doi.org/10.21956/wellcomeopenres.14239.r30080",
+        "score": 30.172363
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "healthcare access Mumbai slums out-of-pocket public private"
+    }
+  }
+}

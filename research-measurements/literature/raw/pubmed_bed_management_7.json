@@ -1,0 +1,42 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "11704",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13686932",
+      "13687103",
+      "13687576",
+      "13688136",
+      "13688904",
+      "13690240",
+      "13685330",
+      "13685319",
+      "13685084",
+      "13685235"
+    ],
+    "translationset": [
+      {
+        "from": "bed",
+        "to": "\"beds\"[MeSH Terms] OR \"beds\"[All Fields] OR \"bed\"[All Fields]"
+      },
+      {
+        "from": "tracking",
+        "to": "\"track and field\"[MeSH Terms] OR (\"track\"[All Fields] AND \"field\"[All Fields]) OR \"track and field\"[All Fields] OR \"track\"[All Fields] OR \"tracks\"[All Fields] OR \"tracked\"[All Fields] OR \"tracking\"[All Fields] OR \"tracking's\"[All Fields] OR \"trackings\"[All Fields]"
+      },
+      {
+        "from": "hospital",
+        "to": "\"hospital's\"[All Fields] OR \"hospitalisation\"[All Fields] OR \"hospitalization\"[MeSH Terms] OR \"hospitalization\"[All Fields] OR \"hospitalised\"[All Fields] OR \"hospitalising\"[All Fields] OR \"hospitality\"[All Fields] OR \"hospitalisations\"[All Fields] OR \"hospitalizations\"[All Fields] OR \"hospitalize\"[All Fields] OR \"hospitalized\"[All Fields] OR \"hospitalizing\"[All Fields] OR \"hospitals\"[MeSH Terms] OR \"hospitals\"[All Fields] OR \"hospital\"[All Fields]"
+      },
+      {
+        "from": "capacity",
+        "to": "\"capacities\"[All Fields] OR \"capacity\"[All Fields]"
+      }
+    ],
+    "querytranslation": "\"real-time\"[All Fields] AND (\"beds\"[MeSH Terms] OR \"beds\"[All Fields] OR \"bed\"[All Fields]) AND (\"track and field\"[MeSH Terms] OR (\"track\"[All Fields] AND \"field\"[All Fields]) OR \"track and field\"[All Fields] OR \"track\"[All Fields] OR \"tracks\"[All Fields] OR \"tracked\"[All Fields] OR \"tracking\"[All Fields] OR \"tracking s\"[All Fields] OR \"trackings\"[All Fields]) AND (\"hospital s\"[All Fields] OR \"hospitalisation\"[All Fields] OR \"hospitalization\"[MeSH Terms] OR \"hospitalization\"[All Fields] OR \"hospitalised\"[All Fields] OR \"hospitalising\"[All Fields] OR \"hospitality\"[All Fields] OR \"hospitalisations\"[All Fields] OR \"hospitalizations\"[All Fields] OR \"hospitalize\"[All Fields] OR \"hospitalized\"[All Fields] OR \"hospitalizing\"[All Fields] OR \"hospitals\"[MeSH Terms] OR \"hospitals\"[All Fields] OR \"hospital\"[All Fields]) AND (\"capacities\"[All Fields] OR \"capacity\"[All Fields])"
+  }
+}

@@ -1,0 +1,241 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 471213,
+    "items": [
+      {
+        "DOI": "10.21236/ada286830",
+        "title": [
+          "Directory of Federal Contractors and Cognizant Audit Offices"
+        ],
+        "author": [
+          {
+            "family": "DEFENSE CONTRACT AUDIT AGENCY MEMPHIS TN",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1994,
+              12,
+              31
+            ]
+          ]
+        },
+        "type": "report",
+        "URL": "https://doi.org/10.21236/ada286830",
+        "score": 24.20808
+      },
+      {
+        "DOI": "10.1377/forefront.20111025.014667",
+        "title": [
+          "CMS' Opportunity: A Lawsuit Offers A Chance To Reform Physician Payment"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2011,
+              10,
+              25
+            ]
+          ]
+        },
+        "container-title": [
+          "Forefront Group"
+        ],
+        "type": "dataset",
+        "URL": "https://doi.org/10.1377/forefront.20111025.014667",
+        "score": 22.549183
+      },
+      {
+        "DOI": "10.1080/00913847.1981.11711168",
+        "title": [
+          "Sportsmedicine Directory 1981"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1981,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1981.11711168",
+        "score": 22.249504
+      },
+      {
+        "DOI": "10.1080/00913847.1987.11702092",
+        "title": [
+          "Sports Medicine Directory 1987"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1987,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1987.11702092",
+        "score": 22.089712
+      },
+      {
+        "DOI": "10.1080/00913847.1983.11708645",
+        "title": [
+          "Sports Medicine Directory 1983"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1983,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1983.11708645",
+        "score": 22.086624
+      },
+      {
+        "DOI": "10.1080/00913847.1984.11701954",
+        "title": [
+          "Sports Medicine Directory 1984"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1984,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1984.11701954",
+        "score": 22.05878
+      },
+      {
+        "DOI": "10.1080/00913847.1986.11709180",
+        "title": [
+          "Sports Medicine Directory 1986"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1986,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1986.11709180",
+        "score": 22.00964
+      },
+      {
+        "DOI": "10.1080/00913847.1982.11947329",
+        "title": [
+          "Sports Medicine Directory 1982"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1982,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1982.11947329",
+        "score": 21.995647
+      },
+      {
+        "DOI": "10.1080/00913847.1980.11948625",
+        "title": [
+          "Sportsmedicine Directory"
+        ],
+        "author": [
+          {
+            "given": "Allan J.",
+            "family": "Ryan",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1980,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1980.11948625",
+        "score": 21.903065
+      },
+      {
+        "DOI": "10.1037/e506612021-001",
+        "title": [
+          "The CMS Physician Fee Schedule: Submit comments, protect payments, improve practice"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021
+            ]
+          ]
+        },
+        "container-title": [
+          "PsycEXTRA Dataset"
+        ],
+        "type": "dataset",
+        "URL": "https://doi.org/10.1037/e506612021-001",
+        "score": 21.300423
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "physician directory accuracy CMS audit"
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "experimentId": "EXP-TX-04",
+  "name": "Stale-State and Out-of-Order Transition Prevention",
+  "startedAt": "2026-10-23T20:12:03.490Z",
+  "tests": [
+    {
+      "id": "4.1",
+      "description": "Rejection of transition when expectedStatus mismatches actual database state",
+      "passed": true,
+      "details": {
+        "status": 409,
+        "data": {
+          "error": "Request changed. Refresh its status before trying again."
+        }
+      }
+    },
+    {
+      "id": "4.2",
+      "description": "Rejection of transition when expectedTimelineLength mismatches actual timeline history",
+      "passed": true,
+      "details": {
+        "status": 409,
+        "data": {
+          "error": "Request changed. Refresh its status before trying again."
+        }
+      }
+    },
+    {
+      "id": "4.3",
+      "description": "Invalid state transition from terminal REJECTED status is blocked with 409",
+      "passed": true,
+      "details": {
+        "status": 409,
+        "data": {
+          "error": "Invalid status transition"
+        }
+      }
+    },
+    {
+      "id": "4.4",
+      "description": "Stale transition on terminal BloodRequest blocked with 409",
+      "passed": true,
+      "details": {
+        "status": 409,
+        "data": {
+          "error": "This status transition is unavailable. Refresh the request before retrying."
+        }
+      }
+    },
+    {
+      "id": "4.5",
+      "description": "Stale transition on terminal AmbulanceBooking blocked with 409",
+      "passed": true,
+      "details": {
+        "status": 409,
+        "data": {
+          "error": "This status transition is unavailable. Refresh the request before retrying."
+        }
+      }
+    },
+    {
+      "id": "4.6",
+      "description": "Transition on expired request auto-finalizes to EXPIRED and rejects with 409",
+      "passed": true,
+      "details": {
+        "status": 409,
+        "data": {
+          "error": "Request expired"
+        },
+        "docStatusInDb": "EXPIRED"
+      }
+    },
+    {
+      "id": "4.7",
+      "description": "Patient cannot submit reply when status is not INFORMATION_REQUESTED",
+      "passed": true,
+      "details": {
+        "status": 409,
+        "data": {
+          "error": "The hospital has not requested more information"
+        }
+      }
+    }
+  ],
+  "passCount": 7,
+  "failCount": 0,
+  "completedAt": "2026-10-23T20:12:03.539Z"
+}

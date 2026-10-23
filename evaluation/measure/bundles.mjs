@@ -47,4 +47,4 @@ for (const v of VARIANTS) {
     `${v.padEnd(11)} | ${kb(css.raw).padStart(7)} | ${kb(css.gz).padStart(8)} | ${kb(js.raw).padStart(7)} | ${kb(js.gz)}`
   );
 }
-console.log("\nCSS size is the framework-attributable delta (JS is shared via @medreach/core).");
+console.log("\nAggregate build artifacts only; variant differences do not isolate the effect of a CSS framework.");

@@ -2,28 +2,28 @@
 
 [Documentation](README.md) · [Project overview](../README.md) · [Diagram Gallery](diagrams/README.md) · [Database Schema](database-schema.md) · [API Reference](api.md)
 
-## System Overview & Visual Architecture
+## System overview
 
-```text
-Existing healthcare dataset
-        ↓
-     MongoDB
-        ↕
- Express API + background workers
-        ↕
-Bootstrap / Tailwind / Skeleton
-```
+[![Three frontends share one Express API, in-process workers and a persistent MongoDB dataset](diagrams/system-architecture.png)](diagrams/system-architecture.svg)
 
-The system architecture and workflow models are visually documented in high-resolution vector format:
-- **System Topology:** [`docs/diagrams/system-architecture.svg`](diagrams/system-architecture.svg) (Source: [`.mmd`](diagrams/system-architecture.mmd))
-- **Database ER Schema:** [`docs/diagrams/database-er.svg`](diagrams/database-er.svg) (Source: [`.mmd`](diagrams/database-er.mmd))
-- **Role-Permission Matrix:** [`docs/diagrams/role-permission-matrix.svg`](diagrams/role-permission-matrix.svg) (Source: [`.mmd`](diagrams/role-permission-matrix.mmd))
-- **Provider Onboarding:** [`docs/diagrams/provider-onboarding.svg`](diagrams/provider-onboarding.svg) (Source: [`.mmd`](diagrams/provider-onboarding.mmd))
-- **Request & Notification Lifecycle:** [`docs/diagrams/request-notification-flow.svg`](diagrams/request-notification-flow.svg) (Source: [`.mmd`](diagrams/request-notification-flow.mmd))
-- **Cloud Deployment Architecture:** [`docs/diagrams/deployment-architecture.svg`](diagrams/deployment-architecture.svg) (Source: [`.mmd`](diagrams/deployment-architecture.mmd))
-- **Authentication & Role Redirection:** [`docs/diagrams/auth-flow.svg`](diagrams/auth-flow.svg) (Source: [`.mmd`](diagrams/auth-flow.mmd))
+Bootstrap, Tailwind and Skeleton are independent Next.js applications. They
+share backend contracts and stored data; the client helper package is bundled
+application code, not another deployed service. The API owns role and
+organisation checks, database access and worker lifecycle.
 
-See the complete [Diagram Gallery](diagrams/README.md) for full renders and component breakdowns.
+### Read the architecture by concern
+
+| View | Diagram and detail |
+| --- | --- |
+| Runtime components | [System topology](diagrams/README.md#system-topology) |
+| Hosting and trust boundaries | [Vercel → Railway → Atlas](diagrams/README.md#cloud-deployment) |
+| Care and Careers references | [Core ER view](diagrams/README.md#care-and-careers-data) |
+| Identity and organisation ownership | [Account / provider-scope ER view](diagrams/README.md#accounts-and-provider-scope) |
+| Detailed workflows | [Roles, onboarding, notifications and authentication](diagrams/README.md#role-and-workflow-reference-views) |
+
+The figures select fields and connections for readability. Schema definitions
+remain the source for exact fields, optionality and indexes. The gallery includes
+an implementation inventory and editable diagram sources.
 
 
 No service crawls external provider websites. Stored source URLs and observations

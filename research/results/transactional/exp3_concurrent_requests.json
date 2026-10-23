@@ -1,0 +1,79 @@
+{
+  "experimentId": "EXP-TX-03",
+  "name": "Concurrent Requests Competing for State Mutations & Resources",
+  "startedAt": "2026-10-23T20:12:01.412Z",
+  "tests": [
+    {
+      "id": "3.1",
+      "description": "N=10 simultaneous EmergencyRequest transitions: exactly 1 wins (200 OK), 9 fail with 409 Conflict",
+      "passed": true,
+      "details": {
+        "N": 10,
+        "statusDistribution": {
+          "200": 1,
+          "409": 9
+        },
+        "initialTimelineLength": 3,
+        "finalTimelineLength": 4,
+        "finalStatus": "ACCEPTED"
+      }
+    },
+    {
+      "id": "3.2",
+      "description": "Optimistic concurrency preserves timeline integrity without duplicate or phantom steps",
+      "passed": true,
+      "details": {
+        "timelineEntries": [
+          {
+            "status": "REQUESTED",
+            "role": "patient"
+          },
+          {
+            "status": "SENT",
+            "role": "system"
+          },
+          {
+            "status": "UNDER_REVIEW",
+            "role": "hospital_staff"
+          },
+          {
+            "status": "ACCEPTED",
+            "role": "hospital_staff",
+            "note": "Bed reserved by staff 0"
+          }
+        ],
+        "auditLogCount": 1
+      }
+    },
+    {
+      "id": "3.3",
+      "description": "N=8 simultaneous conflicting AmbulanceBooking updates: OCC isolates branches with 409s and commits valid terminal status",
+      "passed": true,
+      "details": {
+        "N": 8,
+        "distribution": {
+          "200": 2,
+          "409": 6
+        },
+        "finalStatus": "CANCELLED",
+        "winningBranch": "CANCELLED"
+      }
+    },
+    {
+      "id": "3.4",
+      "description": "N=10 simultaneous requests created successfully (triage queueing, non-blocking ingestion)",
+      "passed": true,
+      "details": {
+        "N": 10,
+        "createdCount": 10,
+        "uniqueRequestIdsCount": 10,
+        "distribution": {
+          "201": 10
+        }
+      }
+    }
+  ],
+  "passCount": 4,
+  "failCount": 0,
+  "completedAt": "2026-10-23T20:12:01.576Z"
+}

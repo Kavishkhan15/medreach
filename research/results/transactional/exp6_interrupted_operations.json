@@ -1,0 +1,51 @@
+{
+  "experimentId": "EXP-TX-06",
+  "name": "Interrupted In-Flight Operations and Safe Idempotent Resumption",
+  "startedAt": "2026-10-23T20:12:07.487Z",
+  "tests": [
+    {
+      "id": "6.1",
+      "description": "Identical transition retry after simulated network interruption returns 200 without duplicate timeline or audit entries",
+      "passed": true,
+      "details": {
+        "initialStatus": 200,
+        "replayStatus": 200,
+        "timelineLength": 3,
+        "auditCount": 1
+      }
+    },
+    {
+      "id": "6.2",
+      "description": "Altered transition parameters on already-committed state rejected with 409 Conflict",
+      "passed": true,
+      "details": {
+        "status": 409,
+        "data": {
+          "error": "Invalid status transition"
+        }
+      }
+    },
+    {
+      "id": "6.3",
+      "description": "Uncommitted operation retry creates the record cleanly without ghost lock or stale failure",
+      "passed": true,
+      "details": {
+        "status": 201,
+        "requestId": "MR-MVLEOVKR-6EFDE5"
+      }
+    },
+    {
+      "id": "6.4",
+      "description": "Provider status update replay after lost response returns 200 OK ('Status already recorded.')",
+      "passed": true,
+      "details": {
+        "status1": 200,
+        "status2": 200,
+        "message2": "Status already recorded."
+      }
+    }
+  ],
+  "passCount": 4,
+  "failCount": 0,
+  "completedAt": "2026-10-23T20:12:07.543Z"
+}

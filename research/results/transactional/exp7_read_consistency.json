@@ -1,0 +1,49 @@
+{
+  "experimentId": "EXP-TX-07",
+  "name": "Request-Status Consistency Across Repeated and Concurrent Reads",
+  "startedAt": "2026-10-23T20:12:09.443Z",
+  "tests": [
+    {
+      "id": "7.1",
+      "description": "50 repeated consecutive reads yield 100% identical state and timeline",
+      "passed": true,
+      "details": {
+        "readsAttempted": 50,
+        "payloadSample": "{\"status\":\"UNDER_REVIEW\",\"timelineLength\":3,\"emergencyType\":\"Anaphylaxis\"}"
+      }
+    },
+    {
+      "id": "7.2",
+      "description": "40 concurrent reads during active state transitions maintain strict status-timeline consistency (0 split-brain reads)",
+      "passed": true,
+      "details": {
+        "splitBrainDetected": false,
+        "readFailures": 0,
+        "uniqueObservedStatuses": [
+          "SENT",
+          "UNDER_REVIEW"
+        ]
+      }
+    },
+    {
+      "id": "7.3",
+      "description": "Database timeline history exactly correlates with AuditLog entries",
+      "passed": true,
+      "details": {
+        "finalTimelineLength": 4,
+        "auditEntriesCount": 2
+      }
+    },
+    {
+      "id": "7.4",
+      "description": "Guest access with incorrect tracking token consistently rejected with 403 Forbidden",
+      "passed": true,
+      "details": {
+        "status": 403
+      }
+    }
+  ],
+  "passCount": 4,
+  "failCount": 0,
+  "completedAt": "2026-10-23T20:12:09.891Z"
+}

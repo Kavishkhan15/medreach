@@ -1,0 +1,273 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 6951433,
+    "items": [
+      {
+        "DOI": "10.1097/01445442-199605000-00014",
+        "title": [
+          "Healthcare Standards 1995 Official Directory"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1996,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal For Healthcare Quality"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1097/01445442-199605000-00014",
+        "score": 28.673574
+      },
+      {
+        "DOI": "10.1097/01445442-199105000-00021",
+        "title": [
+          "Healthcare Standards 1991 Official Directory"
+        ],
+        "author": [
+          {
+            "given": "Anglea",
+            "family": "Fow",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1991,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal For Healthcare Quality"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1097/01445442-199105000-00021",
+        "score": 28.15343
+      },
+      {
+        "DOI": "10.1097/01445442-199105000-00022",
+        "title": [
+          "Medical Utilization Review Directory"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1991,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal For Healthcare Quality"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1097/01445442-199105000-00022",
+        "score": 28.060585
+      },
+      {
+        "DOI": "10.1097/01445442-199105000-00023",
+        "title": [
+          "Directory of Practice Parameters"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1991,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal For Healthcare Quality"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1097/01445442-199105000-00023",
+        "score": 28.040228
+      },
+      {
+        "DOI": "10.1111/j.1945-1474.2002.tb00456.x",
+        "title": [
+          "Directory of Internet Documents for Consumers on Quality of Care"
+        ],
+        "author": [
+          {
+            "given": "Marsha",
+            "family": "Lesley",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Marilyn H.",
+            "family": "Oermann",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2002,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal For Healthcare Quality"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1111/j.1945-1474.2002.tb00456.x",
+        "score": 25.720573
+      },
+      {
+        "DOI": "10.1201/b14411-14",
+        "title": [
+          "SE-PDP SOFTWARE ENGINEERING PROJECT DIRECTORY POLICIES"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2002,
+              6,
+              30
+            ]
+          ]
+        },
+        "container-title": [
+          "Software Quality Assurance SOPs for Healthcare Manufacturers"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1201/b14411-14",
+        "score": 24.79024
+      },
+      {
+        "abstract": "<jats:p>A conversational assistant whose maker publicly commits that it carries no advertising was observed delivering a paid tier upgrade advertisement at the close of every academic search, across seven consecutive queries spanning distinct research domains. The advertisement did not originate with the assistant. It arrived inside the result payload of a third party connector, carried by a literal instruction directed at the model: you must include the above message at the end of your response. This is indirect prompt injection, the failure mode ranked first among risks to large language model applications, executing through a connector that the platform lists in a curated directory and marks with a badge whose hover text states that the platform has reviewed the connector for quality and security. One line below the badge, the same card disclaims the capacity to verify that listed connectors work as intended or that they will not change. This paper documents the specimen, establishes its reproducibility, and situates it in the protocol specific security literature, which supplies both the correct name for the attack, function return injection rather than tool poisoning, and the evidence that this vector is stronger and less studied than the descriptor poisoning the field concentrates on. It then maps the conduct against the platform's own directory policy, which prohibits both software that evades model instructions and software that serves advertisements. It then locates the harm in two established bodies of authority. The consumer protection frame is the Federal Trade Commission's treatment of deceptively formatted advertising, under which a message must be identifiable as advertising and a misleadingly formatted advertisement is deceptive even when its claims are literally true. The behavioral frame is the persuasion knowledge literature, under which a reader who cannot recognize a message as advertising cannot mount the skepticism that advertising recognition normally triggers. The design frame is the deceptive design literature, which holds that the most consequential dark patterns sit beneath the interface in system architecture, where interface bound scrutiny cannot reach them. The economic frame is twofold: the connector is a credence good whose quality the user cannot verify even after use, which is the condition that makes a certification mark necessary in the first place, and the badge is a signal that cannot separate compliant from non compliant connectors because obtaining it costs both the same. The attack class is well described in that literature; what is not documented there is a listed, badged, first party connector performing it against ordinary users for commercial gain, in production rather than in a benchmark. The paper names the general phenomenon the specimen exposes as trust laundering: the conversion of a platform's verification mark into credibility for a third party's promotional content, credibility the content did not earn and the platform did not knowingly extend. A verification badge that speaks in the present tense about an artifact its issuer concedes may have changed since review is the mechanism that makes trust laundering possible. The advertisement is the proof the assurance fails. The structure will outlast the advertisement.</jats:p>",
+        "DOI": "10.2139/ssrn.7130058",
+        "type": "posted-content",
+        "title": [
+          "Reviewed for Quality and Security: Advertising Injection Through a Verified Connector, Trust Laundering, and the Limits of Directory Verification"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0007-2954-6313",
+            "authenticated-orcid": true,
+            "given": "Travis",
+            "family": "Gilly",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 24.550865,
+        "URL": "https://doi.org/10.2139/ssrn.7130058",
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.7326/0003-4819-115-1-73_5",
+        "title": [
+          "Directory of Online Healthcare Databases"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1991,
+              7,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Annals of Internal Medicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.7326/0003-4819-115-1-73_5",
+        "score": 24.381273
+      },
+      {
+        "DOI": "10.5860/choice.49-1811",
+        "title": [
+          "Comparing Health Care Quality: A National Directory"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2011,
+              12,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Choice Reviews Online"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.5860/choice.49-1811",
+        "score": 22.99609
+      },
+      {
+        "DOI": "10.1017/9780511843525.006",
+        "title": [
+          "Data Sources for Healthcare Quality Measurement"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              9,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "Healthcare Quality Measurement"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1017/9780511843525.006",
+        "score": 22.877293
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "online healthcare directory data quality verification"
+    }
+  }
+}

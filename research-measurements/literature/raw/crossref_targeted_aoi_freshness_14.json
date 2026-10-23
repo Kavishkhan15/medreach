@@ -1,0 +1,547 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 5864886,
+    "items": [
+      {
+        "DOI": "10.1109/emrts.2002.1019200",
+        "title": [
+          "A QoS-sensitive approach for timeliness and freshness guarantees in real-time databases"
+        ],
+        "author": [
+          {
+            "family": "Kyoung-Don Kang",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "S.H.",
+            "family": "Son",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "J.A.",
+            "family": "Stankovic",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "T.F.",
+            "family": "Abdelzaher",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Proceedings 14th Euromicro Conference on Real-Time Systems. Euromicro RTS 2002"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/emrts.2002.1019200",
+        "score": 35.202824
+      },
+      {
+        "DOI": "10.1109/emrts.2004.1311028",
+        "title": [
+          "Maintaining data freshness in distributed real-time databases"
+        ],
+        "author": [
+          {
+            "family": "Yuan Wei",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "S.H.",
+            "family": "Son",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "J.A.",
+            "family": "Stankovic",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Proceedings. 16th Euromicro Conference on Real-Time Systems, 2004. ECRTS 2004."
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/emrts.2004.1311028",
+        "score": 30.818958
+      },
+      {
+        "DOI": "10.1023/a:1008193905301",
+        "title": [
+          "Real-Time Reactions in Supervisory Control According to Data Freshness"
+        ],
+        "author": [
+          {
+            "given": "Hiromitsu",
+            "family": "Shimakawa",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "George",
+            "family": "Ido",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Hideyuki",
+            "family": "Takada",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Morikazu",
+            "family": "Takegaki",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2001,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "Real-Time Systems"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1023/a:1008193905301",
+        "score": 30.327084
+      },
+      {
+        "DOI": "10.1109/real.1994.342732",
+        "title": [
+          "Timeliness via speculation for real-time databases"
+        ],
+        "author": [
+          {
+            "family": "Bestavros",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "family": "Braoudakis",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1994
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings Real-Time Systems Symposium REAL-94"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/real.1994.342732",
+        "score": 30.110775
+      },
+      {
+        "DOI": "10.1109/rtss.2005.5",
+        "title": [
+          "A Deferrable Scheduling Algorithm for Real-Time Transactions Maintaining Data Freshness"
+        ],
+        "author": [
+          {
+            "family": "Ming Xiong",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "family": "Song Han",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "family": "Kam-Yiu Lam",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "26th IEEE International Real-Time Systems Symposium (RTSS'05)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/rtss.2005.5",
+        "score": 30.073055
+      },
+      {
+        "DOI": "10.1109/rtss.2009.36",
+        "title": [
+          "Online Scheduling Switch for Maintaining Data Freshness in Flexible Real-Time Systems"
+        ],
+        "author": [
+          {
+            "given": "Song",
+            "family": "Han",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Deji",
+            "family": "Chen",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ming",
+            "family": "Xiong",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Aloysius K.",
+            "family": "Mok",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2009,
+              12
+            ]
+          ]
+        },
+        "container-title": [
+          "2009 30th IEEE Real-Time Systems Symposium"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/rtss.2009.36",
+        "score": 29.570724
+      },
+      {
+        "DOI": "10.1109/rttas.1997.601343",
+        "title": [
+          "Active transactions integrated with real-time transactions according to data freshness"
+        ],
+        "author": [
+          {
+            "given": "H.",
+            "family": "Shimakawa",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "G.",
+            "family": "Ido",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "H.",
+            "family": "Takada",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Y.",
+            "family": "Asano",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "M.",
+            "family": "Takegaki",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Proceedings Third IEEE Real-Time Technology and Applications Symposium"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/rttas.1997.601343",
+        "score": 29.38811
+      },
+      {
+        "DOI": "10.1109/rtss49844.2020.00025",
+        "title": [
+          "Maintaining Real-Time Data Freshness in Wireless Powered Communication Networks"
+        ],
+        "author": [
+          {
+            "given": "Zimeng",
+            "family": "Zhou",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Zelin",
+            "family": "Yun",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Chenchen",
+            "family": "Fu",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Chun Jason",
+            "family": "Xue",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Song",
+            "family": "Han",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              12
+            ]
+          ]
+        },
+        "container-title": [
+          "2020 IEEE Real-Time Systems Symposium (RTSS)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/rtss49844.2020.00025",
+        "score": 29.374393
+      },
+      {
+        "DOI": "10.37473/dac/10.3390/electronics12091989",
+        "title": [
+          "Deep-Learning-Driven Techniques for Real-Time Multimodal Health and Physical Data Synthesis"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.3390/electronics12091989",
+        "score": 29.36596
+      },
+      {
+        "DOI": "10.1109/emwrts.1997.613794",
+        "title": [
+          "Supporting timeliness and security in real-time database systems"
+        ],
+        "author": [
+          {
+            "given": "S.H.",
+            "family": "Son",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Proceedings Ninth Euromicro Workshop on Real Time Systems"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/emwrts.1997.613794",
+        "score": 28.609732
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "data freshness real-time resource availability timeliness"
+    }
+  }
+}

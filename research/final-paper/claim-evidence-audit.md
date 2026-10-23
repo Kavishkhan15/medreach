@@ -1,0 +1,61 @@
+# Claim-Evidence Audit: Final Consolidated Research Paper
+
+**Manuscript Title**: Freshness-Aware, Provenance-Tracked Healthcare Resource Discovery in Fragmented Urban Ecosystems: System Design, Staleness Dynamics, and Transactional Evaluation  
+**Target Repository**: `/home/anonymous/medreach`  
+**Consolidated Directory**: `/home/anonymous/medreach/research/final-paper/`  
+**Date of Audit**: October 2026  
+**Auditor**: MedReach Coordinating Agent (Fact & Evidence Auditor)  
+**Standard**: 100% empirical traceability against executed CSVs, JSONs, logs, and audit reports. Zero fabricated data or speculative assertions.
+
+---
+
+## 1. Audit Policy and Verification Protocol
+
+This audit verifies that every single quantitative claim, comparative ratio, percentage, latency metric, and experimental outcome presented in the final consolidated manuscript traces directly to an existing, executed artifact in the MedReach repository. In accordance with `_common2.md` and `brief-final.md`, all synthetic simulations and single-machine measurements are explicitly demarcated, and negative findings are verified and reported with equal prominence.
+
+---
+
+## 2. Comprehensive Claim-to-Artifact Verification Matrix
+
+| Manuscript Section & Claim Description | Quantitative Value / Finding | Source Artifact Path | Verification Method / Command Output |
+| :--- | :--- | :--- | :--- |
+| **AoI: Simulation Scale & Horizons** | 6 operational archetypes, 50 replications per archetype (300 trajectories), 72-hour operational horizons, 1,296,000 query evaluations across 5 threshold levels ($\tau \in [10, 30, 60, 180, 360]\text{ min}$). | `research/results/aoi/REPORT.md`, `scenario_summary.csv`, `raw_metrics.json` | Direct evaluation logs of `simulate_aoi.py`; master seed `20261024`. 6 scenarios $\times$ 50 seeds $\times$ 4,320 queries = 1,296,000 evaluations. |
+| **AoI: 30-min Anchor Under Shift Reporting (S2)** | Withholds status 78.42% of query instants; active coverage 21.58%; error rate when known 32.49%; phantom availability suppressed to 0.337%. | `research/results/aoi/scenario_summary.csv` (row 7), `REPORT.md` | Mean AoI 70.51 min, median AoI 66.10 min, P95 150.31 min. Stale withheld share: 78.42%. Phantom availability: 0.337%. |
+| **AoI: 180-min Threshold Error Explosion (S2)** | Coverage increases to 97.15%, but phantom availability surges 18.9x to 6.382%; overall status error when known reaches 53.71%. | `research/results/aoi/scenario_summary.csv` (row 9), `REPORT.md` | Ratio $6.382\% / 0.337\% = 18.937 \approx 18.9\text{x}$. Status error when known reaches 53.71%. |
+| **AoI: Ingestion Pipeline Delay Trap (S5)** | 51.79% of updates arrive already stale at $\tau = 30\text{ min}$; 99.64% of updates arrive already stale at $\tau = 10\text{ min}$; coverage collapses to 0.25% at 10m. | `research/results/aoi/time_to_stale.csv` (rows 21-22), `scenario_summary.csv` (row 21) | Direct queue latency tracking of scraper batch delay (15–45 min). Proves discovery freshness is bounded by ingestion latency. |
+| **AoI: Heavy-Tailed Surge Updates (S3)** | Median AoI 27.35 min, Mean AoI 40.94 min, P95 125.09 min; withholds status 47.28% of the time under 30m anchor; phantom availability capped at 0.548%. | `research/results/aoi/scenario_summary.csv` (row 12), `REPORT.md` | Pareto distribution ($\alpha = 1.5$) modeling mass-casualty surge update bursts. |
+| **AoI: High Dropout Resilience (S4)** | Mean AoI 26.38 min, Median 16.13 min, P95 94.81 min; coverage 78.09%; phantom availability 0.836% under 40% uniform random packet loss. | `research/results/aoi/scenario_summary.csv` (row 17), `REPORT.md` | Evaluates cellular network blackout resilience. |
+| **AoI: Diurnal Handover Lull (S6)** | Mean AoI 73.04 min, Median 35.60 min, P95 281.21 min; withholds status 55.47% as safe unknown under 30m anchor; phantom availability 0.608%. | `research/results/aoi/scenario_summary.csv` (row 27), `REPORT.md` | Non-homogeneous Poisson cycle modeling daytime peak vs night handover lull. |
+| **AoI: Automated IoT Baseline (S1)** | Mean AoI 4.30 min, Median 4.11 min, P95 8.70 min; 100.0% coverage under 30m anchor; phantom availability 0.180%. | `research/results/aoi/scenario_summary.csv` (row 2), `REPORT.md` | Log-normal inter-arrival delays ($\mu = 5\text{ min}$, $\sigma = 1\text{ min}$). |
+| **Provenance: Universal Conflict Detection** | 100.0% conflict detection rate across all divergent usable claims in facility capability and structured attributes. | `research/results/provenance/PROVENANCE_FUSION_REPORT.md`, `summary_metrics.json` | Executed against 40,000+ synthetic trials; detected in all multi-source disagreement cells. |
+| **Provenance: Conservative Ignorance Fallback** | 87.1% fallback rate to `unknown` under unverified scraper conflicts; 100.0% freeze rate on institutional verified disputes. | `research/results/provenance/PROVENANCE_FUSION_REPORT.md` (Section 1 & 4.2), `raw_exp2_trials.json` | Evaluates divergent unverified claims vs verified anchors. |
+| **Provenance: Conditional Resolution Accuracy** | 90.29% conditional accuracy when resolved across 12,000 trials with known ground truth; overall decision error rate 7.38%. | `research/results/provenance/PROVENANCE_FUSION_REPORT.md`, `confusion_matrix.csv` | Total evaluated: 12,000. Resolved: 9,112. Correct: 8,227 ($8,227 / 9,112 = 90.2875\% = 90.29\%$). Erroneous: 885 ($885 / 12,000 = 7.375\% = 7.38\%$). Held unknown: 2,888 (24.07%). |
+| **Provenance: Verified Anchor Dominance** | Verified anchor achieves 95.9% correct resolution and 0.0% decision errors against noisy unverified web scrapers. | `research/results/provenance/PROVENANCE_FUSION_REPORT.md` (Section 4.2) | Evaluated across 1,000 trials in Experiment 2. |
+| **Confidence Calibration (CRITICAL NEGATIVE FINDING)** | Confidence score is an **uncalibrated heuristic ranking**, not a calibrated probability: Brier score 0.1315, ECE 0.1255, MCE 0.7333. Verdict: `UNBOUNDED_HEURISTIC_RANKING`. | `research/results/provenance/calibration_analysis.json`, `fig5_calibration_curve.png` | Evaluated across 10,615 claims. HIGH: nominal 1.0, empirical 0.8765. MEDIUM: nominal 0.7, empirical 0.8228. LOW: nominal 0.4, empirical 0.6429. UNKNOWN: nominal 0.1, empirical 0.8333. |
+| **Datapath & Edge Caching (CRITICAL NEGATIVE FINDING)** | **Verdict: NOT SUPPORTED**. Edge-cached HTML shells contain zero volatile availability data (structural DOM skeletons only); dynamic fetching occurs strictly via React client hooks. | `research/results/datapath/datapath-staleness-audit.md`, `captures/`, `datapath_audit_summary.json` | Low-rate read probe of 22 endpoints (15 HTML routes + 7 API endpoints); AST audit of client bundles. Refutes earlier theoretical dossier conjecture. |
+| **Transactional: Master Concurrency Suite** | 48 passed / 0 failed (100.0% pass rate) across 8 distinct transactional concurrency scenarios on port 27018. | `research/results/transactional/transactional_experiment_summary.json`, `TRANSACTIONAL_RELIABILITY_REPORT.md` | Automated Mocha/Chai execution: EXP-TX-01 (10/10), TX-02 (5/5), TX-03 (5/5), TX-04 (6/6), TX-05 (5/5), TX-06 (4/4), TX-07 (4/4), TX-08 (6/6). Total = 48/48. |
+| **Transactional: Idempotency Key Scoping** | Re-submitting identical key by same actor returns original record (`200 OK`); cross-user key reuse is blocked with `409 IDEMPOTENCY_KEY_REUSED`. Direct DB duplicate throws Mongo `E11000`. | `research/results/transactional/exp1_duplicate_prevention.json`, `exp2_idempotent_retries.json` | Enforces `sha256(scope:key)` with sparse unique index on `idempotencyKeyHash`. |
+| **Transactional: Optimistic Concurrency Control (OCC)** | Under 10-way and 8-way concurrent mutations, exactly 1 atomic update succeeds; remaining requests receive `409 Conflict`. Zero split-brain or interleaved timelines. | `research/results/transactional/exp3_concurrent_requests.json`, `exp7_read_consistency.json` | Atomic MongoDB `findOneAndUpdate` asserting pre-state and array bounds. 40 concurrent reads during rapid transitions exhibited 0 split-brain reads. |
+| **Transactional: Telemetry-Request Decoupling** | Submitting 10 emergency requests, accepting 3, and completing 2 did NOT decrement reported availability in `AvailabilityObservation` (remained 5 beds). | `research/results/transactional/exp8_availability_separation.json` | Proves capacity reports remain strictly observational and are not treated as guaranteed reservations. |
+| **Single-Machine Load: Baseline Reads** | `GET /api/hospitals` sustains 284.7 req/s (median latency 3.00 ms, P90 3.33 ms, P97.5 8.33 ms, P99 9.67 ms, 0 errors). Express `/health` sustains 7,052.9 req/s (<0.5 ms). | `research/results/load/tables/table1_baseline.csv`, `load_execution.log`, `REPORT.md` | `autocannon` 8.0.0 with HDR histogram sampling; $C=1$, 10s duration, 3 repeated runs ($N=9,140$ and $N=232,720$ requests). |
+| **Single-Machine Load: Scaling & Saturation Knee** | Throughput scales from 284.7 req/s at $C=1$ to an architectural saturation knee of ~395 req/s at $C=50$. Further load ($C=100 \to 400$) plateaus at 380–395 req/s with 0 drops. | `research/results/load/tables/table2_scaling_stress.csv`, `load_execution.log`, `figure2_workload_scaling.png` | $C=5$ (396.8 req/s, 11 ms median), $C=10$ (397.1 req/s, 23.7 ms), $C=25$ (395.8 req/s, 62.3 ms), $C=50$ (394.5 req/s, 124.7 ms), $C=100$ (385.1 req/s, 260 ms), $C=200$ (380.2 req/s, 510 ms), $C=400$ (395.4 req/s, 982 ms). |
+| **Single-Machine Load: 50x Surge Resilience** | Instantaneous 50x surge ($C=5 \to 250 \to 5$) sustained 386.7 req/s with 624 ms median latency, 0 timeouts, 0 socket resets, and immediate recovery to baseline. | `research/results/load/tables/table3_spike_recovery.csv`, `figure4_spike_response.png` | 3,867 requests absorbed during 10s surge peak with 0.000% error rate. |
+| **Single-Machine Load: Sustained Soak & Normalization** | 60-second sustained soak ($C=30$, 19,117 requests) maintained 318.6 req/s with steady memory. Post-stress recovery immediately normalized to 2.00 ms median latency at $C=1$. | `research/results/load/tables/table3_spike_recovery.csv`, `figure5_recovery_comparison.png` | Zero memory leaks, zero socket handle exhaustion, 0.000% error rate on recovery. |
+| **Regional Platform Comparison: Mumbai Landscape** | Existing platforms (BMC Health Dashboard, e-RaktKosh, MahaSBTC, NHM HMIS, 108 EMS) operate strictly at Tiers 1–3 (static directories or unverified asynchronous counts); zero provide Tier 4/5 confirmation. | `docs/research/medreach-healthcare-access/02-existing-platforms-comparison.md`, `research-measurements/existing-platforms/` | Direct HTTP and AST inspection of live Maharashtra public healthcare web portals. |
+
+---
+
+## 3. Methodological Safeguards & Negative Findings Register
+
+1. **Edge Caching Staleness Correction**:
+   - *Previous Dossier Conjecture*: Hypothesized that multi-hour Vercel CDN edge caching presented stale bed counts to emergency patients.
+   - *Audit Finding*: **Definitive verdict NOT SUPPORTED**. Prerendered HTML shells served from Vercel contain zero volatile capacity data (structural DOM skeletons only); dynamic fetching occurs via client-side React hooks.
+   - *Manuscript Inclusion*: Prominently featured in Abstract, Section VII-C, and Section VIII-C as a negative finding correcting our own prior inference.
+2. **Confidence Metric Calibration**:
+   - *Previous Assumption*: Assumed confidence levels (`HIGH`, `MEDIUM`, `LOW`) represented calibrated probabilities of claim correctness.
+   - *Audit Finding*: Formal calibration yields ECE 0.1255 and MCE 0.7333. The score is an uncalibrated heuristic ordinal ranking.
+   - *Manuscript Inclusion*: Explicitly documented in Abstract, Section VII-B, Table III, and Section VIII-C, noting the need for post-hoc Platt scaling or isotonic regression.
+3. **Absence of Overstated Claims**:
+   - Zero invented participants, clinical outcomes, or response-time improvements.
+   - Explicit labeling of all simulations as **SYNTHETIC** and load benchmarks as **SINGLE-MACHINE / LOCAL LOOPBACK**.
+   - Explicit two-column analysis distinguishing current demonstrable system guarantees from features still requiring implementation (multi-document sagas, TTL bed-reservation holds).

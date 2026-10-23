@@ -1,0 +1,438 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 6529331,
+    "items": [
+      {
+        "abstract": "<jats:sec><jats:title>BACKGROUND</jats:title><jats:p>Social media platforms have become an important lifestyle aspect. Therefore, we implemented communication via social media platforms to recruit new donors and to motivate repeat donors. Here, we report a survey among donors of our blood donation facility to evaluate the impact of different strategies for donor motivation from the donors\u2019 perspective.</jats:p></jats:sec><jats:sec><jats:title>STUDY DESIGN AND METHODS</jats:title><jats:p>During 8 consecutive weeks, all whole blood donors were asked to participate. The survey consisted of a questionnaire including the demographic items sex, age, number of prior donations, and 14 potential motivators for blood donation. Social media included the items \u201c<jats:italic>Facebook</jats:italic>\u201d and \u201c<jats:italic>Jodel\u201d</jats:italic> (German local mobile application).</jats:p></jats:sec><jats:sec><jats:title>RESULTS</jats:title><jats:p>Of 3320 consecutive donors, 2920 (88%) participated in the survey. Social media motivated 7.4% of our donors, among them mainly young and female donors. For first\u2010time donors (FTDs; n\u2009=\u2009157) the three strongest motivational factors were friends and/or relatives (73%), social media (15%), and \u201cI do not need additional motivation\u201d (11%). Repeat donors (n\u2009=\u20092693) most often stated that they do not need additional motivation (72%) and only 7% were motivated by social media.</jats:p></jats:sec><jats:sec><jats:title>CONCLUSION</jats:title><jats:p>Social media have become the second most important motivator to recruit FTDs beside relatives and friends who are by far the main motivators for FTDs. For repeat donors, social media play a less important role. Social media are becoming increasingly important for transfusion services.</jats:p></jats:sec>",
+        "DOI": "10.1111/trf.14823",
+        "type": "journal-article",
+        "title": [
+          "The role of social media for blood donor motivation and recruitment"
+        ],
+        "author": [
+          {
+            "given": "Ariane",
+            "family": "S\u00fcmnig",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Institut f\u00fcr Immunologie und Transfusionsmedizin Universit\u00e4tsmedizin Greifswald  Greifswald Germany"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Martin",
+            "family": "Feig",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Institut f\u00fcr Immunologie und Transfusionsmedizin Universit\u00e4tsmedizin Greifswald  Greifswald Germany"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Andreas",
+            "family": "Greinacher",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Institut f\u00fcr Immunologie und Transfusionsmedizin Universit\u00e4tsmedizin Greifswald  Greifswald Germany"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-0177-6508",
+            "authenticated-orcid": false,
+            "given": "Thomas",
+            "family": "Thiele",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Institut f\u00fcr Immunologie und Transfusionsmedizin Universit\u00e4tsmedizin Greifswald  Greifswald Germany"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Transfusion"
+        ],
+        "score": 30.128288,
+        "URL": "https://doi.org/10.1111/trf.14823",
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              9,
+              10
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.4324/9781003387800-31",
+        "title": [
+          "Volunteer and Donor Recruitment on Social Media"
+        ],
+        "author": [
+          {
+            "given": "Julie Ann",
+            "family": "O\u2019Connell",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Benjamin S.",
+            "family": "Bingle",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "C. Kenneth",
+            "family": "Meyer",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              3,
+              14
+            ]
+          ]
+        },
+        "container-title": [
+          "Understanding Nonprofit Organizations"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.4324/9781003387800-31",
+        "score": 27.014753
+      },
+      {
+        "DOI": "10.1016/j.tracli.2026.03.001",
+        "title": [
+          "The role of social media, influencers, and online communities in blood donor recruitment and retention: A systematic scoping review"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0008-0893-914X",
+            "authenticated-orcid": false,
+            "given": "RishiRaj",
+            "family": "Sinha",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-3371-9612",
+            "authenticated-orcid": false,
+            "given": "Arun",
+            "family": "V",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0007-3420-2785",
+            "authenticated-orcid": false,
+            "given": "R.",
+            "family": "Sravan Kumar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-4386-6755",
+            "authenticated-orcid": false,
+            "given": "Rashmi",
+            "family": "Jain",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Transfusion Clinique et Biologique"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.tracli.2026.03.001",
+        "score": 27.008194
+      },
+      {
+        "DOI": "10.21037/aob.2019.07.04",
+        "title": [
+          "Donor recruitment: motivate their hearts"
+        ],
+        "author": [
+          {
+            "given": "Eric",
+            "family": "Senaldi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019,
+              8
+            ]
+          ]
+        },
+        "container-title": [
+          "Annals of Blood"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21037/aob.2019.07.04",
+        "score": 26.942474
+      },
+      {
+        "abstract": "<p>Background and objectives. Blood donor populations have been susceptible to change, often showing a trend towards feminization while remaining ethnically homogeneous, leading to an underrepresentation of young men and ethnic minorities. The aim of our study was to examine whether recruitment strategies are related to donor diversity and loyalty of specific demographic groups in the Netherlands. Materials and methods. Analyses were conducted using the Dutch blood donor database on whole-blood donors registered between 2013 and 2017 (n = 155,054). Chi-square tests were used to study relationships between donor characteristics (i.e., sex, age, and Duffy-negative antigen as proxy for donors from African descent) and recruitment strategies; linear and Cox regressions were used to study relationships between recruitment strategies, and number of donations and length of the donor career, respectively. Results. Most donors were recruited via other donors (44.6%) or became donor on their own initiative (28.4%). Young men were often recruited by other donors and Duffy-negative donors were often recruited via missing minorities campaigns. Donor-recruits-donor was associated with the highest number of donations; telephone recruitment was associated with the lowest number of donations. Although telephone recruitment was associated with the longest donor careers, it also showed the largest proportional stopping prevalence. Student recruitment and missing minorities campaigns were associated with the shortest donor careers. Conclusions. Our results showed proportional differences in how people from different sex, age and ethnicity are recruited, and how recruitment relates to donor loyalty. We advocate for more personalized, evidence-based recruitment and retention strategies.</p>",
+        "DOI": "10.31235/osf.io/sahmr",
+        "type": "posted-content",
+        "title": [
+          "The relation between blood donor recruitment and donor diversity and loyalty in the Netherlands"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-5933-2240",
+            "authenticated-orcid": true,
+            "given": "Tjeerd W.",
+            "family": "Piersma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Elisabeth",
+            "family": "Klinkenberg",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 26.783543,
+        "URL": "https://doi.org/10.31235/osf.io/sahmr",
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              9,
+              12
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Fanfiction, a product of the fandom culture believed to have started in the 1960s with Star Trek, is a type of literature that is progressively entering academic discussions. This article chooses to focus on a special type of fanfiction, called Social Media AUs, which are fanfics set inside and told through the format of social media. The first part of the analysis shows how this type of fanfiction was being produced in the more traditional fanfiction spaces \u2013 virtual archives such as FanFiction.Net and Archive of Our Own (AO3) \u2013 and how writers chose to represent social media interaction. The second part discusses the shift from these archives to Twitter (X) and analyzes aspects that differentiate the Social Media AUs produced in the app: use of images, recreation of social media formats, practicality in reading, interactive tools and multimedia approach. To do this, actual examples of fanfics from AO3 and Twitter are used and authors such as Derecho (2006) and Vargas (2005) are brought to deepen the analysis. The results show that social media is indeed influencing new storytelling ways and that there is a significant interest in stories told entirely through social media format.</jats:p>",
+        "DOI": "10.34019/1983-8379.2025.v18.49564",
+        "type": "journal-article",
+        "title": [
+          "TWITTER SOCIAL MEDIA AUS"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0001-8613-0118",
+            "authenticated-orcid": false,
+            "given": "Marina",
+            "family": "Krebs Vanazzi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Revista Darandina"
+        ],
+        "score": 26.6873,
+        "URL": "https://doi.org/10.34019/1983-8379.2025.v18.49564",
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              10,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.4135/9781529604504.n2",
+        "title": [
+          "Dr. Michael Stern Discusses Using Social Media for Online Survey Recruitment"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "Using Social Media for Online Survey Recruitment"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.4135/9781529604504.n2",
+        "score": 26.607285
+      },
+      {
+        "DOI": "10.4135/9781529604504.n7",
+        "title": [
+          "Michael Stern Shares Key Takeaways for Using Social Media for Online Survey Recruitment"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "Using Social Media for Online Survey Recruitment"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.4135/9781529604504.n7",
+        "score": 26.143955
+      },
+      {
+        "DOI": "10.4135/9781529604504.n6",
+        "title": [
+          "Michael Stern Discusses Data Analysis of Online Surveys When Using Social Media Recruitment"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "Using Social Media for Online Survey Recruitment"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.4135/9781529604504.n6",
+        "score": 26.131517
+      },
+      {
+        "DOI": "10.1016/b978-0-08-102409-6.00007-9",
+        "title": [
+          "Twitter"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019
+            ]
+          ]
+        },
+        "container-title": [
+          "Social Media"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1016/b978-0-08-102409-6.00007-9",
+        "score": 26.084929
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "blood donor recruitment social media twitter india"
+    }
+  }
+}

@@ -1,0 +1,378 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 9101078,
+    "items": [
+      {
+        "DOI": "10.3030/825227",
+        "type": "grant",
+        "URL": "https://doi.org/10.3030/825227",
+        "score": 25.907625
+      },
+      {
+        "abstract": "<jats:p>Generative artificial intelligence (GenAI) changes the information environment in which academic libraries teach discovery, evaluation, use, and ethical participation. The central challenge is no longer simply whether students use GenAI, but whether they know when to trust its outputs, how to verify them, and when to return to scholarly evidence and human expertise. This study develops and tests a library-centered model linking calibrated trust, verification behavior, AI literacy, academic-library guidance, and information-literacy performance. The manuscript-development dataset contains 624 university students and combines self-report scales with a scenario-based information-literacy performance score. Robust regression, bootstrap mediation, moderation analysis, group comparisons, and quantile regression are used. Verification behavior is the strongest predictor of information-literacy performance (\u03b2 = .414, p &lt; .001). Calibrated trust predicts verification (\u03b2 = .346, p &lt; .001), and verification significantly mediates the relationship between calibrated trust and information-literacy performance (indirect effect = .144, 95% CI [.107, .186]). Academic-library guidance predicts verification (\u03b2 = .276, p &lt; .001) and strengthens the trust\u2013verification relationship (interaction \u03b2 = .090, p = .007). Students who had received library-led AI/information-literacy instruction also achieved higher performance scores, although the binary exposure indicator becomes nonsignificant after the quality of library guidance is modeled directly. The findings position verification\u2014not mere adoption\u2014as the key behavioral bridge between GenAI and information literacy. Academic libraries can therefore extend established information-literacy practice by teaching calibrated trust, source tracing, citation checking, triangulation, uncertainty recognition, and ethical disclosure as routine components of AI-mediated research.</jats:p>",
+        "DOI": "10.2139/ssrn.7441947",
+        "type": "posted-content",
+        "title": [
+          "Trust, Verification, and Generative AI: Redefining Information Literacy in Academic Libraries"
+        ],
+        "author": [
+          {
+            "given": "Jon",
+            "family": "Lee",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 22.738747,
+        "URL": "https://doi.org/10.2139/ssrn.7441947",
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Abstract\nCryptographic deepfake provenance verification is formulated in this book as a layered evidence problem that joins content lineage, cryptographic assurance, statistical forensics, multimodal machine learning and governance. The proposed system architecture treats authenticity as a verifiable claim over origin and transformation history rather than a binary visual judgement. It combines signed provenance assertions, tamper-evident event records, post-quantum-ready cryptographic agility, calibrated deepfake detection, causal reconstruction of manipulation pathways, multimodal consistency analysis and human-auditable decision logic. The research design separates cryptographic proof from probabilistic inference so that enrolled content can benefit from strong lineage guarantees while unsigned or legacy media remains assessable through forensic evidence. Five chapters develop foundations and uncertainty, statistical and causal explanation, machine-learning generalisation, scalable provenance engineering, and sectoral governance with patent-oriented system claims. Exactly ten cross-cutting research themes connect theory, implementation, evaluation and policy. The resulting framework supports reproducible experimentation, streaming verification, federated deployment, selective disclosure, incident response and cross-border interoperability. Its principal contribution is an integrated verification model in which provenance completeness, confidence calibration, robustness, latency, privacy and accountability become jointly measurable design objectives for media ecosystems in journalism, public administration, education, finance, legal evidence and the creative industries.\nKeywords\ndeepfake provenance, cryptographic verification, content authenticity, synthetic media, digital signatures, post-quantum cryptography, multimodal forensics, causal attribution, uncertainty calibration, provenance graph, chain of custody, trustworthy AI, adversarial robustness, selective disclosure, identity binding, federated verification, MLOps, event sourcing, auditability, media governance, evidence integrity, content lineage, authenticity infrastructure</jats:p>",
+        "DOI": "10.62311/nesx/rb95-978-81-17475-05-8",
+        "type": "reference-book",
+        "title": [
+          "Cryptographic Deepfake Provenance Verification System"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0007-1023-7035",
+            "authenticated-orcid": false,
+            "given": "Murali Krishna",
+            "family": "Pasupuleti",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "National Education Services"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 22.658367,
+        "URL": "https://doi.org/10.62311/nesx/rb95-978-81-17475-05-8",
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              9,
+              30
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1109/icedeg58167.2023.10121951",
+        "title": [
+          "How Trust in Authority and Trust in Networks Relates to Verification and Sharing Behaviours: COVID-19 Health Information Sharing on WhatsApp"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-0674-8055",
+            "authenticated-orcid": false,
+            "given": "Benjamin",
+            "family": "Vermeulen",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Reach Digital Health,Cape Town,South Africa"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-9140-0143",
+            "authenticated-orcid": false,
+            "given": "Jean-Paul",
+            "family": "Van Belle",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "University of Cape Town,CITANDA,Dept of Information Systems,Rondebosch,South Africa"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              4,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "2023 Ninth International Conference on eDemocracy &amp; eGovernment (ICEDEG)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/icedeg58167.2023.10121951",
+        "score": 22.617443
+      },
+      {
+        "abstract": "<jats:p>Generative AI is increasingly woven into organisational information practice, challenging established assumptions about trust, accountability, and professional responsibility. Contemporary AI ethics frameworks emphasise transparency and provenance but often assume discrete, visible instances of AI use. This paper argues that the central ethical question is not where information originates but how much verification it requires before it can responsibly inform action. Drawing on foundational theories of information behaviour, including Belkin's anomalous state of knowledge, Taylor's question negotiation, and Kuhlthau's information search process, it reconceptualises interaction with generative AI as a process of task specification rather than content generation. Building on this perspective, the paper links informational tasks and contextual risk factors to differing verification burdens. Provenance remains important, but as a diagnostic indicator of likely forms of error rather than a guarantor of reliability. Human and generative systems are understood as complementary information production systems characterised by distinct patterns of failure requiring different forms of evaluative scrutiny. The paper concludes by distinguishing first-order AI literacy, concerned with the practical competence needed to use generative systems effectively, from second-order literacy, concerned with understanding how information acquires meaning, authority, and trust within social and organisational contexts. It argues that second-order literacy constitutes the key professional capability for ethical information work in AI-mediated environments.</jats:p>",
+        "DOI": "10.1177/02663821261487913",
+        "type": "journal-article",
+        "title": [
+          "Out-of-the-box: Provenance, verification, and the ethics of generative AI in information work"
+        ],
+        "author": [
+          {
+            "given": "Luke",
+            "family": "Tredinnick",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "School of Computing and Digital Media, London Metropolitan University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Business Information Review"
+        ],
+        "score": 22.493515,
+        "URL": "https://doi.org/10.1177/02663821261487913",
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              9
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.35802/219700",
+        "type": "grant",
+        "URL": "https://doi.org/10.35802/219700",
+        "score": 22.293482
+      },
+      {
+        "DOI": "10.1007/978-3-319-40226-0_5",
+        "title": [
+          "Provenance in Digital Libraries: Source, Context, Value and Trust"
+        ],
+        "author": [
+          {
+            "given": "Lucie C.",
+            "family": "Burgess",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "container-title": [
+          "Springer Proceedings in Business and Economics",
+          "Building Trust in Information"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-319-40226-0_5",
+        "score": 22.175192
+      },
+      {
+        "DOI": "10.1109/trustcom.2011.44",
+        "title": [
+          "Case-Based Trust Evaluation from Provenance Information"
+        ],
+        "author": [
+          {
+            "given": "Quan",
+            "family": "Bai",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Xing",
+            "family": "Su",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Qing",
+            "family": "Liu",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Andrew",
+            "family": "Terhorst",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Minjie",
+            "family": "Zhang",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Yi",
+            "family": "Mu",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2011,
+              11
+            ]
+          ]
+        },
+        "container-title": [
+          "2011IEEE 10th International Conference on Trust, Security and Privacy in Computing and Communications"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/trustcom.2011.44",
+        "score": 21.640812
+      },
+      {
+        "abstract": "<sec>\n                  <title>BACKGROUND</title>\n                  <p>AI systems can use wearable and self-reported data to generate personalized health recommendations, but broader access to personal data may also raise privacy concerns and reduce acceptance.</p>\n                </sec>\n                <sec>\n                  <title>OBJECTIVE</title>\n                  <p>This formative study examined how evaluations of an AI-generated health recommendation varied across stated data-provenance conditions when the recommendation itself was held constant. The aim was to identify data-use patterns that could inform the design of future AI-based personal health systems.</p>\n                </sec>\n                <sec>\n                  <title>METHODS</title>\n                  <p>In a within-participant online study, 194 Prolific participants evaluated the same sleep recommendation across four cumulative data conditions: sleep only; sleep plus physical activity; sleep, activity, and resting heart rate; and these sensor data plus personal journal entries. Participants rated trust, usefulness, personalization, comfort with sharing, privacy concern, data appropriateness, and behavioral intention. Scenario differences were tested using linear mixed-effects models with Holm-corrected contrasts.</p>\n                </sec>\n                <sec>\n                  <title>RESULTS</title>\n                  <p>Trust and usefulness changed little across sensor conditions. The journal condition showed the largest differences from the preceding condition: comfort was 0.74 points lower (dz=\u22120.47), data appropriateness 0.59 lower (dz=\u22120.45), trust 0.26 lower (dz=\u22120.32), behavioral intention 0.32 lower (dz=\u22120.36), and privacy concern 0.59 higher (dz=0.37; all P&lt;.001). Personalization did not differ significantly.</p>\n                </sec>\n                <sec>\n                  <title>CONCLUSIONS</title>\n                  <p>Broader stated data access did not consistently correspond to greater perceived value, and the condition including journal data showed lower acceptance. As a formative evaluation, these findings identify data type as an important consideration for subsequent system design and evaluation, particularly for data minimization, per-data-type consent, and provenance communication.</p>\n                </sec>\n                <sec>\n                  <title>CLINICALTRIAL</title>\n                  <p>N/A</p>\n                </sec>",
+        "DOI": "10.2196/preprints.113791",
+        "type": "posted-content",
+        "title": [
+          "Trust, Privacy, and Acceptance Across Data-Provenance Conditions in AI-Generated Health Recommendations: Formative Within-Participant Study (Preprint)"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0009-0147-5423",
+            "authenticated-orcid": false,
+            "given": "Hamid",
+            "family": "Mansoor",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 21.548876,
+        "URL": "https://doi.org/10.2196/preprints.113791",
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              10,
+              6
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.48009/4_iis_2026_153",
+        "title": [
+          "THE IDENTITY TRUST CHAIN: A GOVERNANCE FRAMEWORK FOR ATTRIBUTE-LEVEL IDENTITY PROVENANCE AND ASSURANCE IN HIGHER EDUCATION"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "container-title": [
+          "Issues In Information Systems"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.48009/4_iis_2026_153",
+        "score": 21.50216
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "health information provenance trust verification"
+    }
+  }
+}

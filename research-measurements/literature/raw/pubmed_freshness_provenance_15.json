@@ -1,0 +1,46 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "3152",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13690323",
+      "13686847",
+      "13687949",
+      "13683995",
+      "13685257",
+      "13684198",
+      "13686757",
+      "13683724",
+      "13685065",
+      "13686512"
+    ],
+    "translationset": [
+      {
+        "from": "health",
+        "to": "\"health\"[MeSH Terms] OR \"health\"[All Fields] OR \"health's\"[All Fields] OR \"healthful\"[All Fields] OR \"healthfulness\"[All Fields] OR \"healths\"[All Fields]"
+      },
+      {
+        "from": "information",
+        "to": "\"inform\"[All Fields] OR \"informal\"[All Fields] OR \"informality\"[All Fields] OR \"informally\"[All Fields] OR \"informant\"[All Fields] OR \"informant's\"[All Fields] OR \"informants\"[All Fields] OR \"information\"[All Fields] OR \"information's\"[All Fields] OR \"informational\"[All Fields] OR \"informations\"[All Fields] OR \"informative\"[All Fields] OR \"informatively\"[All Fields] OR \"informativeness\"[All Fields] OR \"informativity\"[All Fields] OR \"informed\"[All Fields] OR \"informer\"[All Fields] OR \"informers\"[All Fields] OR \"informing\"[All Fields] OR \"informs\"[All Fields]"
+      },
+      {
+        "from": "provenance",
+        "to": "\"provenance\"[All Fields] OR \"provenances\"[All Fields]"
+      },
+      {
+        "from": "trust",
+        "to": "\"trust\"[MeSH Terms] OR \"trust\"[All Fields] OR \"trusted\"[All Fields] OR \"trusting\"[All Fields] OR \"trusts\"[All Fields] OR \"trust's\"[All Fields] OR \"trustful\"[All Fields]"
+      },
+      {
+        "from": "verification",
+        "to": "\"verification\"[All Fields] OR \"verifications\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"health\"[MeSH Terms] OR \"health\"[All Fields] OR \"health s\"[All Fields] OR \"healthful\"[All Fields] OR \"healthfulness\"[All Fields] OR \"healths\"[All Fields]) AND (\"inform\"[All Fields] OR \"informal\"[All Fields] OR \"informality\"[All Fields] OR \"informally\"[All Fields] OR \"informant\"[All Fields] OR \"informant s\"[All Fields] OR \"informants\"[All Fields] OR \"information\"[All Fields] OR \"information s\"[All Fields] OR \"informational\"[All Fields] OR \"informations\"[All Fields] OR \"informative\"[All Fields] OR \"informatively\"[All Fields] OR \"informativeness\"[All Fields] OR \"informativity\"[All Fields] OR \"informed\"[All Fields] OR \"informer\"[All Fields] OR \"informers\"[All Fields] OR \"informing\"[All Fields] OR \"informs\"[All Fields]) AND (\"provenance\"[All Fields] OR \"provenances\"[All Fields]) AND (\"trust\"[MeSH Terms] OR \"trust\"[All Fields] OR \"trusted\"[All Fields] OR \"trusting\"[All Fields] OR \"trusts\"[All Fields] OR \"trust s\"[All Fields] OR \"trustful\"[All Fields]) AND (\"verification\"[All Fields] OR \"verifications\"[All Fields])"
+  }
+}

@@ -1,0 +1,619 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 6309317,
+    "items": [
+      {
+        "abstract": "<jats:p>Efficiently managing inventories requires an accurate estimation of stockout costs. This estimation is complicated by challenges in determining how to compensate consumers monetarily to ensure they will maintain the same level of utility they would have obtained had stockouts not occurred. This paper presents an analysis of these compensation costs, as applied to the design of optimal stockout rates by an online retailer marketing to consumers aesthetically substandard fruits and vegetables rejected by mainstream grocery chains. Because growers face high uncertainty in their harvesting conditions and in the aesthetic quality of their crops and there are little data on hand to predict the value consumers attach to the availability of subpar produce, it is difficult to optimally match the supply of these products with consumers' demand. Our analysis draws from a multiple discrete-continuous extreme value (MDCEV) choice model to calculate consumer compensations that the retailer can use to estimate the opportunity costs of stockouts to manage its inventory. We show that not taking into account these compensation costs could unduly inflate the optimal stockout rates for these products. Armed with these compensation cost estimates, we show how these costs can serve as incentives for retailers to source from growers greater inventory amounts of imperfect produce and how this will ultimately translate into less waste in the supply chain.</jats:p>",
+        "DOI": "10.2139/ssrn.4524615",
+        "type": "posted-content",
+        "title": [
+          "Estimating Stockout Costs and Optimal Stockout Rates: A Case on the Management of Ugly Produce Inventory"
+        ],
+        "author": [
+          {
+            "given": "Stanley",
+            "family": "Lim",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-7251-9571",
+            "authenticated-orcid": true,
+            "given": "Elliot",
+            "family": "Rabinovich",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sanghak",
+            "family": "Lee",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sungho",
+            "family": "Park",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 33.744507,
+        "URL": "https://doi.org/10.2139/ssrn.4524615",
+        "published": {
+          "date-parts": [
+            [
+              2023
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.5220/0009502907300735",
+        "title": [
+          "Medicine and Consumer Goods Supply Management Design to Reduce Stockout and Days of Inventory in PT. XYZ"
+        ],
+        "author": [
+          {
+            "given": "Monica",
+            "family": "Linawati",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Universitas Airlangga, Indonesia"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 1st Unimed International Conference on Economics Education and Social Science"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.5220/0009502907300735",
+        "score": 30.446068
+      },
+      {
+        "abstract": "<jats:p> Efficiently managing inventories requires an accurate estimation of stockout costs. This estimation is complicated by challenges in determining how to compensate consumers monetarily to ensure they will maintain the same level of utility they would have obtained had stockouts not occurred. This paper presents an analysis of these compensation costs as applied to the design of optimal stockout rates by an online retailer marketing to consumers aesthetically substandard fruits and vegetables rejected by mainstream grocery chains. Because growers face high uncertainty in their harvesting conditions and in the aesthetic quality of their crops and there are little data on hand to predict the value consumers attach to the availability of subpar produce, it is difficult to optimally match the supply of these products with consumers\u2019 demand. Our analysis draws from a multiple discrete-continuous extreme value (MDCEV) choice model to calculate consumer compensations that the retailer can use to estimate the opportunity costs of stockouts to manage its inventory. We show that not taking into account these compensation costs could unduly inflate the optimal stockout rates for these products. Armed with these compensation cost estimates, we show how these costs can serve as incentives for retailers to source greater inventory amounts of imperfect produce from growers and how this will ultimately translate into less waste in the supply chain. </jats:p><jats:p> This paper was accepted by Charles Corbett, operations management. </jats:p><jats:p> Funding: Funding from Agriculture and Food Research Initiative (National Institute for Food and Agriculture, USDA) [Grant 2016-09900] is gratefully acknowledged. </jats:p><jats:p> Supplemental Material: The online appendix and data files are available at https://doi.org/10.1287/mnsc.2021.03174 . </jats:p>",
+        "DOI": "10.1287/mnsc.2021.03174",
+        "type": "journal-article",
+        "title": [
+          "Estimating Stockout Costs and Optimal Stockout Rates: A Case on the Management of Ugly Produce Inventory"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-2211-9654",
+            "authenticated-orcid": false,
+            "given": "Stanley Frederick W. T.",
+            "family": "Lim",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Eli Broad College of Business, Michigan State University, East Lansing, Michigan 48824"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-7251-9571",
+            "authenticated-orcid": false,
+            "given": "Elliot",
+            "family": "Rabinovich",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "W. P. Carey School of Business, Arizona State University, Tempe, Arizona 85287"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-5883-5065",
+            "authenticated-orcid": false,
+            "given": "Sanghak",
+            "family": "Lee",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "W. P. Carey School of Business, Arizona State University, Tempe, Arizona 85287"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-7201-8769",
+            "authenticated-orcid": false,
+            "given": "Sungho",
+            "family": "Park",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "SNU Business School, Seoul National University, Seoul 08826, South Korea"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Management Science"
+        ],
+        "score": 29.936234,
+        "URL": "https://doi.org/10.1287/mnsc.2021.03174",
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              4
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1007/978-981-97-6765-6_9",
+        "title": [
+          "Deteriorating Inventory Model for Stock- and Advertisement-Sensitive Demand with a Prepayment Scheme Under Permitted Shortage and Backordering Rate"
+        ],
+        "author": [
+          {
+            "given": "Nita H.",
+            "family": "Shah",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Kavita",
+            "family": "Rabari",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        },
+        "container-title": [
+          "Inventory Optimization",
+          "Sustainable Inventory Management"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-981-97-6765-6_9",
+        "score": 29.244287
+      },
+      {
+        "abstract": "<jats:p> A finite horizon, periodic review, dynamic inventory model for a single item with a stockout constraint is considered in this paper, and the optimal ordering policy is obtained. The discrete case is dealt with, and linear purchase and holding costs are assumed together with a fixed order cost, all costs being discounted back to the beginning of the first period. A fixed delivery lead time is assumed, and backlogging of unsatisfied demand is required. The stockout constraint is that the ratio of the expected number of stockouts to the expected demand over the finite horizon not exceed a preassigned fraction. The optimal ordering policy is obtained by the usual dynamic programming technique, using a Lagrange multiplier to handle the stockout constraint. </jats:p>",
+        "DOI": "10.1287/mnsc.13.9.618",
+        "type": "journal-article",
+        "title": [
+          "A Finite Horizon Dynamic Inventory Model with a Stockout Constraint"
+        ],
+        "author": [
+          {
+            "given": "Paul R.",
+            "family": "Beesack",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Defence Research Board, and Carleton University, Ottawa, Canada"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Management Science"
+        ],
+        "score": 28.480633,
+        "URL": "https://doi.org/10.1287/mnsc.13.9.618",
+        "published": {
+          "date-parts": [
+            [
+              1967,
+              5
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1016/j.ifacol.2022.09.467",
+        "title": [
+          "Inventory Management Model for Stockout Based Substitutable Products"
+        ],
+        "author": [
+          {
+            "given": "Michal",
+            "family": "Koren",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Yael",
+            "family": "Perlman",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Matan",
+            "family": "Shnaiderman",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "IFAC-PapersOnLine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.ifacol.2022.09.467",
+        "score": 28.465628
+      },
+      {
+        "DOI": "10.5220/0007370203220329",
+        "title": [
+          "Literature Review on Shortage Cost Modeling in Inventory Management"
+        ],
+        "author": [
+          {
+            "given": "Mohamed",
+            "family": "Selmi",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Laboratoire G\u00e9nie Industriel, CentraleSup\u00e9lec, Universit\u00e9 Paris Saclay and France, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Zied",
+            "family": "Jemai",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "OASIS, ENIT, Universit\u00e9 de Tunis El Manar, Tunis and Tunisia, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Laurent",
+            "family": "Gr\u00e9goire",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Laboratoire G\u00e9nie Industriel, CentraleSup\u00e9lec, Universit\u00e9 Paris Saclay and France, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Yves",
+            "family": "Dallery",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Laboratoire G\u00e9nie Industriel, CentraleSup\u00e9lec, Universit\u00e9 Paris Saclay and France, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 8th International Conference on Operations Research and Enterprise Systems"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.5220/0007370203220329",
+        "score": 28.23399
+      },
+      {
+        "DOI": "10.5220/0007370200002104",
+        "title": [
+          "Literature Review on Shortage Cost Modeling in Inventory Management"
+        ],
+        "author": [
+          {
+            "given": "Mohamed",
+            "family": "Selmi",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Laboratoire G\u00e9nie Industriel, CentraleSup\u00e9lec, Universit\u00e9 Paris Saclay, France, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Zied",
+            "family": "Jemai",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "OASIS, ENIT, Universit\u00e9 de Tunis El Manar, Tunis, Tunisia, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Laurent",
+            "family": "Gr\u00e9goire",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Laboratoire G\u00e9nie Industriel, CentraleSup\u00e9lec, Universit\u00e9 Paris Saclay, France, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Yves",
+            "family": "Dallery",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Laboratoire G\u00e9nie Industriel, CentraleSup\u00e9lec, Universit\u00e9 Paris Saclay, France, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 8th International Conference on Operations Research and Enterprise Systems"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.5220/0007370200002104",
+        "score": 28.147573
+      },
+      {
+        "abstract": "<jats:p>This study considers the integration of pricing and inventory decisions of two vertically differentiated products with partially stockout-based and price-dependent substitution. We present a stochastic pricing and inventory model and examine structural properties of an integrated planning of price and inventory levels. Due to the industry prevalence, this study analyzes the performance of two decentralized planning approaches in which independent decision making units separately plan either price and inventory levels (division-individual) or both products (product-individual). A comparison of decentralized and integrated planning indicates two overlapping effects. As substitution may result in higher demand, the revenue effect responds by increasing prices. The demand effect, on the other hand, stimulates demand substitution by charging a lower price. The main driver determining which effect dominates is the customers\u2019 price-sensitivity of substitution. The study demonstrates that if price-sensitivity of substitution is low, the revenue effect is the dominating effect, which induces a more aggressive pricing of the high-quality product in integrated planning than occurs in decentralized planning. On the other hand, if price-sensitivity of  substitution is high, the dominating demand effect induces a lower selling price in integrated planning than occurs in decentralized planning. The results also indicate that an appropriate price management in integrated planning may affect the assortment planning. A numerical examination shows the impact of substitution rate elasticity on the optimal price and inventory decisions.</jats:p>",
+        "DOI": "10.2139/ssrn.1807484",
+        "type": "posted-content",
+        "title": [
+          "Joint Pricing and Inventory Decisions Under Stockout-Based and Price-Dependent Substitution"
+        ],
+        "author": [
+          {
+            "given": "Sandra",
+            "family": "Transchel",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 28.088905,
+        "URL": "https://doi.org/10.2139/ssrn.1807484",
+        "published": {
+          "date-parts": [
+            [
+              2011
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p> We consider an inventory control problem with multiple products and stockout substitution. The firm knows neither the primary demand distribution for each product nor the customers\u2019 substitution probabilities between products a priori, and it needs to learn such information from sales data on the fly. One challenge in this problem is that the firm cannot distinguish between primary demand and substitution (overflow) demand from the sales data of any product, and lost sales are not observable. To circumvent these difficulties, we construct learning stages with each stage consisting of a cyclic exploration scheme and a benchmark exploration interval. The benchmark interval allows us to isolate the primary demand information from the sales data, and then this information is used against the sales data from the cyclic exploration intervals to estimate substitution probabilities. Because raising the inventory level helps obtain primary demand information but hinders substitution demand information, inventory decisions have to be carefully balanced to learn them together. We show that our learning algorithm admits a worst-case regret rate that (almost) matches the theoretical lower bound, and numerical experiments demonstrate that the algorithm performs very well. </jats:p><jats:p> This paper was accepted by J. George Shanthikumar, big data analytics. </jats:p>",
+        "DOI": "10.1287/mnsc.2019.3474",
+        "type": "journal-article",
+        "title": [
+          "Dynamic Inventory Control with Stockout Substitution and Demand Learning"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-5967-4822",
+            "authenticated-orcid": false,
+            "given": "Boxiao",
+            "family": "Chen",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "College of Business Administration, University of Illinois at Chicago, Chicago, Illinois 60607;"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-5233-4385",
+            "authenticated-orcid": false,
+            "given": "Xiuli",
+            "family": "Chao",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Industrial and Operations Engineering, University of Michigan, Ann Arbor, Michigan 48109"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Management Science"
+        ],
+        "score": 27.67196,
+        "URL": "https://doi.org/10.1287/mnsc.2019.3474",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              11
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "blood shortage stockout inventory management india"
+    }
+  }
+}

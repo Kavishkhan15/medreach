@@ -1,0 +1,46 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "7881",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13690323",
+      "13687668",
+      "13687552",
+      "13687950",
+      "13689007",
+      "13688886",
+      "13689307",
+      "13690221",
+      "13683988",
+      "13685220"
+    ],
+    "translationset": [
+      {
+        "from": "patient navigation",
+        "to": "\"patient navigation\"[MeSH Terms] OR (\"patient\"[All Fields] AND \"navigation\"[All Fields]) OR \"patient navigation\"[All Fields]"
+      },
+      {
+        "from": "digital",
+        "to": "\"digitalisation\"[All Fields] OR \"digitalised\"[All Fields] OR \"digitalization\"[All Fields] OR \"digitalize\"[All Fields] OR \"digitalized\"[All Fields] OR \"digitalizer\"[All Fields] OR \"digitalizing\"[All Fields] OR \"digitally\"[All Fields] OR \"digitals\"[All Fields] OR \"digitization\"[All Fields] OR \"digitizations\"[All Fields] OR \"digitize\"[All Fields] OR \"digitized\"[All Fields] OR \"digitizer\"[All Fields] OR \"digitizers\"[All Fields] OR \"digitizes\"[All Fields] OR \"digitizing\"[All Fields] OR \"radiographic image enhancement\"[MeSH Terms] OR (\"radiographic\"[All Fields] AND \"image\"[All Fields] AND \"enhancement\"[All Fields]) OR \"radiographic image enhancement\"[All Fields] OR \"digital\"[All Fields]"
+      },
+      {
+        "from": "healthcare",
+        "to": "\"delivery of health care\"[MeSH Terms] OR (\"delivery\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"delivery of health care\"[All Fields] OR \"healthcare\"[All Fields] OR \"healthcare's\"[All Fields] OR \"healthcares\"[All Fields]"
+      },
+      {
+        "from": "access",
+        "to": "\"access\"[All Fields] OR \"accessed\"[All Fields] OR \"accesses\"[All Fields] OR \"accessibilities\"[All Fields] OR \"accessibility\"[All Fields] OR \"accessible\"[All Fields] OR \"accessing\"[All Fields]"
+      },
+      {
+        "from": "low resource settings",
+        "to": "\"resource-limited settings\"[MeSH Terms] OR (\"resource-limited\"[All Fields] AND \"settings\"[All Fields]) OR \"resource-limited settings\"[All Fields] OR (\"low\"[All Fields] AND \"resource\"[All Fields] AND \"settings\"[All Fields]) OR \"low resource settings\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"patient navigation\"[MeSH Terms] OR (\"patient\"[All Fields] AND \"navigation\"[All Fields]) OR \"patient navigation\"[All Fields]) AND (\"digitalisation\"[All Fields] OR \"digitalised\"[All Fields] OR \"digitalization\"[All Fields] OR \"digitalize\"[All Fields] OR \"digitalized\"[All Fields] OR \"digitalizer\"[All Fields] OR \"digitalizing\"[All Fields] OR \"digitally\"[All Fields] OR \"digitals\"[All Fields] OR \"digitization\"[All Fields] OR \"digitizations\"[All Fields] OR \"digitize\"[All Fields] OR \"digitized\"[All Fields] OR \"digitizer\"[All Fields] OR \"digitizers\"[All Fields] OR \"digitizes\"[All Fields] OR \"digitizing\"[All Fields] OR \"radiographic image enhancement\"[MeSH Terms] OR (\"radiographic\"[All Fields] AND \"image\"[All Fields] AND \"enhancement\"[All Fields]) OR \"radiographic image enhancement\"[All Fields] OR \"digital\"[All Fields]) AND (\"delivery of health care\"[MeSH Terms] OR (\"delivery\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"delivery of health care\"[All Fields] OR \"healthcare\"[All Fields] OR \"healthcare s\"[All Fields] OR \"healthcares\"[All Fields]) AND (\"access\"[All Fields] OR \"accessed\"[All Fields] OR \"accesses\"[All Fields] OR \"accessibilities\"[All Fields] OR \"accessibility\"[All Fields] OR \"accessible\"[All Fields] OR \"accessing\"[All Fields]) AND (\"resource limited settings\"[MeSH Terms] OR (\"resource limited\"[All Fields] AND \"settings\"[All Fields]) OR \"resource limited settings\"[All Fields] OR (\"low\"[All Fields] AND \"resource\"[All Fields] AND \"settings\"[All Fields]) OR \"low resource settings\"[All Fields])"
+  }
+}

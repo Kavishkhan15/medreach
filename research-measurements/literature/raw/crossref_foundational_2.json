@@ -1,0 +1,146 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 1029399,
+    "items": [
+      {
+        "DOI": "10.31219/osf.io/ytqan",
+        "title": [
+          "Analysis of twitter data for India and China Covid-19 Vaccination"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-6393-2441",
+            "authenticated-orcid": true,
+            "given": "Chesta",
+            "family": "Dhingra",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              2,
+              23
+            ]
+          ]
+        },
+        "abstract": "<p>The main aim behind writing this paper is to know the consensus or the opinion of people on the global scale towards Indian and Chinese vaccination drive by doing a comparative analysis with the help of twitter data and global media reviews (which includes the textual data other than Indian and Chinese media).</p>",
+        "type": "posted-content",
+        "URL": "https://doi.org/10.31219/osf.io/ytqan"
+      },
+      {
+        "DOI": "10.65301/ijcd.2021.11.3.4.8",
+        "title": [
+          "Media Literacy Amid Covid-19: Analysis of Facebook \u00a0and Twitter Posts During Lockdown Periods in India"
+        ],
+        "author": [
+          {
+            "family": "Dr Ramesh Kumar Sharma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              6,
+              30
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Communication Development"
+        ],
+        "abstract": "<jats:p>Recent cases of misinformation and fake claims spread on social media during the crisis of\u00a0 COVID-19 resulted in use of term \u2018Infodemics\u2019 while addressing the kind of role social\u00a0 media users across the world played in health communication. Thus, it becomes pertinent to\u00a0 introspect the pattern in which information is accessed, evaluated and shared on these\u00a0 platforms, especially during a public health crisis. The current study tried to analyse the level\u00a0 of media literacy of 100 Facebook users and 102 Twitter users in India by evaluating and\u00a0 comparing their posts during two lockdown periods with reference to credibility of\u00a0 information and sources, myths about COVID-19 and the manner of presenting their point. \u00a0It\u00a0 was found that while both of these social media platforms provide a scope for diverse opinion\u00a0 and information, Facebook, more than Twitter contains the risk of propagating conflict oriented manipulated information from unverified sources that is sufficient to create\u00a0 hinderance in the communication policy of health makers. \u00a0</jats:p>",
+        "type": "journal-article",
+        "URL": "https://doi.org/10.65301/ijcd.2021.11.3.4.8"
+      },
+      {
+        "DOI": "10.1101/2020.05.16.20103903",
+        "title": [
+          "Causal Modeling of Twitter Activity During COVID-19"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-3581-2231",
+            "authenticated-orcid": false,
+            "given": "Oguzhan",
+            "family": "Gencoglu",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Mathias",
+            "family": "Gruber",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              5,
+              20
+            ]
+          ]
+        },
+        "abstract": "<jats:p>Understanding the characteristics of public attention and perception is an essential prerequisite for appropriate crisis management during adverse health events. This is even more crucial during a pandemic such as COVID-19, as primary responsibility of risk management is not centralized to a single institution, but distributed across society. While numerous studies utilize Twitter data in descriptive or predictive context during COVID-19 pandemic, causal modeling of public attention has not been investigated. In this study, we propose a causal inference approach to discover and quantify causal relationships between pandemic characteristics (e.g. number of infections and deaths) and Twitter activity as well as public sentiment. Our results show that the proposed method can successfully capture the epidemiological domain knowledge and identify variables that affect public attention and perception. We believe our work contributes to the field of infodemiology by distinguishing events that correlate with public attention from events that cause public attention.</jats:p>",
+        "type": "posted-content",
+        "URL": "https://doi.org/10.1101/2020.05.16.20103903"
+      },
+      {
+        "DOI": "10.37473/dac/10.1142/s0217984924501501",
+        "title": [
+          "Disassembling blood clots and recovering blood oxygen function with strong magnetic field for severe COVID-19 patients"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1142/s0217984924501501"
+      },
+      {
+        "DOI": "10.37473/fic/10.1142/s0217984924501501",
+        "title": [
+          "Disassembling blood clots and recovering blood oxygen function with strong magnetic field for severe COVID-19 patients"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/fic/10.1142/s0217984924501501"
+      }
+    ],
+    "items-per-page": 5,
+    "query": {
+      "start-index": 0,
+      "search-terms": "SOS requests on Twitter during COVID-19 India blood beds oxygen"
+    }
+  }
+}

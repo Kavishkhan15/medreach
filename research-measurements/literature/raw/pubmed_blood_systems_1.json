@@ -1,0 +1,42 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "530",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13684979",
+      "13681864",
+      "13655786",
+      "13650469",
+      "13646698",
+      "13595820",
+      "13537061",
+      "13481328",
+      "13344246",
+      "13469228"
+    ],
+    "translationset": [
+      {
+        "from": "blood bank",
+        "to": "\"blood banks\"[MeSH Terms] OR (\"blood\"[All Fields] AND \"banks\"[All Fields]) OR \"blood banks\"[All Fields] OR (\"blood\"[All Fields] AND \"bank\"[All Fields]) OR \"blood bank\"[All Fields]"
+      },
+      {
+        "from": "information system",
+        "to": "\"information systems\"[MeSH Terms] OR (\"information\"[All Fields] AND \"systems\"[All Fields]) OR \"information systems\"[All Fields] OR (\"information\"[All Fields] AND \"system\"[All Fields]) OR \"information system\"[All Fields]"
+      },
+      {
+        "from": "india",
+        "to": "\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india's\"[All Fields] OR \"indias\"[All Fields]"
+      },
+      {
+        "from": "wastage",
+        "to": "\"wastage\"[All Fields] OR \"wastages\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"blood banks\"[MeSH Terms] OR (\"blood\"[All Fields] AND \"banks\"[All Fields]) OR \"blood banks\"[All Fields] OR (\"blood\"[All Fields] AND \"bank\"[All Fields]) OR \"blood bank\"[All Fields]) AND (\"information systems\"[MeSH Terms] OR (\"information\"[All Fields] AND \"systems\"[All Fields]) OR \"information systems\"[All Fields] OR (\"information\"[All Fields] AND \"system\"[All Fields]) OR \"information system\"[All Fields]) AND (\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india s\"[All Fields] OR \"indias\"[All Fields]) AND (\"wastage\"[All Fields] OR \"wastages\"[All Fields])"
+  }
+}

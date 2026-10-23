@@ -1,0 +1,424 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 5406272,
+    "items": [
+      {
+        "abstract": "<jats:p>Not available.</jats:p>",
+        "DOI": "10.4081/hls.2016.6396",
+        "type": "journal-article",
+        "title": [
+          "Healthcare in Low-Resource Settings: the long view for healthcare"
+        ],
+        "author": [
+          {
+            "given": "Abiola",
+            "family": "Fasina",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare in Low-resource Settings"
+        ],
+        "score": 38.994442,
+        "URL": "https://doi.org/10.4081/hls.2016.6396",
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              12,
+              21
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Not available.</jats:p>",
+        "DOI": "10.4081/hls.2013.e1",
+        "type": "journal-article",
+        "title": [
+          "Introducing Healthcare in Low-resource Settings"
+        ],
+        "author": [
+          {
+            "given": "Chandrakant",
+            "family": "Lahariya",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare in Low-resource Settings"
+        ],
+        "score": 38.879272,
+        "URL": "https://doi.org/10.4081/hls.2013.e1",
+        "published": {
+          "date-parts": [
+            [
+              2013,
+              1,
+              24
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Not available.</jats:p>",
+        "DOI": "10.4081/hls.2014.4572",
+        "type": "journal-article",
+        "title": [
+          "Healthcare in Low-resource Settings: the individual perspective"
+        ],
+        "author": [
+          {
+            "given": "Norman David",
+            "family": "Goldstuck",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare in Low-resource Settings"
+        ],
+        "score": 38.285805,
+        "URL": "https://doi.org/10.4081/hls.2014.4572",
+        "published": {
+          "date-parts": [
+            [
+              2014,
+              10,
+              17
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Not available.</jats:p>",
+        "DOI": "10.4081/hls.2013.e15",
+        "type": "journal-article",
+        "title": [
+          "The diverse issues of Healthcare in Low-resource Settings"
+        ],
+        "author": [
+          {
+            "given": "Asfandyar",
+            "family": "Khan Niazi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare in Low-resource Settings"
+        ],
+        "score": 37.879982,
+        "URL": "https://doi.org/10.4081/hls.2013.e15",
+        "published": {
+          "date-parts": [
+            [
+              2013,
+              9,
+              18
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Depression significantly contributes to the disease burden of pregnant women. However, depression is often under diagnosed by health professionals especially in antenatal clinics. This is the situation in Malawi where there is no routine screening for depression in antenatal clinics. Nonetheless, screening can enable the effective management of pregnant women with depression at antenatal clinics. There is therefore a need to integrate screening for depression into routine antenatal services to enhance the early identification of antenatal depression and intervention to improve and maintain the well-being of pregnant women and contribute towards achieving the efforts of the Government of Malawi in scaling up the treatment of depression.</jats:p>",
+        "DOI": "10.5772/intechopen.97411",
+        "type": "book-chapter",
+        "title": [
+          "Screening for Antenatal Depression by Midwives in Low Resource Settings in Primary Care Settings in Malawi"
+        ],
+        "author": [
+          {
+            "given": "Genesis",
+            "family": "Chorwe-Sungani",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare Access"
+        ],
+        "score": 37.289227,
+        "URL": "https://doi.org/10.5772/intechopen.97411",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              2,
+              9
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Patients\u2019 insights into the factors affecting access, referral and treatment of lung cancer in public healthcare facilities, are key to the fight against this disease. On the other hand, the lack of epidemiological information on the actual burden of lung cancer, makes it difficult for public healthcare facilities to be adequately equipped to deal with foreseeable challenges in the oncology units. In order to inform patientcentred interventions and lung cancer control programmes, this study explored extrinsic factors that affect lung cancer patients throughout the cancer care continuum in KwaZulu-Natal. Nineteen patients receiving care in the three public healthcare facilities providing oncology services in KwaZulu-Natal, were interviewed using an interview guide. Following data saturation, thematic analysis was used to develop the themes relating to the extrinsic factors affecting the provision of cancer care. Five themes emerged from the analysis, namely: geographical dynamics affecting patient access to a healthcare facility, lung cancer suspicion index in the diagnostic trail within the different levels of care, decision-making trail for the referral system, equipmentinduced delays and healthcare-patient communication. A number of lung cancer patients utilising oncology services in public healthcare facilities in KwaZulu-Natal, are often met with various extrinsic factors affecting their progression through different stages of cancer care continuum. Therefore, the results of the extrinsic factors explored in this paper through the lung cancer patients\u2019 lenses may be used for designing mitigation plans to reduce delays in lung cancer care in KwaZulu-Natal.</jats:p>",
+        "DOI": "10.4081/hls.2022.10170",
+        "type": "journal-article",
+        "title": [
+          "The extrinsic factors affecting patient access, referral and treatment of lung cancer in selected oncology public health facilities in KwaZulu-Natal"
+        ],
+        "author": [
+          {
+            "given": "Sinenhlanhla",
+            "family": "Zondo N.",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ginindza",
+            "family": "Themba G.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Hlongwana",
+            "family": "Khumbulani W.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare in Low-resource Settings"
+        ],
+        "score": 37.168068,
+        "URL": "https://doi.org/10.4081/hls.2022.10170",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              1,
+              20
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.33540/3360",
+        "title": [
+          "Leveraging digital solutions to improve the quality of maternal healthcare in low-resource settings"
+        ],
+        "author": [
+          {
+            "given": "Abdulaziz Mohammed",
+            "family": "Hussen",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "abstract": "<jats:p xml:lang=\"en\">Maternal mortality remains a pressing global challenge, with one woman dying approximately every two minutes due to complications related to pregnancy and childbirth. The burden is particularly high in Sub\u2011Saharan Africa. Although the Maternal Mortality Ratio (MMR) has declined since 2000, progress slowed in the first eight years of the Sustainable Development Goals (SDG) era. Achieving the 2030 target of reducing MMR to 70 per 100,000 live births will require an annual reduction of 14.8% between 2024 and 2030\u2014an ambitious goal that demands substantial effort. Failure to achieve this target could place the lives of about 700,000 women at risk.\nThis dissertation assessed maternal healthcare utilisation and examined adherence to maternal healthcare recommendations in Ethiopia. In addition, through research on the World Health Organization\u2019s layer\u20112 Standards\u2011based, Machine\u2011readable, Adaptive, Requirements\u2011based, and Testable (SMART) guidelines implementation, we documented processes and lessons learned, contributing to the development of a framework for the systematic implementation of clinical recommendations within digital systems.\nAlthough more than three\u2011fourths of women initiate antenatal care, only about half reported receiving four recommended services, revealing gaps in adherence to clinical protocols and the quality of care delivered. Immediate postnatal care utilisation improved over time, yet coverage remains low. In the emerging regions of the country, fewer than 10% of women complete the full continuum of maternity care, with poorer and less educated women disproportionately underrepresented.\nBased on the WHO SMART Guidelines\u2013Digital Adaptation Kits (DAKs) implementation experience in five African countries (Ethiopia, Ghana, Malawi, Zambia, and Zimbabwe), the dissertation offered processes and early insights into the opportunities and benefits of a structured approach to digitalizing primary healthcare services. Moreover, it introduced the concept of how digital health interventions can be mapped across the obstetric transition stages.</jats:p>",
+        "type": "dissertation",
+        "URL": "https://doi.org/10.33540/3360",
+        "score": 36.511757
+      },
+      {
+        "abstract": "<jats:p>In a world where oncological diseases remain a serious problem for many people, the study of stress management and the provision of psychological support to prevent and treat oncological diseases are becoming increasingly relevant. The purpose of the article is to identify stress mechanisms that affect the human body and provoke the development of cancer.Additionally, it seeks to investigate the global scope of the stress-cancer connection. The methods used in the study include generalisation, analysis, synthesis, and systematisation. The study found that chronic stress can affect the immune system, neurological activity, and other processes contributing to cancer development. In addition, the study has managed to shed light on the mechanisms of stress impact on oncology, including oxidative stress and replication stress, as stimuli that threaten the normal functioning of the human body. A support program for patients with oncological diseases was developed, which included assessment, psychoeducation, methods of stress reduction, and post-treatment support for patients with oncological diseases or those predisposed to them. The study found that the introduction of stress reduction programs for cancer patients is an important step in improving their well-being and treatment outcomes.</jats:p>",
+        "DOI": "10.4081/hls.2024.12402",
+        "type": "journal-article",
+        "title": [
+          "Analysis of the link between stress and cancer: implications for patient support"
+        ],
+        "author": [
+          {
+            "given": "Liana",
+            "family": "Spytska",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare in Low-resource Settings"
+        ],
+        "score": 35.061207,
+        "URL": "https://doi.org/10.4081/hls.2024.12402",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              5,
+              27
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>This study was done with the purpose of clarifying the concept of patient perceived quality of nursing care in hemodialysis. In this meta-synthesis study, qualitative studies was searched in the four interntional databases from January 1st, 2000 to December 30th, 2019. The keywords used were: nursing care quality, and hemodialysis. Studies which had been done with the purpose of understanding the patient perceived quality of nursing care concept aomg hemodialysis patients were included. Two researchers were evaluate the quality of included studies separately using JBI tool, required information were extracted using the designed table. The main themes in the structure dimension include Sufficient Human resource, quality of equipment, financial support from patient and quality of the patient care environment. Process dimension consisted of continuous monitoring of the syndromes, effective patient education, efficient care, effective therapeutic relationship, and patient\u2019s empowerment and participation in the process, and in the outcome dimension included high dialysis adequecy, patient burnout reduction, and increased patient satisfaction from services. The results of the study indicated a comprehensive, deep and interactive dimensions about the concept of nursing quality of care.</jats:p>",
+        "DOI": "10.4081/hls.2021.9320",
+        "type": "journal-article",
+        "title": [
+          "Patient perceived quality of nursing care in hemodialysis: A meta-synthesis"
+        ],
+        "author": [
+          {
+            "given": "Abbas",
+            "family": "Balouchi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Abbas",
+            "family": "Ebadi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Soroor",
+            "family": "Parvizy",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Hamid",
+            "family": "Sharif Nia",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare in Low-resource Settings"
+        ],
+        "score": 34.860542,
+        "URL": "https://doi.org/10.4081/hls.2021.9320",
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              4,
+              12
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>In a developing country like India, allocation of scarce fiscal resources has to be based on a clear understanding of how investments in the heath sector are going to affect demand. Three aspects like overall healthcare demand, consumer decisions to use public and/or private care and role of price/quality influencing poor/rich consumer&amp;rsquo;s decisions are critical to assessing the equity implications of alternative policies. Our paper addresses these aspects through examining the pattern of healthcare demand in India. Data from the National Family Health Survey are used to model the healthcare choices that individuals make. We consider what these behavioral characteristics imply for public policy. This analysis aims to study disparities between rural and urban areas from all throughout India to five Indian states representing three levels of per capita incomes (all-India average, rich and poor). Results evidence that healthcare demand both in rural and urban areas is a commodity emerging as an essential need. Choices between public or private provider are guided by income and quality variables mainly with regard to public healthcare denoting thus a situation of very limited alternatives in terms of availing private providers. These results emphasize that existing public healthcare facilities do not serve the objective of providing care to the poor in a satisfactory manner in rural areas. Thus, any financing strategy to improve health system and reduce disparities across rich-poor states and rural-urban areas should also take into account not only overcoming inadequacy but also inefficiency in allocation and utilization of healthcare inputs.</jats:p>",
+        "DOI": "10.4081/hls.2013.e7",
+        "type": "journal-article",
+        "title": [
+          "Demand for healthcare in India"
+        ],
+        "author": [
+          {
+            "given": "Brijesh C.",
+            "family": "Purohit",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare in Low-resource Settings"
+        ],
+        "score": 34.740936,
+        "URL": "https://doi.org/10.4081/hls.2013.e7",
+        "published": {
+          "date-parts": [
+            [
+              2013,
+              3,
+              7
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "patient navigation digital healthcare access low resource settings"
+    }
+  }
+}

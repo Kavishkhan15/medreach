@@ -1,0 +1,89 @@
+\relax 
+\citation{metuge2026digital,dalton2019patient}
+\citation{darapaneni2021predicting,naydenova2017healthcare}
+\citation{shinde2026insights,mcgm2021covidwarroom}
+\citation{patil2016study,mukhopadhyay2018stroke}
+\citation{naydenova2017healthcare,darapaneni2021predicting}
+\citation{metuge2026digital}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\citation{naydenova2017healthcare,patil2016study}
+\citation{mukhopadhyay2018stroke,darapaneni2021predicting}
+\citation{metuge2026digital,sugira2026design,dalton2019patient}
+\citation{chen2024patient}
+\citation{kaul2012realtime}
+\citation{zou2019relative,hu2020optimal}
+\citation{liu2024data,abedin2021data}
+\citation{peng2026when}
+\citation{feng2023examining,vermeulen2023trust}
+\citation{vermeulen2023trust}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-A}}Contributions}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Background and Related Work}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Emergency Healthcare Navigation in Urban LMICs}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Age of Information (AoI) and Data Staleness}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Provenance, Information Fusion, and Conflict Resolution}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}The Mumbai Healthcare Digital Landscape: Empirical Taxonomy}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}System Under Study: MedReach Architecture}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Freshness Evaluation Engine and Staleness Governor}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Provenance Tracking and Priority Cascade}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Transactional Request Engine}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Age of Information (AoI) sawtooth trajectories over a 12-hour operational window [SYNTHETIC SIMULATION] comparing Scenario 1 (automated telemetry), Scenario 6 (diurnal shift cycle), and Scenario 4 (high drop-out with connectivity impairment). The 30-minute MedReach production anchor is indicated by the dashed line.}}{4}{}\protected@file@percent }
+\newlabel{fig:aoi_trajectories}{{1}{4}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Methodology and Experimental Setup}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Empirical cumulative distribution function (ECDF) of Age of Information $\Delta (t)$ [SYNTHETIC SIMULATION] across all 6 evaluated scenarios, highlighting candidate freshness boundaries at 10, 30, and 60 minutes.}}{4}{}\protected@file@percent }
+\newlabel{fig:aoi_ecdf}{{2}{4}{}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Pareto frontier [SYNTHETIC SIMULATION] illustrating the trade-off between active information coverage and status mismatch error rate across candidate thresholds $\tau \in [1, 180]\text  { min}$. Circular markers indicate the MedReach 30-minute anchor point.}}{4}{}\protected@file@percent }
+\newlabel{fig:pareto_frontier}{{3}{4}{}{figure.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Experimental Results}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}RQ1: Age of Information Dynamics and Staleness Governance (EXP-AOI)}{4}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Empirical Age of Information (AoI) Distribution Across Operational Scenarios (Values in Minutes) [SYNTHETIC SIMULATION]}}{5}{}\protected@file@percent }
+\newlabel{tab:aoi_distribution}{{I}{5}{}{table.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Threshold Comparison: Active Coverage vs. Critical Phantom Availability Risk [SYNTHETIC SIMULATION]}}{5}{}\protected@file@percent }
+\newlabel{tab:threshold_comparison}{{II}{5}{}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Critical safety risk [SYNTHETIC SIMULATION]: phantom availability rate (displaying ``available'' when physical capacity is ``unavailable'') across candidate thresholds for all 6 operational scenarios.}}{5}{}\protected@file@percent }
+\newlabel{fig:phantom_risk}{{4}{5}{}{figure.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Time-to-Stale and Ingestion Pipeline Freshness Loss [SYNTHETIC SIMULATION]}}{5}{}\protected@file@percent }
+\newlabel{tab:time_to_stale}{{III}{5}{}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}RQ2: Multi-Source Provenance and Conflicting-Claim Fusion (EXP-PROV)}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Conflict detection rate of the MedReach fusion engine [SYNTHETIC DATA] across varying source counts ($K \in \{2, \dots  , 8\}$) and scenario noise levels ($\eta \in \{0.05, \dots  , 0.50\}$), maintaining a 100.0\% detection rate for all usable divergent claims.}}{6}{}\protected@file@percent }
+\newlabel{fig:conflict_detection}{{5}{6}{}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Reliability diagram and calibration analysis of MedReach confidence levels [SYNTHETIC DATA] over 10,615 resolved claims, revealing an uncalibrated heuristic ordinal ranking (Brier score 0.1315, ECE 0.1255).}}{6}{}\protected@file@percent }
+\newlabel{fig:calibration_curve}{{6}{6}{}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}RQ3: Data Path \& Edge Caching Staleness Audit (EXP-DATAPATH)}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}RQ4: Transactional Reliability \& State-Machine Invariants (EXP-TX)}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Isolated Load \& Throughput Benchmarking (EXP-LOAD)}{6}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Transactional Reliability Evaluation Suite (EXP-TX) [SYNTHETIC BENCHMARK]}}{7}{}\protected@file@percent }
+\newlabel{tab:transactional_suite}{{IV}{7}{}{table.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}The 30-Minute Anchor as a Clinical Safety Mechanism}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Two-Column Architectural Analysis: Demonstrable Guarantees vs. Required Implementation}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Threats to Validity}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Ethical and Data-Governance Considerations}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IX}Limitations and Future Work}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IX-A}}Limitations}{7}{}\protected@file@percent }
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{metuge2026digital}{1}
+\bibcite{dalton2019patient}{2}
+\bibcite{darapaneni2021predicting}{3}
+\bibcite{naydenova2017healthcare}{4}
+\bibcite{shinde2026insights}{5}
+\bibcite{mcgm2021covidwarroom}{6}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Demonstrable Architectural Guarantees vs. Required Implementation}}{8}{}\protected@file@percent }
+\newlabel{tab:architectural_guarantees}{{V}{8}{}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IX-B}}Future Work}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {X}Reproducibility and Artifact Availability}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {XI}Conclusion}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{8}{}\protected@file@percent }
+\bibcite{patil2016study}{7}
+\bibcite{mukhopadhyay2018stroke}{8}
+\bibcite{sugira2026design}{9}
+\bibcite{chen2024patient}{10}
+\bibcite{kaul2012realtime}{11}
+\bibcite{zou2019relative}{12}
+\bibcite{hu2020optimal}{13}
+\bibcite{liu2024data}{14}
+\bibcite{abedin2021data}{15}
+\bibcite{peng2026when}{16}
+\bibcite{feng2023examining}{17}
+\bibcite{vermeulen2023trust}{18}
+\gdef \@abspage@last{9}

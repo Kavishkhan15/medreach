@@ -9,7 +9,9 @@ Find a provider. Start the right request. Follow what happens next.
 [![CI](https://github.com/kasim672/medreach/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kasim672/medreach/actions/workflows/ci.yml)
 [![Evaluation checks](https://github.com/kasim672/medreach/actions/workflows/evaluate.yml/badge.svg?branch=main)](https://github.com/kasim672/medreach/actions/workflows/evaluate.yml)
 
-[Explore the app](https://medreachmumbai.vercel.app/) · [Documentation](docs/README.md) · [Screenshots](docs/screenshots/README.md) · [Run locally](#run-locally)
+[Bootstrap](https://medreachmumbai.vercel.app/) · [Tailwind](https://medreach-tailwind.vercel.app/) · [Skeleton](https://medreach-skeleton.vercel.app/)
+
+[Documentation](docs/README.md) · [Architecture](#architecture) · [Screenshots](docs/screenshots/README.md) · [Run locally](#run-locally)
 
 </div>
 
@@ -24,20 +26,11 @@ Screenshots show the actual local application and stored directory records,
 captured on **22 October 2026**. They are interface snapshots, not evidence of
 current availability, campaign dates, provider participation or live dispatch.
 
-## Table of Contents
+## Contents
 
-- [Explore MedReach](#explore-medreach)
-  - [Feature Highlights](#explore-medreach)
-  - [Visual Tour](#a-closer-look)
-- [Three Frontends, One Product](#three-frontends-one-product)
-- [Roles and Access](#roles-and-access)
-- [Run Locally](#run-locally)
-- [Architecture & Diagrams](#architecture)
-- [Verification & Quality Checks](#verification)
-- [Documentation Hub](#documentation)
-- [Troubleshooting](#troubleshooting)
-- [Data and Contribution Boundaries](#data-and-contribution-boundaries)
-- [License](#license)
+[Product tour](#explore-medreach) · [Frontend variants](#three-frontends-one-product) ·
+[Roles](#roles-and-access) · [Architecture](#architecture) ·
+[Local setup](#run-locally) · [Verification](#verification) · [Documentation](#documentation)
 
 ## Explore MedReach
 
@@ -136,20 +129,44 @@ receive a copy of that private database from Git.
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    Dataset[(Existing healthcare dataset)] --> Mongo[(MongoDB)]
-    Mongo <--> API[Express API]
-    API <--> Bootstrap[Bootstrap · Next.js]
-    API <--> Tailwind[Tailwind · Next.js]
-    API <--> Skeleton[Skeleton · Next.js]
-    API --> Outbox[Durable email outbox]
-    Outbox --> Mail[Configured email transport]
-```
+**Three independent frontends. One shared backend. One Atlas dataset.**
 
-The selected hosting stack is **Vercel → Railway → MongoDB Atlas**. The API
-process owns expiry, recovery and email workers. MedReach does not crawl
-provider websites; historical acquisition provenance stays in the stored dataset.
+The diagrams below show different views of the same application: code and
+runtime boundaries, cloud deployment, and the data relationships behind care
+coordination. Open any figure for its full-size SVG.
+
+### System topology
+
+[![MedReach system topology: three Next.js frontends, shared client contracts, one Express API with in-process workers, MongoDB and configured email transport](docs/diagrams/system-architecture.png)](docs/diagrams/system-architecture.svg)
+
+Each frontend keeps its own presentation layer. The API owns authentication,
+organisation-scoped permissions and healthcare workflows. Request expiry,
+notification recovery and email delivery run inside that backend process.
+
+### Cloud deployment
+
+[![MedReach cloud deployment: three Vercel projects call one Railway API connected to MongoDB Atlas; browser Maps and backend mail have separate boundaries](docs/diagrams/deployment-architecture.png)](docs/diagrams/deployment-architecture.svg)
+
+Vercel serves the frontends; browsers call the Railway API over HTTPS. The API
+connects to Atlas and the configured Resend/SMTP transport. Database, JWT and
+mail credentials stay on the backend. Google Maps is a browser integration.
+
+### Database model
+
+[![MedReach core ER view: hospital and resource-provider records connect to healthcare requests, jobs and candidate applications](docs/diagrams/database-er.png)](docs/diagrams/database-er.svg)
+
+This is a selected view of care and Careers relationships, not an exhaustive
+collection inventory. The companion [account and provider-scope ER view](docs/diagrams/README.md#accounts-and-provider-scope)
+shows users, auth tokens, active provider memberships and approved applications.
+Existing data, assignments and historical source evidence are preserved; no
+crawler is required to serve the stored dataset.
+
+[Architecture and code map →](docs/architecture.md) ·
+[All diagrams and editable sources →](docs/diagrams/README.md) ·
+[Schema reference →](docs/database-schema.md)
+
+<details>
+<summary><strong>Repository map</strong></summary>
 
 ```text
 backend/          Express routes, permissions, models, services and workers
@@ -157,34 +174,26 @@ packages/core/    Shared frontend client, hooks and data helpers
 variants/         Independent Bootstrap, Tailwind and Skeleton frontends
 tests/            Browser journeys and focused unit tests
 docs/             Architecture, operations, security and verification guides
-evaluation/       Research tooling and explicitly limited measurements
+evaluation/       Hosted measurements and explicitly scoped research tools
 user-study/       Proposed protocols and draft questionnaires
 ```
 
-[Architecture and code map →](docs/architecture.md) · [Complete Diagrams Gallery →](docs/diagrams/README.md)
-
-| System Topology | Database ER Schema | Cloud Deployment |
-| :---: | :---: | :---: |
-| [![System Architecture](docs/diagrams/system-architecture.svg)](docs/diagrams/README.md#1-system-architecture) | [![Database ER](docs/diagrams/database-er.svg)](docs/diagrams/README.md#2-database-entity-relationship-er-diagram) | [![Deployment Architecture](docs/diagrams/deployment-architecture.svg)](docs/diagrams/README.md#6-deployment-architecture) |
-| Multi-tier Express/Next.js layers | 16 collections & relationships | Vercel, Railway & Atlas topology |
-
-Additional lifecycle diagrams:
-[Role Matrix](docs/diagrams/README.md#3-role-permission-matrix) · [Provider Onboarding](docs/diagrams/README.md#4-provider-onboarding-sequence) · [Request & Notification Flow](docs/diagrams/README.md#5-request-lifecycle--notification-flow) · [Authentication Flow](docs/diagrams/README.md#7-authentication--role-redirection-flow)
+</details>
 
 ## Verification
 
-Latest completed code baseline: [`1f870b4`](https://github.com/kasim672/medreach/commit/1f870b401f63ac5612217a1626259acfd278b913).
-[All 13 GitHub checks passed](https://github.com/kasim672/medreach/actions/runs/39489882190).
+Recorded code baseline: [`2a2f24d`](https://github.com/kasim672/medreach/commit/2a2f24d587407da27742d7b93898d9116d470c28), verified on **23 October 2026**.
+[All 13 GitHub checks passed](https://github.com/kasim672/medreach/actions/runs/39940586762).
 
 | Check | Recorded result |
 | --- | --- |
-| Backend, all database gates | **352 passed**, no failures or skips |
-| Focused unit tests | **15 passed** |
+| Backend, all database gates | **359 passed**, no failures or skips |
+| Focused unit tests | **17 passed** |
 | Browser journeys | **269 passed**, 40 explicit Bootstrap-only scope skips |
 | Production builds | **Bootstrap, Tailwind and Skeleton passed** |
 | Dependency audit | **0 known vulnerabilities** at the recorded check |
 | Lint | **0 errors**, 12 existing hook dependency warnings |
-| Disposable backup/restore drill | **16 collections / 539 test documents restored** |
+| Earlier disposable backup/restore drill | **16 collections / 539 test documents restored**; separate historical check |
 
 These are dated regression results. They do not certify security, clinical
 accuracy, accessibility compliance, real inbox receipt or hosted performance.
@@ -218,10 +227,10 @@ Start with the [documentation hub](docs/README.md), organised by task.
 
 | Symptom | Cause | Solution |
 | --- | --- | --- |
-| `EADDRINUSE: address already in use :::3000` (or `4000`) | A prior process is holding the frontend or backend port. | Find and terminate the process: `lsof -ti :3000 | xargs kill -9` (or replace with `3001`, `3002`, `4000`). |
-| `MongooseServerSelectionError: connect ECONNREFUSED 127.0.0.1:27017` | Local MongoDB daemon is not running. | Start MongoDB daemon: `mongod --dbpath /path/to/db` or verify status with `mongosh --eval "db.adminCommand('ping')"`. |
-| API returns `401 Unauthorized` on `/api/auth/me` | Refresh token expired, revoked, or cookies blocked. | Log in again at `/login`. Verify browser accepts `SameSite=Lax` / `Secure` cookies. |
-| Stale styles or missing client modules after branch switch | Next.js build cache discrepancy. | Clear `.next` build caches across variants: `rm -rf variants/*/.next`. |
+| `EADDRINUSE: address already in use :::3000` (or `4000`) | A prior process is holding the frontend or backend port. | Stop the previous launcher with `Ctrl+C`. Inspect the port owner before stopping another process; use one frontend if that is all you need. |
+| `MongooseServerSelectionError: connect ECONNREFUSED 127.0.0.1:27017` | Local MongoDB daemon is not running. | Check the configured MongoDB service and [local setup](LOCAL_MONGODB_SETUP.md). Preserve the existing data directory; starting a different empty database will not recover the records. |
+| `/api/auth/me` returns `401` | Expected for a signed-out visitor; a signed-in failure can involve expired sessions or blocked cookies. | For a failed login, check the [deployment cookie/CORS guidance](docs/deployment.md). Vercel/Railway cross-site cookies require different settings from localhost. |
+| Stale styles or missing client modules after branch switch | Next.js build cache discrepancy. | Stop the affected frontend, check its build configuration, and rebuild that variant. See the [frontend guide](variants/README.md). |
 | Map fails to load or shows grey container | Missing or restricted Google Maps API key. | MedReach provides an honest list fallback without an active key. Supply `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `.env.local` if map rendering is required. |
 
 ### Data and contribution boundaries
@@ -237,8 +246,9 @@ The crawler, Google OAuth, in-app notification inbox, User Admin role and
 and the main `/admin` dashboard remain.
 
 Research plans, draft study instruments and historical figures are labelled in
-the [research documentation](evaluation/README.md). Placeholder scores are not
-empirical results or security certifications.
+the [research documentation](evaluation/README.md). The [hosted evaluation](evaluation/HOSTED_RESULTS.md)
+records measured deployment results and their limits. Composite security grades
+remain unmeasured until all required evidence is available.
 
 ## License
 

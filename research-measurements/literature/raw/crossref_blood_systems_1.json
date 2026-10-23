@@ -1,0 +1,640 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 9563398,
+    "items": [
+      {
+        "DOI": "10.21276/ijcmr.2019.6.5.60",
+        "title": [
+          "Reasons and Recommendations to Reduce Wastage Pattern of the Blood Component in the Newly Started Tertiary Care Center Blood Bank in East India"
+        ],
+        "author": [
+          {
+            "given": "Nawanita",
+            "family": "Kumari",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ashish",
+            "family": "Maheshwari",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Nidhish",
+            "family": "Kumar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Shadan",
+            "family": "Rabab",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Contemporary Medical Research [IJCMR]"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21276/ijcmr.2019.6.5.60",
+        "score": 32.682926
+      },
+      {
+        "DOI": "10.21088/ijprp.2278.148x.7418.12",
+        "title": [
+          "A Research Analysis of Inevitable Blood Wastage in Blood Bank of a Tertiary Care Teaching Hospital: A Retrospective Study of Five Years"
+        ],
+        "author": [
+          {
+            "name": "Associate Professor,Dept. of Pathology, GCS Medical College, Hospital & Research Centre, Ahmedabad, Gujarat 380025, India.",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Asha P.",
+            "family": "Purohit",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Puja B.",
+            "family": "Jarwani",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Tutor,Dept. of Pathology, GCS Medical College, Hospital & Research Centre, Ahmedabad, Gujarat 380025, India.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Shantibhai M.",
+            "family": "Patel",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Professor and HOD, Dept. of Pathology, GCS Medical College, Hospital & Research Centre, Ahmedabad, Gujarat 380025, India.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018
+            ]
+          ]
+        },
+        "container-title": [
+          "Indian Journal of Pathology: Research and Practice"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21088/ijprp.2278.148x.7418.12",
+        "score": 27.2995
+      },
+      {
+        "DOI": "10.9734/ibrr/2015/22739",
+        "title": [
+          "Blood Wastage Rate in a Sub-Saharan African Hospital Based Blood Bank"
+        ],
+        "author": [
+          {
+            "given": "Fasola",
+            "family": "Atinuke",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Shokunbi",
+            "family": "Adebola",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Kotila",
+            "family": "Rachael",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              1,
+              10
+            ]
+          ]
+        },
+        "container-title": [
+          "International Blood Research &amp; Reviews"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.9734/ibrr/2015/22739",
+        "score": 26.608452
+      },
+      {
+        "DOI": "10.7759/cureus.20500",
+        "title": [
+          "Exploring the Causes of Wastage of Blood and Its Components in a Tertiary Care Hospital Blood Bank"
+        ],
+        "author": [
+          {
+            "given": "Farrah",
+            "family": "Bashir",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Attika",
+            "family": "Khalid",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Shahbaz",
+            "family": "Iqbal",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Tariq",
+            "family": "Ghafoor",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Moiz",
+            "family": "Ahmed",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              12,
+              18
+            ]
+          ]
+        },
+        "container-title": [
+          "Cureus"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.7759/cureus.20500",
+        "score": 25.656002
+      },
+      {
+        "abstract": "<jats:p>Objectives: The wastage of blood components results in significant direct costs to health care organizations. Previous education-based efforts to reduce blood component wastage were unsuccessful at our institution. We hypothesized that a quality and process improvement approach would result in sustained reductions to less than 5 percent, as recommended by World Health Organization. Methods: A retrospective study was conducted on the data retrieved from laboratory blood banking information system, on usage and wastage of blood products, for the period Jan 2018 to October 2020. Interventions were taken and post intervention wastage analyzed. Results: A total of 19279 units of blood were issued from the blood bank during the period of study. The most frequently requested blood component was packed cells [9423 Unit, 48.87 %] followed by fresh frozen plasma (FFP) [4160 units, 21.57%], platelet [2240 units, 11.61%], and whole blood [810 units, 4.20 %] respectively. Data indicated that 184 units out of 939 prepared units (19.5%) of blood were wasted due to various reasons. Three commonest causes for wastage were leakage, expiry and return from ward. The wastage of blood components over two years was reduced from 19.5% to 2.75% by various interventions, like placing appropriate request, staff training, proper documentation, improved communication. Wastage reduction was maximum in platelet component and most effective intervention was limiting number of platelet preparation by strict monitoring. Comprehensive policies have been formulated to ensure better quality control in collection, storage, testing, and distribution of blood and its components for the identified major factors affecting blood product wastage. Conclusions: Thus, our team focused on raising awareness among medical staff in reducing blood wastage and improving the process of blood product ordering, transport, and storage was able to significantly reduce blood component wastage associated costs using quality and process improvement methods.</jats:p>",
+        "DOI": "10.47310/hjcmph.2022.v03i01.012",
+        "type": "journal-article",
+        "title": [
+          "Reducing the wastage rate of blood products by active interventions of a tertiary care hospital in Eastern India"
+        ],
+        "author": [
+          {
+            "given": "Debdatta",
+            "family": "Das",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Manju",
+            "family": "Agarwal",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Asish",
+            "family": "Kumar Saha",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Devashis",
+            "family": "Mandal",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Moushumi",
+            "family": "Lodh",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Himalayan Journal of Community Medicine and Public Health"
+        ],
+        "score": 24.21023,
+        "URL": "https://doi.org/10.47310/hjcmph.2022.v03i01.012",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              1,
+              20
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Objective: To analyze pattern of blood component utilisation and determine the extent and causes of blood wastage in the blood bank of a tertiary care hospital in Lahore.\nMethodology: A retrospective observational study was conducted at the Blood Bank of Shalamar Hospital, Lahore, from January 1, 2022 and December 31, 2023.Board. Data on the number and type of blood components prepared, issued, and discarded were retrieved from blood bank record. Causes of blood wastage, including expiry, transfusion reactions, delayed return after issuance, broken bags or seals, and haemolysed or clotted units, were reviewed. Data were analyzed using SPSS version 24, and results were expressed as frequencies and percentages.\nResults: A total of 9,406 blood donations were collected. Of these, 8129 units were issued to clinical departments, while 1,277 units were discarded, resulting in wastage rate of 13.5%. Whole blood (41.8%) and red cell concentrates (36.8%) were most frequently utilized. The Intensive Care Unit (21.4%), Gynecology and Obstetrics (19.9%), and Medical units (16.7%) were the leading end users. Expired units accounted for 96% of blood wastage, with fresh frozen plasma forming the largest proportion (45%).\nConclusion: Whole blood and red cell concentrates were the most commonly used components. Blood wastage exceeded international benchmarks, with expiry as the predominant cause. Regular audits, rational ordering, and adherence to transfusion guidelines are essential to optimize utilization and minimize losses.</jats:p>",
+        "DOI": "10.12669/pjms.42.8.13958",
+        "type": "journal-article",
+        "title": [
+          "Pattern of blood utilization and blood wastage at blood bank of a tertiary care hospital in Lahore"
+        ],
+        "author": [
+          {
+            "given": "Asma",
+            "family": "Akhtar",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "family": "Naureen Saeed",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "family": "Ahsen Muzaffar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "family": "Zunairah Mughal",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Pakistan Journal of Medical Sciences"
+        ],
+        "score": 24.10448,
+        "URL": "https://doi.org/10.12669/pjms.42.8.13958",
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              27
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1109/icitr69413.2025.11353793",
+        "title": [
+          "Digital Transformation of Blood Bank Operations: Design and Implementation of a National Blood Bank Management System"
+        ],
+        "author": [
+          {
+            "given": "Onaliy Vinukiy",
+            "family": "Jayawardana",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "NSBM Green University,Department of Software Engineering and Computer Security,Homagama,Sri Lanka"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Mohamed",
+            "family": "Sapraz",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Higher Colleges of Technology,Faculty of Computer and Information Science,United Arab Emirates"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              12,
+              8
+            ]
+          ]
+        },
+        "container-title": [
+          "2025 10th International Conference on Information Technology Research (ICITR)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/icitr69413.2025.11353793",
+        "score": 24.066677
+      },
+      {
+        "abstract": "<jats:p>Background: Blood and its components are very important for human life as there is no substitute for human blood. No major surgical procedure can be performed without the use of blood in any hospital or clinic. Ideally in a good set up, wastage of blood and blood products should never occur. The aim of this study was to assess the burden of blood wastage in our blood bank, reasons for the wastage, and to cut down blood wastage to a minimal amount by adopting new methods and techniques.Methods: A retrospective study was carried out in Department of Blood Bank of Pt. Jawaharlal Nehru Govt. Medical College, Chamba (H.P) over a time period of one year from 1st January 2017 to 31st December 2017.Results: In our study period, there were 35 discarded blood units due to various reasons forming 3.52% of total discard. Majority of units were discarded due to expiry (51.4%).Conclusions: Our study found expiry/outdated units to be most common reason for discard (51.4%). This kind of wastage may be reduced by better management of blood bag collection, storage and utilization. TTI was another significant reason for blood discard in our blood bank (14.28%). We can bring down the number of discard units by proper training and educating our blood bank staff. Strict adherence to donor selection criteria and proper past medical history should be obtained from blood donors.</jats:p>",
+        "DOI": "10.18203/2394-6040.ijcmph20182640",
+        "type": "journal-article",
+        "title": [
+          "Donor blood wastage: a study from blood bank Chamba (H.P)"
+        ],
+        "author": [
+          {
+            "given": "Ishan",
+            "family": "Arora",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Shairoly",
+            "family": "Singh",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Shireen",
+            "family": "Singh",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal Of Community Medicine And Public Health"
+        ],
+        "score": 24.04185,
+        "URL": "https://doi.org/10.18203/2394-6040.ijcmph20182640",
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              6,
+              22
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.7176/jiea/9-6-01",
+        "title": [
+          "On Line Blood Bank Management System: A Web Application"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019,
+              10
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Information Engineering and Applications"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.7176/jiea/9-6-01",
+        "score": 24.02678
+      },
+      {
+        "DOI": "10.1016/0305-0483(81)90011-6",
+        "title": [
+          "Blood bank information and control system"
+        ],
+        "author": [
+          {
+            "given": "F",
+            "family": "Unger",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1981,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Omega"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/0305-0483(81)90011-6",
+        "score": 23.71907
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "blood bank information system india wastage"
+    }
+  }
+}

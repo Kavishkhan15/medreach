@@ -1,0 +1,42 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "847",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13688379",
+      "13679259",
+      "13675625",
+      "13675814",
+      "13673023",
+      "13663731",
+      "13661020",
+      "13659005",
+      "13658112",
+      "13658227"
+    ],
+    "translationset": [
+      {
+        "from": "healthcare",
+        "to": "\"delivery of health care\"[MeSH Terms] OR (\"delivery\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"delivery of health care\"[All Fields] OR \"healthcare\"[All Fields] OR \"healthcare's\"[All Fields] OR \"healthcares\"[All Fields]"
+      },
+      {
+        "from": "directory",
+        "to": "\"directory\"[Publication Type] OR \"directories as topic\"[MeSH Terms] OR \"directory\"[All Fields]"
+      },
+      {
+        "from": "data quality",
+        "to": "\"data accuracy\"[MeSH Terms] OR (\"data\"[All Fields] AND \"accuracy\"[All Fields]) OR \"data accuracy\"[All Fields] OR (\"data\"[All Fields] AND \"quality\"[All Fields]) OR \"data quality\"[All Fields]"
+      },
+      {
+        "from": "verification",
+        "to": "\"verification\"[All Fields] OR \"verifications\"[All Fields]"
+      }
+    ],
+    "querytranslation": "\"online\"[All Fields] AND (\"delivery of health care\"[MeSH Terms] OR (\"delivery\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"delivery of health care\"[All Fields] OR \"healthcare\"[All Fields] OR \"healthcare s\"[All Fields] OR \"healthcares\"[All Fields]) AND (\"directory\"[All Fields] OR \"directories as topic\"[MeSH Terms] OR \"directory\"[All Fields]) AND (\"data accuracy\"[MeSH Terms] OR (\"data\"[All Fields] AND \"accuracy\"[All Fields]) OR \"data accuracy\"[All Fields] OR (\"data\"[All Fields] AND \"quality\"[All Fields]) OR \"data quality\"[All Fields]) AND (\"verification\"[All Fields] OR \"verifications\"[All Fields])"
+  }
+}

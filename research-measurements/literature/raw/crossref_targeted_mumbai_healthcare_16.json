@@ -1,0 +1,1012 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 3323154,
+    "items": [
+      {
+        "abstract": "<jats:p>Introduction: Cytogenetic abnormalities are one of the important causes of recurrent pregnancy loss or bad obstetric history and Infertility. Almost 50% of first trimester pregnancy loss and upto 20% of second trimester loss can be due to cytogenetic cause. At the same time, cytogenetic abnormalities are also detected in2-3% of cases with infertility especially in males.  Methods: In this paper, wepresent our detailed analysisof13,618 of Bad Obstetric History (BOH) and infertility cases,referred for cytogenetics studies at Metropolis Healthcare Ltd, with an aim to look at chromosomal abnormalities observed in our huge dataset. This is the largest ever reported study of cytogenetic studies in BOH and infertility cases.  Results: We detected chromosome abnormalities in 470 (3.45%) of 13,618 cases. Out of the 470 cases, reciprocal translocations were the highest abnormality noted in 136 (28.94%) cases, followed by chromosome 9 inversion seen in 125 (26.6%) cases and three (0.64%) cases of insertion were also observed. Inversions were seen in 76 (16.17%) cases. Robertsonian translocations were seen in 19(4.04%) cases and complex translocations were seen in 3 (0.64%) cases. Numerical abnormalities were detected in 84 (17.87%) cases where as Mosaicism was seen in 17(3.62%) cases.  Conclusion:This study reinstates the importance of cytogenetic analysis in BOH and infertility cases in order to provide effective genetic counseling to guide the patients to prevent the birth of cytogenetically affected babies by informing them about the prenatal diagnostic testing options and preimplantation genetic testing methods.</jats:p>",
+        "DOI": "10.21474/ijar01/14434",
+        "type": "journal-article",
+        "title": [
+          "CYTOGENETIC STUDIES IN BAD OBSTETRIC HISTORY (BOH) AND INFERTILITY-A RETROSPECTIVE STUDY FROMA STAND-ALONE LABORATORY"
+        ],
+        "author": [
+          {
+            "name": "Medical Genetics Department, Metropolis Healthcare ltd, Mumbai, Maharashtra, India400070.",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Jaya",
+            "family": "Vyas",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Dhanajaya",
+            "family": "Pathak",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Medical Genetics Department, Metropolis Healthcare ltd, Mumbai, Maharashtra, India400070.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Gauri",
+            "family": "Pradhan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Medical Genetics Department, Metropolis Healthcare ltd, Mumbai, Maharashtra, India400070.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Kundan",
+            "family": "Desai",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Medical Genetics Department, Metropolis Healthcare ltd, Mumbai, Maharashtra, India400070.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Chaitali",
+            "family": "Kadam",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Medical Genetics Department, Metropolis Healthcare ltd, Mumbai, Maharashtra, India400070.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Raj",
+            "family": "Jatale",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Departments of Medical Affairs, Metropolis Healthcare Ltd., Mumbai, Maharashtra, India 400070.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Megha",
+            "family": "Kambli",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Departments of Medical Affairs, Metropolis Healthcare Ltd., Mumbai, Maharashtra, India 400070.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Aparna",
+            "family": "Rajdhyaksha",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Medical Genetics Department, Metropolis Healthcare ltd, Mumbai, Maharashtra, India400070.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Kirti",
+            "family": "Chadha",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Departments of Medical Affairs, Metropolis Healthcare Ltd., Mumbai, Maharashtra, India 400070.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal of Advanced Research"
+        ],
+        "score": 30.359465,
+        "URL": "https://doi.org/10.21474/ijar01/14434",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              3,
+              31
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Data mining has been predominantly used for analysis of various data and findings. It has already gained ample importance in the field of medicine especially the healthcare department of governments. It is a useful tool for analyzing the child health care data for government so that enough measures can be taken to reduce the causes of deaths. This paper aims at exploring different data mining techniques that have been implemented especially in the child healthcare sector in order to get analytical data for decision making. Various techniques have been used for finding the mortality rates among infants, the under nutrition percentage, the causes of different diseases among children of under 5 years age. This paper gives an analysis of the earlier research and presents the need for developing new algorithms for healthcare with more accuracy in predictions.</jats:p>",
+        "DOI": "10.35940/ijrte.c6591.098319",
+        "type": "journal-article",
+        "title": [
+          "An Exploration of Various Data Mining Techniques for Application in Child Healthcare"
+        ],
+        "author": [
+          {
+            "name": "Student, University of Mumbai, Mumbai, India.",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Abhijeet",
+            "family": "Sudhakar",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Rajendra B.",
+            "family": "Patil",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Assistant Professor, S.K.Somaiya College of Arts, Science & Commerce, Mumbai, India.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Srivaramangai",
+            "family": "R",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Assistant Professor, Department of Information Technology, University of Mumbai, Mumbai, India.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal of Recent Technology and Engineering (IJRTE)"
+        ],
+        "score": 27.70431,
+        "URL": "https://doi.org/10.35940/ijrte.c6591.098319",
+        "published": {
+          "date-parts": [
+            [
+              2019,
+              9,
+              30
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Background Mumbai Eye Care campaign was a mega refractive error project implemented for the slum population of Mumbai from 2009-15. The project was supported by Standard Chartered Bank\u2019s CSR activity Seeing is Believing through Sightsavers. The project design and service delivery was implemented by Lotus College of Optometry. During the first 3 years of the project, spectacles were distributed free of cost to adults by only collecting case paper charge of Rs.10/-/ Hence a questionnaire based study was conducted to assess the spectacle compliance among this population. Methodology Spectacle Compliance questionnaire was designed, validated by Optometry faculty and the same was administered by an Optometry intern. The spectacle compliance and reasons for non compliance was analysed for 200 respondents. Results: Spectacle compliance was found to be 73.48%. Conclusion: Spectacle compliance was found to be high in this study and was single vision near spectacle design showed better compliance.</jats:p>",
+        "DOI": "10.15415/jmrh.2016.31005",
+        "type": "journal-article",
+        "title": [
+          "Spectacle Compliance in Slum Population of Mumbai: Pilot"
+        ],
+        "author": [
+          {
+            "name": "Department of Optometry, Lotus College of Optometry, Mumbai, India",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "PREMA",
+            "family": "CHANDE",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "TRUPTI",
+            "family": "KHALADKAR",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Department of Optometry, Lotus College of Optometry, Mumbai, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "SWETA",
+            "family": "PATEL",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Department of Optometry, Lotus College of Optometry, Mumbai, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "VINIT",
+            "family": "SHAH",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Department of Optometry, Lotus College of Optometry, Mumbai, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Journal of Multidisciplinary Research in Healthcare"
+        ],
+        "score": 27.163694,
+        "URL": "https://doi.org/10.15415/jmrh.2016.31005",
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              10,
+              3
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Barriers to availing refracti ve error services among an urban slum population in Mumbai, India.  Background: A refractive error project for management of refractive errors in adults was undertaken in the urban slums of Mumbai, India. The project looked at the burden of refractive errors in the predominantly lower socio economic status groups as well as what common barriers prevent access to refractive services amongst this population. This presentation highlights the barriers that were elicited for availing and accessing refractive error services among the urban slum population in Mumbai, India. AIM: The study aimed to identify the common barriers to availing &amp; accessing refractive error services among an urban slum population in Mumbai, India.  Methods : A situation analysis of the community, with respect to availability of services was done as a part of the service delivery planning. The analysis revealed that services were available but the community was not accessing the same. Based on the situation analysis report a questionnaire with all perceived barriers was developed and the same was validated. Service delivery was done by establishing vision centers within the community. Trained health workers performed a door to door vision screening, identified and referred the needy population to the vision centre. Here the questionnaire was run by trained social workers on the people visiting the centers for eye examinations, who were referred by the social workers.  Results : Data analysis was carried out to know the reasons for not availing the services within the community. Of the 4070 subjects who visited the vision centre, 4039 case records were complete and analyzed. The demographic associations of the use of spectacles and reasons for not availing services were assessed with age, gender, education, socioeconomic status. On further analyses it was revealed, that, 3373 (83.5%) were aware of their poor vision, of these 2000 people did not visit an eye doctor. When the questions were analyzed as economic reasons and lack of awareness, lack of awareness superseded economic reasons, as lack of awareness was 54.5% Vs economic was 53.70%.  Conclusion: When refractive error service delivery was planned for this population, besides providing free spectacles, emphasis on generating awareness for need for refractive errors was also considered.</jats:p>",
+        "DOI": "10.15415/jmrh.2016.22007",
+        "type": "journal-article",
+        "title": [
+          "Barriers to availing refractive error services among an urban slum population in Mumbai, India"
+        ],
+        "author": [
+          {
+            "name": "Lotus College of Optometry, Mumbai, Maharashtra, India",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Prema K",
+            "family": "Chande",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "URMI",
+            "family": "VORA",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Lotus College of Optometry, Mumbai, Maharashtra, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Journal of Multidisciplinary Research in Healthcare"
+        ],
+        "score": 27.054008,
+        "URL": "https://doi.org/10.15415/jmrh.2016.22007",
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              4,
+              4
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Introduction: Type 2 Diabetes Mellitus (T2D) is a condition characterized by rapid progression, and in certain instances, managing glucose levels may not be adequately achieved with a single pill. Vildagliptin and dapagliflozin in a Fixed-Dose Combination (FDC) complement each other\u2019s actions, aiding in the control of glycemia. The primary goal of this retrospective investigation was to gain insight into the patient characteristics, safety profile, and efficacy of the FDC in reducing weight and glycated hemoglobin levels. Methods: Retrospective data from T2D patients who were prescribed the FDC and had two follow-up visits between May 1, 2022, and January 31, 2023, were enrolled in the study. Results: The average age of the study sample was 55.8 years, with nearly two-thirds being male (65.5%). At 6 months after FDC medication, glycated hemoglobin (HbA1c) significantly decreased by 1.2% (Baseline: 8.4%, Follow-up: 7.2%, p-value &lt;0.001), indicating improved glycemic control. An average weight decrease of 4.3 kg (Baseline: 76.9Kg, Follow-up: 72.5Kg, p-value &lt;0.001), was noted in patients receiving the FDC. Weight loss was higher in males (4.5 kg) than in females (4.0 kg). Safety analysis was carried out for all randomized patients and no major AEs were noted. No patients were withdrawn from the study due to safety concerns. No episode of hypoglycemia occurred during the study time. There were no statistical differences in the hepatic enzymes at the end of six months in the study groups. Conclusion: The Fixed Dose Combination of Vildagliptin and Dapagliflozin effectively enhances glycemic control by demonstrating a significant reduction in mean HbA1c levels after six months compared to baseline. However, further multicenter studies are necessary to substantiate these findings.</jats:p>",
+        "DOI": "10.47363/jmhc/2024(6)275",
+        "type": "journal-article",
+        "title": [
+          "Patient Profiling and Outcome Assessment of Vildagliptin and Dapagliflozin FDC in Persons with Type 2 Diabetes Mellitus"
+        ],
+        "author": [
+          {
+            "name": "Department of Medicine, Diacon Hospital, Bengaluru, India",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Aravind",
+            "family": "SR",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Rakesh",
+            "family": "Sahay",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Osmania Medical College & Hospital, Hyderabad, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ami",
+            "family": "Sanghvi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Sanghvi Eye and Diabetes Care Centre, Mumbai, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Journal of Medicine and Healthcare"
+        ],
+        "score": 26.988083,
+        "URL": "https://doi.org/10.47363/jmhc/2024(6)275",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              8,
+              31
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Due to novelty of Coronavirus disease, the understanding of its pathology, clinical outcomes, prognostic factors, and treatment is still in its nascent stage. Kidney dysfunction is reported in many patients. We report a finding of an uncommon form of urine crystals in a RT-PCR confirmed case of COVID-19 patient. RT-PCR confirmed case of COVID-19 patient, no clinical history of renal calculi reported until day 7 of the treatment. Treatment mainly comprised of favipiravir, vitamin C and zinc. On seventh day of treatment the patient became asymptomatic but the crystals were observed in the urine. The loading dose of favipiravir in COVID-19 positive patient considered as the reason for the urine crystals. In view of nephrotoxic nature of the disease as well as the drugs used in its therapy, it is important to look for subtle signs as well as inexpensive tests which can give vital information, to pick these complications early. Although this observation was made on a single patient, contributions from multiple centres can help understand this further, with keen observation on urine microscopy of COVID-19 patients.  Keywords: Crystals; Favipiravir; COVID-19; Urine microscopy; Urinary crystals</jats:p>",
+        "DOI": "10.54136/erwej-0203-10026",
+        "type": "journal-article",
+        "title": [
+          "Crystals in Urine Microscopy in a COVID-19 Patient: A Case Report"
+        ],
+        "author": [
+          {
+            "name": "Paras Pathology, Mumbai, India",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Munjal",
+            "family": "Shah",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Nehal",
+            "family": "Gupta",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Paras Pathology, Mumbai, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Exclusive Real World Evidence Journal"
+        ],
+        "score": 26.618908,
+        "URL": "https://doi.org/10.54136/erwej-0203-10026",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              8,
+              5
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1136/archdischild-2022-rcpch.737",
+        "title": [
+          "812\u2005An audit on paediatric weight estimation in the emergency department of a primary healthcare centre in Mumbai"
+        ],
+        "author": [
+          {
+            "given": "Vinayak",
+            "family": "Mishra",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Pradeeksha",
+            "family": "Mukuntharaj",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              8
+            ]
+          ]
+        },
+        "container-title": [
+          "Quality Improvement and Patient Safety"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1136/archdischild-2022-rcpch.737",
+        "score": 26.543941
+      },
+      {
+        "DOI": "10.18535/ijecs/v6i2.09",
+        "title": [
+          "Securing E-healthcare records on Cloud Using Relevant data classification and Encryption"
+        ],
+        "author": [
+          {
+            "name": "Department of Computer Engg., SIESGST, Nerul , Navi Mumbai, India",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Rizwana",
+            "family": "Shaikh",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Jagrutee",
+            "family": "Banda",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Department of Computer Engg., SIESGST, Nerul, Navi Mumbai, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Pragna",
+            "family": "Bandi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Department of Computer Engg., SIESGST, Nerul, Navi Mumbai, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2017,
+              2,
+              14
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal Of Engineering And Computer Science"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.18535/ijecs/v6i2.09",
+        "score": 26.36528
+      },
+      {
+        "DOI": "10.21276/apalm.2663",
+        "title": [
+          "Drug Induced Primary Tubulointerstitial Nephritis"
+        ],
+        "author": [
+          {
+            "name": "Seth GS Medical College, Mumbai, INDIA",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Rojekar",
+            "family": "Amey",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Madiwale",
+            "family": "Chitra",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "PD Hinduja Hospital & Research Center, Mumbai. INDIA",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019,
+              12,
+              24
+            ]
+          ]
+        },
+        "container-title": [
+          "Annals of Pathology and Laboratory Medicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21276/apalm.2663",
+        "score": 26.235058
+      },
+      {
+        "abstract": "<jats:p>The challenge of healthcare management efficiency stands out prominently, especially in areas with inadequate medical service. Typically, paper-based methods, when combined with independent digital solutions, introduce inefficiencies into patient care systems, as well as scheduling processes and resource allocation. The start of MediSwift provides a healthcare information system tackling Mumbai's underdeveloped and rural districts. The MERN stack development, which combines MongoDB, Express, React, and Node.js, enables users to access all healthcare features from a single platform. To protect patient information while allowing selected team members to access the system, MediSwift's security architecture utilises bcrypt encryption of passwords. A regex-based report summarisation component serves as part of the system to analyse long, complex medical reports using predefined medical terms, producing simplified summaries that enhance patient comprehension without requiring API connections. The system prioritises the most critical tasks, reduces personnel workload, and provides instant expert feedback to support informed decision-making and optimal resource allocation. The embedded strong security measures and efficient healthcare management processes help MediSwift support easy healthcare management, resulting in better patient care quality. The system design allows for growth and provides an effective solution to enhance urban health facilities.</jats:p>",
+        "DOI": "10.54105/ijpmh.d1082.05060925",
+        "type": "journal-article",
+        "title": [
+          "MediSwift - An Integrated Healthcare Solution"
+        ],
+        "author": [
+          {
+            "name": "Department of Information Technology, Vidyalankar Institute of Technology, Mumbai (Maharashtra), India.",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ankur",
+            "family": "Sharma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Vedanti",
+            "family": "Awate",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Department of Information Technology, Vidyalankar Institute of Technology, Mumbai (Maharashtra), India.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Varnika",
+            "family": "Bhoga",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Department of Information Technology, Vidyalankar Institute of Technology, Mumbai (Maharashtra), India.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Debarathi",
+            "family": "Goshal",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "Department of Information Technology, Vidyalankar Institute of Technology, Mumbai (Maharashtra), India.",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal of Preventive Medicine and Health"
+        ],
+        "score": 26.074688,
+        "URL": "https://doi.org/10.54105/ijpmh.d1082.05060925",
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              9,
+              30
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "patient navigation primary healthcare Mumbai India"
+    }
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 2279907,
+    "items": [
+      {
+        "DOI": "10.1215/03616878-10852610",
+        "title": [
+          "State Efforts to Regulate Provider Networks and Directories: Lessons for the Future"
+        ],
+        "author": [
+          {
+            "given": "Simon F.",
+            "family": "Haeder",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Texas A&M University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Wendy Y.",
+            "family": "Xu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Ohio State University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "suffix": "IV",
+            "given": "Thomas",
+            "family": "Elton",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Ohio State University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Ariana",
+            "family": "Pitcher",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "University of North Carolina at Chapel Hill"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              7,
+              7
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Health Politics, Policy and Law"
+        ],
+        "abstract": "<jats:title>Abstract</jats:title><jats:p>Managed care arrangements are the dominant form of insurance coverage in the United States today. These arrangements rely on a network of contracted providers to deliver services to their enrollees. After the managed care backlash, governments moved to ensure consumer access by issuing a number of requirements for carriers related to the composition and size of their networks and how this information is shared with consumers. The authors provide a comprehensive review of these state-based efforts to regulate provider network adequacy and provider directory accuracy for commercial insurance markets. In addition to common measures of adequacy, they also include requirements specifically targeted to underserved populations. Their assessment comes on the heels of recent empirical work that has raised significant questions about whether these efforts are effective, particularly considering the limited nature of enforcement. They also provide a brief overview and assessment of recent federal government efforts that replicate these state regulations with a focus on lessons learned from state regulations that may help improve their federal counterparts. Furthermore, they outline a future research agenda focused on a more comprehensive evaluation of efforts to ensure consumer access.</jats:p>",
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1215/03616878-10852610"
+      },
+      {
+        "DOI": "10.1093/haschl/qxaf082",
+        "title": [
+          "Inaccuracies related to accepting new patient flags in Affordable Care Act plans\u2019 provider directories"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-0077-6047",
+            "authenticated-orcid": false,
+            "given": "Simon F",
+            "family": "Haeder",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Health Policy and Management, Texas A&M University , 1266 TAMU 212 Adriance Lab Rd., College Station, TX 77843, United States"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-7142-6784",
+            "authenticated-orcid": false,
+            "given": "Wendy Y",
+            "family": "Xu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Division of Health Services Management and Policy, College of Public Health, The Ohio State University, Columbus, OH 43210 ,",
+                "place": [
+                  "United States"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              4,
+              15
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Affairs Scholar"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1093/haschl/qxaf082"
+      },
+      {
+        "DOI": "10.1002/wmh3.625",
+        "title": [
+          "Consumer experiences navigating health care provider directories and support of federal policy action"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-0077-6047",
+            "authenticated-orcid": false,
+            "given": "Simon F.",
+            "family": "Haeder",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Health Policy &amp; Management, School of Public Health Texas A&amp;M University College Station Texas USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Wendy Yi",
+            "family": "Xu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Health Services Management and Policy, College of Public Health The Ohio State University Columbus Ohio USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              6,
+              19
+            ]
+          ]
+        },
+        "container-title": [
+          "World Medical &amp; Health Policy"
+        ],
+        "abstract": "<jats:title>Abstract</jats:title><jats:p>Most Americans rely on managed care networks and provider directories to access care. Little is known about how patients experience navigating directories, how it affects their lives, and whether Americans support federal action on the issue. We fielded a large, and demographically diverse survey of US adults (<jats:italic>N</jats:italic>\u2009=\u200910,739) from January to April 2022. The survey queried respondents about their experience using provider directories, problems they encountered, and support for federal policy action. Analyses were conducted using Weighted Ordinary Least Squares regression. We found that 43% of Americans used provider directories last year. Among these, provider directory inaccuracy affected 56%, with inaccurate network status (34%), providers having left the practice (18%), and wrong contact information (15%) serving as primary problems. A majority of those using provider directories faced challenges in accessing care subsequently. This included 28% delaying care, 10% seeking out Urgent Care and 6% Emergency Care, respectively, 5% going out of network, and 10% forging care. A substantial number suffered health (54%) and financial (51%) problems as a result and about half took some action as a result. Overall, Americans strongly supported various federal actions to improve directory accuracy. Provider directory inaccuracy affects a larger number of Americans, many of whom are severely affected by the challenges. Broad public support should encourage federal action on the issue.</jats:p>",
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1002/wmh3.625"
+      },
+      {
+        "DOI": "10.4135/9781529723021",
+        "title": [
+          "Integrating Travel Distance Into Assessments of Provider Networks Using a Dyadic Approach: The Case of California\u2019s Affordable Care Marketplace"
+        ],
+        "author": [
+          {
+            "given": "Simon",
+            "family": "Haeder",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "David",
+            "family": "Weimer",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Dana",
+            "family": "Mukamel",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020
+            ]
+          ]
+        },
+        "type": "reference-book",
+        "URL": "https://doi.org/10.4135/9781529723021"
+      },
+      {
+        "DOI": "10.20899/jpna.6.2.138-158",
+        "title": [
+          "Quality Advantage? Provider Quality and Networks in Medicare Advantage"
+        ],
+        "author": [
+          {
+            "given": "Simon F.",
+            "family": "Haeder",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              8,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Public and Nonprofit Affairs"
+        ],
+        "abstract": "<jats:p>Medicare Advantage plans have grown significantly over the past decade and the potential for their future growth seems unabated. Astonishingly, however, we know little about how Medicare beneficiaries access services, particularly whether those services are of high quality. This study explores access to cardiac surgeons for coronary artery bypass grafting (CABG) and heart valve surgery in California and New York. It is one of the first studies to analyze Medicare Advantage networks and interactions between provider networks and provider quality. Results of the study show that for large metropolitan areas, access is rather similar for traditional Medicare and Medicare Advantage beneficiaries. Limitations, however, exist for the latter. Important concerns emerge for Medicare Advantage beneficiaries outside of metropolitan areas where healthcare market challenges appear to be exacerbated by carrier restrictions. Results indicate no evidence that carriers selectively contract to improve quality. There is, however, significant diversity with regard to network breadth; and, this breadth does not stay static across distances. These results hold important implications for the future of the Medicare program, network adequacy regulations, and how consumers make choices about their insurance coverage.\u00a0</jats:p>",
+        "type": "journal-article",
+        "URL": "https://doi.org/10.20899/jpna.6.2.138-158"
+      }
+    ],
+    "items-per-page": 5,
+    "query": {
+      "start-index": 0,
+      "search-terms": "Simon Haeder phantom networks psychiatric provider directories"
+    }
+  }
+}

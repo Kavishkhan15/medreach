@@ -1,0 +1,92 @@
+{
+  "experimentId": "EXP-TX-05",
+  "name": "Documented State Machine Transitions and RBAC Enforcement",
+  "startedAt": "2026-10-23T20:12:05.489Z",
+  "tests": [
+    {
+      "id": "5.1",
+      "description": "Full EmergencyRequest happy path: REQUESTED -> SENT -> UNDER_REVIEW -> INFORMATION_REQUESTED -> UNDER_REVIEW -> ACCEPTED -> COMPLETED",
+      "passed": true,
+      "details": {
+        "statuses": [
+          "SENT",
+          "UNDER_REVIEW",
+          "INFORMATION_REQUESTED",
+          "UNDER_REVIEW",
+          "ACCEPTED",
+          "COMPLETED"
+        ],
+        "timelineLength": 7
+      }
+    },
+    {
+      "id": "5.2",
+      "description": "EmergencyRequest rejection path: UNDER_REVIEW -> REJECTED",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "finalStatus": "REJECTED"
+      }
+    },
+    {
+      "id": "5.3",
+      "description": "EmergencyRequest patient cancellation path: UNDER_REVIEW -> CANCELLED",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "finalStatus": "CANCELLED"
+      }
+    },
+    {
+      "id": "5.4",
+      "description": "RBAC & payload validation guards enforced on state transitions (403/400)",
+      "passed": true,
+      "details": {
+        "unrelatedStatus": 403,
+        "emptyInfoStatus": 400,
+        "patientStaffStatus": 403
+      }
+    },
+    {
+      "id": "5.5",
+      "description": "BloodRequest state transitions: REQUESTED -> CONFIRMED -> COMPLETED",
+      "passed": true,
+      "details": {
+        "confirmStatus": 200,
+        "completeStatus": 200
+      }
+    },
+    {
+      "id": "5.6",
+      "description": "AmbulanceBooking state transitions: RECORDED -> UNDER_REVIEW -> CONFIRMED -> DISPATCHED -> COMPLETED",
+      "passed": true,
+      "details": {
+        "ambStepResults": [
+          {
+            "step": "UNDER_REVIEW",
+            "status": 200,
+            "ok": true
+          },
+          {
+            "step": "CONFIRMED",
+            "status": 200,
+            "ok": true
+          },
+          {
+            "step": "DISPATCHED",
+            "status": 200,
+            "ok": true
+          },
+          {
+            "step": "COMPLETED",
+            "status": 200,
+            "ok": true
+          }
+        ]
+      }
+    }
+  ],
+  "passCount": 6,
+  "failCount": 0,
+  "completedAt": "2026-10-23T20:12:05.639Z"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "abdm_hfr",
+  "url": "https://abdm.gov.in/hfr",
+  "status_code": 403,
+  "headers": {
+    "Server": "awselb/2.0",
+    "Date": "Fri, 23 Oct 2026 11:31:50 GMT",
+    "Content-Type": "text/html",
+    "Content-Length": "118",
+    "Connection": "keep-alive",
+    "Access-Control-Allow-Methods": "GET,POST,HEAD,PUT,OPTIONS,DELETE",
+    "Access-Control-Allow-Headers": "*",
+    "Access-Control-Expose-Headers": "*",
+    "X-Frame-Options": "SAMEORIGIN"
+  },
+  "access_date": "2026-10-23"
+}

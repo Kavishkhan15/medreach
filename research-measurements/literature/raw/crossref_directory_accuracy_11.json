@@ -1,0 +1,380 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 1724672,
+    "items": [
+      {
+        "DOI": "10.1377/forefront.20211102.706419",
+        "title": [
+          "Without A Dedicated Enforcement Mechanism, New Federal Protections Are Unlikely To Improve Provider Directory Accuracy"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              11,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Forefront Group"
+        ],
+        "type": "dataset",
+        "URL": "https://doi.org/10.1377/forefront.20211102.706419",
+        "score": 35.80381
+      },
+      {
+        "DOI": "10.1109/hipcw.2018.8634423",
+        "title": [
+          "Data Science Techniques to Improve Accuracy of Provider Network Directory"
+        ],
+        "author": [
+          {
+            "given": "Priya",
+            "family": "Kandasamy",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Divya",
+            "family": "Raji",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Sundararaman",
+            "family": "Arun",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              12
+            ]
+          ]
+        },
+        "container-title": [
+          "2018 IEEE 25th International Conference on High Performance Computing Workshops (HiPCW)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/hipcw.2018.8634423",
+        "score": 31.507048
+      },
+      {
+        "DOI": "10.1080/03630242.2022.2083284",
+        "title": [
+          "Provider directory accuracy and timely access to mammograms in California"
+        ],
+        "author": [
+          {
+            "given": "Abigail",
+            "family": "Burman",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Information Society Project, Yale Law School, Yale University, New Haven, Connecticut, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-0077-6047",
+            "authenticated-orcid": false,
+            "given": "Simon F.",
+            "family": "Haeder",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "School of Public Policy, The Pennsylvania State University, University Park, Pennsylvania, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              5,
+              28
+            ]
+          ]
+        },
+        "container-title": [
+          "Women &amp; Health"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/03630242.2022.2083284",
+        "score": 24.846363
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n               <jats:p>Context: The accuracy of provider directories and whether consumers can schedule timely appointments are crucial determinants of health access and outcomes.</jats:p>\n               <jats:p>Methods: We evaluated accuracy and timely access data obtained from the California Department of Managed Health Care, consisting of responses to large, random, representative surveys of primary care providers, cardiologists, endocrinologists, and gastroenterologists for 2018 and 2019 for all managed care plans in California.</jats:p>\n               <jats:p>Findings: Surveys were able to verify provider directory entries for the four specialties for 59% to 76% of listings or 78% to 88% of providers reached. We found that consumers were able to schedule urgent care appointments for 28% to 54% of listings or 44% to 72% of accurately listed providers. For general care appointments, the percentages ranged from 35% to 64% of listed providers or 51% to 87% of accurately listed providers. Differences across markets related to accuracy were generally small. Medi-Cal plans outperformed other markets with regard to timely access. Primary care consistently outperformed all other specialties. Timely access rates were higher for general appointments than for urgent care appointments.</jats:p>\n               <jats:p>Conclusions: Our finding raise questions about the regulatory regime as well as consumer access and health outcomes.</jats:p>",
+        "DOI": "10.1215/03616878-9626866",
+        "type": "journal-article",
+        "title": [
+          "Potemkin Protections: Assessing Provider Directory Accuracy and Timely Access for Four Specialties in California"
+        ],
+        "author": [
+          {
+            "given": "Abigail",
+            "family": "Burman",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Yale University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Simon F.",
+            "family": "Haeder",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Pennsylvania State University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Journal of Health Politics, Policy and Law"
+        ],
+        "score": 24.543827,
+        "URL": "https://doi.org/10.1215/03616878-9626866",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              6,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1016/j.acap.2026.103356",
+        "title": [
+          "Provider Directory Accuracy and Access to Pediatric Primary Care in Pennsylvania\u2019s Affordable Care Act Marketplace: A Simulated Patient Study"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-0077-6047",
+            "authenticated-orcid": false,
+            "given": "Simon",
+            "family": "Haeder",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Andrew",
+            "family": "Wapner",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              8
+            ]
+          ]
+        },
+        "container-title": [
+          "Academic Pediatrics"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.acap.2026.103356",
+        "score": 22.429834
+      },
+      {
+        "DOI": "10.1007/springerreference_19668",
+        "title": [
+          "network provider"
+        ],
+        "container-title": [
+          "SpringerReference"
+        ],
+        "type": "reference-entry",
+        "URL": "https://doi.org/10.1007/springerreference_19668",
+        "score": 21.58787
+      },
+      {
+        "DOI": "10.1007/978-3-032-08649-5_23",
+        "title": [
+          "Beyond Accuracy: Evaluating LLMs for Validating Community Service Provider Directory"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0001-8125-435X",
+            "authenticated-orcid": false,
+            "given": "Saviz",
+            "family": "Saei",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sadhan",
+            "family": "Ghimire",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-3362-1332",
+            "authenticated-orcid": false,
+            "given": "Sujan",
+            "family": "Anreddy",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              10,
+              13
+            ]
+          ]
+        },
+        "container-title": [
+          "Communications in Computer and Information Science",
+          "Software and Data Engineering"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-032-08649-5_23",
+        "score": 21.2468
+      },
+      {
+        "DOI": "10.1007/978-0-387-24160-9_21",
+        "title": [
+          "Feedback to the Model Provider Improves Model Accuracy"
+        ],
+        "container-title": [
+          "Semiconductor Modeling"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-0-387-24160-9_21",
+        "score": 20.822823
+      },
+      {
+        "DOI": "10.2458/azu_acku_serial_hq1240_5_a3_a34",
+        "title": [
+          "Afghan Womens Network: members directory 2003 - 2004 / Afghan Womens Network"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2003
+            ]
+          ]
+        },
+        "type": "monograph",
+        "URL": "https://doi.org/10.2458/azu_acku_serial_hq1240_5_a3_a34",
+        "score": 20.404213
+      },
+      {
+        "DOI": "10.1016/s0022-3182(86)80150-9",
+        "title": [
+          "Nutrition at the worksite program site and provider directory"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1986,
+              4
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Nutrition Education"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/s0022-3182(86)80150-9",
+        "score": 20.351215
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "provider directory accuracy phantom network"
+    }
+  }
+}

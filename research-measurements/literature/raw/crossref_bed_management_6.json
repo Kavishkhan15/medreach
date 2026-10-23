@@ -1,0 +1,531 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 4327034,
+    "items": [
+      {
+        "abstract": "<jats:p>The profound impact of COVID-19 extends beyond the immediate threat of death, encompassing severe complications that significantly debilitate patients physically and mentally. Recovery from the virus can be protracted, lasting up to 2 to 8 weeks for those infected. In extreme cases requiring ICU admission and ventilation, survivors may face a prolonged recovery period of 6 to 18 months. Some individuals with lingering COVID effects may experience muscle weakness, necessitating physical therapy for basic functions like walking or working. Extended oxygen therapy, a crucial treatment, poses risks of complications such as delirium, which, in severe cases, can lead to permanent brain damage or even death. Identifying COVID-19 patients at high risk of adverse outcomes is crucial for efficient healthcare resource allocation. This article introduces a model focusing on risk profiling and triaging COVID-19 patients, aiming to assess individuals based on various factors to determine their health risk levels and prioritize them for appropriate medical care, particularly the need for ICU beds</jats:p>",
+        "DOI": "10.2139/ssrn.4708104",
+        "type": "posted-content",
+        "title": [
+          "Smart ICU Bed Allocation System - SMARTS Predictive Analytics for Risk Profiling and Triaging COVID-19 Patients"
+        ],
+        "author": [
+          {
+            "given": "Sammy",
+            "family": "Ghansah",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 28.748062,
+        "URL": "https://doi.org/10.2139/ssrn.4708104",
+        "published": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>During the COVID-19 pandemic, raising the hospital bed capacity was essential to \u2018flattening the curve.\u2019 However, due to short-run stickiness in hospital bed capacity, operational flexibility in managing the relative bed allocation for COVID-19 and non-COVID-19 patients was the key to hospital supply chain efficacy. The lateral and vertical flows of information, knowledge, and resources facilitated by electronic health record (EHR) systems could improve the efficacy of relative bed allocations on local COVID-19 outcomes through improved coordination. Drawing on the organizational information processing theory (OIPT) we use both simulation and empirical tests. Using a simulation model, we find that under varying levels of relative bed allocations, coordination among local healthcare providers is associated with a flatter SIR (susceptible-infected-recovered) curve. Using weekly hospital data (3,640 hospitals and a total of 73,706 hospital-week observations from July 31st, 2020 to February 12th, 2021), relative allocation of beds under higher EHR was associated with lower 7-, 14-, and 21-day forward-looking COVID-19 case and death rate at the county-level. Our empirical results are robust to a variety of specifications, a contiguous border-county pair analysis, and 2SLS estimates. The findings have implications for policymakers and stakeholders of the local healthcare supply chain.</jats:p>",
+        "DOI": "10.2139/ssrn.3793919",
+        "type": "posted-content",
+        "title": [
+          "EHR Investments, Relative Bed Allocation for Covid-19 Patients and Local COVID-19 Incidence and Death Rates: A Simulation and An Empirical Study"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-4934-8166",
+            "authenticated-orcid": true,
+            "given": "Pankaj",
+            "family": "Patel",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Efthymios G.",
+            "family": "Tsionas",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-5652-3682",
+            "authenticated-orcid": true,
+            "given": "Srikant",
+            "family": "Devaraj",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 28.078455,
+        "URL": "https://doi.org/10.2139/ssrn.3793919",
+        "published": {
+          "date-parts": [
+            [
+              2021
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Managing flexibility in the relative bed allocation for COVID-19 and non-COVID-19 patients was a key challenge for hospitals during the COVID-19 pandemic. Based on organizational information processing theory (OIPT), we propose that the local electronic health record (EHR) systems could improve patient outcomes through improved bed allocation in the local area. In an empirical analysis of county-level weekly hospital data in the US, relative capacity of beds in hospitals with higher EHR was associated with lower 7-, 14-, and 21-day forward-looking COVID-19 death rate at the county-level. Testing for cross-state variation in non-pharmaceutical interventions along contiguous county border-pair analysis to control for spatial correlation varying between state variations in non-pharmaceutical intervention policies, 2SLS analysis using quality ratings, and using foot-traffic data at the US hospitals our findings are generally supported. The findings have implications for policymakers and stakeholders of the local healthcare supply chains and EHR systems.</jats:p>",
+        "DOI": "10.1371/journal.pone.0286210",
+        "type": "journal-article",
+        "title": [
+          "Relative bed allocation for COVID-19 patients, EHR investments, and COVID-19 mortality outcomes"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-4934-8166",
+            "authenticated-orcid": true,
+            "given": "Pankaj C.",
+            "family": "Patel",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Mike G.",
+            "family": "Tsionas",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Srikant",
+            "family": "Devaraj",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "PLOS ONE"
+        ],
+        "score": 27.276924,
+        "URL": "https://doi.org/10.1371/journal.pone.0286210",
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              10,
+              26
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.46945/bpj.10.1.03.01",
+        "title": [
+          "WHO Coronavirus Disease (COVID-19) Dashboard"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              11,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "Bangladesh Physiotherapy Journal"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.46945/bpj.10.1.03.01",
+        "score": 26.3171
+      },
+      {
+        "DOI": "10.34117/bjdv7n8-588",
+        "title": [
+          "Um dashboard para visualiza\u00e7\u00e3o de insumos relacionados \u00e0 Covid-19 / A dashboard for viewing inputs related to Covid-19"
+        ],
+        "author": [
+          {
+            "given": "Pedro Paulo Dantas Franco",
+            "family": "Rocha",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Samara Martins",
+            "family": "Nascimento",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Reudismam Rolim",
+            "family": "De Sousa",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              8,
+              26
+            ]
+          ]
+        },
+        "container-title": [
+          "Brazilian Journal of Development"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.34117/bjdv7n8-588",
+        "score": 25.700348
+      },
+      {
+        "DOI": "10.23736/s0375-9393.20.15345-8",
+        "title": [
+          "Who gets the last bed? Ethics criteria for scarce resource allocation in the era of COVID-19"
+        ],
+        "author": [
+          {
+            "given": "Alberto",
+            "family": "GIANNINI",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "Minerva Anestesiologica"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.23736/s0375-9393.20.15345-8",
+        "score": 25.366852
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n                <jats:p>The aim of this piece is to provide estimates of the infection fatality rate (IFR) of COVID-19 in Mumbai during 2020, namely the fraction of SARS-CoV-2 infections which resulted in death. Estimates are presented for slums and nonslum areas, and for the city as a whole. These are based largely on the city\u2019s official COVID-19 fatality data, seroprevalence data, and all-cause mortality data. Using recorded COVID-19 fatalities in the numerator, we obtain IFR estimates of 0.13%-0.17%. On the other hand, using excess deaths we obtain IFR estimates of 0.28%-0.40%. The estimates based on excess deaths are broadly consistent with the city\u2019s age structure, and meta-analyses of COVID-19 age-stratified IFR. If excess deaths were largely from COVID-19, then only around half of COVID-19 deaths were officially recorded in the city. The analysis indicates that levels of excess mortality in excess deaths per 1000 population were similar in the city\u2019s slums and nonslum areas. On the other hand the estimated ratio of excess deaths to official COVID-19 deaths in the slums was much higher than in nonslum areas, suggesting much weaker COVID-19 death reporting from the slums.</jats:p>",
+        "DOI": "10.1101/2021.04.08.21255101",
+        "type": "posted-content",
+        "title": [
+          "Estimating COVID-19 infection fatality rate in Mumbai during 2020"
+        ],
+        "author": [
+          {
+            "given": "Murad",
+            "family": "Banaji",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 25.118553,
+        "URL": "https://doi.org/10.1101/2021.04.08.21255101",
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              4,
+              10
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.2139/ssrn.3759167",
+        "title": [
+          "Cope with the COVID-19 Pandemic: Dynamic Bed Allocation and Patient Subsidization in a Public Healthcare System"
+        ],
+        "author": [
+          {
+            "given": "Xin",
+            "family": "Ma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Xue",
+            "family": "Zhao",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Pengfei",
+            "family": "Guo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021
+            ]
+          ]
+        },
+        "container-title": [
+          "SSRN Electronic Journal"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.2139/ssrn.3759167",
+        "score": 24.999409
+      },
+      {
+        "DOI": "10.1007/978-981-16-1740-9_27",
+        "title": [
+          "Predicting Hospital Bed Requirements for COVID-19 Patients in Mumbai City and Mumbai Suburban Region"
+        ],
+        "author": [
+          {
+            "given": "Narayana",
+            "family": "Darapaneni",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Chandrashekhar",
+            "family": "Bhakuni",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ujjval",
+            "family": "Bhatt",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Khamir",
+            "family": "Purohit",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Vikas",
+            "family": "Sardana",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Prabir",
+            "family": "Chakraborty",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Vivek",
+            "family": "Jain",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Anwesh Reddy",
+            "family": "Paduri",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              7,
+              31
+            ]
+          ]
+        },
+        "container-title": [
+          "Advances in Intelligent Systems and Computing",
+          "Soft Computing: Theories and Applications"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-981-16-1740-9_27",
+        "score": 24.93935
+      },
+      {
+        "abstract": "<title>Abstract</title>\n        <p><bold>Background:</bold> This article presents a single case study on the development of a GIS for global monitoring of coronavirus (COVID-19). For such concepts presented about GIS, its use and evolution in epidemic events and a presentation of the context of the current coronavirus outbreak and the meaningless results of consolidating a panel with reliable data.<bold>Methods:</bold> A single case study of a GIS in continuous development with data sharing and comments from the scientific community was carried out. Because it is not a post-mortem analysis, or a follow-up to a successful case, it was not possible to use more rigorous and systematic approaches such as those used by Lee (1989) and Onsrud, Pinto and Azad (1992) for case studies in GIS.<bold>Results:</bold> The case study presents the results of the development of a control dashboard, as well as the availability of consolidated data made by researchers at Johns Hopkins University and who showed a reliable platform and a world reference for health comunity.<bold>Conclusions:</bold> Efforts to develop a dashboard and provide data on the coronavirus outbreak resulted in the immediate replication of several other information systems with different approaches (Power BI, R, Tableau), becoming a reference for any new global epidemic outbreak events.</p>",
+        "DOI": "10.21203/rs.3.rs-15447/v1",
+        "type": "posted-content",
+        "title": [
+          "Geographic Information Systems and COVID-19: The Johns Hopkins University Dashboard"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-7994-9934",
+            "authenticated-orcid": false,
+            "given": "BELMIRO N",
+            "family": "JOAO",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Pontifical Catholic University of S\u00e3o Paulo (PUC/SP)"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 24.87105,
+        "URL": "https://doi.org/10.21203/rs.3.rs-15447/v1",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              3,
+              3
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "COVID-19 bed allocation dashboard Mumbai"
+    }
+  }
+}

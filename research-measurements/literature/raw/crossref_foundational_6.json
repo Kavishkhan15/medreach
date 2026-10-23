@@ -1,0 +1,278 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 6625890,
+    "items": [
+      {
+        "DOI": "10.21511/pmf.08(1).2019.02",
+        "title": [
+          "Financing capital expenditure through municipal bond market in Navi Mumbai Municipal Corporation"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-4506-895X",
+            "authenticated-orcid": false,
+            "given": "Sanjay",
+            "family": "Rode",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Dr., Assistant Professor, S. K. Somaiya College, Mumbai University"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019,
+              4,
+              26
+            ]
+          ]
+        },
+        "container-title": [
+          "Public and Municipal Finance"
+        ],
+        "abstract": "<jats:p>In India, the urban local bodies do not have decentralization in various functions. Therefore, municipal corporations find various issues in functioning and revenue generation. It has resulted into either shortfall or low quality infrastructure services to people. The Navi Mumbai Municipal Corporation is developed as modern municipal corporation. Municipal corporation invested financial resources in development for civic infrastructure. Therefore, population, industries, educational institutions, markets, transport and other facilities are expanding very fast. The ordinary least square regression results shows that the municipal corporation has positive co-relation with revenue receipts from LBT, property tax and town planning. The revenue expenditure is positively co-related with municipal estate, public health and hospitals, primary and secondary education. The engineering work for poor is negatively correlated with revenue expenditure. The capital receipts are positively co-related with fire brigade, auditorium, sports and cultural programs and security deposits and water supply. The capital expenditure is positively co-related to women and child welfare schemes, primary education, environment monitoring. It is negatively co-related with dumping grounds. The municipal corporation must raise funds from capital market through municipal bonds. More investment must be made in civic infrastructure. Similarly, corporation must spend more funds on poor, welfare of women and children. Municipal corporation must monitor and protect environment. It must give more priorities for processing of solid and e-waste, protect local culture, primary and secondary education, health care for all and technology in provision of civic services. It must develop human resource and create best place to live in metropolitan region.</jats:p>",
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21511/pmf.08(1).2019.02"
+      },
+      {
+        "DOI": "10.1016/j.eclinm.2020.100467",
+        "title": [
+          "Tocilizumab improves survival in patients with persistent hypoxia in severe COVID-19 pneumonia"
+        ],
+        "author": [
+          {
+            "given": "Yojana",
+            "family": "Gokhale",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Rakshita",
+            "family": "Mehta",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Nitin",
+            "family": "Karnik",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-2230-2424",
+            "authenticated-orcid": false,
+            "given": "Uday",
+            "family": "Kulkarni",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Sushant",
+            "family": "Gokhale",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              7
+            ]
+          ]
+        },
+        "container-title": [
+          "eClinicalMedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.eclinm.2020.100467"
+      },
+      {
+        "DOI": "10.5744/florida/9780813054742.003.0007",
+        "title": [
+          "Dublin Inc."
+        ],
+        "author": [
+          {
+            "given": "Celia",
+            "family": "Marshik",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2017,
+              11,
+              14
+            ]
+          ]
+        },
+        "container-title": [
+          "Joyce and the Law"
+        ],
+        "abstract": "<p>This essay explains the history and legal purview of the Dublin Corporation, the organization established to manage the affairs of the metropolis. Marshik reads \"Ivy Day,\" for its interest in municipal self-government and its casting nationalist agendas as inadequate to the needs of Dublin. She concludes that James Joyce is equally interested in the Corporation \"Committee Room\" as he is in the \"Ivy Day\" that laments Charles Stewart Parnell.</p>",
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.5744/florida/9780813054742.003.0007"
+      },
+      {
+        "DOI": "10.21276/ijmrp.2016.2.6.020",
+        "title": [
+          "Patient Provider Interaction: Important Aspect of Anti-Tuberculosis Treatment Adherence in E Ward of Mumbai Municipal Corporation"
+        ],
+        "author": [
+          {
+            "given": "Khedkar",
+            "family": "Sudam",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Kulkarni",
+            "family": "Priya Y",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Akarte",
+            "family": "S V",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              12,
+              23
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Medical Research Professionals"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21276/ijmrp.2016.2.6.020"
+      },
+      {
+        "DOI": "10.1177/097542531000100214",
+        "title": [
+          "<b>Mumbai Human Development Report 2009</b>\n                    , (Municipal Corporation of Greater Mumbai), 2009"
+        ],
+        "author": [
+          {
+            "given": "Chetan",
+            "family": "Vaidya",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Satmohini",
+            "family": "Srivastva",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2010,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "Environment and Urbanization ASIA"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1177/097542531000100214"
+      }
+    ],
+    "items-per-page": 5,
+    "query": {
+      "start-index": 0,
+      "search-terms": "COVID-19 response Mumbai municipal corporation war room decentralized"
+    }
+  }
+}

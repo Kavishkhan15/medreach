@@ -1,0 +1,560 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 6619664,
+    "items": [
+      {
+        "DOI": "10.1016/j.puhip.2022.100263",
+        "title": [
+          "Integration of national cancer registry program with Ayushman Bharat Digital Mission in India: A necessity or an option"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-7759-2820",
+            "authenticated-orcid": false,
+            "given": "Shubharanjan",
+            "family": "Jena",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-1841-352X",
+            "authenticated-orcid": false,
+            "given": "Venkatarao",
+            "family": "Epari",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Krushna",
+            "family": "Chandra Sahoo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              6
+            ]
+          ]
+        },
+        "container-title": [
+          "Public Health in Practice"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.puhip.2022.100263",
+        "score": 43.8675
+      },
+      {
+        "abstract": "<jats:p>&lt;span&gt;This whitepaper evaluates the Ayushman Bharat Digital Mission (ABDM) through a tri-lens framework combining policy and benchmark analysis, economic modelling, and stakeholder sentiment insights. Using global references (WHO/OECD), fiscal evaluation tools (ICER, NPV, BCR, SROI, \u03bb_IN), and qualitative interviews, the paper assesses whether India\u2019s digital health infrastructure is translating into measurable and equitable public value. Findings show strong architectural and standards maturity but persistent gaps in point-of-care adoption, interoperability, equity, and outcomes measurement. The analysis identifies six strategic reform levers to help ABDM evolve from an infrastructure-building programme to a fully outcome-oriented digital health ecosystem.&lt;/span&gt;</jats:p>",
+        "DOI": "10.2139/ssrn.5988514",
+        "type": "posted-content",
+        "title": [
+          "Ayushman Bharat Digital Mission | From Infrastructure to Impact: A Tri-lens assessment of India's Digital Health System"
+        ],
+        "author": [
+          {
+            "given": "Pooja",
+            "family": "Kadambi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Peter T",
+            "family": "Joseph",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Divya",
+            "family": "Ajitsaria",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 43.218895,
+        "URL": "https://doi.org/10.2139/ssrn.5988514",
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1055/b-0046-222106",
+        "title": [
+          "5 Digital Health Interoperability and Standards: Powering the Ayushman Bharat Digital Mission"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "container-title": [
+          "Digital Health for All"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1055/b-0046-222106",
+        "score": 42.150898
+      },
+      {
+        "DOI": "10.26573/2025.22.1.2",
+        "title": [
+          "Ayushman Bharat Digital Mission: An Initiative of Digital Transformation towards Healthcare"
+        ],
+        "author": [
+          {
+            "given": "Sakshi",
+            "family": "Narayan",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Pallavi",
+            "family": "Seth",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Deepa",
+            "family": "Shrivastava",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              1,
+              27
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings: AIMS-22"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.26573/2025.22.1.2",
+        "score": 40.44863
+      },
+      {
+        "DOI": "10.64384/itn.2026.027",
+        "title": [
+          "Ayushman Bharat Digital Mission Crosses 100 Crore Linked Health Records"
+        ],
+        "author": [
+          {
+            "given": "Poonam",
+            "family": "Sharma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sujatha",
+            "family": "Suriyamoorthi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              6,
+              15
+            ]
+          ]
+        },
+        "container-title": [
+          "INDIAN TRANSPLANT NEWSLETTER"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.64384/itn.2026.027",
+        "score": 40.33349
+      },
+      {
+        "abstract": "<jats:p>The Ayushman Bharat Digital Mission (ABDM) represents a pioneering initiative by the Indian government to revolutionize healthcare delivery through digitization and connectivity. This research paper delves into the role of ABDM in enhancing healthcare accessibility and affordability, focusing on its impact on cost reduction, promotion of preventive healthcare practices, and public perception. Drawing from existing literature and empirical data collected through structured surveys among 100 graduate and post-graduate students, this study evaluates ABDM's effectiveness in achieving its objectives.&lt;br&gt;&lt;br&gt;The findings reveal a positive impact of ABDM on healthcare costs, with respondents reporting various observations since becoming aware of the mission. Notable observations included savings in time and money associated with travel and consultation fees, easier access to medical consultations through telemedicine services, and lower medication costs. Furthermore, the study indicates a high adoption rate of preventive healthcare services encouraged by ABDM, contributing to positive changes in health behaviours among the population. Respondents also expressed satisfaction with the affordability of healthcare services under ABDM.&lt;br&gt;&lt;br&gt;Additionally, the study emphasizes the significance of ABDM in promoting preventive healthcare practices and fostering healthier lifestyles among the population. By making preventive healthcare services more accessible and affordable, ABDM contributes to positive changes in health behaviours, ultimately leading to better health outcomes for individuals and families. The findings underscore the mission's role in not only addressing immediate healthcare needs but also in creating a culture of proactive health management and wellness promotion. This aspect of ABDM aligns with global trends in healthcare towards preventive care and population health management, further emphasizing its relevance and potential impact in the Indian context.&lt;br&gt;&lt;br&gt;The research highlights a positive perception of ABDM's potential benefits among respondents who recommended the mission to friends, family, or colleagues. However, concerns regarding the digital divide and initial investment requirements were also noted, suggesting areas for improvement in promoting ABDM. Despite limitations such as the small sample size, the study underscores the importance of ABDM in addressing healthcare challenges in India and calls for continued support and efforts to realize its full potential.</jats:p>",
+        "DOI": "10.2139/ssrn.4799196",
+        "type": "posted-content",
+        "title": [
+          "A Study on Evaluating the Role of Ayushman Bharat Digital Mission (ABDM) in Enhancing Healthcare Accessibility and Affordability"
+        ],
+        "author": [
+          {
+            "given": "Anshu",
+            "family": "Arya",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 39.27828,
+        "URL": "https://doi.org/10.2139/ssrn.4799196",
+        "published": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1080/23288604.2024.2392290",
+        "title": [
+          "The Ayushman Bharat Digital Mission of India: An Assessment"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-3900-0342",
+            "authenticated-orcid": false,
+            "given": "Udaya Shankar",
+            "family": "Mishra",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Epidemiology and Biostatistics, International Institute for Population Sciences, Mumbai, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-1579-9524",
+            "authenticated-orcid": false,
+            "given": "Suryakant",
+            "family": "Yadav",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Bio-Statistics and Epidemiology, International Institute for Population Sciences, Mumbai, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-3282-658X",
+            "authenticated-orcid": false,
+            "given": "William",
+            "family": "Joe",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Population Research Centre, Institute of Economic Growth, Delhi, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              10,
+              22
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Systems &amp; Reform"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/23288604.2024.2392290",
+        "score": 38.86177
+      },
+      {
+        "DOI": "10.1007/s40012-023-00375-0",
+        "title": [
+          "The Ayushman Bharat Digital Mission (ABDM): making of India\u2019s Digital Health Story"
+        ],
+        "author": [
+          {
+            "given": "R. S.",
+            "family": "Sharma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Aishwarya",
+            "family": "Rohatgi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sandeep",
+            "family": "Jain",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Dilip",
+            "family": "Singh",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              3,
+              31
+            ]
+          ]
+        },
+        "container-title": [
+          "CSI Transactions on ICT"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1007/s40012-023-00375-0",
+        "score": 37.95311
+      },
+      {
+        "abstract": "<jats:p>Background: The Ayushman Bharat Digital Mission (ABDM) aims to provide unique digital health identities to India's 1.4 billion citizens. Deploying such technology in deeply unequal societies risks exacerbating the digital divide. This study examines whether ABDM adoption followed the \"Inverse Care Law\" or successfully bridged the gap between digital haves and have-nots.\nMethods: A longitudinal ecological study across 28 Indian states over 18 months (January 2024-July 2025) analyzed Ayushman Bharat Health Account (ABHA) generation data from the ABDM dashboard and Ministry of Health releases. States were stratified by NSDP per capita. Key indicators included ABHA saturation, percentage growth, and income-related inequality via the Concentration Index (CI) and Lorenz Curves.\nResults: National ABHA saturation rose significantly from 32.7% (\u00b115.2%) to 53.9% (\u00b116.1%) (p&lt;0.001). A clear \"Catch-Up Effect\" emerged: the poorest state quartile grew by 145.2%, nearly three times the 58.4% recorded in the richest quartile. Inequality analysis revealed a striking inversion from a pro-rich distribution (CI= +0.062) to near-perfect equity (CI= -0.011). Lower-middle-income states such as Andhra Pradesh and Odisha were top performers, while wealthier states exhibited slower adoption due to \"legacy friction\".\nConclusions: ABDM achieved rapid \"regression to equity,\" driven not by organic demand but by supply-side \"physical involvement in digital space\" interventions frontline health workers facilitating assisted onboarding in rural areas. These findings offer a replicable blueprint for LMICs seeking to democratize digital health infrastructure.</jats:p>",
+        "DOI": "10.18203/2394-6040.ijcmph20262227",
+        "type": "journal-article",
+        "title": [
+          "Bridging the digital divide: a longitudinal analysis of health equity in India\u2019s Ayushman Bharat Digital Mission (2024-2025)"
+        ],
+        "author": [
+          {
+            "given": "Sai Sreevalli",
+            "family": "Sreepada",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal Of Community Medicine And Public Health"
+        ],
+        "score": 37.776447,
+        "URL": "https://doi.org/10.18203/2394-6040.ijcmph20262227",
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              6,
+              30
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:title>\n                    A\n                    <jats:sc>BSTRACT</jats:sc>\n                  </jats:title>\n                  <jats:sec>\n                    <jats:title>Aim:</jats:title>\n                    <jats:p>The Government of India launched the Ayushman Bharat Digital Mission (ABDM) to digitize the national healthcare system. The aim of this study was to estimate the knowledge, attitude and practice regarding the ABDM and benefits of digital health among urban patients, who are likely to be early adopters of digital technologies.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Methods:</jats:title>\n                    <jats:p>We interviewed 150 outpatients above 18 years of age, in a hospital in urban Bengaluru, India. Our questionnaire captured the knowledge, attitude and practice regarding ABDM and Digital Health, including open-ended questions to evaluate perceptions of the benefits and concerns regarding digital health.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results:</jats:title>\n                    <jats:p>Most of the participants belonged to the upper and upper middle socioeconomic classes. Only 8% of participants knew about the ABDM, although their knowledge and practice related to other Government digital services, like National Teleconsultation services (eSanjeevani), Arogya Setu and DigiLocker, were high. Many participants perceived digital health to be beneficial, but there were serious concerns regarding data safety, data privacy and misuse of health data by insurance companies.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusion:</jats:title>\n                    <jats:p>We established a baseline survey for assessing the knowledge, attitudes and practices of ABDM and digital health among urban patients. The results suggest that implementation agencies of ABDM should increase the Information, Education and Communication (IEC) and devise new strategies to create awareness, disseminate correct information and address the concerns of citizens.</jats:p>\n                  </jats:sec>",
+        "DOI": "10.4103/jfmpc.jfmpc_255_24",
+        "type": "journal-article",
+        "title": [
+          "Knowledge, Attitude and Practice about Ayushman Bharat Digital Mission and Digital Health among hospital patients"
+        ],
+        "author": [
+          {
+            "given": "M. C.",
+            "family": "Arjun",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Clinical Research Fellow, St. John\u2019s Research Institute, Sarjapur Road, Koramangala, Bengaluru, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "S",
+            "family": "Poorvikha",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Medical Student, St. John\u2019s Medical College, Sarjapur Road, Koramangala, Bengaluru, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Anura V.",
+            "family": "Kurpad",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Physiology, St. John\u2019s Medical College, Sarjapur Road, Koramangala, Bengaluru, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Tinku",
+            "family": "Thomas",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Biostatistics, St. John\u2019s Medical College, Sarjapur Road, Koramangala, Bengaluru, Karnataka, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Journal of Family Medicine and Primary Care"
+        ],
+        "score": 36.727604,
+        "URL": "https://doi.org/10.4103/jfmpc.jfmpc_255_24",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              10
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "Ayushman Bharat Digital Mission health facility registry"
+    }
+  }
+}

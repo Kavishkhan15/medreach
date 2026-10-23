@@ -1,0 +1,50 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "1025",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13689248",
+      "13685987",
+      "13682356",
+      "13677898",
+      "13667718",
+      "13667722",
+      "13667757",
+      "13664400",
+      "13664382",
+      "13664123"
+    ],
+    "translationset": [
+      {
+        "from": "data",
+        "to": "\"Data (Basel)\"[Journal:__jid101699766] OR \"Brown Univ Dig Addict Theory Appl\"[Journal:__jid8904655] OR \"data\"[All Fields]"
+      },
+      {
+        "from": "information",
+        "to": "\"inform\"[All Fields] OR \"informal\"[All Fields] OR \"informality\"[All Fields] OR \"informally\"[All Fields] OR \"informant\"[All Fields] OR \"informant's\"[All Fields] OR \"informants\"[All Fields] OR \"information\"[All Fields] OR \"information's\"[All Fields] OR \"informational\"[All Fields] OR \"informations\"[All Fields] OR \"informative\"[All Fields] OR \"informatively\"[All Fields] OR \"informativeness\"[All Fields] OR \"informativity\"[All Fields] OR \"informed\"[All Fields] OR \"informer\"[All Fields] OR \"informers\"[All Fields] OR \"informing\"[All Fields] OR \"informs\"[All Fields]"
+      },
+      {
+        "from": "decay",
+        "to": "\"decay\"[All Fields] OR \"decayed\"[All Fields] OR \"decaying\"[All Fields] OR \"decays\"[All Fields]"
+      },
+      {
+        "from": "dynamic",
+        "to": "\"dynamer\"[All Fields] OR \"dynamers\"[All Fields] OR \"dynamic\"[All Fields] OR \"dynamical\"[All Fields] OR \"dynamically\"[All Fields] OR \"dynamicity\"[All Fields] OR \"dynamics\"[All Fields] OR \"dynamism\"[All Fields] OR \"dynamisms\"[All Fields]"
+      },
+      {
+        "from": "resource",
+        "to": "\"health resources\"[MeSH Terms] OR (\"health\"[All Fields] AND \"resources\"[All Fields]) OR \"health resources\"[All Fields] OR \"resource\"[All Fields] OR \"resources\"[All Fields] OR \"resource's\"[All Fields] OR \"resourced\"[All Fields] OR \"resourceful\"[All Fields] OR \"resourcefulness\"[All Fields] OR \"resourcing\"[All Fields]"
+      },
+      {
+        "from": "availability",
+        "to": "\"availabilities\"[All Fields] OR \"availability\"[All Fields] OR \"available\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"data basel\"[Journal] OR \"brown univ dig addict theory appl\"[Journal] OR \"data\"[All Fields]) AND \"freshness\"[All Fields] AND (\"inform\"[All Fields] OR \"informal\"[All Fields] OR \"informality\"[All Fields] OR \"informally\"[All Fields] OR \"informant\"[All Fields] OR \"informant s\"[All Fields] OR \"informants\"[All Fields] OR \"information\"[All Fields] OR \"information s\"[All Fields] OR \"informational\"[All Fields] OR \"informations\"[All Fields] OR \"informative\"[All Fields] OR \"informatively\"[All Fields] OR \"informativeness\"[All Fields] OR \"informativity\"[All Fields] OR \"informed\"[All Fields] OR \"informer\"[All Fields] OR \"informers\"[All Fields] OR \"informing\"[All Fields] OR \"informs\"[All Fields]) AND (\"decay\"[All Fields] OR \"decayed\"[All Fields] OR \"decaying\"[All Fields] OR \"decays\"[All Fields]) AND (\"dynamer\"[All Fields] OR \"dynamers\"[All Fields] OR \"dynamic\"[All Fields] OR \"dynamical\"[All Fields] OR \"dynamically\"[All Fields] OR \"dynamicity\"[All Fields] OR \"dynamics\"[All Fields] OR \"dynamism\"[All Fields] OR \"dynamisms\"[All Fields]) AND (\"health resources\"[MeSH Terms] OR (\"health\"[All Fields] AND \"resources\"[All Fields]) OR \"health resources\"[All Fields] OR \"resource\"[All Fields] OR \"resources\"[All Fields] OR \"resource s\"[All Fields] OR \"resourced\"[All Fields] OR \"resourceful\"[All Fields] OR \"resourcefulness\"[All Fields] OR \"resourcing\"[All Fields]) AND (\"availabilities\"[All Fields] OR \"availability\"[All Fields] OR \"available\"[All Fields])"
+  }
+}

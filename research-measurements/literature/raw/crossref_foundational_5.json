@@ -1,0 +1,391 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 1858839,
+    "items": [
+      {
+        "DOI": "10.26727/njrcm.2018.7.1.26-31",
+        "title": [
+          "Stroke among slum dwellers: Risk factors and health-seeking behavior in elderly residents of Dharavi, Mumbai"
+        ],
+        "author": [
+          {
+            "given": "Amita",
+            "family": "Mukhopadhyay",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Daksha",
+            "family": "Pandit",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Uma",
+            "family": "Sundar",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Sikandar",
+            "family": "Adwani",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              3,
+              31
+            ]
+          ]
+        },
+        "container-title": [
+          "National Journal of Research in Community Medicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.26727/njrcm.2018.7.1.26-31"
+      },
+      {
+        "DOI": "10.18203/2394-6040.ijcmph20162055",
+        "title": [
+          "Study of health seeking behavior and its determinants among attendees of urban health center, Dharavi, Mumbai, India"
+        ],
+        "author": [
+          {
+            "given": "Subita",
+            "family": "Patil",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Satish",
+            "family": "Parbhankar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Seema",
+            "family": "Bansode-Gokhe",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Pallavi",
+            "family": "Shelke",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Rakesh",
+            "family": "Singh",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Community Medicine and Public Health"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.18203/2394-6040.ijcmph20162055"
+      },
+      {
+        "DOI": "10.70675/93c1f59bza420z438ezaf6dzf5c89e363a3b",
+        "title": [
+          "Consolidating Territories ? : Living together in Dharavi, Mumbai"
+        ],
+        "author": [
+          {
+            "given": "Min",
+            "family": "Tang",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "id": [
+                  {
+                    "id": "https://ror.org/002t25c44",
+                    "id-type": "ROR",
+                    "asserted-by": "publisher"
+                  }
+                ],
+                "name": "Paris 1"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "abstract": "<jats:title>Urbaniser au quotidien : Dharavi, Mumbai</jats:title>\n                <jats:p xml:lang=\"fr\">Cette th\u00e8se interroge les bidonvilles en tant que parties \u00e9merg\u00e9es singuli\u00e8res de p\u00e9riph\u00e9ries urbaines en constante mutation. Elle reconsid\u00e8re le concept de consolidation associ\u00e9e aux pratiques v\u00e9cues de fabrication de la ville, en les envisageant comme une transformation territoriale qui remet en question la pens\u00e9e du d\u00e9veloppement lin\u00e9aire de la r\u00e9habilitation et de la r\u00e9gularisation des bidonvilles. Bas\u00e9e sur mes exp\u00e9riences et recherches multi-sites conduites sous la forme de relev\u00e9s et d\u2019enqu\u00eates transversales et longitudinales, et inspir\u00e9e par les \u00e9tudes urbaines post-coloniales les plus abouties, l\u2019urbanisme dialogique et les \u00e9tudes sur les migrations et les mobilit\u00e9s, notre hypoth\u00e8se aborde les processus de consolidation simultan\u00e9s, les dispositifs spatiaux devenant plus solides et en rejoignant d\u2019autres pour g\u00e9n\u00e9rer des superstructures urbaines, rendant concrets et mat\u00e9rielle une territorialisation multi-emplacements. La question de recherche principale porte sur la mani\u00e8re dont la lecture de l\u2019espace et du temps r\u00e9v\u00e8lent les pratiques v\u00e9cues de transformation territoriale et d\u00e9crit l\u2019\u00e9volution des objets et des structures socio-spatiaux coproduits par les institutions et les habitants. Je propose ainsi un cadre analytique tripartite qui englobe les unit\u00e9s territoriales, les structures et les mobilit\u00e9s. Ce cadre constitue un apport r\u00e9f\u00e9renc\u00e9, contextuel tout comme th\u00e9orique, aux d\u00e9bats et controverses spatiales actuelles. Il r\u00e9invente une cartographie analytique et critique de l\u2019espace et du temps et r\u00e9alise une ethnographie qualitative conformant cinq chapitres portant sur notre terrain d\u2019\u00e9tude principal, le bidonville consolid\u00e9 de Dharavi (Mumbai). Dans ce travail de th\u00e8se, sont \u00e9tudi\u00e9es et, croyons-nous, \u00e9lucid\u00e9es, des composantes structurales multiples, des usages et des pratiques de transformation territoriale ultra d\u00e9pendantes de ce contexte sp\u00e9cifique, d\u00e9montrant ainsi un r\u00e9seau complexe de processus de consolidation en mouvement et en \u00e9volutions permanents. Les r\u00e9sultats obtenus \u00e0 Dharavi soul\u00e8vent des questions et des ph\u00e9nom\u00e8nes essentiels qui pourraient utilement \u00eatre d\u00e9plac\u00e9s ailleurs. Le regard mobile est particuli\u00e8rement important pour r\u00e9v\u00e9ler les divers points de d\u00e9part et la direction des processus de consolidation, les ressources alternatives, les conflits potentiels et la reproduction masqu\u00e9e des in\u00e9galit\u00e9s. En r\u00e9sum\u00e9, cette th\u00e8se contribue \u00e0 de futurs gestes comparatifs et appelle \u00e0 la coproduction de connaissances interdisciplinaires non seulement sur, mais depuis les concr\u00e8tes p\u00e9riph\u00e9ries urbaines plan\u00e9taires.</jats:p>",
+        "type": "dissertation",
+        "URL": "https://doi.org/10.70675/93c1f59bza420z438ezaf6dzf5c89e363a3b"
+      },
+      {
+        "DOI": "10.17140/whoj-1-104",
+        "title": [
+          "Increased Reporting of Cases of Gender-Based Violence: A Retrospective Review of a Prevention Programme in Dharavi, Mumbai"
+        ],
+        "author": [
+          {
+            "name": "SNEHA (Society for Nutrition, Education and Health Action), Room no. 310, Third floor, Urban Health Centre, Dharavi, Mumbai 400017, Maharashtra, India",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Nayreen",
+            "family": "Daruwalla",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Preethi",
+            "family": "Pinto",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "SNEHA (Society for Nutrition, Education and Health Action), Room no. 310, Third floor, Urban Health Centre, Dharavi, Mumbai 400017, Maharashtra, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Gauri",
+            "family": "Ambavkar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "SNEHA (Society for Nutrition, Education and Health Action), Room no. 310, Third floor, Urban Health Centre, Dharavi, Mumbai 400017, Maharashtra, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Bhaskar",
+            "family": "Kakad",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "SNEHA (Society for Nutrition, Education and Health Action), Room no. 310, Third floor, Urban Health Centre, Dharavi, Mumbai 400017, Maharashtra, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Pouruchisti",
+            "family": "Wadia",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "SNEHA (Society for Nutrition, Education and Health Action), Room no. 310, Third floor, Urban Health Centre, Dharavi, Mumbai 400017, Maharashtra, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Shanti",
+            "family": "Pantvaidya",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "SNEHA (Society for Nutrition, Education and Health Action), Room no. 310, Third floor, Urban Health Centre, Dharavi, Mumbai 400017, Maharashtra, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2015,
+              10,
+              14
+            ]
+          ]
+        },
+        "container-title": [
+          "Women's Health - Open Journal"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.17140/whoj-1-104"
+      },
+      {
+        "DOI": "10.5749/9781452941110",
+        "title": [
+          "The Durable Slum"
+        ],
+        "author": [
+          {
+            "given": "Liza",
+            "family": "Weinstein",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2010,
+              1,
+              25
+            ]
+          ]
+        },
+        "type": "edited-book",
+        "URL": "https://doi.org/10.5749/9781452941110"
+      }
+    ],
+    "items-per-page": 5,
+    "query": {
+      "start-index": 0,
+      "search-terms": "Healthcare seeking behavior in Dharavi Mumbai"
+    }
+  }
+}

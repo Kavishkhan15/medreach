@@ -1,0 +1,50 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "86299",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13690273",
+      "13687166",
+      "13690035",
+      "13689372",
+      "13689364",
+      "13686932",
+      "13690346",
+      "13687108",
+      "13687633",
+      "13687126"
+    ],
+    "translationset": [
+      {
+        "from": "hospital",
+        "to": "\"hospital's\"[All Fields] OR \"hospitalisation\"[All Fields] OR \"hospitalization\"[MeSH Terms] OR \"hospitalization\"[All Fields] OR \"hospitalised\"[All Fields] OR \"hospitalising\"[All Fields] OR \"hospitality\"[All Fields] OR \"hospitalisations\"[All Fields] OR \"hospitalizations\"[All Fields] OR \"hospitalize\"[All Fields] OR \"hospitalized\"[All Fields] OR \"hospitalizing\"[All Fields] OR \"hospitals\"[MeSH Terms] OR \"hospitals\"[All Fields] OR \"hospital\"[All Fields]"
+      },
+      {
+        "from": "bed",
+        "to": "\"beds\"[MeSH Terms] OR \"beds\"[All Fields] OR \"bed\"[All Fields]"
+      },
+      {
+        "from": "management",
+        "to": "\"manage\"[All Fields] OR \"managed\"[All Fields] OR \"management's\"[All Fields] OR \"managements\"[All Fields] OR \"manager\"[All Fields] OR \"manager's\"[All Fields] OR \"managers\"[All Fields] OR \"manages\"[All Fields] OR \"managing\"[All Fields] OR \"managment\"[All Fields] OR \"organization and administration\"[MeSH Terms] OR (\"organization\"[All Fields] AND \"administration\"[All Fields]) OR \"organization and administration\"[All Fields] OR \"management\"[All Fields] OR \"disease management\"[MeSH Terms] OR (\"disease\"[All Fields] AND \"management\"[All Fields]) OR \"disease management\"[All Fields]"
+      },
+      {
+        "from": "system",
+        "to": "\"system\"[All Fields] OR \"system's\"[All Fields] OR \"systems\"[All Fields]"
+      },
+      {
+        "from": "time",
+        "to": "\"time\"[MeSH Terms] OR \"time\"[All Fields]"
+      },
+      {
+        "from": "data quality",
+        "to": "\"data accuracy\"[MeSH Terms] OR (\"data\"[All Fields] AND \"accuracy\"[All Fields]) OR \"data accuracy\"[All Fields] OR (\"data\"[All Fields] AND \"quality\"[All Fields]) OR \"data quality\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"hospital s\"[All Fields] OR \"hospitalisation\"[All Fields] OR \"hospitalization\"[MeSH Terms] OR \"hospitalization\"[All Fields] OR \"hospitalised\"[All Fields] OR \"hospitalising\"[All Fields] OR \"hospitality\"[All Fields] OR \"hospitalisations\"[All Fields] OR \"hospitalizations\"[All Fields] OR \"hospitalize\"[All Fields] OR \"hospitalized\"[All Fields] OR \"hospitalizing\"[All Fields] OR \"hospitals\"[MeSH Terms] OR \"hospitals\"[All Fields] OR \"hospital\"[All Fields]) AND (\"beds\"[MeSH Terms] OR \"beds\"[All Fields] OR \"bed\"[All Fields]) AND (\"manage\"[All Fields] OR \"managed\"[All Fields] OR \"management s\"[All Fields] OR \"managements\"[All Fields] OR \"manager\"[All Fields] OR \"manager s\"[All Fields] OR \"managers\"[All Fields] OR \"manages\"[All Fields] OR \"managing\"[All Fields] OR \"managment\"[All Fields] OR \"organization and administration\"[MeSH Terms] OR (\"organization\"[All Fields] AND \"administration\"[All Fields]) OR \"organization and administration\"[All Fields] OR \"management\"[All Fields] OR \"disease management\"[MeSH Terms] OR (\"disease\"[All Fields] AND \"management\"[All Fields]) OR \"disease management\"[All Fields]) AND (\"system\"[All Fields] OR \"system s\"[All Fields] OR \"systems\"[All Fields]) AND \"real\"[All Fields] AND (\"time\"[MeSH Terms] OR \"time\"[All Fields]) AND (\"data accuracy\"[MeSH Terms] OR (\"data\"[All Fields] AND \"accuracy\"[All Fields]) OR \"data accuracy\"[All Fields] OR (\"data\"[All Fields] AND \"quality\"[All Fields]) OR \"data quality\"[All Fields])"
+  }
+}

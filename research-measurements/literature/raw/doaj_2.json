@@ -1,0 +1,761 @@
+{
+  "total": 43,
+  "page": 1,
+  "pageSize": 10,
+  "timestamp": "2026-10-23T11:31:42.861143Z",
+  "query": "Ayushman Bharat digital health",
+  "results": [
+    {
+      "last_updated": "2026-06-16T10:44:52Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2249-4863",
+            "type": "pissn"
+          },
+          {
+            "id": "2278-7135",
+            "type": "eissn"
+          },
+          {
+            "id": "10.4103/jfmpc.jfmpc_892_25",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "15",
+          "number": "4",
+          "country": "IN",
+          "issns": [
+            "2249-4863",
+            "2278-7135"
+          ],
+          "publisher": "Wolters Kluwer Medknow Publications",
+          "language": [
+            "EN"
+          ],
+          "title": "Journal of Family Medicine and Primary Care"
+        },
+        "month": "4",
+        "end_page": "1490",
+        "keywords": [
+          "family medicine",
+          "generalist",
+          "primary care",
+          "public health"
+        ],
+        "year": "2026",
+        "start_page": "1486",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "name": "Santosh Kumar"
+          },
+          {
+            "name": "Kritika Tiwari"
+          },
+          {
+            "name": "Anubhuti Joshi"
+          },
+          {
+            "name": "Ashutosh Mishra"
+          },
+          {
+            "name": "Raman Kumar"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "https://journals.lww.com/10.4103/jfmpc.jfmpc_892_25"
+          }
+        ],
+        "abstract": "India\u2019s health system is at a crossroads. With its population suffering from the dual challenges of chronic non-communicable diseases and endemic infectious diseases, the time is apt for adopting an integral, equitable, and participatory healthcare model. Family medicine, based on principles of continuity, completeness, and community orientation, presents one promising answer. Internationally, family physicians have demonstrated the ability to bridge the gap between clinical care and public health outcomes. Though. Family medicine has been misunderstood in India and treated as general practice in the absence of proper institutional support and education. However, momentum is gaining. Initiatives by the government such as Ayushman Bharat Health and Wellness Centres are evidence of intensifying efforts towards robust primary care. National endeavours for primary care conferences such as FMPC-2024 are stimulating the countrywide discussion and converging different stakeholders. Family physicians are increasingly recognised not only as clinicians but also as teachers, public health partners, and system leaders. In order to really fortify India\u2019s health system, reshaping medical training so that generalist care is prioritised, incentivising rural work, and informing the public of the essential contributions of family physicians is inevitable. Consequently, needs investment in research, digital health, and gender-sensitive policy. In the end, family medicine is the way toward equity, efficiency, and compassion. It bridges the gap between the individual and the population. For as dynamic and pluralistic as India is, it is the long-term path towards healthier living and resilient communities.",
+        "title": "Revitalising public health through family medicine and primary care: The Indian context"
+      },
+      "id": "019f699a16de428b928d3beb0cc8bb15",
+      "created_date": "2026-06-16T10:44:52Z"
+    },
+    {
+      "last_updated": "2026-06-28T03:38:37Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "https://doi.org/10.71152/ajms.v17i7.5353",
+            "type": "doi"
+          },
+          {
+            "id": "2467-9100",
+            "type": "pissn"
+          },
+          {
+            "id": "2091-0576",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "17",
+          "number": "7",
+          "country": "NP",
+          "issns": [
+            "2091-0576",
+            "2467-9100"
+          ],
+          "publisher": "Manipal College of Medical Sciences, Pokhara",
+          "language": [
+            "EN"
+          ],
+          "title": "Asian Journal of Medical Sciences"
+        },
+        "month": "7",
+        "end_page": "189",
+        "keywords": [
+          "ayushman bharat digital mission; digital health; telemedicine; rural healthcare; artificial intelligence"
+        ],
+        "year": "2026",
+        "start_page": "183",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "orcid_id": "https://orcid.org/0009-0000-4640-1748",
+            "affiliation": "MBBS Student, Mata Gujri Memorial Medical College, Kishanganj, Bihar, India ",
+            "name": "Rishi Tarafdar "
+          },
+          {
+            "orcid_id": "https://orcid.org/0009-0000-9751-4873",
+            "affiliation": "3rd year Post Graduate Resident, Department of Surgery, Mata Gujri Memorial Medical College, Kishanganj, Bihar, India ",
+            "name": "Amrit Raj "
+          },
+          {
+            "orcid_id": "https://orcid.org/0000-0003-1007-3994",
+            "affiliation": "Professor and Head, Department of Microbiology, Mata Gujri Memorial Medical College, Kishanganj, Bihar, India ",
+            "name": "Dipmala Das"
+          },
+          {
+            "orcid_id": "https://orcid.org/0009-0006-9947-9120",
+            "affiliation": "MBBS Student, Mata Gujri Memorial Medical College, Kishanganj, Bihar, India ",
+            "name": "Rahul Kumar "
+          },
+          {
+            "orcid_id": "https://orcid.org/0000-0002-6832-7777",
+            "affiliation": "Professor and Head, Department of Pathology, Mata Gujri Memorial Medical College, Kishanganj, Bihar, India ",
+            "name": "Asitava Deb Roy"
+          }
+        ],
+        "link": [
+          {
+            "type": "fulltext",
+            "url": "https://ajmsjournal.info/index.php/AJMS/article/view/5353"
+          }
+        ],
+        "abstract": "Rural healthcare in India faces persistent challenges, including a shortage of healthcare professionals, inadequate diagnostic infrastructure, limited accessibility, and significant rural\u2013urban disparities in health outcomes. Emerging technologies such as artificial intelligence (AI) and digital health platforms can offer promising opportunities to strengthen healthcare delivery in underserved settings. A thorough narrative review was performed by querying PubMed, Scopus, and Google Scholar for literature published from 2015 to 2025. The search terms were \u201cartificial intelligence,\u201d \u201cmachine learning,\u201d \u201cdigital health,\u201d \u201ctelemedicine,\u201d \u201cmHealth,\u201d \u201crural healthcare,\u201d \u201cIndia,\u201d \u201cAyushman Bharat Digital Mission,\u201d and similar. Digital health solutions, such as telemedicine, mobile health apps, and AI-enabled diagnostic tools, have high potential to greatly increase access to healthcare in rural India. Addressing various issues, this narrative review analyzes the present condition of AI and digital health interventions in rural India, assesses their capacity to tackle healthcare delivery issues, recognizes implementation obstacles, and offers evidence-based suggestions for their responsible incorporation.",
+        "title": "Artificial intelligence and digital health in Rural India: Prospects, implementation obstacles, and future pathways: A narrative review"
+      },
+      "id": "0e737e3d373c4f778bc31b3d3af8308a",
+      "created_date": "2026-06-28T03:38:37Z"
+    },
+    {
+      "last_updated": "2025-08-19T20:20:17Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2249-4863",
+            "type": "pissn"
+          },
+          {
+            "id": "10.4103/jfmpc.jfmpc_1187_20",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "9",
+          "number": "12",
+          "country": "IN",
+          "issns": [
+            "2249-4863",
+            "2278-7135"
+          ],
+          "publisher": "Wolters Kluwer Medknow Publications",
+          "language": [
+            "EN"
+          ],
+          "title": "Journal of Family Medicine and Primary Care"
+        },
+        "end_page": "5857",
+        "keywords": [
+          "covid 19",
+          "india",
+          "lessons"
+        ],
+        "year": "2020",
+        "start_page": "5853",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "name": "Suneela Garg"
+          },
+          {
+            "name": "Nidhi Bhatnagar"
+          },
+          {
+            "name": "M Meghachandra Singh"
+          },
+          {
+            "name": "Amod Borle"
+          },
+          {
+            "name": "Sunil K Raina"
+          },
+          {
+            "name": "Raman Kumar"
+          },
+          {
+            "name": "Sagar Galwankar"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "http://www.jfmpc.com/article.asp?issn=2249-4863;year=2020;volume=9;issue=12;spage=5853;epage=5857;aulast=Garg"
+          }
+        ],
+        "abstract": "COVID-19 pandemic has involved nations and incapacitated the health systems globally. The pandemic preparedness has been tested with immense losses. Universal health coverage is needed more than ever to recuperate from the effects of the current pandemic. Post pandemic, many lessons need to be learnt especially for developing economies like India where public healthcare system is grossly inadequate to take care of health needs of citizens. World Health Organization's framework of six health system building blocks was utilized to study the lessons learnt and actionable points in the post pandemic period. Participation in Global Health Security Alliance has to be stepped up with involvement in Joint external evaluation and development of epidemiological core capacities. National Health Security Action Plan needs to drafted and available for health emergences. Ayushman Bharat scheme should incorporate elements to address surge capacity at the time of health emergencies and measures to deliver care at the time of pandemic. Technology through telemedicine, m-health, and digital platforms or apps should contribute to trainings, supervision, and facilitation of healthcare delivery at remote locations. Open data sharing policies should be developed for the practice of evidence-based public health. Public healthcare system and health manpower trained in epidemiology should be given a boost to have system readiness to respond in case of future pandemics.",
+        "title": "Strengthening public healthcare systems in India; Learning lessons in COVID-19 pandemic"
+      },
+      "id": "14585eccd17d4be3a368c0d1574f3e84",
+      "created_date": "2021-01-08T04:11:15Z"
+    },
+    {
+      "last_updated": "2026-08-05T10:39:12Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2673-253X",
+            "type": "eissn"
+          },
+          {
+            "id": "10.3389/fdgth.2026.1915080",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "8",
+          "country": "CH",
+          "issns": [
+            "2673-253X"
+          ],
+          "publisher": "Frontiers Media S.A.",
+          "language": [
+            "EN"
+          ],
+          "title": "Frontiers in Digital Health"
+        },
+        "month": "8",
+        "keywords": [
+          "ASHA",
+          "ayushman bharat digital mission",
+          "digital mental health",
+          "India",
+          "task-sharing",
+          "tele MANAS"
+        ],
+        "year": "2026",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          },
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          },
+          {
+            "code": "QA75.5-76.95",
+            "scheme": "LCC",
+            "term": "Electronic computers. Computer science"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "epartment of Rehabilitation and Health Services, College of Public Affairs and Health Sciences, University of North Texas, Denton, TX, United States",
+            "name": "Shyamkumar Sriram"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "https://www.frontiersin.org/articles/10.3389/fdgth.2026.1915080/full"
+          }
+        ],
+        "abstract": "India carries one of the world's largest mental health treatment gaps. The National Mental Health Survey found that about one in ten adults lives with a mental disorder, yet roughly five in six receive no care; the country has fewer than one psychiatrist per 100,000 people; and mental illness is projected to cost about US$1.03 trillion over two decades. No specialist-led model can close a gap of that size. This Perspective argues that India is nonetheless unusually well placed to close it, because it has already assembled, and already funds, components that most low- and middle-income countries still lack. Indian trials, including a national-scale cluster randomized study, show that lay counselors and community health workers, supported by simple digital tools, deliver effective treatment for depression in routine primary care. India has built a national digital health backbone in the Ayushman Bharat Digital Mission, a national tele-mental-health service in Tele MANAS, and a district mental health program that reaches most of the country, and it is beginning to govern artificial intelligence in health. The problem is that these assets largely run in parallel. The unfinished task is convergence: routing task-shared, digitally supported care through the existing backbone rather than launching fresh pilots. I set out a three-layer model where shared infrastructure lowers the cost of adding mental health, a task-shared workforce makes delivery affordable, and domestic financing and rights-based governance make it durable. Connectivity, literacy, and gender divides mean technology must augment human care, not replace it.",
+        "title": "The pieces are already built: converging India's national assets to close the mental health treatment gap"
+      },
+      "id": "18989ae256d545be8e47fbe1d5365f4a",
+      "created_date": "2026-08-05T10:39:12Z"
+    },
+    {
+      "last_updated": "2026-01-13T09:42:26Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "0974-925X",
+            "type": "eissn"
+          },
+          {
+            "id": "10.4103/ijar.ijar_275_25",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "6",
+          "number": "4",
+          "country": "IN",
+          "issns": [
+            "0974-7788",
+            "0974-925X"
+          ],
+          "publisher": "Wolters Kluwer Medknow Publications",
+          "language": [
+            "EN"
+          ],
+          "title": "International Journal of Ayurveda Research"
+        },
+        "month": "10",
+        "end_page": "418",
+        "keywords": [
+          "ayush grid",
+          "ayushman bharat digital mission",
+          "digital health",
+          "interoperability",
+          "traditional medicine"
+        ],
+        "year": "2025",
+        "start_page": "408",
+        "subject": [
+          {
+            "code": "RZ201-999",
+            "scheme": "LCC",
+            "term": "Other systems of medicine"
+          }
+        ],
+        "author": [
+          {
+            "name": "Naman Goyal"
+          },
+          {
+            "name": "P. Shifa Shetty"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "https://journals.lww.com/10.4103/ijar.ijar_275_25"
+          }
+        ],
+        "abstract": "The Ayush Grid represents the digital backbone of India\u2019s Traditional Medicine (TM) ecosystem, transforming fragmented digital assets of the Ministry of Ayush into an integrated, interoperable health infrastructure. By Application Programming Interfaces (APIs)-enabling platforms, centralizing services through the My Ayush Integrated Service Portal, and aligning with the Ayushman Bharat Digital Mission (ABDM), the Grid enables seamless data exchange across multiple domains, including Healthcare, Capacity building, Research and development, Medicinal plants, Ayush drug administration, Education and awareness, and Global/media outreach. This study analyzes how interoperability is architected and operationalized within the Ayush Grid and assesses its implications for India\u2019s pluralistic health system. The examples such as the integration of Ayush-Hospital Management Information System (A-HMIS) with Prakriti assessment, National Ayush Morbidity And Standardized Terminologies Electronic (NAMASTE) morbidity codes, International Classification of Diseases (ICD) 11, Traditional Medicine Module 2 (ICD-11, TM2), Ayusoft, and citizen-facing applications like mYoga and Y-Break demonstrate the realization of patient-centric, standardized, and evidence-linked digital workflows. Comparative insights from China, Korea, and Brazil situate India\u2019s experience within a broader global context of TM digitalization. The findings illustrate that the Ayush Grid exemplifies a pioneering model where interoperability bridges Traditional Knowledge and Modern Informatics, fostering holistic, resilient, and globally connected health systems. Using a descriptive case study approach, the paper identifies that interoperability in the Ayush Grid is achieved through a layered architecture, unified registries, and API-enabled integration. It finds that My Ayush Integrated Service Portal\u2019s single-window framework, ICD-11 TM2 alignment, and Artificial Intelligence (AI)-assisted services operationalize patient-centric and standardized care and it concludes that these features collectively position the Ayush Grid as a replicable model for digital transformation in TM worldwide.",
+        "title": "From silos to systems: Achieving interoperability in India\u2019s Ayush sector \u2013 A case study of the Ayush Grid"
+      },
+      "id": "23d2fa804cd14470a8bd747478304e30",
+      "created_date": "2026-01-13T09:42:26Z"
+    },
+    {
+      "last_updated": "2026-01-12T10:01:19Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "0970-0218",
+            "type": "pissn"
+          },
+          {
+            "id": "1998-3581",
+            "type": "eissn"
+          },
+          {
+            "id": "10.4103/ijcm.ijcm_abstract216",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "49",
+          "number": "Suppl 1",
+          "country": "IN",
+          "issns": [
+            "0970-0218",
+            "1998-3581"
+          ],
+          "publisher": "Wolters Kluwer Medknow Publications",
+          "language": [
+            "EN"
+          ],
+          "title": "Indian Journal of Community Medicine"
+        },
+        "month": "4",
+        "end_page": "S63",
+        "keywords": [
+          "health system research",
+          "translation research"
+        ],
+        "year": "2024",
+        "start_page": "S63",
+        "subject": [
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          }
+        ],
+        "author": [
+          {
+            "name": "Devendra Gour"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "https://journals.lww.com/10.4103/ijcm.ijcm_abstract216"
+          }
+        ],
+        "abstract": "Background:\nThe concept of ABDM- Ayushman Bharat Digital Health Mission and Ayushman Bharat- Pradhan Mantri Jan Arogya Yojna are in root for overall aims of the research and importance of this research proposal. There is a need to study the acceptability & scalability of ICMR pre-validated technologies -Mobile Lab technology & digital technologies, skilled manpower needed for health data updating from individuals given individual health ids.\nObjectives:\nTo do situational analysis of availability of medical diagnostic, testing facilities in under privileged/ remote areas.\nMethodology:\nStudy Design \u2013 Implementation research, Sample - 1000 households (5000 population) have been equally enrolled from rural and urban areas which are further equally divided into two groups of control and intervention. Base Line Data has been collected on following information- socio-demographic characteristics, blood pressure measurement, health needs, health seeking behavior of community, availability and utilization of existing health care facilities and blood investigations. Study tools: Questionnaire for baseline survey \u2013 After informed consent, interview of the family head was done using set of quantitative and open-end qualitative questionnaires.\nResults:\n77.9% and 69.3% belong to Upper Lower class in urban and rural areas. 21% and 15.6 % blood pressure measurements were deranged in urban and rural areas, 11.8 % and 10% population in urban and rural areas showed their willingness for lab investigations at door step through LABIKE. Blood glucose measurements of 5.4 % and 10.6% population in urban and rural areas were deranged. Haemoglobin values of 11.8 % and 17% population in urban and rural areas were low than 10 g/dl. 7 % and 12.7 % population in urban and rural areas utilized existing health care facilities.\nConclusion:\nThere is need to generate robust grass root level network by integrating community and health service providers.",
+        "title": "IJCM_216A: Task force study for evaluation of community level acceptability, scalability and linkage within health system of ICMR pre-validated Labike/ Technologies for screening & diagnosis in rural & urban population\u2013An implementation research"
+      },
+      "created_date": "2024-06-20T09:59:05Z",
+      "id": "29ddee36092f49e5ac0680e2688b21ad"
+    },
+    {
+      "last_updated": "2025-10-28T16:25:41Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.3390/admsci15100397",
+            "type": "doi"
+          },
+          {
+            "id": "2076-3387",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "15",
+          "number": "10",
+          "country": "CH",
+          "issns": [
+            "2076-3387"
+          ],
+          "publisher": "MDPI AG",
+          "language": [
+            "EN"
+          ],
+          "title": "Administrative Sciences"
+        },
+        "month": "10",
+        "keywords": [
+          "digital transformation",
+          "organizational resilience",
+          "governance structures",
+          "adaptive management",
+          "meso-level officers",
+          "public management"
+        ],
+        "year": "2025",
+        "start_page": "397",
+        "subject": [
+          {
+            "code": "JF20-2112",
+            "scheme": "LCC",
+            "term": "Political institutions and public administration (General)"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Department of Health Information Management, Manipal College of Health Professions (MCHP), Manipal Academy of Higher Education (MAHE), Manipal 576104, Karnataka, India",
+            "name": "Anshuman Thakur"
+          },
+          {
+            "affiliation": "Department of Health Information Management, Manipal College of Health Professions (MCHP), Manipal Academy of Higher Education (MAHE), Manipal 576104, Karnataka, India",
+            "name": "Reshmi Bhageerathy"
+          },
+          {
+            "affiliation": "Department of Community Medicine, Kasturba Medical College Mangalore, Manipal Academy of Higher Education (MAHE), Manipal 575001, Karnataka, India",
+            "name": "Prasanna Mithra"
+          },
+          {
+            "affiliation": "Department of Global Public Health Policy and Governance, Prasanna School of Public Health, Manipal Academy of Higher Education (MAHE), Manipal 576104, Karnataka, India",
+            "name": "Varalakshmi Chandra Sekaran"
+          },
+          {
+            "affiliation": "Samarth, Chennai 600001, Tamil Nadu, India",
+            "name": "Shuba Kumar"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "text/html",
+            "type": "fulltext",
+            "url": "https://www.mdpi.com/2076-3387/15/10/397"
+          }
+        ],
+        "abstract": "Background: Digital transformation is reshaping public organizations worldwide, yet in low-resource contexts, its success is constrained by weak infrastructure and governance. In India, programs such as the Ayushman Bharat Digital Mission and the Aspirational Districts Programme rely on meso-level officers who act as key managerial intermediaries, but their organizational challenges remain understudied. Aim: This study examines sub-district health and nutrition officers\u2019 experiences, organizational barriers, and adaptive strategies in implementing digital reforms. Methods: Eight in-depth interviews were conducted with Medical Officers in Charge (MOICs) and Child Development Project Officers (CDPOs) across urban, semi-urban, rural, and flood-prone blocks of Muzaffarpur, Bihar. Data were transcribed, translated, and thematically analyzed using Braun and Clarke\u2019s approach, informed by organizational and technology adoption theories. Results: Officers valued digital tools for transparency and real-time monitoring but faced systemic barriers, including hardware decay, poor connectivity, fragmented platforms, and limited fiscal autonomy. Despite these, they displayed managerial agency through informal infrastructures such as WhatsApp, peer mentoring, and parallel records. COVID-19 accelerated digital use while widening inequities. Conclusions: Meso-level officers are critical enablers of organizational resilience. Their experiences highlight how leadership, governance, and adaptive management shape digital transformation in resource-constrained settings.",
+        "title": "Navigating Organizational Challenges of Digital Transformation: A Qualitative Study of Meso-Level Public Health Officers in an Indian High-Priority Aspirational District"
+      },
+      "id": "2c118da92adb4af9ae017cabb4d0d306",
+      "created_date": "2025-10-28T16:25:40Z"
+    },
+    {
+      "last_updated": "2025-08-20T02:44:13Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2772-3143",
+            "type": "pissn"
+          },
+          {
+            "id": "2772-3151",
+            "type": "eissn"
+          },
+          {
+            "id": "10.4103/jssrp.jssrp_6_25",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "6",
+          "number": "1",
+          "country": "IN",
+          "issns": [
+            "2772-3143",
+            "2772-3151"
+          ],
+          "publisher": "Wolters Kluwer Medknow Publications",
+          "language": [
+            "EN"
+          ],
+          "title": "Journal of Surgical Specialties and Rural Practice"
+        },
+        "month": "1",
+        "end_page": "12",
+        "keywords": [
+          "digital literacy",
+          "health workforce",
+          "rural health"
+        ],
+        "year": "2025",
+        "start_page": "9",
+        "subject": [
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          }
+        ],
+        "author": [
+          {
+            "name": "Yukti Bhandari"
+          },
+          {
+            "name": "Aritrik Das"
+          },
+          {
+            "name": "Pratyush Kumar"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "https://journals.lww.com/10.4103/jssrp.jssrp_6_25"
+          }
+        ],
+        "abstract": "Digital literacy among India\u2019s health workforce is crucial for effective healthcare delivery amid rapid digitization. Professionals increasingly use electronic health records, telemedicine, and mobile health tools under initiatives like the Ayushman Bharat Digital Mission (ABDM), enhancing patient care and operational efficiency. However, barriers such as inadequate formal training, generational gaps, redundant administrative tasks, poor rural infrastructure, and cybersecurity threats significantly hinder widespread adoption. To overcome these, structured training in digital tools must be integrated into healthcare curricula, accompanied by multilingual resources, improved rural infrastructure through public-private partnerships, and robust cybersecurity measures. Tailored mentorship programs can bridge generational divides, while policy-driven digital competency assessments and streamlined documentation processes further promote digital engagement. Addressing these areas comprehensively will enhance digital literacy across India\u2019s healthcare workforce, leading to more efficient, integrated, and resilient health service delivery systems.",
+        "title": "Digital Literacy of the Indian Health Workforce: A Core Requirement for Healthcare Delivery in the 21st Century"
+      },
+      "id": "3572a37ba7974033bf8925d55c37468b",
+      "created_date": "2025-07-06T07:55:35Z"
+    },
+    {
+      "last_updated": "2025-12-11T06:40:01Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.55489/njcm.161120255796",
+            "type": "doi"
+          },
+          {
+            "id": "0976-3325",
+            "type": "pissn"
+          },
+          {
+            "id": "2229-6816",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "16",
+          "number": "11",
+          "country": "IN",
+          "issns": [
+            "0976-3325",
+            "2229-6816"
+          ],
+          "publisher": "Medsci Publications",
+          "language": [
+            "EN"
+          ],
+          "title": "National Journal of Community Medicine"
+        },
+        "month": "November",
+        "keywords": [
+          "Digital Therapeutics (DTx)",
+          "Public Health",
+          "Health Policy",
+          "Software as a Medical Device (SaMD)",
+          "Ayushman Bharat Digital Mission (ABDM)",
+          "Non-Communicable Diseases (NCDs)"
+        ],
+        "year": "2025",
+        "subject": [
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "School of Pharmaceutical Management, IIHMR University, Jaipur, India",
+            "name": "Saurabh Kumar Banerjee"
+          },
+          {
+            "orcid_id": "https://orcid.org/0009-0005-0098-0752",
+            "affiliation": "Faculty of Management & Commerce, Poornima University, Jaipur, India",
+            "name": "Nikita Choudhary"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "https://www.njcmindia.com/index.php/file/article/view/5796"
+          }
+        ],
+        "abstract": "\nDigital Therapeutics (DTx) represent a novel category of medical interventions that utilize software applications to prevent, manage, or treat various health conditions. Global evidence from nations like Germany, the United States, and Japan have demonstrated the effectiveness of digital therapeutics (DTx) in the healthcare systems. India needs to implement a comprehensive policy strategy to integrate the (DTx) in the public health ecosystem. Initially, the Central Drugs Standard Control Organisation (CDSCO) ought to officially acknowledge Digital Therapeutics (DTx) as a separate category within Software as a Medical Device (SaMD). Next, the National Health Authority (NHA) should test reimbursement models under the Ayushman Bharat Pradhan Mantri Jan Arogya Yojana (PM-JAY). Additionally, it is essential for DTx platforms to comply with the interoperability standards established by the Ayushman Bharat Digital Mission (ABDM). Furthermore, the challenge of human resources needs to be considered within the policy structure. Lastly, attention should be given to the pace and evolution of development to incorporate Public Private Partnerships (PPPs). Thus, it can be concluded that the process of integrating digital therapeutics (DTx) into the public health systems has the potential to improve operational efficiency, stimulate better engagement on the side of patients, and lower the long-term cost of healthcare delivery.\n",
+        "title": "A Public Health Policy Perspective on the Effective Implementation of Digital Therapeutics in India"
+      },
+      "id": "3786c069ef9f42f7afcba22f3db91e14",
+      "created_date": "2025-11-01T06:37:48Z"
+    },
+    {
+      "last_updated": "2026-01-01T10:43:04Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.7860/JCDR/2026/78814.22399",
+            "type": "doi"
+          },
+          {
+            "id": "2249-782X",
+            "type": "pissn"
+          },
+          {
+            "id": "0973-709X",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "20",
+          "number": "2",
+          "country": "IN",
+          "issns": [
+            "0973-709X",
+            "2249-782X"
+          ],
+          "publisher": "JCDR Research and Publications Private Limited",
+          "language": [
+            "EN"
+          ],
+          "title": "Journal of Clinical and Diagnostic Research"
+        },
+        "month": "2",
+        "end_page": "ZE06",
+        "keywords": [
+          "community dentistry",
+          "psychosocial factors",
+          "telemedicine",
+          "temporomandibular joint disorders"
+        ],
+        "year": "2026",
+        "start_page": "ZE01",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "orcid_id": "",
+            "affiliation": "Assistant Professor, Department of Public Health Dentistry, Sharad Pawar Dental College and Hospital, Seloo, Wardha, Maharashtra, India.",
+            "name": "Priyanka Sontakke"
+          },
+          {
+            "orcid_id": "",
+            "affiliation": " Professor, Department of Prosthodontics, Sharad Pawar Dental College and Hospital, Wardha, Maharashtra, India.",
+            "name": " Seema Sathe"
+          },
+          {
+            "orcid_id": "",
+            "affiliation": " Professor, Department of Community Medicine, Jawaharlal Nehru Medical College, DMIHER (Deemed to be University), Wardha, Maharashtra, India.",
+            "name": "Swarupa Chakole"
+          },
+          {
+            "orcid_id": "",
+            "affiliation": "PGHF Scholar, Postgraduate Certificate in Headaches and Facial Pains (PGHF), World Headache Society, Bengluru, India.",
+            "name": "Mithil Deotare"
+          },
+          {
+            "orcid_id": "",
+            "affiliation": "Associate Professor, Department of Public Health Dentistry, Bharati Vidyapeeth (Deemed to be University) Dental College and Hospital, Sangli, Maharashtra, India.",
+            "name": "Priyanka Paul Madhu"
+          }
+        ],
+        "link": [
+          {
+            "type": "fulltext",
+            "url": "https://www.jcdr.net/articles/PDF/22399/78814_Final_F(KR)_QC(NK)_PF1(Af_SS_OM)redo_PFA(IS)_PB(Af_IS)_PN(IS).pdf"
+          }
+        ],
+        "abstract": "Orofacial Pain (OFP) is a complex, multifactorial condition that significantly impairs daily functioning and Quality of Life (QoL) across global populations. OFP often manifests through conditions such as Temporomandibular Disorders (TMD), bruxism, and occlusal disharmony. Prosthodontic interventions, particularly occlusal splints and full-mouth rehabilitation, are essential in mitigating symptoms and restoring functional harmony. However, access to such care remains uneven due to socioeconomic disparities, geographic limitations, and inadequate public awareness. The current review supports the concept of an integrative methodology that connects prosthodontic care to a nation\u2019s social policy, digital innovation, and psychosocial support. To overcome these barriers, it is essential to include prosthodontic therapies in schemes such as Ayushman Bharat and Medicaid, introduce school and community-based screening services, and train healthcare providers in stress management approaches as well as early disease detection. This model enhances the use of preventive care and long-term care, addressing the overall social determinants of oral health by coordinating clinical care with community-based outreach and a behavioural approach to health.",
+        "title": "Integrating Prosthodontics, Orofacial  Pain Management and Public  Health Strategies to Improve Patient  Outcomes: A Narrative Review"
+      },
+      "id": "415d4a1ea8a2435ab2c83516a903e817",
+      "created_date": "2026-01-01T10:43:04Z"
+    }
+  ],
+  "next": "https://doaj.org/api/v4/search/articles/Ayushman%20Bharat%20digital%20health?page=2&pageSize=10",
+  "last": "https://doaj.org/api/v4/search/articles/Ayushman%20Bharat%20digital%20health?page=5&pageSize=10"
+}

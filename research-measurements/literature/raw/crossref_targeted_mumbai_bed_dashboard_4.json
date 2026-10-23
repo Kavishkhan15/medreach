@@ -1,0 +1,471 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 9443118,
+    "items": [
+      {
+        "DOI": "10.2139/ssrn.4886963",
+        "title": [
+          "Leadership in Crisis Management: Management Lessons from Covid-19 Pandemic in Mumbai, India"
+        ],
+        "author": [
+          {
+            "given": "N",
+            "family": "Ravichandran",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Chhavi",
+            "family": "Kohli",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        },
+        "type": "posted-content",
+        "URL": "https://doi.org/10.2139/ssrn.4886963",
+        "score": 29.360209
+      },
+      {
+        "DOI": "10.1007/s10661-016-5418-9",
+        "title": [
+          "Impact of sewage discharges on coastal water quality of Mumbai, India: present and future scenarios"
+        ],
+        "author": [
+          {
+            "given": "Ritesh",
+            "family": "Vijay",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Trupti",
+            "family": "Mardikar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Rakesh",
+            "family": "Kumar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              6,
+              18
+            ]
+          ]
+        },
+        "container-title": [
+          "Environmental Monitoring and Assessment"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1007/s10661-016-5418-9",
+        "score": 27.471756
+      },
+      {
+        "abstract": "<jats:p>With restaurants, malls and multiplexes closed in India because of Lockdown, people now spend a lot of time watching movies and shows on OTT (Over-The-Top) platforms such as Hotstar, Netflix, Amazon Prime, Zee 5 etc. OTT (Over-the-top) streaming platforms are creating new wave in the field of Indian media especially during COVID-19 lockdown. They showcase different genre of programmes like videos, movies, web series, documentaries, short films etc. Among all, Web series are of great delight for the youngsters. The presentation of the web series is quite attractive unlike other daily TV soaps. Since, it can run on all digital devices like smartphone, its popularity is growing leaps and bound. Hence, making it a personalized viewing at one\u2019s convenience. However, this web series culture has an impact on youth especially during Covid-19 lockdown. Already in the time of uncertainty of COVID-19 pandemic anxiety and stress levels are quite high, on the top the web series also intend to influence them. This research is carried with the objective to find the perception of youth on web series during COVID-19 lockdown in Mumbai beginning from 23rd March,2020. Nearly 20 respondents were contacted over the telephone and an unstructured interview was conducted.</jats:p>",
+        "DOI": "10.47310/iarjbm.2021.v02i01.095",
+        "type": "journal-article",
+        "title": [
+          "To Study the Perception of Youth On Webseries During Covid-19 Lockdown in Mumbai ."
+        ],
+        "author": [
+          {
+            "given": "Harpreet",
+            "family": "Kaur Dhandyal",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "IAR Journal of Business Management"
+        ],
+        "score": 27.146547,
+        "URL": "https://doi.org/10.47310/iarjbm.2021.v02i01.095",
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              1,
+              20
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1016/j.pcorm.2020.100114",
+        "title": [
+          "How to protect operating room staff from COVID-19?"
+        ],
+        "author": [
+          {
+            "given": "Amir Mohammad",
+            "family": "Meraji Khah",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Atefeh",
+            "family": "Beigi Khoozani",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "Perioperative Care and Operating Room Management"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.pcorm.2020.100114",
+        "score": 25.719254
+      },
+      {
+        "DOI": "10.1016/j.pcorm.2025.100516",
+        "title": [
+          "Predictors of fear of COVID-19 among patients undergoing elective surgery during the COVID-19 pandemic: An observational study"
+        ],
+        "author": [
+          {
+            "given": "Meghna",
+            "family": "Maheshwari",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Anuj",
+            "family": "Jain",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-0126-8474",
+            "authenticated-orcid": false,
+            "given": "Pankaj",
+            "family": "Singhai",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-3178-0623",
+            "authenticated-orcid": false,
+            "given": "Swapnil Kumar",
+            "family": "Barasker",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "Perioperative Care and Operating Room Management"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.pcorm.2025.100516",
+        "score": 25.586826
+      },
+      {
+        "DOI": "10.1016/j.pcorm.2023.100353",
+        "title": [
+          "COVID-19 in the perioperative setting: 2023 updates"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-0223-405X",
+            "authenticated-orcid": false,
+            "given": "Avital Y.",
+            "family": "O'Glasser",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              12
+            ]
+          ]
+        },
+        "container-title": [
+          "Perioperative Care and Operating Room Management"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.pcorm.2023.100353",
+        "score": 25.473541
+      },
+      {
+        "DOI": "10.5040/9781350232730.ch-017",
+        "title": [
+          "\u2018War against Covid-19\u2019: Is the  pandemic management as war  metaphor helpful or hurtful?"
+        ],
+        "author": [
+          {
+            "given": "Andreas",
+            "family": "Musolff",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "Pandemic and Crisis Discourse"
+        ],
+        "type": "other",
+        "URL": "https://doi.org/10.5040/9781350232730.ch-017",
+        "score": 25.3167
+      },
+      {
+        "DOI": "10.1016/j.pcorm.2023.100310",
+        "title": [
+          "COVID-19, monkeypox, climate change and surgery: Correspondence"
+        ],
+        "author": [
+          {
+            "given": "Amnuay",
+            "family": "Kleebayoon",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Viroj",
+            "family": "Wiwanitkit",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              6
+            ]
+          ]
+        },
+        "container-title": [
+          "Perioperative Care and Operating Room Management"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.pcorm.2023.100310",
+        "score": 25.266727
+      },
+      {
+        "DOI": "10.1016/j.pcorm.2023.100362",
+        "title": [
+          "A Qualitative Exploration of Turkish Operating Room Nurses\u2019 Experiences During the COVID-19 Pandemic"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0000-4543-7837",
+            "authenticated-orcid": false,
+            "given": "Fatmanur",
+            "family": "Balkaya",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0005-4797-0906",
+            "authenticated-orcid": false,
+            "given": "Araz",
+            "family": "Askero\u011flu",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "Perioperative Care and Operating Room Management"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.pcorm.2023.100362",
+        "score": 25.229713
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n                <jats:p>The aim of this piece is to provide estimates of the infection fatality rate (IFR) of COVID-19 in Mumbai during 2020, namely the fraction of SARS-CoV-2 infections which resulted in death. Estimates are presented for slums and nonslum areas, and for the city as a whole. These are based largely on the city\u2019s official COVID-19 fatality data, seroprevalence data, and all-cause mortality data. Using recorded COVID-19 fatalities in the numerator, we obtain IFR estimates of 0.13%-0.17%. On the other hand, using excess deaths we obtain IFR estimates of 0.28%-0.40%. The estimates based on excess deaths are broadly consistent with the city\u2019s age structure, and meta-analyses of COVID-19 age-stratified IFR. If excess deaths were largely from COVID-19, then only around half of COVID-19 deaths were officially recorded in the city. The analysis indicates that levels of excess mortality in excess deaths per 1000 population were similar in the city\u2019s slums and nonslum areas. On the other hand the estimated ratio of excess deaths to official COVID-19 deaths in the slums was much higher than in nonslum areas, suggesting much weaker COVID-19 death reporting from the slums.</jats:p>",
+        "DOI": "10.1101/2021.04.08.21255101",
+        "type": "posted-content",
+        "title": [
+          "Estimating COVID-19 infection fatality rate in Mumbai during 2020"
+        ],
+        "author": [
+          {
+            "given": "Murad",
+            "family": "Banaji",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 25.20127,
+        "URL": "https://doi.org/10.1101/2021.04.08.21255101",
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              4,
+              10
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "Mumbai COVID-19 war room bed management MCGM BMC"
+    }
+  }
+}

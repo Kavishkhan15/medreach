@@ -1,6 +1,5 @@
 // Performance axis — measures per-variant build output as objective, machine-readable
-// metrics for the Responsiveness/Performance axis of the study. CSS size is the
-// framework-attributable delta (JS is shared via @medreach/core). Emits JSON to
+// artifact metrics, not runtime responsiveness or a controlled framework effect. Emits JSON to
 // evaluation/results/performance.json. Run AFTER building variants:
 //   npm run build:variants && node evaluation/performance/measure.mjs
 import { readdirSync, statSync, readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
@@ -35,7 +34,7 @@ function sizeOf(files) {
 const report = {
   axis: "performance",
   generatedAt: new Date().toISOString(),
-  note: "CSS size is the framework-attributable delta; JS is shared via @medreach/core. No AI/ML.",
+  note: "Aggregate built artifacts, not per-page downloads, field performance or causal framework attribution. JavaScript and application code may differ by variant.",
   variants: {},
 };
 
@@ -55,7 +54,7 @@ for (const v of VARIANTS) {
   };
 }
 
-// Framework-attributable CSS delta vs the smallest variant.
+// Descriptive CSS difference versus the smallest built variant.
 const built = Object.entries(report.variants).filter(([, m]) => m.built);
 if (built.length) {
   const minCss = Math.min(...built.map(([, m]) => m.css.gzipKB));

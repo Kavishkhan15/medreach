@@ -9,8 +9,8 @@
 // min-max across the 3 variants (n=3 min-max is not reproducible). Start with
 // equal weights, then run a ±25% sensitivity analysis on ranking stability.
 //
-// This is a runnable STUB with placeholder inputs so the shape is testable.
-// TODO(M4): replace `sampleInputs` with parsed ZAP / Snyk / Observatory / PoC data.
+// A score requires independently collected evidence for all eight dimensions.
+// Missing data must not be treated as zero risk.
 
 export const WEIGHTS = {
   xss: 1 / 8,
@@ -42,6 +42,22 @@ export const normalize = {
 };
 
 export function riskScore(inputs, weights = WEIGHTS) {
+  const nonnegative = v => typeof v === "number" && Number.isFinite(v) && v >= 0;
+  const count = v => nonnegative(v) && Number.isInteger(v);
+  const valid = {
+    xss: v => [v.high,v.medium,v.low].every(count),
+    dependencies: v => nonnegative(v.cvssSum),
+    supplyChain: v => count(v.totalDeps),
+    csp: v => ["none","weak","moderate","strictNonce"].includes(v.level),
+    sri: v => nonnegative(v.coverage) && v.coverage <= 1,
+    configuration: v => ["A+","A","B","C","D","F"].includes(v.observatoryGrade),
+    maintenance: v => nonnegative(v.monthsSinceRelease) && typeof v.eol === "boolean",
+    cssAttackSurface: v => ["none","theoretical","demonstrated","trivial"].includes(v.exploit),
+  };
+  if (Object.keys(weights).length !== 8 || Object.entries(weights).some(([k,v]) => !valid[k] || !nonnegative(v)) || Math.abs(Object.values(weights).reduce((a,b)=>a+b,0)-1)>1e-8) throw new Error("Invalid security weights.");
+  if (!inputs || Object.keys(weights).some(dim => !inputs[dim] || typeof inputs[dim] !== "object" || !Object.keys(inputs[dim]).length || !valid[dim](inputs[dim]))) {
+    throw new Error("Incomplete security evidence: every weighted dimension needs measured input.");
+  }
   let risk = 0;
   const breakdown = {};
   for (const dim of Object.keys(weights)) {
@@ -56,40 +72,19 @@ export function riskScore(inputs, weights = WEIGHTS) {
   };
 }
 
-// --- placeholder demo so `npm run score` produces something ------------------
-const sampleInputs = {
-  bootstrap: {
-    xss: { high: 0, medium: 0, low: 1 },
-    dependencies: { cvssSum: 0 },
-    supplyChain: { totalDeps: 3 },
-    csp: { level: "strictNonce" },
-    sri: { coverage: 1 },
-    configuration: { observatoryGrade: "A" },
-    maintenance: { monthsSinceRelease: 4, eol: false },
-    cssAttackSurface: { exploit: "theoretical" },
-  },
-  skeleton: {
-    xss: { high: 0, medium: 0, low: 0 },
-    dependencies: { cvssSum: 0 },
-    supplyChain: { totalDeps: 0 },
-    csp: { level: "strictNonce" },
-    sri: { coverage: 1 },
-    configuration: { observatoryGrade: "A" },
-    maintenance: { monthsSinceRelease: 130, eol: true }, // abandoned ~2014
-    cssAttackSurface: { exploit: "demonstrated" },
-  },
-};
-
-import fs from 'fs';
-import path from 'path';
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  // Ensure data/raw exists so the script never crashes when real data is integrated
-  fs.mkdirSync(path.join(process.cwd(), 'data', 'raw'), { recursive: true });
-
-  for (const [variant, inputs] of Object.entries(sampleInputs)) {
-    const r = riskScore(inputs);
-    console.log(`${variant.padEnd(10)} risk=${r.risk}  safety=${r.safety}`);
+// No research grade is produced without evidence for every weighted dimension.
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const input = process.argv.find(arg => arg.startsWith("--input="))?.slice(8);
+  if (!input) {
+    console.log(JSON.stringify({ status: "not-measured", score: null,
+      missingEvidence: Object.keys(WEIGHTS),
+      reason: "No measured eight-dimension input supplied. Header coverage and dependency audits alone do not establish a safety grade." }, null, 2));
+  } else {
+    const variants = JSON.parse(readFileSync(input, "utf8"));
+    for (const name of ["bootstrap", "tailwind", "skeleton"]) {
+      console.log(JSON.stringify({ variant: name, ...riskScore(variants[name]) }));
+    }
   }
-  console.log("\n(placeholder inputs — replace with real scan data, plan §5)");
 }

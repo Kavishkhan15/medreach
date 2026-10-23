@@ -1,0 +1,639 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 6379594,
+    "items": [
+      {
+        "DOI": "10.1016/j.tele.2017.01.010",
+        "title": [
+          "Saving lives using social media: Analysis of the role of twitter for personal blood donation requests and dissemination"
+        ],
+        "author": [
+          {
+            "given": "Rabeeh Ayaz",
+            "family": "Abbasi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Onaiza",
+            "family": "Maqbool",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Mubashar",
+            "family": "Mushtaq",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Naif R.",
+            "family": "Aljohani",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Ali",
+            "family": "Daud",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jalal S.",
+            "family": "Alowibdi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Basit",
+            "family": "Shahzad",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              7
+            ]
+          ]
+        },
+        "container-title": [
+          "Telematics and Informatics"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.tele.2017.01.010",
+        "score": 35.81741
+      },
+      {
+        "DOI": "10.1016/j.socscimed.2022.115485",
+        "title": [
+          "Promoting blood donation through social media: Evidence from Brazil, India and the USA"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-5036-4844",
+            "authenticated-orcid": false,
+            "given": "Stephen",
+            "family": "Harrell",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-2240-2556",
+            "authenticated-orcid": false,
+            "given": "Andrew M.",
+            "family": "Simons",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Peter",
+            "family": "Clasen",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              12
+            ]
+          ]
+        },
+        "container-title": [
+          "Social Science &amp; Medicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.socscimed.2022.115485",
+        "score": 31.056776
+      },
+      {
+        "DOI": "10.18653/v1/w18-5907",
+        "title": [
+          "Identification of Emergency Blood Donation Request on Twitter"
+        ],
+        "author": [
+          {
+            "given": "Puneet",
+            "family": "Mathur",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Meghna",
+            "family": "Ayyar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Sahil",
+            "family": "Chopra",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Simra",
+            "family": "Shahid",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Laiba",
+            "family": "Mehnaz",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Rajiv",
+            "family": "Shah",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 2018 EMNLP Workshop SMM4H: The 3rd Social Media Mining for Health Applications Workshop &amp; Shared Task"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.18653/v1/w18-5907",
+        "score": 29.844227
+      },
+      {
+        "abstract": "<p>Social media have shown great potential for producing significant changes in behavior and have become the cornerstone for many public health and agency efforts. The nonprofit sector -including blood collection agencies- has adopted social media to aid their cause and reach their goals. However, despite the tremendous impact of social media on society and its promising role for donor recruitment and retention, it has been overlooked in donor research. This study therefore sought to map the social media landscape around blood donation. We showcase an inductive computational method to make sense of vast amounts of dynamic unstructured blood donation text data that exists on social media. With this method, we display what is discussed about blood donation on social media, how these topics are distributed on Facebook and Twitter, and how the prevalence of these topics changes over time. We applied structural topic modeling on 7 years of Dutch blood donation Facebook and Twitter data by the general public. We found 25 topics clustered in 6 distinct clusters. Over time, there is a substantial reduction of messages in which donors announce their donations. Topics that emphasize the positives of blood donation, including donor identity-related topics, are rising. In addition, the findings show a clear social media platform contrast. Topics related to campaigns and controversial policies were found more on Twitter and positive donation topics and topics related to the donation process more on Facebook. To make optimal use of social media for recruitment and retention campaigns and efforts, blood collection agencies should recognize the turbulent environment in which they take place. Monitoring public opinions about blood donation will help blood collection agencies make strategic choices and utilize social media more effectively.</p>",
+        "DOI": "10.31219/osf.io/r7b85",
+        "type": "posted-content",
+        "title": [
+          "Blood donation narratives on social media"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0001-6794-6894",
+            "authenticated-orcid": true,
+            "given": "Steven",
+            "family": "Ramondt",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-5567-7041",
+            "authenticated-orcid": true,
+            "given": "Eva-Maria",
+            "family": "Merz",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Peter",
+            "family": "Kerkhof",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 29.401937,
+        "URL": "https://doi.org/10.31219/osf.io/r7b85",
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              9,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.2307/j.ctv1jf2c5t.6",
+        "title": [
+          "Anonymity and Transgression:"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              3,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Book of Anonymity"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.2307/j.ctv1jf2c5t.6",
+        "score": 29.387066
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title><jats:sec><jats:title>Background</jats:title><jats:p>To better understand donor behavior and ensure a safe and sufficient blood supply, various observational studies have examined barriers to blood donation. This study used Facebook and Twitter data to enhance existing research on donation barriers and associated emotions communicated on social media by both donors and non\u2010donors.</jats:p></jats:sec><jats:sec><jats:title>Study design and methods</jats:title><jats:p>We conducted a semantic network analysis (SNA) with 168\u2009232 public Dutch language social media messages from Facebook and Twitter during 2012\u20102018. SNA uses concepts as nodes in a network and the relationship (ie, co\u2010occurrence) as links between them. We identified the relationship between donation barriers, non\u2010donation (voluntary and involuntary), and dissatisfaction (anger and disappointment) within social media messages. This computational method was combined with an analysis examining significant relationships in\u2010depth.</jats:p></jats:sec><jats:sec><jats:title>Results</jats:title><jats:p>Twelve donation barriers were identified: lifestyle, donation location, medical reasons, no invitation, opening times, physical reactions, pregnancy, remuneration, sexual risk behavior, time constraints, travels, and waiting times. More messages related to involuntary non\u2010donation compared to voluntary non\u2010donation. Involuntary non\u2010donation was associated most strongly with medical reasons and sexual risk behavior, while voluntary non\u2010donation was associated most strongly with resentment regarding remuneration of the blood bank\u02bcs top management. Anger associated most strongly with sexual risk behavior and disappointment most strongly with medical reasons.</jats:p></jats:sec><jats:sec><jats:title>Conclusion</jats:title><jats:p>Discussions around blood donation are increasingly taking place online. Donation barriers found in this study differ from those in survey research. Insights into how donation barriers are communicated in an ever\u2010growing online environment can be utilized to enhance recruitment and retention strategies.</jats:p></jats:sec>",
+        "DOI": "10.1111/trf.15998",
+        "type": "journal-article",
+        "title": [
+          "Barriers to blood donation on social media: An analysis of Facebook and Twitter posts"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0001-6794-6894",
+            "authenticated-orcid": false,
+            "given": "Steven",
+            "family": "Ramondt",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Donor Medicine Research, Sanquin Research  Amsterdam The Netherlands"
+              },
+              {
+                "name": "Department of Communication Science Vrije Universiteit  Amsterdam The Netherlands"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Melissa",
+            "family": "Zijlstra",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Communication Science Vrije Universiteit  Amsterdam The Netherlands"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-2700-2204",
+            "authenticated-orcid": false,
+            "given": "Peter",
+            "family": "Kerkhof",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Communication Science Vrije Universiteit  Amsterdam The Netherlands"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-5567-7041",
+            "authenticated-orcid": false,
+            "given": "Eva\u2010Maria",
+            "family": "Merz",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Donor Medicine Research, Sanquin Research  Amsterdam The Netherlands"
+              },
+              {
+                "name": "Department of Sociology Center for Philanthropic Studies, Vrije Universiteit  Amsterdam The Netherlands"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Transfusion"
+        ],
+        "score": 27.45718,
+        "URL": "https://doi.org/10.1111/trf.15998",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              8,
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1145/2513577.2538768",
+        "title": [
+          "Twitter anticipates bursts of requests for Wikipedia articles"
+        ],
+        "author": [
+          {
+            "given": "Gabriele",
+            "family": "Tolomei",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Universit\u00e0 Ca' Foscari Venezia, Venice, Italy"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Salvatore",
+            "family": "Orlando",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Universit\u00e0 Ca' Foscari Venezia, Venice, Italy"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Diego",
+            "family": "Ceccarelli",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "I.S.T.I. \"A. Faedo\", CNR, Pisa, Pisa, Italy"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Claudio",
+            "family": "Lucchese",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "I.S.T.I. \"A. Faedo\", CNR, Pisa, Pisa, Italy"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2013,
+              10,
+              28
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 2013 workshop on Data-driven user behavioral modelling and mining from social media"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1145/2513577.2538768",
+        "score": 27.318392
+      },
+      {
+        "DOI": "10.31525/ct1-nct03988738",
+        "title": [
+          "Promoting Repeat Blood Donation Through Social Media Among First-time Donors in a Peruvian Blood Bank"
+        ],
+        "author": [
+          {
+            "name": "Kernel Networks Inc.",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019,
+              6,
+              17
+            ]
+          ]
+        },
+        "container-title": [
+          "Case Medical Research"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.31525/ct1-nct03988738",
+        "score": 27.040161
+      },
+      {
+        "DOI": "10.2307/j.ctt5hj12c.8",
+        "title": [
+          "Blood Donation in the Zone of Religious Spectacles"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2008,
+              11,
+              18
+            ]
+          ]
+        },
+        "container-title": [
+          "Veins of Devotion"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.2307/j.ctt5hj12c.8",
+        "score": 26.849964
+      },
+      {
+        "abstract": "<jats:p>Fanfiction, a product of the fandom culture believed to have started in the 1960s with Star Trek, is a type of literature that is progressively entering academic discussions. This article chooses to focus on a special type of fanfiction, called Social Media AUs, which are fanfics set inside and told through the format of social media. The first part of the analysis shows how this type of fanfiction was being produced in the more traditional fanfiction spaces \u2013 virtual archives such as FanFiction.Net and Archive of Our Own (AO3) \u2013 and how writers chose to represent social media interaction. The second part discusses the shift from these archives to Twitter (X) and analyzes aspects that differentiate the Social Media AUs produced in the app: use of images, recreation of social media formats, practicality in reading, interactive tools and multimedia approach. To do this, actual examples of fanfics from AO3 and Twitter are used and authors such as Derecho (2006) and Vargas (2005) are brought to deepen the analysis. The results show that social media is indeed influencing new storytelling ways and that there is a significant interest in stories told entirely through social media format.</jats:p>",
+        "DOI": "10.34019/1983-8379.2025.v18.49564",
+        "type": "journal-article",
+        "title": [
+          "TWITTER SOCIAL MEDIA AUS"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0001-8613-0118",
+            "authenticated-orcid": false,
+            "given": "Marina",
+            "family": "Krebs Vanazzi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Revista Darandina"
+        ],
+        "score": 26.68733,
+        "URL": "https://doi.org/10.34019/1983-8379.2025.v18.49564",
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              10,
+              1
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "social media blood donation requests India Twitter SOS"
+    }
+  }
+}

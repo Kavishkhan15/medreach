@@ -1,46 +1,20 @@
-graph TB
-    subgraph Vercel["Vercel Cloud Platform (3 Frontend Deployments)"]
-        V_BS["MedReach Bootstrap<br/>Root Directory: variants/bootstrap<br/>Env: NEXT_PUBLIC_API_URL"]
-        V_TW["MedReach Tailwind<br/>Root Directory: variants/tailwind<br/>Env: NEXT_PUBLIC_API_URL"]
-        V_SK["MedReach Skeleton<br/>Root Directory: variants/skeleton<br/>Env: NEXT_PUBLIC_API_URL"]
-    end
-
-    subgraph Railway["Railway Application Platform (Express Backend)"]
-        R_API["Express REST API (backend)<br/>Root Directory: / · Config: backend/railway.json<br/>Readiness: /health/ready · Port: $PORT<br/>Env: CORS_ORIGINS, JWT_SECRET, MONGODB_URI"]
-        R_Worker["Integrated Worker Engine<br/>(Expiry & Bounded Notification Retry)"]
-    end
-
-    subgraph Atlas["MongoDB Atlas (Cloud Database Cluster)"]
-        DB[("MongoDB Replica Set<br/>Database: medreach<br/>Indexes: 2dsphere, unique compound, text")]
-    end
-
-    subgraph External["External Services"]
-        SMTP["SMTP Gateway<br/>(Transactional Mail: Notifications & Invitations)"]
-        GoogleMaps["Google Maps Platform<br/>(Geocoding & Client Map Discovery)"]
-    end
-
-    subgraph EndUsers["End Users & Devices"]
-        Citizens["Patients / Citizens (Desktop & Mobile)"]
-        Staff["Healthcare Providers & Admins"]
-    end
-
-    Citizens --> V_BS
-    Citizens --> V_TW
-    Citizens --> V_SK
-
-    Staff --> V_BS
-    Staff --> V_TW
-    Staff --> V_SK
-
-    V_BS -. HTTPS API Calls .-> R_API
-    V_TW -. HTTPS API Calls .-> R_API
-    V_SK -. HTTPS API Calls .-> R_API
-
-    V_BS -. Map Tiles & Markers .-> GoogleMaps
-    V_TW -. Map Tiles & Markers .-> GoogleMaps
-    V_SK -. Map Tiles & Markers .-> GoogleMaps
-
-    R_API --> DB
-    R_API --> R_Worker
-    R_Worker --> DB
-    R_Worker --> SMTP
+%% Semantic companion. Curated SVG/PNG layout: scripts/diagram-figures.mjs.
+flowchart TB
+  Browser[Desktop and mobile browsers]
+  subgraph Vercel[Vercel · three frontend projects]
+    B[medreachmumbai.vercel.app]
+    T[medreach-tailwind.vercel.app]
+    S[medreach-skeleton.vercel.app]
+  end
+  Browser -->|HTTPS| Vercel
+  Vercel -->|Browser-to-API HTTPS / named CORS origins| Railway
+  Vercel -->|Browser SDK| Maps[Google Maps]
+  subgraph Railway[Railway · one backend service]
+    API[Express API · backend/src/server.js]
+    Workers[In-process expiry, recovery and email workers]
+    Ready[Readiness: /health/ready]
+    API --- Workers
+    API --- Ready
+  end
+  Railway <-->|MONGODB_URI · TLS| Atlas[(MongoDB Atlas · one shared dataset)]
+  Workers --> Mail[Resend or configured SMTP]

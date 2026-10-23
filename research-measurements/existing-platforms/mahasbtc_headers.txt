@@ -1,0 +1,15 @@
+HTTP/2 200 
+date: Fri, 23 Oct 2026 11:35:51 GMT
+content-type: text/html; charset=UTF-8
+server: cloudflare
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+x-powered-by: PHP/7.2.34
+link: <https://mahasbtc.org/index.php/wp-json/>; rel="https://api.w.org/"
+link: <https://mahasbtc.org/>; rel=shortlink
+vary: Accept-Encoding
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=mJc2WaMZXKDFHuOsw%2FpPKMtduGq8KmGl7xnKP0T%2FbOZXrzWTqP7tVJdaY8dN6kqskTepJyVxDr4UXTW0ws73n%2BTlvjAA7FC3LDAqcXOU52BImpZrKvgZcNHMis4D6kA%3D"}]}
+x-served-by: mahasbtc.org
+cf-cache-status: DYNAMIC
+cf-ray: a4f070ce5f14c470-EWR
+alt-svc: h3=":443"; ma=86400
+

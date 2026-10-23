@@ -1,0 +1,24 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "9",
+    "retmax": "9",
+    "retstart": "0",
+    "idlist": [
+      "13475281",
+      "13319723",
+      "13290265",
+      "12475093",
+      "11734795",
+      "11694374",
+      "11499795",
+      "10305982",
+      "9480642"
+    ],
+    "translationset": [],
+    "querytranslation": "\"e-RaktKosh\"[All Fields]"
+  }
+}

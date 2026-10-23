@@ -1,0 +1,554 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 14961749,
+    "items": [
+      {
+        "abstract": "<jats:p>Lack of up-to-date information of hospitals beds, specifically in emergencies, is a significant problem in many large countries; The Ministry of Health and Medical Education of Iran (MOHME) designed and implemented a dynamic system that reports the status of beds in 2012. This system created great opportunities for national bed management, including real-time hospital admission monitoring, especially for emergency departments, ICUs and CCUs. Therefore, an additional online system was planned to be implemented for monitoring hospital admissions, including a national alert system. Prior to the design of this system, a study was done using literature study and expert opinion to investigate the advantages and features that this monitoring system was required to have. We used the MoSCoW method to prioritize the requirements of the system. This system was designed to have the following advantages, among other things: the hospitals as well as government should be able to track the patients, manage patient distribution in healthcare centers, and make policy for supplying extra beds. It should also be possible for the hospitals executive board, as well as the government, to monitor the performance of the hospitals regarding patient admissions (i.e., the rate of rejection of patients with severe conditions).</jats:p>",
+        "DOI": "10.3233/978-1-61499-852-5-536",
+        "type": "book-chapter",
+        "title": [
+          "Advantages of a Web-Based Real-Time Bed-Management System for Hospital Admission Monitoring in Iran"
+        ],
+        "author": [
+          {
+            "family": "Abedian Somayeh",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "family": "Bitaraf Ehsan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "family": "Askari Marjan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Studies in Health Technology and Informatics",
+          "Building Continents of Knowledge in Oceans of Data: The Future of Co-Created eHealth"
+        ],
+        "score": 31.706093,
+        "URL": "https://doi.org/10.3233/978-1-61499-852-5-536",
+        "published": {
+          "date-parts": [
+            [
+              2018
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1109/ictke62841.2024.10787179",
+        "title": [
+          "Enhancing Hospital Bed Management through Chatbots: Integrating Dialogflow and Firebase Cloud Messaging for Real-Time Bed Availability and Reservation System"
+        ],
+        "author": [
+          {
+            "given": "Khanista",
+            "family": "Namee",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "King Mongkut&#x0027;s University of Technology North Bangkok,Faculty of Industrial Technology and Management,Bangkok,Thailand"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Thanathon",
+            "family": "Prempranee",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "King Mongkut&#x0027;s University of Technology North Bangkok,Faculty of Industrial Technology and Management,Bangkok,Thailand"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Wuttipong",
+            "family": "Phonngam",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "King Mongkut&#x0027;s University of Technology North Bangkok,Faculty of Industrial Technology and Management,Bangkok,Thailand"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Rudsada",
+            "family": "Kaewsaeng-On",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Prince of Songkla University,Songkla,Thailand"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Areej",
+            "family": "Meny",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "King Saud bin Abdulaziz University for Health Sciences,Jeddah,Saudi Arabia"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              11,
+              20
+            ]
+          ]
+        },
+        "container-title": [
+          "2024 22nd International Conference on ICT and Knowledge Engineering (ICT&amp;amp;KE)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/ictke62841.2024.10787179",
+        "score": 30.154804
+      },
+      {
+        "abstract": "<jats:p>The growing adoption of IoT devices in our daily life engendered a need for secure systems to safely store and analyze sensitive data as well as the real-time data processing system to be as fast as possible. The cloud services used to store and process sensitive data are often come out to be vulnerable to outside threats. Furthermore, to analyze streaming IoT data swiftly, they are in need of a fast and efficient system. The Paper will envision the aspects of complexity dealing with real time data from various devices in parallel, building solution to ingest data from different IOT devices, forming a secure platform to process data in a short time, and using various techniques of IOT edge computing to provide meaningful intuitive results to users. The paper envisions two modules of building a real time data analytics system. In the first module, we propose to maintain confidentiality and integrity of IoT data, which is of paramount importance, and manage large-scale data analytics with real-time data collection from various IoT devices in parallel. We envision a framework to preserve data privacy utilizing Trusted Execution Environment (TEE) such as Intel SGX, end-to-end data encryption mechanism, and strong access control policies. Moreover, we design a generic framework to simplify the process of collecting and storing heterogeneous data coming from diverse IoT devices. In the second module, we envision a drone-based data processing system in real-time using edge computing and ondevice computing. As, we know the use of drones is growing rapidly across many application domains including real-time monitoring, remote sensing, search and rescue, delivery of goods, security and surveillance, civil infrastructure inspection etc. This paper demonstrates the potential drone applications and their challenges discussing current research trends and provide future insights for potential use cases using edge and on-device computing.</jats:p>",
+        "DOI": "10.2139/ssrn.6573879",
+        "type": "posted-content",
+        "title": [
+          "Secure Real-Time Heterogeneous IoT Data Management System"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-2134-2600",
+            "authenticated-orcid": true,
+            "given": "Harsh",
+            "family": "Verma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 29.967457,
+        "URL": "https://doi.org/10.2139/ssrn.6573879",
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.12794/metadc68070",
+        "title": [
+          "Toward a Data-Type-Based Real Time Geospatial Data Stream Management System"
+        ],
+        "author": [
+          {
+            "given": "Chengyang",
+            "family": "Zhang",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "abstract": "<jats:p xml:lang=\"en\">The advent of sensory and communication technologies enables the generation and consumption of large volumes of streaming data. Many of these data streams are geo-referenced. Existing spatio-temporal databases and data stream management systems are not capable of handling real time queries on spatial extents. In this thesis, we investigated several fundamental research issues toward building a data-type-based real time geospatial data stream management system. The thesis makes contributions in the following areas: geo-stream data models, aggregation, window-based nearest neighbor operators, and query optimization strategies. The proposed geo-stream data model is based on second-order logic and multi-typed algebra. Both abstract and discrete data models are proposed and exemplified. I further propose two useful geo-stream operators, namely Region By and WNN, which abstract common aggregation and nearest neighbor queries as generalized data model constructs. Finally, I propose three query optimization algorithms based on spatial, temporal, and spatio-temporal constraints of geo-streams. I show the effectiveness of the data model through many query examples. The effectiveness and the efficiency of the algorithms are validated through extensive experiments on both synthetic and real data sets. This work established the fundamental building blocks toward a full-fledged geo-stream database management system and has potential impact in many applications such as hazard weather alerting and monitoring, traffic analysis, and environmental modeling.</jats:p>",
+        "type": "dissertation",
+        "URL": "https://doi.org/10.12794/metadc68070",
+        "score": 29.55628
+      },
+      {
+        "DOI": "10.2172/5345253",
+        "title": [
+          "Real time quality control of meteorological data used in SRP's emergency response system"
+        ],
+        "author": [
+          {
+            "given": "M.M.",
+            "family": "Pendergast",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1980,
+              5,
+              1
+            ]
+          ]
+        },
+        "type": "report",
+        "URL": "https://doi.org/10.2172/5345253",
+        "score": 29.48251
+      },
+      {
+        "DOI": "10.3030/101189164",
+        "type": "grant",
+        "URL": "https://doi.org/10.3030/101189164",
+        "score": 28.614141
+      },
+      {
+        "abstract": "<jats:p>Abstract\n\nThis project develops an intelligent hospital bed system that uses gesture recognition to allow contact-free adjustment of head and foot positions, improving patient comfort and independence. It also integrates contact-less heartbeat monitoring for continuous vital sign assessment, contributing to smarter and more user-friendly healthcare technology..</jats:p>",
+        "DOI": "10.55041/isjem07482",
+        "type": "journal-article",
+        "title": [
+          "SMART HOSPITAL BED: CONTROLLING BY HAND AND LEG GESTURE WITH REAL-TIME PATIENT HEALTH MONITORING SYSTEM"
+        ],
+        "author": [
+          {
+            "given": "Yashraj",
+            "family": "Kamat",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Divakar",
+            "family": "T.M",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Adarsh",
+            "family": "Mali",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Manish",
+            "family": "Sutar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Pranav",
+            "family": "Patil",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Dayanand",
+            "family": "Madannaver",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Scientific Journal of Engineering and Management"
+        ],
+        "score": 28.471,
+        "URL": "https://doi.org/10.55041/isjem07482",
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              5,
+              19
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1117/12.2573677",
+        "title": [
+          "Parity-time-symmetric system in photonic parameter space for high-quality signal generation"
+        ],
+        "author": [
+          {
+            "given": "Zheng",
+            "family": "Li",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Lingzhi",
+            "family": "Li",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Jiejun",
+            "family": "Zhang",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              10,
+              10
+            ]
+          ]
+        },
+        "container-title": [
+          "Real-time Photonic Measurements, Data Management, and Processing V"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1117/12.2573677",
+        "score": 28.136225
+      },
+      {
+        "DOI": "10.1109/icsai.2012.6223125",
+        "title": [
+          "A hospital resource and patient management system based on real-time data capture and intelligent decision making"
+        ],
+        "author": [
+          {
+            "given": "Ahmed",
+            "family": "Musa",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Yahaya",
+            "family": "Yusuf",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Matthias",
+            "family": "Meckel",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2012,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "2012 International Conference on Systems and Informatics (ICSAI2012)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/icsai.2012.6223125",
+        "score": 27.883186
+      },
+      {
+        "abstract": "<jats:p>As organizations increasingly depend on large-scale data for strategic decision-making, managing data warehouses has become a complex and resource-intensive challenge. This paper introduces DataBay, a unified platform designed to automate the entire data warehouse lifecycle, from data ingestion and transformation to real-time processing, monitoring, and ensuring data quality. By streamlining these processes, DataBay reduces the need for specialized technical expertise, enabling faster implementation and more efficient data management. The platform integrates critical components such as Change Data Capture (CDC), Kafka, and Prometheus to ensure highperformance data processing and real-time monitoring without disrupting production environments. DataBay leverages Avro for data serialization, providing optimal throughput and storage efficiency compared to traditional formats like JSON. Additionally, its automated data pipeline orchestration, along with built-in data quality checks, enhances the reliability and accuracy of insights derived from the data. The platform's architecture is highly scalable, supporting enterprise-level datasets and adapting to evolving business needs. Through its seamless integration and flexibility, DataBay helps businesses make timely, data-driven decisions and enables continuous optimization of data workflows. This paper discusses the platform's architecture, its implementation in real-world industry settings, and the significant business value it delivers by enhancing operational efficiency and empowering data-driven decision-making across organizations.</jats:p>",
+        "DOI": "10.36227/techrxiv.173834980.04708005/v1",
+        "type": "posted-content",
+        "title": [
+          "DataBay: A Unified Platform for Automating Data Warehouse Management, Real-Time Data Processing, and Ensuring Data Quality and Monitoring"
+        ],
+        "author": [
+          {
+            "given": "Mostafa",
+            "family": "Ghadimi",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Databurst.tech Tehran"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0000-1978-7980",
+            "authenticated-orcid": false,
+            "given": "Niyusha",
+            "family": "Baghayi",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Databurst.tech Tehran"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Alireza",
+            "family": "Shateri",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Databurst.tech Tehran"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 27.819498,
+        "URL": "https://doi.org/10.36227/techrxiv.173834980.04708005/v1",
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              1,
+              31
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "hospital bed management system real time data quality"
+    }
+  }
+}

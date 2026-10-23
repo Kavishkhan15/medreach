@@ -1,0 +1,462 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 4654062,
+    "items": [
+      {
+        "DOI": "10.7759/cureus.104142",
+        "title": [
+          "Insights into Public-Private Sector Variations in Maternal Health Care Utilization in an Urban Slum in Mumbai"
+        ],
+        "author": [
+          {
+            "given": "Shwetangi R",
+            "family": "Shinde",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Swati R",
+            "family": "Deshpande",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              2,
+              23
+            ]
+          ]
+        },
+        "container-title": [
+          "Cureus"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.7759/cureus.104142",
+        "score": 29.547813
+      },
+      {
+        "DOI": "10.22617/tim200407-2",
+        "title": [
+          "Tool Kit for Public\u2013Private Partnerships in Urban Primary Health Centers in India"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              12,
+              1
+            ]
+          ]
+        },
+        "abstract": "<jats:p>This is a guide for establishing and developing urban primary health centers (UPHCs) according to India\u2019s National Health Mission framework, and using public\u2013private partnership (PPP) arrangements with nongovernment organizations. It can be used by all states, regardless of where they are in the development and realization of their strategy, policies, and processes with respect to PPPs in UPHCs. For states that already have such a program, this may help to streamline and improve policies and processes. It also contains guidelines and suggestions that are useful for states that are open to or considering the implementation of similar programs.</jats:p>",
+        "type": "report",
+        "URL": "https://doi.org/10.22617/tim200407-2",
+        "score": 28.898087
+      },
+      {
+        "DOI": "10.4018/978-1-4666-3982-9.ch005",
+        "title": [
+          "Regulating Patients\u2019 Access to Healthcare Services"
+        ],
+        "author": [
+          {
+            "given": "Nadine",
+            "family": "Reibling",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "University of Mannheim, Germany"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Claus",
+            "family": "Wendt",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Siegen University and University of Mannheim, Germany"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare Management and Economics"
+        ],
+        "abstract": "<jats:p>Although some healthcare systems have introduced gatekeeping that forces patients to choose a general practitioner for a longer period, other systems rely on a free choice of doctors. This paper analyzes how these instruments affect differences in healthcare utilization in European countries. Using data from the first wave of the Survey of Health, Aging and Retirement, the authors investigate how access regulations affect (1) the overall level of ambulatory healthcare usage, and (2) disparities in utilization among groups with different educational and income levels. The data show that access regulation affects patients\u2019 decisions to see a doctor and reduces the extent of specialist healthcare used. Cost sharing could not be related to inequities among income groups; however, gatekeeping has favorable effects on reducing inequality, and the respective healthcare systems show lower levels of inequality among groups with different levels of education.</jats:p>",
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.4018/978-1-4666-3982-9.ch005",
+        "score": 28.885248
+      },
+      {
+        "DOI": "10.3389/fpubh.2015.00255",
+        "title": [
+          "Building Partnership to Improve Migrants\u2019 Access to Healthcare in Mumbai"
+        ],
+        "author": [
+          {
+            "given": "Nilesh Chandrakant",
+            "family": "Gawde",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Muthusamy",
+            "family": "Sivakami",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Bontha V.",
+            "family": "Babu",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2015,
+              11,
+              16
+            ]
+          ]
+        },
+        "container-title": [
+          "Frontiers in Public Health"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.3389/fpubh.2015.00255",
+        "score": 28.498026
+      },
+      {
+        "DOI": "10.1504/ijpspm.2026.10077810",
+        "title": [
+          "Public sector healthcare utilisation, access and quality among migrant labourers: an empirical evidence from Mumbai, India"
+        ],
+        "author": [
+          {
+            "given": "Pooja",
+            "family": "Kansra",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Neel Deepak",
+            "family": "Ukidave",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Public Sector Performance Management"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1504/ijpspm.2026.10077810",
+        "score": 27.620907
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n                <jats:p>In this work, we examined healthcare seeking behavior (HSB) of patients visiting public healthcare facilities in an urban context. We conducted a cross-sectional survey across twenty-two primary and secondary public healthcare facilities in the South-west Delhi district in India. The survey was designed to ascertain from patients at these facilities their HSB - i.e., on what basis patients decide the type of healthcare facility to visit, or which type of medical practitioner to consult. From each facility visited, we also collected operational information, such as the average number of patients visiting per day, and the medical services provided at each facility. Based on participant responses, we observed that factors such as wait time, prior experience with care providers, distance from the facility, and also socioeconomic and demographic factors such as annual income, educational qualification, and gender significantly influenced preferences of patients in choosing healthcare facilities. We used binomial and multinomial logistic regression to determine associations between HSB and socioeconomic and demographic attributes of patients at a 0.05 level of significance. Our statistical analyses revealed that patients in the lower income group preferred to seek treatment from public healthcare facilities (OR = 3.51, 95% CI = (1.65, 7.46)) irrespective of the perceived severity of their illness, while patients in the higher income group favored directly consulting specialized doctors (OR = 2.71, 95% CI = (1.34, 5.51)). Other factors such as having more than two children increased probability of seeking care from public facilities. This work contributes to the literature by providing quantitative evidence regarding overall patient HSB, especially at primary and secondary public healthcare facilities, regardless of their presenting illness, and operational information regarding healthcare delivery at these facilities. This work can inform policy designed to improve accessibility and quality of care at public primary and secondary healthcare facilities in India.</jats:p>",
+        "DOI": "10.1101/2022.08.31.22279441",
+        "type": "posted-content",
+        "title": [
+          "Analysis of Healthcare Seeking Behavior Among Patients Visiting Public Primary and Secondary Healthcare Facilities in an Urban Indian District"
+        ],
+        "author": [
+          {
+            "given": "Najiya",
+            "family": "Fatma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-6517-9142",
+            "authenticated-orcid": false,
+            "given": "Varun",
+            "family": "Ramamohan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 27.343395,
+        "URL": "https://doi.org/10.1101/2022.08.31.22279441",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              9,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.4018/978-1-4666-3982-9.ch013",
+        "title": [
+          "Primary Health Services Utilization and Inequality"
+        ],
+        "author": [
+          {
+            "given": "Raymond K. H.",
+            "family": "Chan",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "City University of Hong Kong, Hong Kong"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Kang",
+            "family": "Hu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "City University of Hong Kong, Hong Kong"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Healthcare Management and Economics"
+        ],
+        "abstract": "<jats:p>Hong Kong\u2019s health services have shown signs of development in recent decades. The provision of public low-cost universal health services acts as a safety net, but its quality and quantity is sometimes questionable. Citizens\u2019 health service needs often must be met by the supplementary private health services, especially the primary health services. Nevertheless, criticisms have been expressed regarding access to, and utilization of, these health services. This paper examines the utilization, in terms of accessibility, affordability, and primary health services for Hong Kong residents. Based on a survey data collected in 2009, findings revealed that the respondents were, on the whole, satisfied with the primary health services and that this attitude is positively correlated with their satisfaction in their own health status. Nevertheless, the findings also show that health services utilization varies according to social class which deserves attention.</jats:p>",
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.4018/978-1-4666-3982-9.ch013",
+        "score": 27.10825
+      },
+      {
+        "DOI": "10.1504/ijpspm.2026.156751",
+        "title": [
+          "Public sector healthcare utilisation, access and quality among migrant labourers: an empirical evidence from Mumbai, India"
+        ],
+        "author": [
+          {
+            "given": "Pooja",
+            "family": "Kansra",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Neel Deepak",
+            "family": "Ukidave",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Public Sector Performance Management"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1504/ijpspm.2026.156751",
+        "score": 27.069773
+      },
+      {
+        "abstract": "<p>Although some healthcare systems have introduced gatekeeping that forces patients to choose a general practitioner for a longer period, other systems rely on a free choice of doctors. This paper analyzes how these instruments affect differences in healthcare utilization in European countries. Using data from the first wave of the Survey of Health, Aging and Retirement, the authors investigate how access regulations affect a) the overall level of ambulatory healthcare usage, and b) disparities in utilization among groups with different educational and income levels. The data show that access regulation affects patients\u2019 decisions to see a doctor and reduces the extent of specialist healthcare used. Cost sharing could not be related to inequities among income groups; however, gatekeeping has favorable effects on reducing inequality, and the respective healthcare systems show lower levels of inequality among groups with different levels of education.</p>",
+        "DOI": "10.4018/ijpphme.2011040101",
+        "type": "journal-article",
+        "title": [
+          "Regulating Patients\u2019 Access to Healthcare Services"
+        ],
+        "author": [
+          {
+            "given": "Nadine",
+            "family": "Reibling",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "University of Mannheim, Germany"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Claus",
+            "family": "Wendt",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Siegen University and University of Mannheim, Germany"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal of Public and Private Healthcare Management and Economics"
+        ],
+        "score": 27.035332,
+        "URL": "https://doi.org/10.4018/ijpphme.2011040101",
+        "published": {
+          "date-parts": [
+            [
+              2011,
+              4,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1016/0169-2046(88)90049-7",
+        "title": [
+          "Public access to private land\u2014Allemansr\u00e4tt in Sweden"
+        ],
+        "author": [
+          {
+            "given": "Kevin T.",
+            "family": "Colby",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1988,
+              7
+            ]
+          ]
+        },
+        "container-title": [
+          "Landscape and Urban Planning"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/0169-2046(88)90049-7",
+        "score": 26.490797
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "urban primary healthcare access public private Mumbai"
+    }
+  }
+}

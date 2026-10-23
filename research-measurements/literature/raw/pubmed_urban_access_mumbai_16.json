@@ -1,0 +1,42 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "1669",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13687313",
+      "13687472",
+      "13683580",
+      "13683634",
+      "13683120",
+      "13667354",
+      "13660881",
+      "13644566",
+      "13629953",
+      "13621549"
+    ],
+    "translationset": [
+      {
+        "from": "healthcare",
+        "to": "\"delivery of health care\"[MeSH Terms] OR (\"delivery\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"delivery of health care\"[All Fields] OR \"healthcare\"[All Fields] OR \"healthcare's\"[All Fields] OR \"healthcares\"[All Fields]"
+      },
+      {
+        "from": "access",
+        "to": "\"access\"[All Fields] OR \"accessed\"[All Fields] OR \"accesses\"[All Fields] OR \"accessibilities\"[All Fields] OR \"accessibility\"[All Fields] OR \"accessible\"[All Fields] OR \"accessing\"[All Fields]"
+      },
+      {
+        "from": "inequalities",
+        "to": "\"inequalities\"[All Fields] OR \"inequality\"[All Fields] OR \"inequities\"[All Fields] OR \"inequity\"[All Fields]"
+      },
+      {
+        "from": "slums",
+        "to": "\"poverty areas\"[MeSH Terms] OR (\"poverty\"[All Fields] AND \"areas\"[All Fields]) OR \"poverty areas\"[All Fields] OR \"slums\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"delivery of health care\"[MeSH Terms] OR (\"delivery\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"delivery of health care\"[All Fields] OR \"healthcare\"[All Fields] OR \"healthcare s\"[All Fields] OR \"healthcares\"[All Fields]) AND (\"access\"[All Fields] OR \"accessed\"[All Fields] OR \"accesses\"[All Fields] OR \"accessibilities\"[All Fields] OR \"accessibility\"[All Fields] OR \"accessible\"[All Fields] OR \"accessing\"[All Fields]) AND (\"inequalities\"[All Fields] OR \"inequality\"[All Fields] OR \"inequities\"[All Fields] OR \"inequity\"[All Fields]) AND \"Mumbai\"[All Fields] AND (\"poverty areas\"[MeSH Terms] OR (\"poverty\"[All Fields] AND \"areas\"[All Fields]) OR \"poverty areas\"[All Fields] OR \"slums\"[All Fields])"
+  }
+}

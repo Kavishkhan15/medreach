@@ -1,0 +1,46 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "215",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13675814",
+      "13645727",
+      "13596346",
+      "13525461",
+      "13503764",
+      "13481639",
+      "13454256",
+      "13344865",
+      "13338100",
+      "13235163"
+    ],
+    "translationset": [
+      {
+        "from": "provider",
+        "to": "\"provide\"[All Fields] OR \"provided\"[All Fields] OR \"provider\"[All Fields] OR \"provider's\"[All Fields] OR \"providers\"[All Fields] OR \"provides\"[All Fields] OR \"providing\"[All Fields]"
+      },
+      {
+        "from": "directory",
+        "to": "\"directory\"[Publication Type] OR \"directories as topic\"[MeSH Terms] OR \"directory\"[All Fields]"
+      },
+      {
+        "from": "accuracy",
+        "to": "\"accuracies\"[All Fields] OR \"accuracy\"[All Fields]"
+      },
+      {
+        "from": "phantom",
+        "to": "\"phantom's\"[All Fields] OR \"phantome\"[All Fields] OR \"phantoms, imaging\"[MeSH Terms] OR (\"phantoms\"[All Fields] AND \"imaging\"[All Fields]) OR \"imaging phantoms\"[All Fields] OR \"phantom\"[All Fields] OR \"phantoms\"[All Fields]"
+      },
+      {
+        "from": "network",
+        "to": "\"network\"[All Fields] OR \"network's\"[All Fields] OR \"networked\"[All Fields] OR \"networker\"[All Fields] OR \"networkers\"[All Fields] OR \"networking\"[All Fields] OR \"networks\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"provide\"[All Fields] OR \"provided\"[All Fields] OR \"provider\"[All Fields] OR \"provider s\"[All Fields] OR \"providers\"[All Fields] OR \"provides\"[All Fields] OR \"providing\"[All Fields]) AND (\"directory\"[All Fields] OR \"directories as topic\"[MeSH Terms] OR \"directory\"[All Fields]) AND (\"accuracies\"[All Fields] OR \"accuracy\"[All Fields]) AND (\"phantom s\"[All Fields] OR \"phantome\"[All Fields] OR \"phantoms imaging\"[MeSH Terms] OR (\"phantoms\"[All Fields] AND \"imaging\"[All Fields]) OR \"imaging phantoms\"[All Fields] OR \"phantom\"[All Fields] OR \"phantoms\"[All Fields]) AND (\"network\"[All Fields] OR \"network s\"[All Fields] OR \"networked\"[All Fields] OR \"networker\"[All Fields] OR \"networkers\"[All Fields] OR \"networking\"[All Fields] OR \"networks\"[All Fields])"
+  }
+}

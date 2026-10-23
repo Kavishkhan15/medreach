@@ -1,0 +1,459 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 3875532,
+    "items": [
+      {
+        "DOI": "10.1109/iccnct68477.2026.11590821",
+        "title": [
+          "CARESYNC: Cloud-Backed Real-Time Hospital Bed &amp; ICU Tracking System for Ambulances"
+        ],
+        "author": [
+          {
+            "family": "Dr.D.Prasanna",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Mahendra Engineering College (Autonomous),Department of Computer Science and Engineering,Namakkal,India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Bharanikavi",
+            "family": "P",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Mahendra Engineering College (Autonomous),Department of Computer Science and Engineering,Namakkal,India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Bharathkumar",
+            "family": "P",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Mahendra Engineering College (Autonomous),Department of Computer Science and Engineering,Namakkal,India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Hari Prasanth",
+            "family": "D",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Mahendra Engineering College (Autonomous),Department of Computer Science and Engineering,Namakkal,India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Harisudhan",
+            "family": "S.U",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Mahendra Engineering College (Autonomous),Department of Computer Science and Engineering,Namakkal,India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              5,
+              11
+            ]
+          ]
+        },
+        "container-title": [
+          "2026 International Conference on Computer Networks and Inventive Communication Technologies (ICCNCT)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/iccnct68477.2026.11590821",
+        "score": 28.984276
+      },
+      {
+        "DOI": "10.3906/elk-1503-132",
+        "title": [
+          "Real-time motorized electrical hospital bed control with eye-gaze tracking"
+        ],
+        "author": [
+          {
+            "given": "Nesrin",
+            "family": "AYDIN ATASOY",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Abdullah",
+            "family": "\u00c7AVU\u015eO\u011eLU",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ferhat",
+            "family": "ATASOY",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "container-title": [
+          "TURKISH JOURNAL OF ELECTRICAL ENGINEERING &amp; COMPUTER SCIENCES"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.3906/elk-1503-132",
+        "score": 27.413652
+      },
+      {
+        "DOI": "10.5089/9781455218998.001.a001",
+        "title": [
+          "New Indicators for Tracking Growth in Real Time"
+        ],
+        "author": [
+          {
+            "given": "Troy",
+            "family": "Matheson",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.5089/9781455218998.001.a001",
+        "score": 25.954958
+      },
+      {
+        "DOI": "10.1016/j.inhs.2026.100048",
+        "title": [
+          "Optimizing hospital bed capacity: How lean-AI integration prevents capacity constraints from multiplying demand"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0008-8430-5536",
+            "authenticated-orcid": false,
+            "given": "Sindhura",
+            "family": "Anumolu",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0006-0853-2679",
+            "authenticated-orcid": false,
+            "given": "Mandar",
+            "family": "Samant",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "Intelligent Hospital"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.inhs.2026.100048",
+        "score": 25.540985
+      },
+      {
+        "DOI": "10.1136/bmj.q883",
+        "title": [
+          "Why hospital capacity is more complex than bed capacity"
+        ],
+        "author": [
+          {
+            "given": "Kamran",
+            "family": "Abbasi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              4,
+              18
+            ]
+          ]
+        },
+        "container-title": [
+          "BMJ"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1136/bmj.q883",
+        "score": 25.478563
+      },
+      {
+        "DOI": "10.32657/10356/72678",
+        "title": [
+          "Robust real-time visual tracking"
+        ],
+        "author": [
+          {
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ting",
+            "family": "Liu",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "type": "dissertation",
+        "URL": "https://doi.org/10.32657/10356/72678",
+        "score": 24.553875
+      },
+      {
+        "DOI": "10.4324/9781003148289-2",
+        "title": [
+          "Bed Assignment"
+        ],
+        "author": [
+          {
+            "given": "Robbin",
+            "family": "Dick",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Robert",
+            "family": "Agness",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              2,
+              17
+            ]
+          ]
+        },
+        "container-title": [
+          "Hospital Capacity Management"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.4324/9781003148289-2",
+        "score": 24.381578
+      },
+      {
+        "DOI": "10.1007/s11554-015-0538-y",
+        "title": [
+          "Heterogeneous CPU\u2013GPU tracking\u2013learning\u2013detection (H-TLD) for real-time object tracking"
+        ],
+        "author": [
+          {
+            "given": "Ilker",
+            "family": "Gurcan",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Alptekin",
+            "family": "Temizel",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2015,
+              10,
+              22
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Real-Time Image Processing"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1007/s11554-015-0538-y",
+        "score": 24.263187
+      },
+      {
+        "DOI": "10.5703/1288284315923",
+        "title": [
+          "Real-Time Construction Component Tracking System"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2007
+            ]
+          ]
+        },
+        "type": "report",
+        "URL": "https://doi.org/10.5703/1288284315923",
+        "score": 24.206856
+      },
+      {
+        "DOI": "10.14264/300148",
+        "title": [
+          "Tracking multiple objects in real time"
+        ],
+        "author": [
+          {
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Robert",
+            "family": "Andrew",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "type": "dissertation",
+        "URL": "https://doi.org/10.14264/300148",
+        "score": 24.191488
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "real-time bed tracking hospital capacity"
+    }
+  }
+}

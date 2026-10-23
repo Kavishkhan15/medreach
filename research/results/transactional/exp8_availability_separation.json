@@ -1,0 +1,68 @@
+{
+  "experimentId": "EXP-TX-08",
+  "name": "Architectural Separation Between Observational Availability and Request Fulfillment",
+  "startedAt": "2026-10-23T20:12:11.805Z",
+  "tests": [
+    {
+      "id": "8.1",
+      "description": "Recorded initial availability observation (5 ICU beds) into append-only observation store",
+      "passed": true,
+      "details": {
+        "status": 201,
+        "obsQuantity": 5,
+        "obsCount": 1
+      }
+    },
+    {
+      "id": "8.2",
+      "description": "Submitting 10 emergency bed requests does NOT decrement reported availability (observations remain strictly observational)",
+      "passed": true,
+      "details": {
+        "requestsSubmitted": 10,
+        "reportedQuantityBefore": 5,
+        "reportedQuantityAfter": 5,
+        "observationCountInDb": 1
+      }
+    },
+    {
+      "id": "8.3",
+      "description": "Accepting hospital bed requests does NOT deduct from AvailabilityObservation (no transactional lock/hold on reported capacity)",
+      "passed": true,
+      "details": {
+        "acceptedCount": 3,
+        "reportedQuantityInDb": 5
+      }
+    },
+    {
+      "id": "8.4",
+      "description": "Completing emergency admission does NOT alter AvailabilityObservation time-series ledger",
+      "passed": true,
+      "details": {
+        "completedCount": 2,
+        "reportedQuantityInDb": 5
+      }
+    },
+    {
+      "id": "8.5",
+      "description": "Stale availability reports (>30 min old) are rejected at ingestion boundary",
+      "passed": true,
+      "details": {
+        "status": 400,
+        "error": "Current availability must be observed within the last 30 minutes"
+      }
+    },
+    {
+      "id": "8.6",
+      "description": "API response contracts explicitly classify submissions as requests requiring clinical confirmation rather than guaranteed reservations",
+      "passed": true,
+      "details": {
+        "ambulanceRecorded": true,
+        "ambulanceMessage": "Ambulance booking request recorded.",
+        "bloodMessage": "Blood request recorded. Contact the blood bank to confirm inventory and fulfillment."
+      }
+    }
+  ],
+  "passCount": 6,
+  "failCount": 0,
+  "completedAt": "2026-10-23T20:12:12.105Z"
+}

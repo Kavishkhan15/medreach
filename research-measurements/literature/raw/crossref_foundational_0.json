@@ -1,0 +1,288 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 509654,
+    "items": [
+      {
+        "DOI": "10.1109/infcom.2012.6195689",
+        "title": [
+          "Real-time status: How often should one update?"
+        ],
+        "author": [
+          {
+            "given": "Sanjit",
+            "family": "Kaul",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Roy",
+            "family": "Yates",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Marco",
+            "family": "Gruteser",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2012,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "2012 Proceedings IEEE INFOCOM"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/infcom.2012.6195689"
+      },
+      {
+        "DOI": "10.1109/ciss.2012.6310931",
+        "title": [
+          "Status updates through queues"
+        ],
+        "author": [
+          {
+            "given": "Sanjit K.",
+            "family": "Kaul",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Roy D.",
+            "family": "Yates",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Marco",
+            "family": "Gruteser",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2012,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "2012 46th Annual Conference on Information Sciences and Systems (CISS)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/ciss.2012.6310931"
+      },
+      {
+        "DOI": "10.1109/isit.2012.6284003",
+        "title": [
+          "Real-time status updating: Multiple sources"
+        ],
+        "author": [
+          {
+            "given": "Roy D.",
+            "family": "Yates",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sanjit",
+            "family": "Kaul",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2012,
+              7
+            ]
+          ]
+        },
+        "container-title": [
+          "2012 IEEE International Symposium on Information Theory Proceedings"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/isit.2012.6284003"
+      },
+      {
+        "DOI": "10.1145/1540358.1540367",
+        "title": [
+          "ParkNet"
+        ],
+        "author": [
+          {
+            "given": "Suhas",
+            "family": "Mathur",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sanjit",
+            "family": "Kaul",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Marco",
+            "family": "Gruteser",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Wade",
+            "family": "Trappe",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2009
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 2009 MobiHoc S3 workshop on MobiHoc S3 - MobiHoc S3 '09"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1145/1540358.1540367"
+      },
+      {
+        "DOI": "10.1109/isit.2017.8006544",
+        "title": [
+          "Status updates over unreliable multiaccess channels"
+        ],
+        "author": [
+          {
+            "given": "Roy D.",
+            "family": "Yates",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sanjit K.",
+            "family": "Kaul",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2017,
+              6
+            ]
+          ]
+        },
+        "container-title": [
+          "2017 IEEE International Symposium on Information Theory (ISIT)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/isit.2017.8006544"
+      }
+    ],
+    "items-per-page": 5,
+    "query": {
+      "start-index": 0,
+      "search-terms": "Real-time status: How often should one update? Sanjit Kaul Roy Yates Marco Gruteser"
+    }
+  }
+}

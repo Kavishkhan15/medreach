@@ -1,0 +1,50 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "350",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13675000",
+      "13656345",
+      "13636449",
+      "13630779",
+      "13631075",
+      "12572470",
+      "13612398",
+      "13599400",
+      "13600524",
+      "13600107"
+    ],
+    "translationset": [
+      {
+        "from": "national",
+        "to": "\"ethnicity\"[MeSH Terms] OR \"ethnicity\"[All Fields] OR \"nationalities\"[All Fields] OR \"nationality\"[All Fields] OR \"federal government\"[MeSH Terms] OR (\"federal\"[All Fields] AND \"government\"[All Fields]) OR \"federal government\"[All Fields] OR \"national\"[All Fields] OR \"nation\"[All Fields] OR \"nation's\"[All Fields] OR \"nationalism\"[All Fields] OR \"nationalisms\"[All Fields] OR \"nationalization\"[All Fields] OR \"nationalized\"[All Fields] OR \"nationally\"[All Fields] OR \"nationals\"[All Fields] OR \"nations\"[All Fields] OR \"nations's\"[All Fields]"
+      },
+      {
+        "from": "digital health",
+        "to": "\"digital health\"[MeSH Terms] OR (\"digital\"[All Fields] AND \"health\"[All Fields]) OR \"digital health\"[All Fields]"
+      },
+      {
+        "from": "blueprint",
+        "to": "\"blueprint\"[All Fields] OR \"blueprinted\"[All Fields] OR \"blueprinting\"[All Fields] OR \"blueprints\"[All Fields]"
+      },
+      {
+        "from": "India",
+        "to": "\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india's\"[All Fields] OR \"indias\"[All Fields]"
+      },
+      {
+        "from": "health facility",
+        "to": "\"health facilities\"[MeSH Terms] OR (\"health\"[All Fields] AND \"facilities\"[All Fields]) OR \"health facilities\"[All Fields] OR (\"health\"[All Fields] AND \"facility\"[All Fields]) OR \"health facility\"[All Fields]"
+      },
+      {
+        "from": "registry",
+        "to": "\"registries\"[MeSH Terms] OR \"registries\"[All Fields] OR \"registry\"[All Fields] OR \"registry's\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"ethnicity\"[MeSH Terms] OR \"ethnicity\"[All Fields] OR \"nationalities\"[All Fields] OR \"nationality\"[All Fields] OR \"federal government\"[MeSH Terms] OR (\"federal\"[All Fields] AND \"government\"[All Fields]) OR \"federal government\"[All Fields] OR \"national\"[All Fields] OR \"nation\"[All Fields] OR \"nation s\"[All Fields] OR \"nationalism\"[All Fields] OR \"nationalisms\"[All Fields] OR \"nationalization\"[All Fields] OR \"nationalized\"[All Fields] OR \"nationally\"[All Fields] OR \"nationals\"[All Fields] OR \"nations\"[All Fields] OR \"nations s\"[All Fields]) AND (\"digital health\"[MeSH Terms] OR (\"digital\"[All Fields] AND \"health\"[All Fields]) OR \"digital health\"[All Fields]) AND (\"blueprint\"[All Fields] OR \"blueprinted\"[All Fields] OR \"blueprinting\"[All Fields] OR \"blueprints\"[All Fields]) AND (\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india s\"[All Fields] OR \"indias\"[All Fields]) AND (\"health facilities\"[MeSH Terms] OR (\"health\"[All Fields] AND \"facilities\"[All Fields]) OR \"health facilities\"[All Fields] OR (\"health\"[All Fields] AND \"facility\"[All Fields]) OR \"health facility\"[All Fields]) AND (\"registries\"[MeSH Terms] OR \"registries\"[All Fields] OR \"registry\"[All Fields] OR \"registry s\"[All Fields])"
+  }
+}

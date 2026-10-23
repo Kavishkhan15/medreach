@@ -1,0 +1,50 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "1116",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13683947",
+      "13680456",
+      "13659891",
+      "13652061",
+      "13644949",
+      "13639604",
+      "13628583",
+      "12572470",
+      "13618995",
+      "13126008"
+    ],
+    "translationset": [
+      {
+        "from": "hospital",
+        "to": "\"hospital's\"[All Fields] OR \"hospitalisation\"[All Fields] OR \"hospitalization\"[MeSH Terms] OR \"hospitalization\"[All Fields] OR \"hospitalised\"[All Fields] OR \"hospitalising\"[All Fields] OR \"hospitality\"[All Fields] OR \"hospitalisations\"[All Fields] OR \"hospitalizations\"[All Fields] OR \"hospitalize\"[All Fields] OR \"hospitalized\"[All Fields] OR \"hospitalizing\"[All Fields] OR \"hospitals\"[MeSH Terms] OR \"hospitals\"[All Fields] OR \"hospital\"[All Fields]"
+      },
+      {
+        "from": "bed",
+        "to": "\"beds\"[MeSH Terms] OR \"beds\"[All Fields] OR \"bed\"[All Fields]"
+      },
+      {
+        "from": "availability",
+        "to": "\"availabilities\"[All Fields] OR \"availability\"[All Fields] OR \"available\"[All Fields]"
+      },
+      {
+        "from": "dashboard",
+        "to": "\"dashboard\"[All Fields] OR \"dashboard's\"[All Fields] OR \"dashboards\"[All Fields]"
+      },
+      {
+        "from": "COVID-19",
+        "to": "(\"COVID-19\" OR \"COVID19\" OR \"COVID-19\"[MeSH Terms] OR \"COVID-19 Vaccines\" OR \"COVID-19 Vaccines\"[MeSH Terms] OR \"COVID-19 serotherapy\" OR \"COVID-19 serotherapy\"[MeSH Terms] OR \"COVID-19 Nucleic Acid Testing\" OR \"covid-19 nucleic acid testing\"[MeSH Terms] OR \"COVID-19 Serological Testing\" OR \"covid-19 serological testing\"[MeSH Terms] OR \"COVID-19 Testing\" OR \"covid-19 testing\"[MeSH Terms] OR \"SARS-CoV-2\" OR \"SARSCoV2\" OR \"SARSCoV-2\" OR \"SARS-CoV2\" OR \"sars-cov-2\"[MeSH Terms] OR \"Severe Acute Respiratory Syndrome Coronavirus 2\" OR \"2019 NCOV\" OR ((\"coronavirus\"[MeSH Terms] OR \"coronavirus\" OR \"COV\" OR \"NCOV\") AND 2019/11/01[PDAT] : 3000/12/31[PDAT]))"
+      },
+      {
+        "from": "India",
+        "to": "\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india's\"[All Fields] OR \"indias\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"hospital s\"[All Fields] OR \"hospitalisation\"[All Fields] OR \"hospitalization\"[MeSH Terms] OR \"hospitalization\"[All Fields] OR \"hospitalised\"[All Fields] OR \"hospitalising\"[All Fields] OR \"hospitality\"[All Fields] OR \"hospitalisations\"[All Fields] OR \"hospitalizations\"[All Fields] OR \"hospitalize\"[All Fields] OR \"hospitalized\"[All Fields] OR \"hospitalizing\"[All Fields] OR \"hospitals\"[MeSH Terms] OR \"hospitals\"[All Fields] OR \"hospital\"[All Fields]) AND (\"beds\"[MeSH Terms] OR \"beds\"[All Fields] OR \"bed\"[All Fields]) AND (\"availabilities\"[All Fields] OR \"availability\"[All Fields] OR \"available\"[All Fields]) AND (\"dashboard\"[All Fields] OR \"dashboard s\"[All Fields] OR \"dashboards\"[All Fields]) AND (\"covid 19\"[All Fields] OR \"covid19\"[All Fields] OR \"covid 19\"[MeSH Terms] OR \"covid 19 vaccines\"[All Fields] OR \"covid 19 vaccines\"[MeSH Terms] OR \"covid 19 serotherapy\"[All Fields] OR \"covid 19 serotherapy\"[MeSH Terms] OR \"covid 19 nucleic acid testing\"[All Fields] OR \"covid 19 nucleic acid testing\"[MeSH Terms] OR \"covid 19 serological testing\"[All Fields] OR \"covid 19 serological testing\"[MeSH Terms] OR \"covid 19 testing\"[All Fields] OR \"covid 19 testing\"[MeSH Terms] OR \"sars cov 2\"[All Fields] OR \"sarscov2\"[All Fields] OR \"sarscov 2\"[All Fields] OR \"sars cov2\"[All Fields] OR \"sars cov 2\"[MeSH Terms] OR \"severe acute respiratory syndrome coronavirus 2\"[All Fields] OR \"2019 ncov\"[All Fields] OR ((\"coronavirus\"[MeSH Terms] OR \"coronavirus\"[All Fields] OR \"cov\"[All Fields] OR \"ncov\"[All Fields]) AND 2019/11/01:3000/12/31[Date - Publication])) AND (\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india s\"[All Fields] OR \"indias\"[All Fields])"
+  }
+}

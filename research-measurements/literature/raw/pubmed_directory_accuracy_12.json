@@ -1,0 +1,46 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "207",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13675814",
+      "13624500",
+      "13527876",
+      "13510895",
+      "13505899",
+      "13503763",
+      "12173346",
+      "12303040",
+      "13341639",
+      "12824622"
+    ],
+    "translationset": [
+      {
+        "from": "physician",
+        "to": "\"physician's\"[All Fields] OR \"physicians\"[MeSH Terms] OR \"physicians\"[All Fields] OR \"physician\"[All Fields] OR \"physicians's\"[All Fields]"
+      },
+      {
+        "from": "directory",
+        "to": "\"directory\"[Publication Type] OR \"directories as topic\"[MeSH Terms] OR \"directory\"[All Fields]"
+      },
+      {
+        "from": "inaccuracy",
+        "to": "\"inaccuracies\"[All Fields] OR \"inaccuracy\"[All Fields]"
+      },
+      {
+        "from": "error",
+        "to": "\"error\"[All Fields] OR \"error's\"[All Fields] OR \"errorful\"[All Fields] OR \"errors\"[All Fields]"
+      },
+      {
+        "from": "rate",
+        "to": "\"J Rehabil Assist Technol Eng\"[Journal:__jid101671667] OR \"rate\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"physician s\"[All Fields] OR \"physicians\"[MeSH Terms] OR \"physicians\"[All Fields] OR \"physician\"[All Fields] OR \"physicians s\"[All Fields]) AND (\"directory\"[All Fields] OR \"directories as topic\"[MeSH Terms] OR \"directory\"[All Fields]) AND (\"inaccuracies\"[All Fields] OR \"inaccuracy\"[All Fields]) AND (\"error\"[All Fields] OR \"error s\"[All Fields] OR \"errorful\"[All Fields] OR \"errors\"[All Fields]) AND (\"j rehabil assist technol eng\"[Journal] OR \"rate\"[All Fields])"
+  }
+}

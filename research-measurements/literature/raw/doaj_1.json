@@ -1,0 +1,840 @@
+{
+  "total": 24,
+  "page": 1,
+  "pageSize": 10,
+  "timestamp": "2026-10-23T11:31:40.536827Z",
+  "query": "hospital bed capacity real time",
+  "results": [
+    {
+      "last_updated": "2025-08-19T22:57:11Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.3390/tropicalmed7100263",
+            "type": "doi"
+          },
+          {
+            "id": "2414-6366",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "7",
+          "number": "10",
+          "country": "CH",
+          "issns": [
+            "2414-6366"
+          ],
+          "publisher": "MDPI AG",
+          "language": [
+            "EN"
+          ],
+          "title": "Tropical Medicine and Infectious Disease"
+        },
+        "month": "09",
+        "keywords": [
+          "malaria",
+          "relapse",
+          "reinfection",
+          "recrudescence",
+          "backward bifurcation",
+          "hysteresis"
+        ],
+        "year": "2022",
+        "start_page": "263",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Department of Mathematics, Universitas Indonesia, Depok 16424, Indonesia",
+            "name": "Hengki Tasman"
+          },
+          {
+            "affiliation": "Department of Mathematics, Universitas Indonesia, Depok 16424, Indonesia",
+            "name": "Dipo Aldila"
+          },
+          {
+            "affiliation": "Department of Mathematics, Universitas Indonesia, Depok 16424, Indonesia",
+            "name": "Putri A. Dumbela"
+          },
+          {
+            "affiliation": "Department of Mathematics, University of Nusa Cendana, Kupang-NTT 85361, Indonesia",
+            "name": "Meksianis Z. Ndii"
+          },
+          {
+            "affiliation": "Department of Mathematics, Faculty of Science and Technology, Universitas Airlangga, Jakarta 12920, Indonesia",
+            "name": "Fatmawati"
+          },
+          {
+            "affiliation": "Department of Mathematics, Faculty of Science and Technology, Universitas Airlangga, Jakarta 12920, Indonesia",
+            "name": "Faishal F. Herdicho"
+          },
+          {
+            "affiliation": "Department of Mathematics, Wake Forest University, Winston-Salem, NC 27109, USA",
+            "name": "Chidozie W. Chukwu"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "text/html",
+            "type": "fulltext",
+            "url": "https://www.mdpi.com/2414-6366/7/10/263"
+          }
+        ],
+        "abstract": "In the present study, we propose and analyze an epidemic mathematical model for malaria dynamics, considering multiple recurrent phenomena: relapse, reinfection, and recrudescence. A limitation in hospital bed capacity, which can affect the treatment rate, is modeled using a saturated treatment function. The qualitative behavior of the model, covering the existence and stability criteria of the endemic equilibrium, is investigated rigorously. The concept of the basic reproduction number of the proposed model is obtained using the concept of the next-generation matrix. We find that the malaria-free equilibrium point is locally asymptotically stable if the basic reproduction number is less than one and unstable if it is larger than one. Our observation on the malaria-endemic equilibrium of the proposed model shows possible multiple endemic equilibria when the basic reproduction number is larger or smaller than one. Hence, we conclude that a condition of a basic reproduction number less than one is not sufficient to guarantee the extinction of malaria from the population. To test our model in a real-life situation, we fit our model parameters using the monthly incidence data from districts in Central Sumba, Indonesia called Wee Luri, which were collected from the Wee Luri Health Center. Using the first twenty months\u2019 data from Wee Luri district, we show that our model can fit the data with a confidence interval of 95%. Both analytical and numerical experiments show that a limitation in hospital bed capacity and reinfection can trigger a more substantial possibility of the appearance of backward bifurcation. On the other hand, we find that an increase in relapse can reduce the chance of the appearance of backward bifurcation. A non-trivial result appears in that a higher probability of recrudescence (treatment failure) does not always result in the appearance of backward bifurcation. From the global sensitivity analysis using a combination of Latin hypercube sampling and partial rank correlation coefficient, we found that the initial infection rate in humans and the mosquito infection rate are the most influential parameters in determining the increase in total new human infections. We expand our model as an optimal control problem by including three types of malaria interventions, namely the use of bed net, hospitalization, and fumigation as a time-dependent variable. Using the Pontryagin maximum principle, we characterize our optimal control problem. Results from our cost-effectiveness analysis suggest that hospitalization only is the most cost-effective strategy required to control malaria disease.",
+        "title": "Assessing the Impact of Relapse, Reinfection and Recrudescence on Malaria Eradication Policy: A Bifurcation and Optimal Control Analysis"
+      },
+      "id": "02fc7f284da84eea8db13ddba6324922",
+      "created_date": "2022-10-26T12:14:33Z"
+    },
+    {
+      "last_updated": "2025-08-19T17:26:24Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.1007/s41030-019-00107-3",
+            "type": "doi"
+          },
+          {
+            "id": "2364-1754",
+            "type": "pissn"
+          },
+          {
+            "id": "2364-1746",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "6",
+          "number": "1",
+          "country": "GB",
+          "issns": [
+            "2364-1746",
+            "2364-1754"
+          ],
+          "publisher": "Adis, Springer Healthcare",
+          "language": [
+            "EN"
+          ],
+          "title": "Pulmonary Therapy"
+        },
+        "month": "1",
+        "end_page": "33",
+        "keywords": [
+          "Acute respiratory illness",
+          "Critical care",
+          "Intensive care unit",
+          "Patient triage",
+          "Resource utilization"
+        ],
+        "year": "2020",
+        "start_page": "23",
+        "subject": [
+          {
+            "code": "RC705-779",
+            "scheme": "LCC",
+            "term": "Diseases of the respiratory system"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Division of Pulmonary and Critical Care Medicine, Massachusetts General Hospital",
+            "name": "Laura C. Myers"
+          },
+          {
+            "affiliation": "Division of Research, Kaiser Permanente Northern California",
+            "name": "Gabriel Escobar"
+          },
+          {
+            "affiliation": "Division of Research, Kaiser Permanente Northern California",
+            "name": "Vincent X. Liu"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "https://doi.org/10.1007/s41030-019-00107-3"
+          }
+        ],
+        "abstract": "Abstract Professional societies have developed recommendations for patient triage protocols, but wide variations in triage patterns for many acute conditions exist among hospitals in the United States. Differences in hospitals\u2019 triage patterns can be attributed to factors such as physician behavior, hospital policy and real-time conditions such as intensive care unit capacity. The patient safety concern is that patients evaluated for admission to the intensive care unit during times of high intensive care unit capacity may have adverse outcomes related to delays in care. Because standardization of a national triage policy is not feasible due to differing resources available at each hospital, local guidelines should prevail that take into account hospitals\u2019 local resources. The goal would be to better match intensive care unit bed supply with demand.",
+        "title": "Goldilocks, the Three Bears and Intensive Care Unit Utilization: Delivering Enough Intensive Care But Not Too Much. A Narrative Review"
+      },
+      "id": "0d3614548d45443a84538d8272b67ed5",
+      "created_date": "2021-01-03T12:04:00Z"
+    },
+    {
+      "last_updated": "2026-09-11T05:53:32Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2616-4868",
+            "type": "eissn"
+          },
+          {
+            "id": "10.31612/2616-4868.6.2026.02",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "number": "6",
+          "country": "UA",
+          "issns": [
+            "2616-4868"
+          ],
+          "publisher": "State Institution of Science \u00abResearch and Practical Center of Preventive and Clinical Medicine\u00bb State Administrative Department",
+          "language": [
+            "EN",
+            "RU",
+            "UK"
+          ],
+          "title": "\u041a\u043b\u0456\u043d\u0456\u0447\u043d\u0430 \u0442\u0430 \u043f\u0440\u043e\u0444\u0456\u043b\u0430\u043a\u0442\u0438\u0447\u043d\u0430 \u043c\u0435\u0434\u0438\u0446\u0438\u043d\u0430"
+        },
+        "month": "9",
+        "end_page": "23",
+        "keywords": [
+          "hospital administration",
+          "length of stay",
+          "patient routing",
+          "triage",
+          "same day care",
+          "financial sustainability",
+          "quality of health care"
+        ],
+        "year": "2026",
+        "start_page": "14",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Municipal Enterprise \u201cVolodymyr Territorial Medical Association\u201d of the Volodymyr City Council, Volodymyr, Ukraine",
+            "name": "Tetiana P. Vashchuk"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "https://cp-medical.com/index.php/journal/article/view/847"
+          }
+        ],
+        "abstract": "Introduction. The performance of a cluster hospital depends on clinically justified admission, timely treatment, safe discharge and financial sustainability rather than maximal bed occupancy.\n\nAim. To assess the results of patient-flow management at the Volodymyr Territorial Medical Association (Volyn region) and compare its trajectory with other cluster hospitals.\n\nMaterials and methods. A multicentre retrospective comparative study for 2020\u20132025 included a nested before-after analysis at the index hospital. The local intervention was analytically formalised as an adapted \u201cemergency front door-same day emergency care-specialty inpatient ward\u201d model based on Same Day Emergency Care and Getting It Right First Time principles. Official hospital reports, open National Health Service of Ukraine data, national Form No. 20 and an external cluster-hospital benchmark were used. Outcomes included admissions, bed-days, length of stay, occupancy, bed turnover, surgical activity and nominal and real payments. The seven-hospital panel comprised 483 hospital-months; fixed-effects modelling with Driscoll-Kraay standard errors was applied.\n\nResults. In the first half of 2022 versus the first half of 2021, length of stay decreased from 8.5 to 7.3 days and bed-day intensity from 850.0 to 728.0 bed-days per 100 patients; the counterfactual estimate indicated 5,187 bed-days released, while surgical activity increased from 47.2% to 61.0%. Following capacity expansion in 2023, admissions increased by 32.4%, but occupancy decreased from 62.7% to 52.1%. In the first half of 2025, process drift was observed: length of stay increased from 7.2 to 7.9 days. Between 2020 and 2025, inpatient volume increased by 110.2% and nominal revenue from the National Health Service of Ukraine by 237.5%. The adjusted real payment ratio for Volodymyr was 1.42, and the relative change versus six peer hospitals was 1.58.\n\nConclusions. The management model produced an early reduction in unnecessary bed-day intensity and strengthened the hospital\u2019s relative financial position, but the effect was not linear. The next stage should include diagnosis-specific pathways, daily criteria to reside, return and readmission monitoring, and episode-level costing.",
+        "title": "SPECIALIZED INPATIENT CARE IN CLUSTER HOSPITALS OF UKRAINE: A MULTICENTRE RETROSPECTIVE COMPARATIVE STUDY OF HOSPITALIZATION PATTERNS, BED UTILIZATION AND TREATMENT OUTCOMES"
+      },
+      "id": "0d3c73fb00354500821ade2216dc04d5",
+      "created_date": "2026-09-11T05:53:32Z"
+    },
+    {
+      "last_updated": "2026-08-29T00:29:27Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2691-4875",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "8",
+          "country": "US",
+          "issns": [
+            "2691-4875"
+          ],
+          "publisher": "Columbia University Libraries",
+          "language": [
+            "EN"
+          ],
+          "title": "Voices in Bioethics"
+        },
+        "month": "September",
+        "keywords": [
+          "Contingency",
+          "COVID-19",
+          "Resource Allocation",
+          "Crisis Standards of Care",
+          "Public Health",
+          "Bioethics"
+        ],
+        "year": "2022",
+        "subject": [
+          {
+            "code": "R723-726",
+            "scheme": "LCC",
+            "term": "Medical philosophy. Medical ethics"
+          },
+          {
+            "code": "BJ1-1725",
+            "scheme": "LCC",
+            "term": "Ethics"
+          }
+        ],
+        "author": [
+          {
+            "name": "Alexander Quan"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "https://journals.library.columbia.edu/index.php/bioethics/article/view/9991"
+          }
+        ],
+        "abstract": "\nPhoto by Adhy Savala on Unsplash\n\n\nABSTRACT\n\n\nDuring a crisis, when healthcare capacity becomes overwhelmed and cannot meet regular standards of patient care, crisis standards of care are invoked to distribute scarce hospital space, staff, and supplies. When transitioning between conventional standards of care and crisis standards, hospitals may have to manage resources under scarcity constraints in an intermediate phase defined as the contingency phase. While much attention has been paid to the ethics of crisis standard of care protocols, contingency measures were more widely implemented, though little exists within the literature on the ethics of contingency measures or a clearly explicated contingency standard of care. This paper addresses three ethical issues with the current contingency response to COVID-19: the lack of formalization, the risks of using short-term solutions for prolonged contingency shortages, and the danger of exacerbating health disparities through hospital-level resource allocation. To mitigate these ethical issues, I offer recommendations for reimagining resource allocation during contingency standards of care.\n\n\nINTRODUCTION\n\n\nWhen transitioning between conventional standards of care and crisis standards, or in situations where shortages do not immediately threaten care delivery, hospitals may have to manage scarce resources in an intermediate phase, known as the \u201ccontingency\u201d phase.[1] While much attention has been paid to the ethics of crisis standards, less literature covers the ethics of contingency measures or a clearly explicated contingency standard of care. Many states and hospital systems do not have contingency standards of care to dictate allocation absent an event triggering crisis standards. Crisis standards of care, used when healthcare capacity becomes overwhelmed and cannot meet regular standards of patient care, reflect ethical priorities relevant in times of shortage or other emergencies. These priorities include saving the most lives, the stewardship of scarce resources, and justice relating to equitable resource distribution.[2] Crisis standards of care delineate specialized allocation protocols and triage decision-making bodies at the institutional or state levels. Crisis standards of care require formal activation at the state level, and in the absence of clear triggers or governmental willingness to use them, hospitals may adopt informal strategies to manage allocation in the form of contingency measures.\n\n\nThe contingency phase is defined by two simultaneous goals: prevent or stall crisis-level scarcity by managing limited resources and providing patient care that is functionally equivalent to usual care.[3] In other words, allocate scarce resources with no significant health consequences to patients. However, this is an unrealistic expectation: meeting a patient\u2019s medical needs and allocating resources on the basis of scarcity instead of medical indications can be at odds, creating ethical tension. This paper addresses three ethical issues with the current contingency response stemming from this tension: the lack of formalization, the risk of using short-term solutions for prolonged contingency shortages, and the danger of exacerbating health disparities through hospital-level resource allocation. To mitigate these ethical issues, I offer recommendations for reimagining resource allocation during contingency standards of care.\n\n\nl.\u00a0 \u00a0 \u00a0Lack of Formalization\n\n\nOne shortcoming of current contingency measures is that they fail to meet the same level of procedural detail and clarity as crisis standards. The early COVID-19 surges in Italy and France demonstrated the pitfalls of bedside allocation in the absence of procedural guidance. The acute scarcity of critical care resources forced doctors in these countries to make allocation decisions at the bedside, which often resulted in de facto age-based allocation as well as experiences of moral distress and shame among providers.[4] In France, medical allocation guidelines and statistics were never released to the public, raising concerns over the role of transparency in implementing crisis standards and triage guidelines and causing the public to question the trustworthiness of provider triage.[5] Though many states in the US have crisis standards of care that can be implemented in the case of a large-scale triage event, these measures vary widely. A 2020 review of 31 crisis standards of care in the US found that only 18 contained strong \u201cethical grounding,\u201d 28 used \u201cevidence-based clinical processes and operations,\u201d 21 included \u201congoing community and provider engagement, education, and communication,\u201d and 16 had \u201cclear indicators, triggers, and lines of responsibility.\u201d[6]\n\n\nThe need for standardization, public transparency, and guidelines for crisis standards of care to prevent bedside allocation has been widely recognized. However, these issues remain unresolved by public policy or legislative efforts during the contingency period before (or after) crisis standards apply. A recent public health study that observed triage team members in a high-fidelity triage simulation highlighted the challenges of making equitable frontline allocation decisions.[7] In the simulation, participants nudged patient priority status up or down depending on what they subjectively identified as morally relevant factors. Through the simulation, participants reported difficulty separating implicit biases about patient characteristics from their clinical judgment. In the absence of formal institutional or regional guidelines for allocation during contingency-level shortages, there are few to no procedural safeguards against biased, ad hoc, and non-transparent rationing. Without formalized or standardized contingency allocation guidance, providers are left to make bedside allocation decisions that are susceptible to individual biases and patterns of unintended discrimination.\n\n\nAn example of this susceptibility is seen when hospitals allow patients who no longer benefit from ICU resources to continue occupying ICU beds. This is based on a first-come-first-served (FCFS) approach to bed allocation. FCFS is often a default for patient intake, which led to disparities in care access during the early COVID-19 pandemic. Media reports of hospitals with \u201cplenty of space\u201d being unwilling to accept patients from overwhelmed, lower-income hospitals illustrate that the FCFS default advantages those who could show up first to a particular hospital: often privileged, well-funded healthcare systems that were inaccessible to low-income communities.[8] FCFS is blind to several morally relevant factors, including the likelihood of survival to discharge, reciprocity (i.e. prioritizing healthcare workers), and varying degrees of access to healthcare. Therefore, it inappropriately privileges those in proximity to healthcare systems or with social connections enabling greater initial access to care.[9]\n\n\nDuring crisis standards of care, excessive mortality that would result from FCFS is mitigated through formalized system-wide triage protocols based on current patient health status and potential benefit from resources. Crisis and contingency standards may provide liability coverage for providers who reallocate critical care beds away from those who no longer benefit during periods of scarcity. This liability coverage shifts bed allocation away from an FCFS model, but only if the policy is well-defined, clearly established, and known to providers. Without a formal system to guide the process or transition from the usual method of allocation to the contingency period, contingency decisions about who gets a scarce resource may continue to operate on an implicit FCFS basis, even when approaching crisis levels of scarcity. Additionally, these decisions will fall unsustainably on individual providers or transfer center workers, leading to moral distress on the frontlines when hospitals are already strained.\n\n\nLessons from the crisis and contingency responses during COVID-19 can improve future contingency responses. There are multiple ways of achieving equity during contingency allocation, ranging from hospital-level to state-level policy changes. State-wide policies and interventions to facilitate resource-sharing can relieve some of the scarcity burdens that hospitals may face during the contingency period. For example, moving ICU patients to lower levels of care once they have sufficiently recovered is a challenge for doctors, who often call other hospitals to find open beds. In these situations, providers who do not move patients who no longer benefit from ICU beds unknowingly reinforce the FCFS system in which those who arrive first keep the scarce beds, while those who arrive later or wait for one are disadvantaged by having limited access to them. State-wide patient transfer centers, often facilitated by state public health departments, present an alternative by balancing patient needs and bed distribution more equitably and efficiently than individual physicians do, as demonstrated following COVID-19 surges in hospitalization.[10] These centers aid not only in allocating open tertiary care beds, but also in identifying open beds at lower levels of care and assisting physicians with transferring out patients who can be safely downgraded and no longer benefit from tertiary care resources. However, the simplest solution is to encourage the creation of ethics guidance or protocols for contingency allocation at the hospital level. In hospitals, institutional ethics guidance can help providers navigate difficult decisions and conversations with patients. When providers face time-sensitive allocation decisions, like the allocation of open ICU beds, the guidance would be a useful tool for making transparent, principled, and ethically justified allocation decisions in real-time to mitigate the risk of ad hoc or implicit rationing.\n\n\nll.\u00a0 \u00a0 \u00a0Unsuited for Prolonged Resource Shortages\n\n\nSecondly, neither contingency nor crisis standards are currently designed to respond to prolonged strains on the healthcare system. Since the start of the pandemic, a prolonged period of staffing shortages began and is projected to persist.[11] However, both crisis and contingency standards assume that the system will eventually return to conventional standards of care. For example, as a contingency or crisis standard, many hospitals deferred elective surgeries to preserve limited resources for emergency and life-saving procedures. Massachusetts, for instance, issued a public health emergency order that required hospitals to defer 50 percent of all non-essential and non-urgent (elective) surgeries. This order demonstrates the use of this contingency measure in response to prolonged staffing and bed shortages.[12] However, the deferral of elective procedures can result in adverse long-term community health consequences. Medical conditions typically addressed through elective surgery, such as joint replacement surgeries for osteoarthritis patients, may worsen if delayed. This can result in greater numbers of acute emergencies, the need for more complex surgical procedures later, increased reliance on pain medications, and longer recovery times.[13] Without a greater understanding of long-term complications in community health, existing contingency strategies, such as the deferral of elective surgeries, may be unsuitable for prolonged shortages.\n\n\nThis becomes a greater threat to patient safety when contingency measures inappropriately take the place of crisis standards, risking the long-term implementation of emergency measures designed for temporary use. Although some state emergency planning documents identify indicators and triggers for activating contingency and crisis operations,[14] this transition is not always clear in action. For example, New York did not implement crisis standards of care during the early COVID-19 pandemic despite being one of the hardest-hit cities in the US.[15] Other states, including California, Texas, and Florida, did not activate crisis standards of care, leaving hospitals to implement informal contingency measures that ultimately required allocation strategies very similar or identical to many crisis standards of care protocols.[16] Due to the hesitance to activate crisis standards, ad hoc contingency measures and bedside decision-making prevailed over formal triage protocols. If contingency measures are not set forth in objective documents and are inappropriately used in the place of crisis standards, these short-term measures may result in an unfair or non-transparent distribution of scarce resources. When shortages in space, staff, or supplies jeopardize the ability to provide necessary care for critically ill patients under a conventional standard of care, failures to activate crisis standards risk the inappropriate use of ad hoc contingency measures in their place.\n\n\nWith clear contingency standards of care, the duration of an ad hoc approach could be limited. Crisis standards are defined and activated at the regional or state-wide level, but outside of hospital-specific resource limitations, there are generally no standardized indications or triggers for transitioning into and out of contingency measures. Leaving contingency needs to individual hospitals may seem beneficial but defining the contingency period at the hospital level and the crisis period at the state or regional level blurs the line about when it is appropriate for decision makers to activate crisis standards, risking delayed activation or failure to activate them at all. Therefore, it is important that state policies implement automatic triggers for activation that clearly delineate between contingency and crisis responses.[17] Automatic triggers based on validated metrics like remaining available resources can inform the appropriate decision makers about when they must activate crisis standards. These triggers should be transparent to the public, validated, and updated over time with evolving data. These automatic triggers would prevent confusion, inconsistent guidelines, and inequitable contingency allocation at the hands of distressed providers when crisis standards are needed. Defining when to begin crisis standards could help limit the length of the contingency period. This would protect against the inappropriate application of contingency measures to crisis-level scarcity and prolonged shortages that they could not sustainably ameliorate.\n\n\nlll.\u00a0 \u00a0 \u00a0Potential to Exacerbate Health Disparities\n\n\nInconsistencies in contingency allocation open the door to disparities in care and unequal distribution of scarcity burdens among different communities based on their location or health needs. This is a concern because it is unclear whether contingency measures can meet their goal of achieving functionally equivalent patient outcomes when resource allocation must be balanced with patient-centered care.[18] The care under contingency standards is meant to be functionally equivalent to regular care. The definition assumes (or may wrongly suggest) that any contingency strategy in place to avoid critical scarcity has no significant impact on patient outcomes. While functional equivalence is attainable, there is currently little research into which contingency measures achieve functionally equivalent outcomes and which patient groups may be disproportionately affected by harmful resource allocation strategies. Although the transition from contingency standards to crisis standards is defined by the inability to provide functionally equivalent care, the difference in practice may merely be a distinction between visible, immediate sacrifices to patient well-being during crises and less-obvious, long-term decrements in community health due to protracted contingency care alterations.\n\n\nTwo common contingency measures are cause for concern over disparate patient outcomes and the attainability of functional equivalence. First, restricting emergency room visits by the patient\u2019s degree of need has worrying consequences. In late 2021 and early 2022, hospitals in Massachusetts faced widespread staffing shortages, leading to an emergency order that restricted emergency visits to emergency needs.[19] While this order is a reasonable method of allocating limited staff in the emergency department during severe shortages, it is doubtful that the outcomes of this restriction were equivalent to usual care. Health issues that are soon-to-be emergencies are filtered out until they worsen, resulting in patients overflowing to urgent care clinics or presenting to ERs with more severe forms of sicknesses later on. Given the empirical evidence demonstrating ER treatment and admission disparities that disadvantage Black and Hispanic patients, such a measure would only exacerbate these disparities by further limiting access to needed care.[20]\n\n\nSecond, altered staffing ratios, which stretch a limited number of providers to meet patient needs during a staffing shortage, are another concerning yet common contingency measure. Staffing allocation is often viewed similarly to the allocation of space and medical equipment, such that contingency alterations to staffing operations may not seem like they significantly jeopardize patient care quality and outwardly appear functionally equivalent.[21] However, lower ratios of qualified nurses are associated with poor outcomes such as higher inpatient mortality[22] and lower survival rates of in-hospital cardiac arrest for Black patients.[23] These examples highlight the strong potential for contingency measures to amplify social health disparities, particularly when adopted over a prolonged time frame.\n\n\nLowered standards of care in crisis allocation disproportionately impact racial and ethnic minorities.[24] For example, crisis standards of care used clinical scoring systems that were not developed or validated for crisis triage to prioritize access to life-saving treatments during the COVID-19 pandemic. This practice actively gives rise to racial health disparities and discrimination against disabled patients.[25] Not only were the standards inequitable in practice, but they varied widely from state to state and sometimes even from hospital to hospital, creating disparities across and within geographic regions.[26] If contingency measures are similarly implemented across hospitals or hospital departments without standardization or advance planning to ensure equitable outcomes, it is likely that the burden of a lower standard of care will fall primarily on disadvantaged patient groups and racial minorities. However, standardization alone may be insufficient. Other factors like varying levels of details on patients\u2019 charts between hospitals could produce unfair outcomes if used to determine patient admission or transfer priority, even if the criteria for admissions and transfers are consistent. Thus, ongoing monitoring for unintended patterns of disparity must accompany standardization to ensure that blind spots in the allocation process are identified and corrected.\n\n\nBioethics has long been preoccupied with the micro-allocation of limited resources within hospitals instead of confronting the structural inequities that underlie broader scarcity and patient needs. The traditional dilemma of allocating limited hospital resources among a certain number of patients overlooks questions about how other resources have already been allocated, which patients were present at the hospital in the first place, where hospitals have (and have not) been built, and whether previous allocation strategies created bias in the broader distribution of resources. Therefore, to achieve fairness, bioethicists must pay attention to aspects of the broader distribution of resources, such as social determinants of health and the allocation of preventative resources at the public health level. One strategy for measuring and addressing these disparities is the Area Deprivation Index (ADI). The ADI quantifies the effects of race, class, and socioeconomic background by geographic region for use in public health research and the prioritization of resources.[27] It has shown promise in identifying geographic regions in need of targeted community health efforts for diabetes management based on electronic patient health records.[28] The ADI and similar tools would be useful in proactively deciding how to allocate public health resources when hospitals are strained. Moreover, through using population health and resource data, public health organizations may forecast contingency shortages allowing for the adoption of early measures to mitigate health disparities that might otherwise be amplified from hospital-level contingency allocation decisions.\n\n\nCONCLUSION\n\n\nMeeting community health needs during periods of contingency scarcity, both before and after crisis standards of care apply, will require contingency standards of care rather than a bedside ad hoc distribution of scarce resources. While it is not inherently ethically unjustifiable for hospitals to adopt measures that may lower the standard of care during contingency standards, the necessity of these measures requires that bioethicists consider how equity, transparency, and the overall aim of functional equivalence can best be achieved under conditions of scarcity. The long-term health consequences of existing contingency measures, the potential for ad hoc and inconsistent allocation of scarce resources, and the need for consensus about when it becomes appropriate to make the formal transition to crisis standards of care demand further consideration. Because contingency measures will likely amplify existing disparities as crisis standards have, hospital-level management of scarcity is inadequate. Public health measures should be adopted in parallel to anticipate and manage health needs at the community or state level when resources are strained.\n\n-\n\n\n[1] Altevogt, B. M., Stroud, C., Hanson, S. L., Hanfling, D., & Gostin, L. O. (2009). Guidance for Establishing Crisis Standards of Care for Use in Disaster Situations: A Letter Report. The National Academies Press. https://doi.org/10.17226/12749\n\n\n[2] Emanuel, E. J., Persad, G., Upshur, R., Thome, B., Parker, M., Glickman, A., Zhang, C., Boyle, C., Smith, M., & Phillips, J. P. (2020). Fair Allocation of Scarce Medical Resources in the Time of Covid-19. New England Journal of Medicine, 382(21), 2049\u20132055. https://doi.org/10.1056/NEJMsb2005114\n\n\n[3] Alfandre, D., Sharpe, V. A., Geppert, C., Foglia, M. B., Berkowitz, K., Chanko, B., & Schonfeld, T. (2021). Between Usual and Crisis Phases of a Public Health Emergency: The Mediating Role of Contingency Measures. The American Journal of Bioethics, 21(8), 4\u201316. https://doi.org/10.1080/15265161.2021.1925778\n\n\n[4] Rosenbaum, L. (2020). Facing Covid-19 in Italy\u2014Ethics, Logistics, and Therapeutics on the Epidemic\u2019s Front Line. New England Journal of Medicine, 382(20), 1873\u20131875. https://doi.org/10.1056/NEJMp2005492\n\n\n[5] Orfali, K. (2020). What Triage Issues Reveal: Ethics in the COVID-19 Pandemic in Italy and France. Journal of Bioethical Inquiry, 17(4), 675\u2013679. https://doi.org/10.1007/s11673-020-10059-y\n\n\n[6] Romney, D., Fox, H., Carlson, S., Bachmann, D., O\u2019Mathuna, D., & Kman, N. (2020). Allocation of Scarce Resources in a Pandemic: A Systematic Review of US State Crisis Standards of Care Documents. Disaster Medicine and Public Health Preparedness, 14(5), 677\u2013683. https://doi.org/10.1017/dmp.2020.101\n\n\n[7] Butler, C. R., Webster, L. B., Diekema, D. S., Gray, M. M., Sakata, V. L., Tonelli, M. R., & Vranas, K. C. (2022). Perspectives of Triage Team Members Participating in Statewide Triage Simulations for Scarce Resource Allocation During the COVID-19 Pandemic in Washington State. JAMA Network Open, 5(4), e227639. https://doi.org/10.1001/jamanetworkopen.2022.7639\n\n\n[8] Dwyer, J. (2020, May 14). One Hospital Was Besieged by the Virus. Nearby Was \u2018Plenty of Space.\u2019\u2014The New York Times. The New York Times. https://www.nytimes.com/2020/05/14/nyregion/coronavirus-ny-hospitals.html\n\n\n[9] Persad, G., Wertheimer, A., & Emanuel, E. J. (2009). Principles for allocation of scarce medical interventions. Lancet (London, England), 373(9661), 423\u2013431. https://doi.org/10.1016/S0140-6736(09)60137-9\n\n\n[10] Mitchell, S. H., Rigler, J., & Baum, K. (2022). Regional Transfer Coordination and Hospital Load Balancing During COVID-19 Surges. JAMA Health Forum, 3(2), e215048. https://doi.org/10.1001/jamahealthforum.2021.5048\n\n\n[11] ASPE. (2022, May 3). Impact of the COVID-19 Pandemic on the Hospital and Outpatient Clinician Workforce: Challenges and Policy Responses. ASPE. https://aspe.hhs.gov/reports/covid-19-health-care-workforce\n\n\n[12] Executive Office of Health and Human Services. (2021). Baker-Polito Administration Provides COVID-19 Update on Mask Advisory, Hospital Support | Mass.gov. https://www.mass.gov/news/baker-polito-administration-provides-covid-19-update-on-mask-advisory-hospital-support\n\n\n[13] The Lancet Rheumatology. (2021). Too long to wait: The impact of COVID-19 on elective surgery. The Lancet Rheumatology, 3(2), e83. https://doi.org/10.1016/S2665-9913(21)00001-1\n\n\n[14] For an example of transition planning between crisis and contingency standards, see Minnesota Department of Health. (2021). Ethical Framework for Transitions Between Conventional, Contingency, and Crisis Conditions in Pervasive or Catastrophic Public Health Events with Medical Surge Implications (Minnesota Crisis Standards of Care). https://www.health.state.mn.us/communities/ep/surge/crisis/framework_transitions.pdf\n\n\n[15] Powell, T., & Chuang, E. (2020). COVID in NYC: What We Could Do Better. The American Journal of Bioethics, 20(7), 62\u201366. https://doi.org/10.1080/15265161.2020.1764146\n\n\n[16] Persoff, J., & Wynia, M. K. (2021). Ethically Navigating the Murky Waters of \u201cContingency Standards of Care.\u201d The American Journal of Bioethics, 21(8), 20\u201321. https://doi.org/10.1080/15265161.2021.1939810\n\n\n[17] Board on Health Sciences Policy & Institute of Medicine. (2013). Indicators and Triggers. In Crisis Standards of Care: A Toolkit for Indicators and Triggers. National Academies Press (US). http://www.ncbi.nlm.nih.gov/books/NBK202381/\n\n\n[18] Frith, L., Draper, H., Fovargue, S., Baines, P., Redhead, C., & Chiumento, A. (2021). Neither \u2018Crisis Light\u2019 nor \u2018Business as Usual\u2019: Considering the Distinctive Ethical Issues Raised by the Contingency and Reset Phases of a Pandemic. The American Journal of Bioethics, 21(8), 34\u201337. https://doi.org/10.1080/15265161.2021.1940363\n\n\n[19] Rosseau, M. (2022, January 14). New emergency orders issued to help understaffed Mass. Hospitals. Boston.Com. https://www.boston.com/news/coronavirus/2022/01/14/new-emergency-orders-issued-to-help-understaffed-mass-hospitals/\n\n\n[20] Zhang, X., Carabello, M., Hill, T., Bell, S. A., Stephenson, R., & Mahajan, P. (2020). Trends of Racial/Ethnic Differences in Emergency Department Care Outcomes Among Adults in the United States From 2005 to 2016. Frontiers in Medicine, 7. https://www.frontiersin.org/articles/10.3389/fmed.2020.00300\n\n\n[21] Hick, J. L., Hanfling, D., & Wynia, M. (2022). Hospital Planning for Contingency and Crisis Conditions: Crisis Standards of Care Lessons from COVID-19. The Joint Commission Journal on Quality and Patient Safety. https://doi.org/10.1016/j.jcjq.2022.02.003\n\n\n[22] Musy, S. N., Endrich, O., Leichtle, A. B., Griffiths, P., Nakas, C. T., & Simon, M. (2021). The association between nurse staffing and inpatient mortality: A shift-level retrospective longitudinal study. International Journal of Nursing Studies, 120, 103950. https://doi.org/10.1016/j.ijnurstu.2021.103950\n\n\n[23] Brooks Carthon, M., Brom, H., McHugh, M., Sloane, D. M., Berg, R., Merchant, R., Girotra, S., & Aiken, L. H. (2021). Better Nurse Staffing Is Associated With Survival for Black Patients and Diminishes Racial Disparities in Survival After In-Hospital Cardiac Arrests. Medical Care, 59(2), 169\u2013176. https://doi.org/10.1097/MLR.0000000000001464\n\n\n[24] Annas, G. J., & Crosby, S. S. (2021). Standard Racism: Trying to Use \u201cCrisis Standards of Care\u201d in the COVID-19 Pandemic. The American Journal of Bioethics, 21(8), 1\u20133. https://doi.org/10.1080/15265161.2021.1941424\n\n\n[25] Wynia, M. K., & Sottile, P. D. (2020). Ethical Triage Demands a Better Triage Survivability Score. The American Journal of Bioethics, 20(7), 75\u201377. https://doi.org/10.1080/15265161.2020.1779412\n\n\n[26] Fink, S. (2020). Ethical Dilemmas in Covid-19 Medical Care: Is a Problematic Triage Protocol Better or Worse than No Protocol at All? The American Journal of Bioethics, 20(7), 1\u20135. https://doi.org/10.1080/15265161.2020.1788663\n\n\n[27] Knighton, A. J., Savitz, L., Belnap, T., Stephenson, B., & VanDerslice, J. (2016). Introduction of an Area Deprivation Index Measuring Patient Socioeconomic Status in an Integrated Health System: Implications for Population Health. EGEMS (Washington, DC), 4(3), 1238. https://doi.org/10.13063/2327-9214.1238\n\n\n[28] Kurani, S. S., Lampman, M. A., Funni, S. A., Giblon, R. E., Inselman, J. W., Shah, N. D., Allen, S., Rushlow, D., & McCoy, R. G. (2021). Association Between Area-Level Socioeconomic Deprivation and Diabetes Care Quality in US Primary Care Practices. JAMA Network Open, 4(12), e2138438. https://doi.org/10.1001/jamanetworkopen.2021.38438\n",
+        "title": "Addressing Shortcomings in Contingency Standards of Care"
+      },
+      "id": "45e5d8740adf48579b808420668ae392",
+      "created_date": "2022-09-29T19:17:02Z"
+    },
+    {
+      "last_updated": "2026-09-05T05:21:30Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2667-1026",
+            "type": "eissn"
+          },
+          {
+            "id": "10.1016/j.imed.2026.07.007",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "6",
+          "number": "4",
+          "country": "NL",
+          "issns": [
+            "2096-9376",
+            "2667-1026"
+          ],
+          "publisher": "Elsevier",
+          "language": [
+            "EN"
+          ],
+          "title": "Intelligent Medicine"
+        },
+        "month": "08",
+        "end_page": "441",
+        "keywords": [
+          "Emergency medical services",
+          "Dynamic diversion decision-making",
+          "Multi-agent reinforcement learning",
+          "Value decomposition network"
+        ],
+        "year": "2026",
+        "start_page": "431",
+        "subject": [
+          {
+            "code": "R855-855.5",
+            "scheme": "LCC",
+            "term": "Medical technology"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "School of Intelligent Science and Technology, Hangzhou Institute for Advanced Study, University of Chinese Academy of Sciences, Hangzhou, Zhejiang 310024, China; Engineering Research Center of Electronic Medical Record and Intelligent Expert System, Ministry of Education, College of Biomedical Engineering and Instrument Science, Zhejiang University, Hangzhou, Zhejiang 310027, China",
+            "name": "Zhuyi Shen"
+          },
+          {
+            "affiliation": "Engineering Research Center of Electronic Medical Record and Intelligent Expert System, Ministry of Education, College of Biomedical Engineering and Instrument Science, Zhejiang University, Hangzhou, Zhejiang 310027, China",
+            "name": "Yu Tian"
+          },
+          {
+            "affiliation": "Department of Neurosurgery, The First Medical Center of People\u2019s Liberation Army General Hospital, Beijing 100039, China",
+            "name": "Gang Cheng"
+          },
+          {
+            "affiliation": "Engineering Research Center of Electronic Medical Record and Intelligent Expert System, Ministry of Education, College of Biomedical Engineering and Instrument Science, Zhejiang University, Hangzhou, Zhejiang 310027, China",
+            "name": "Ruiqi Tu"
+          },
+          {
+            "affiliation": "School of Intelligent Science and Technology, Hangzhou Institute for Advanced Study, University of Chinese Academy of Sciences, Hangzhou, Zhejiang 310024, China",
+            "name": "Yu Wang"
+          },
+          {
+            "affiliation": "School of Intelligent Science and Technology, Hangzhou Institute for Advanced Study, University of Chinese Academy of Sciences, Hangzhou, Zhejiang 310024, China",
+            "name": "Chengkai Wu"
+          },
+          {
+            "affiliation": "Department of Neurosurgery, The First Medical Center of People\u2019s Liberation Army General Hospital, Beijing 100039, China",
+            "name": "Yanteng Li"
+          },
+          {
+            "affiliation": "School of Intelligent Science and Technology, Hangzhou Institute for Advanced Study, University of Chinese Academy of Sciences, Hangzhou, Zhejiang 310024, China",
+            "name": "Yuhua Zheng"
+          },
+          {
+            "affiliation": "Department of Neurosurgery, The First Medical Center of People\u2019s Liberation Army General Hospital, Beijing 100039, China; Corresponding authors: Jingsong Li, Engineering Research Center of Electronic Medical Record and Intelligent Expert System, Ministry of Education, College of Biomedical Engineering and Instrument Science, Zhejiang University, Hangzhou, Zhejiang 310027, China; Jianning Zhang, Department of Neurosurgery, The First Medical Center of People\u2019s Liberation Army General Hospital, Beijing 100039, China.",
+            "name": "Jianning Zhang"
+          },
+          {
+            "affiliation": "School of Intelligent Science and Technology, Hangzhou Institute for Advanced Study, University of Chinese Academy of Sciences, Hangzhou, Zhejiang 310024, China; Engineering Research Center of Electronic Medical Record and Intelligent Expert System, Ministry of Education, College of Biomedical Engineering and Instrument Science, Zhejiang University, Hangzhou, Zhejiang 310027, China; Corresponding authors: Jingsong Li, Engineering Research Center of Electronic Medical Record and Intelligent Expert System, Ministry of Education, College of Biomedical Engineering and Instrument Science, Zhejiang University, Hangzhou, Zhejiang 310027, China; Jianning Zhang, Department of Neurosurgery, The First Medical Center of People\u2019s Liberation Army General Hospital, Beijing 100039, China.",
+            "name": "Jingsong Li"
+          }
+        ],
+        "link": [
+          {
+            "type": "fulltext",
+            "url": "http://www.sciencedirect.com/science/article/pii/S2667102626000859"
+          }
+        ],
+        "abstract": "Background: Mass gatherings pose significant risks of mass casualty incidents, where static triage protocols often fail to balance individual patient urgency with global emergency resource constraints, leading to preventable mortality. We aimed to evaluate a dynamic diversion strategy optimized using machine learning to improve survival outcomes and emergency efficiency in such scenarios. Methods: We conducted a retrospective simulation study based on real-world emergency data from two major events in Hangzhou, China: The 2024 Hangzhou Marathon and Linping Ice and Snow World fire incident. Data encompassing patient severity such as respiratory rate, pulse rate, and motor response (RPM) scores, ambulance logistics, and real-time hospital bed capacity from multiple trauma centers were used to construct the simulation environment. We compared a dynamic diversion framework (using a value decomposition network-based multi-agent approach) against standard clinical protocols (nearest-hospital and designated-hospital strategies). Primary outcomes included overall survival rate, average waiting time for critical care, and total length of hospital stays. Results: In simulated mass casualty incident scenarios with rapid casualty influx and limited resources, our dynamic strategy significantly outperformed conventional methods. Compared to two traditional baselines, our approach boosts average patient survival rates by 6.8% and 8.3% during casualty surges, and by 13.8% and 8.8% during gradual influxes. Under resource-sufficient conditions, the respective gains are 12.2% and 8.7%. These results indicate that our method can effectively integrate and use dynamically changing emergency medical resources to achieve efficient triage and transportation decisions when dealing with mass casualties. Conclusion: Our diversion decision-making method can effectively use the large amount of dynamic emergency medical information generated during mass gatherings. It enables diversion decisions based on patient injuries and emergency medical resources, thereby providing emergency diversion doctors with more personalized transfer decision-making schemes.",
+        "title": "Optimizing dynamic diversion decision-making in mass gatherings through multi-agent reinforcement learning: A retrospective real-world data-driven simulation study"
+      },
+      "id": "5015033a16ee48b990a26300a15763e7",
+      "created_date": "2026-09-05T05:21:30Z"
+    },
+    {
+      "last_updated": "2025-08-19T22:02:14Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.1186/s12916-020-01646-2",
+            "type": "doi"
+          },
+          {
+            "id": "1741-7015",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "18",
+          "number": "1",
+          "country": "GB",
+          "issns": [
+            "1741-7015"
+          ],
+          "publisher": "BMC",
+          "language": [
+            "EN"
+          ],
+          "title": "BMC Medicine"
+        },
+        "month": "6",
+        "end_page": "11",
+        "keywords": [
+          "COVID-19",
+          "England",
+          "Wales",
+          "Hospital capacity",
+          "NHS",
+          "Local"
+        ],
+        "year": "2020",
+        "start_page": "1",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Leverhulme Centre for Demographic Science, University of Oxford & Nuffield College",
+            "name": "Mark D. Verhagen"
+          },
+          {
+            "affiliation": "Leverhulme Centre for Demographic Science, University of Oxford & Nuffield College",
+            "name": "David M. Brazel"
+          },
+          {
+            "affiliation": "Leverhulme Centre for Demographic Science, University of Oxford & Nuffield College",
+            "name": "Jennifer Beam Dowd"
+          },
+          {
+            "affiliation": "Interdisciplinary Centre on Population Dynamics, University of Southern Denmark",
+            "name": "Ilya Kashnitsky"
+          },
+          {
+            "affiliation": "Leverhulme Centre for Demographic Science, University of Oxford & Nuffield College",
+            "name": "Melinda C. Mills"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "http://link.springer.com/article/10.1186/s12916-020-01646-2"
+          }
+        ],
+        "abstract": "Abstract Background COVID-19 poses one of the most profound public health crises for a hundred years. As of mid-May 2020, across the world, almost 300,000 deaths and over 4 million confirmed cases were registered. Reaching over 30,000 deaths by early May, the UK had the highest number of recorded deaths in Europe, second in the world only to the USA. Hospitalization and death from COVID-19 have been linked to demographic and socioeconomic variation. Since this varies strongly by location, there is an urgent need to analyse the mismatch between health care demand and supply at the local level. As lockdown measures ease, reinfection may vary by area, necessitating a real-time tool for local and regional authorities to anticipate demand. Methods Combining census estimates and hospital capacity data from ONS and NHS at the Administrative Region, Ceremonial County (CC), Clinical Commissioning Group (CCG) and Lower Layer Super Output Area (LSOA) level from England and Wales, we calculate the number of individuals at risk of COVID-19 hospitalization. Combining multiple sources, we produce geospatial risk maps on an online dashboard that dynamically illustrate how the pre-crisis health system capacity matches local variations in hospitalization risk related to age, social deprivation, population density and ethnicity, also adjusting for the overall infection rate and hospital capacity. Results By providing fine-grained estimates of expected hospitalization, we identify areas that face higher disproportionate health care burdens due to COVID-19, with respect to pre-crisis levels of hospital bed capacity. Including additional risks beyond age-composition of the area such as social deprivation, race/ethnic composition and population density offers a further nuanced identification of areas with disproportionate health care demands. Conclusions Areas face disproportionate risks for COVID-19 hospitalization pressures due to their socioeconomic differences and the demographic composition of their populations. Our flexible online dashboard allows policy-makers and health officials to monitor and evaluate potential health care demand at a granular level as the infection rate and hospital capacity changes throughout the course of this pandemic. This agile knowledge is invaluable to tackle the enormous logistical challenges to re-allocate resources and target susceptible areas for aggressive testing and tracing to mitigate transmission.",
+        "title": "Forecasting spatial, socioeconomic and demographic variation in COVID-19 health care demand in England and Wales"
+      },
+      "id": "6bad67f540774b41aeb5a33b565ce073",
+      "created_date": "2020-07-05T12:25:35Z"
+    },
+    {
+      "last_updated": "2025-08-20T00:00:49Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.52214/vib.v8i.9991",
+            "type": "doi"
+          },
+          {
+            "id": "2691-4875",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "8",
+          "country": "US",
+          "issns": [
+            "2691-4875"
+          ],
+          "publisher": "Columbia University Libraries",
+          "language": [
+            "EN"
+          ],
+          "title": "Voices in Bioethics"
+        },
+        "month": "September",
+        "keywords": [
+          "Contingency",
+          "COVID-19",
+          "Resource Allocation",
+          "Crisis Standards of Care",
+          "Public Health",
+          "Bioethics"
+        ],
+        "year": "2022",
+        "subject": [
+          {
+            "code": "R723-726",
+            "scheme": "LCC",
+            "term": "Medical philosophy. Medical ethics"
+          },
+          {
+            "code": "BJ1-1725",
+            "scheme": "LCC",
+            "term": "Ethics"
+          }
+        ],
+        "author": [
+          {
+            "name": "Alexander Quan"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "https://journals.library.columbia.edu/index.php/currentmusicology/%2525252525252525252525252525252525252525252525252525252525252525252525252525252525252525252525252525252525252525252525252509https:/journals.library.columbia.edu/index.php/bioethics/article/view/9991"
+          }
+        ],
+        "abstract": "\nPhoto by Adhy Savala on Unsplash\n\n\nABSTRACT\n\n\nDuring a crisis, when healthcare capacity becomes overwhelmed and cannot meet regular standards of patient care, crisis standards of care are invoked to distribute scarce hospital space, staff, and supplies. When transitioning between conventional standards of care and crisis standards, hospitals may have to manage resources under scarcity constraints in an intermediate phase defined as the contingency phase. While much attention has been paid to the ethics of crisis standard of care protocols, contingency measures were more widely implemented, though little exists within the literature on the ethics of contingency measures or a clearly explicated contingency standard of care. This paper addresses three ethical issues with the current contingency response to COVID-19: the lack of formalization, the risks of using short-term solutions for prolonged contingency shortages, and the danger of exacerbating health disparities through hospital-level resource allocation. To mitigate these ethical issues, I offer recommendations for reimagining resource allocation during contingency standards of care.\n\n\nINTRODUCTION\n\n\nWhen transitioning between conventional standards of care and crisis standards, or in situations where shortages do not immediately threaten care delivery, hospitals may have to manage scarce resources in an intermediate phase, known as the \u201ccontingency\u201d phase.[1] While much attention has been paid to the ethics of crisis standards, less literature covers the ethics of contingency measures or a clearly explicated contingency standard of care. Many states and hospital systems do not have contingency standards of care to dictate allocation absent an event triggering crisis standards. Crisis standards of care, used when healthcare capacity becomes overwhelmed and cannot meet regular standards of patient care, reflect ethical priorities relevant in times of shortage or other emergencies. These priorities include saving the most lives, the stewardship of scarce resources, and justice relating to equitable resource distribution.[2] Crisis standards of care delineate specialized allocation protocols and triage decision-making bodies at the institutional or state levels. Crisis standards of care require formal activation at the state level, and in the absence of clear triggers or governmental willingness to use them, hospitals may adopt informal strategies to manage allocation in the form of contingency measures.\n\n\nThe contingency phase is defined by two simultaneous goals: prevent or stall crisis-level scarcity by managing limited resources and providing patient care that is functionally equivalent to usual care.[3] In other words, allocate scarce resources with no significant health consequences to patients. However, this is an unrealistic expectation: meeting a patient\u2019s medical needs and allocating resources on the basis of scarcity instead of medical indications can be at odds, creating ethical tension. This paper addresses three ethical issues with the current contingency response stemming from this tension: the lack of formalization, the risk of using short-term solutions for prolonged contingency shortages, and the danger of exacerbating health disparities through hospital-level resource allocation. To mitigate these ethical issues, I offer recommendations for reimagining resource allocation during contingency standards of care.\n\n\nl.\u00a0 \u00a0 \u00a0Lack of Formalization\n\n\nOne shortcoming of current contingency measures is that they fail to meet the same level of procedural detail and clarity as crisis standards. The early COVID-19 surges in Italy and France demonstrated the pitfalls of bedside allocation in the absence of procedural guidance. The acute scarcity of critical care resources forced doctors in these countries to make allocation decisions at the bedside, which often resulted in de facto age-based allocation as well as experiences of moral distress and shame among providers.[4] In France, medical allocation guidelines and statistics were never released to the public, raising concerns over the role of transparency in implementing crisis standards and triage guidelines and causing the public to question the trustworthiness of provider triage.[5] Though many states in the US have crisis standards of care that can be implemented in the case of a large-scale triage event, these measures vary widely. A 2020 review of 31 crisis standards of care in the US found that only 18 contained strong \u201cethical grounding,\u201d 28 used \u201cevidence-based clinical processes and operations,\u201d 21 included \u201congoing community and provider engagement, education, and communication,\u201d and 16 had \u201cclear indicators, triggers, and lines of responsibility.\u201d[6]\n\n\nThe need for standardization, public transparency, and guidelines for crisis standards of care to prevent bedside allocation has been widely recognized. However, these issues remain unresolved by public policy or legislative efforts during the contingency period before (or after) crisis standards apply. A recent public health study that observed triage team members in a high-fidelity triage simulation highlighted the challenges of making equitable frontline allocation decisions.[7] In the simulation, participants nudged patient priority status up or down depending on what they subjectively identified as morally relevant factors. Through the simulation, participants reported difficulty separating implicit biases about patient characteristics from their clinical judgment. In the absence of formal institutional or regional guidelines for allocation during contingency-level shortages, there are few to no procedural safeguards against biased, ad hoc, and non-transparent rationing. Without formalized or standardized contingency allocation guidance, providers are left to make bedside allocation decisions that are susceptible to individual biases and patterns of unintended discrimination.\n\n\nAn example of this susceptibility is seen when hospitals allow patients who no longer benefit from ICU resources to continue occupying ICU beds. This is based on a first-come-first-served (FCFS) approach to bed allocation. FCFS is often a default for patient intake, which led to disparities in care access during the early COVID-19 pandemic. Media reports of hospitals with \u201cplenty of space\u201d being unwilling to accept patients from overwhelmed, lower-income hospitals illustrate that the FCFS default advantages those who could show up first to a particular hospital: often privileged, well-funded healthcare systems that were inaccessible to low-income communities.[8] FCFS is blind to several morally relevant factors, including the likelihood of survival to discharge, reciprocity (i.e. prioritizing healthcare workers), and varying degrees of access to healthcare. Therefore, it inappropriately privileges those in proximity to healthcare systems or with social connections enabling greater initial access to care.[9]\n\n\nDuring crisis standards of care, excessive mortality that would result from FCFS is mitigated through formalized system-wide triage protocols based on current patient health status and potential benefit from resources. Crisis and contingency standards may provide liability coverage for providers who reallocate critical care beds away from those who no longer benefit during periods of scarcity. This liability coverage shifts bed allocation away from an FCFS model, but only if the policy is well-defined, clearly established, and known to providers. Without a formal system to guide the process or transition from the usual method of allocation to the contingency period, contingency decisions about who gets a scarce resource may continue to operate on an implicit FCFS basis, even when approaching crisis levels of scarcity. Additionally, these decisions will fall unsustainably on individual providers or transfer center workers, leading to moral distress on the frontlines when hospitals are already strained.\n\n\nLessons from the crisis and contingency responses during COVID-19 can improve future contingency responses. There are multiple ways of achieving equity during contingency allocation, ranging from hospital-level to state-level policy changes. State-wide policies and interventions to facilitate resource-sharing can relieve some of the scarcity burdens that hospitals may face during the contingency period. For example, moving ICU patients to lower levels of care once they have sufficiently recovered is a challenge for doctors, who often call other hospitals to find open beds. In these situations, providers who do not move patients who no longer benefit from ICU beds unknowingly reinforce the FCFS system in which those who arrive first keep the scarce beds, while those who arrive later or wait for one are disadvantaged by having limited access to them. State-wide patient transfer centers, often facilitated by state public health departments, present an alternative by balancing patient needs and bed distribution more equitably and efficiently than individual physicians do, as demonstrated following COVID-19 surges in hospitalization.[10] These centers aid not only in allocating open tertiary care beds, but also in identifying open beds at lower levels of care and assisting physicians with transferring out patients who can be safely downgraded and no longer benefit from tertiary care resources. However, the simplest solution is to encourage the creation of ethics guidance or protocols for contingency allocation at the hospital level. In hospitals, institutional ethics guidance can help providers navigate difficult decisions and conversations with patients. When providers face time-sensitive allocation decisions, like the allocation of open ICU beds, the guidance would be a useful tool for making transparent, principled, and ethically justified allocation decisions in real-time to mitigate the risk of ad hoc or implicit rationing.\n\n\nll.\u00a0 \u00a0 \u00a0Unsuited for Prolonged Resource Shortages\n\n\nSecondly, neither contingency nor crisis standards are currently designed to respond to prolonged strains on the healthcare system. Since the start of the pandemic, a prolonged period of staffing shortages began and is projected to persist.[11] However, both crisis and contingency standards assume that the system will eventually return to conventional standards of care. For example, as a contingency or crisis standard, many hospitals deferred elective surgeries to preserve limited resources for emergency and life-saving procedures. Massachusetts, for instance, issued a public health emergency order that required hospitals to defer 50 percent of all non-essential and non-urgent (elective) surgeries. This order demonstrates the use of this contingency measure in response to prolonged staffing and bed shortages.[12] However, the deferral of elective procedures can result in adverse long-term community health consequences. Medical conditions typically addressed through elective surgery, such as joint replacement surgeries for osteoarthritis patients, may worsen if delayed. This can result in greater numbers of acute emergencies, the need for more complex surgical procedures later, increased reliance on pain medications, and longer recovery times.[13] Without a greater understanding of long-term complications in community health, existing contingency strategies, such as the deferral of elective surgeries, may be unsuitable for prolonged shortages.\n\n\nThis becomes a greater threat to patient safety when contingency measures inappropriately take the place of crisis standards, risking the long-term implementation of emergency measures designed for temporary use. Although some state emergency planning documents identify indicators and triggers for activating contingency and crisis operations,[14] this transition is not always clear in action. For example, New York did not implement crisis standards of care during the early COVID-19 pandemic despite being one of the hardest-hit cities in the US.[15] Other states, including California, Texas, and Florida, did not activate crisis standards of care, leaving hospitals to implement informal contingency measures that ultimately required allocation strategies very similar or identical to many crisis standards of care protocols.[16] Due to the hesitance to activate crisis standards, ad hoc contingency measures and bedside decision-making prevailed over formal triage protocols. If contingency measures are not set forth in objective documents and are inappropriately used in the place of crisis standards, these short-term measures may result in an unfair or non-transparent distribution of scarce resources. When shortages in space, staff, or supplies jeopardize the ability to provide necessary care for critically ill patients under a conventional standard of care, failures to activate crisis standards risk the inappropriate use of ad hoc contingency measures in their place.\n\n\nWith clear contingency standards of care, the duration of an ad hoc approach could be limited. Crisis standards are defined and activated at the regional or state-wide level, but outside of hospital-specific resource limitations, there are generally no standardized indications or triggers for transitioning into and out of contingency measures. Leaving contingency needs to individual hospitals may seem beneficial but defining the contingency period at the hospital level and the crisis period at the state or regional level blurs the line about when it is appropriate for decision makers to activate crisis standards, risking delayed activation or failure to activate them at all. Therefore, it is important that state policies implement automatic triggers for activation that clearly delineate between contingency and crisis responses.[17] Automatic triggers based on validated metrics like remaining available resources can inform the appropriate decision makers about when they must activate crisis standards. These triggers should be transparent to the public, validated, and updated over time with evolving data. These automatic triggers would prevent confusion, inconsistent guidelines, and inequitable contingency allocation at the hands of distressed providers when crisis standards are needed. Defining when to begin crisis standards could help limit the length of the contingency period. This would protect against the inappropriate application of contingency measures to crisis-level scarcity and prolonged shortages that they could not sustainably ameliorate.\n\n\nlll.\u00a0 \u00a0 \u00a0Potential to Exacerbate Health Disparities\n\n\nInconsistencies in contingency allocation open the door to disparities in care and unequal distribution of scarcity burdens among different communities based on their location or health needs. This is a concern because it is unclear whether contingency measures can meet their goal of achieving functionally equivalent patient outcomes when resource allocation must be balanced with patient-centered care.[18] The care under contingency standards is meant to be functionally equivalent to regular care. The definition assumes (or may wrongly suggest) that any contingency strategy in place to avoid critical scarcity has no significant impact on patient outcomes. While functional equivalence is attainable, there is currently little research into which contingency measures achieve functionally equivalent outcomes and which patient groups may be disproportionately affected by harmful resource allocation strategies. Although the transition from contingency standards to crisis standards is defined by the inability to provide functionally equivalent care, the difference in practice may merely be a distinction between visible, immediate sacrifices to patient well-being during crises and less-obvious, long-term decrements in community health due to protracted contingency care alterations.\n\n\nTwo common contingency measures are cause for concern over disparate patient outcomes and the attainability of functional equivalence. First, restricting emergency room visits by the patient\u2019s degree of need has worrying consequences. In late 2021 and early 2022, hospitals in Massachusetts faced widespread staffing shortages, leading to an emergency order that restricted emergency visits to emergency needs.[19] While this order is a reasonable method of allocating limited staff in the emergency department during severe shortages, it is doubtful that the outcomes of this restriction were equivalent to usual care. Health issues that are soon-to-be emergencies are filtered out until they worsen, resulting in patients overflowing to urgent care clinics or presenting to ERs with more severe forms of sicknesses later on. Given the empirical evidence demonstrating ER treatment and admission disparities that disadvantage Black and Hispanic patients, such a measure would only exacerbate these disparities by further limiting access to needed care.[20]\n\n\nSecond, altered staffing ratios, which stretch a limited number of providers to meet patient needs during a staffing shortage, are another concerning yet common contingency measure. Staffing allocation is often viewed similarly to the allocation of space and medical equipment, such that contingency alterations to staffing operations may not seem like they significantly jeopardize patient care quality and outwardly appear functionally equivalent.[21] However, lower ratios of qualified nurses are associated with poor outcomes such as higher inpatient mortality[22] and lower survival rates of in-hospital cardiac arrest for Black patients.[23] These examples highlight the strong potential for contingency measures to amplify social health disparities, particularly when adopted over a prolonged time frame.\n\n\nLowered standards of care in crisis allocation disproportionately impact racial and ethnic minorities.[24] For example, crisis standards of care used clinical scoring systems that were not developed or validated for crisis triage to prioritize access to life-saving treatments during the COVID-19 pandemic. This practice actively gives rise to racial health disparities and discrimination against disabled patients.[25] Not only were the standards inequitable in practice, but they varied widely from state to state and sometimes even from hospital to hospital, creating disparities across and within geographic regions.[26] If contingency measures are similarly implemented across hospitals or hospital departments without standardization or advance planning to ensure equitable outcomes, it is likely that the burden of a lower standard of care will fall primarily on disadvantaged patient groups and racial minorities. However, standardization alone may be insufficient. Other factors like varying levels of details on patients\u2019 charts between hospitals could produce unfair outcomes if used to determine patient admission or transfer priority, even if the criteria for admissions and transfers are consistent. Thus, ongoing monitoring for unintended patterns of disparity must accompany standardization to ensure that blind spots in the allocation process are identified and corrected.\n\n\nBioethics has long been preoccupied with the micro-allocation of limited resources within hospitals instead of confronting the structural inequities that underlie broader scarcity and patient needs. The traditional dilemma of allocating limited hospital resources among a certain number of patients overlooks questions about how other resources have already been allocated, which patients were present at the hospital in the first place, where hospitals have (and have not) been built, and whether previous allocation strategies created bias in the broader distribution of resources. Therefore, to achieve fairness, bioethicists must pay attention to aspects of the broader distribution of resources, such as social determinants of health and the allocation of preventative resources at the public health level. One strategy for measuring and addressing these disparities is the Area Deprivation Index (ADI). The ADI quantifies the effects of race, class, and socioeconomic background by geographic region for use in public health research and the prioritization of resources.[27] It has shown promise in identifying geographic regions in need of targeted community health efforts for diabetes management based on electronic patient health records.[28] The ADI and similar tools would be useful in proactively deciding how to allocate public health resources when hospitals are strained. Moreover, through using population health and resource data, public health organizations may forecast contingency shortages allowing for the adoption of early measures to mitigate health disparities that might otherwise be amplified from hospital-level contingency allocation decisions.\n\n\nCONCLUSION\n\n\nMeeting community health needs during periods of contingency scarcity, both before and after crisis standards of care apply, will require contingency standards of care rather than a bedside ad hoc distribution of scarce resources. While it is not inherently ethically unjustifiable for hospitals to adopt measures that may lower the standard of care during contingency standards, the necessity of these measures requires that bioethicists consider how equity, transparency, and the overall aim of functional equivalence can best be achieved under conditions of scarcity. The long-term health consequences of existing contingency measures, the potential for ad hoc and inconsistent allocation of scarce resources, and the need for consensus about when it becomes appropriate to make the formal transition to crisis standards of care demand further consideration. Because contingency measures will likely amplify existing disparities as crisis standards have, hospital-level management of scarcity is inadequate. Public health measures should be adopted in parallel to anticipate and manage health needs at the community or state level when resources are strained.\n\n-\n\n\n[1] Altevogt, B. M., Stroud, C., Hanson, S. L., Hanfling, D., & Gostin, L. O. (2009). Guidance for Establishing Crisis Standards of Care for Use in Disaster Situations: A Letter Report. The National Academies Press. https://doi.org/10.17226/12749\n\n\n[2] Emanuel, E. J., Persad, G., Upshur, R., Thome, B., Parker, M., Glickman, A., Zhang, C., Boyle, C., Smith, M., & Phillips, J. P. (2020). Fair Allocation of Scarce Medical Resources in the Time of Covid-19. New England Journal of Medicine, 382(21), 2049\u20132055. https://doi.org/10.1056/NEJMsb2005114\n\n\n[3] Alfandre, D., Sharpe, V. A., Geppert, C., Foglia, M. B., Berkowitz, K., Chanko, B., & Schonfeld, T. (2021). Between Usual and Crisis Phases of a Public Health Emergency: The Mediating Role of Contingency Measures. The American Journal of Bioethics, 21(8), 4\u201316. https://doi.org/10.1080/15265161.2021.1925778\n\n\n[4] Rosenbaum, L. (2020). Facing Covid-19 in Italy\u2014Ethics, Logistics, and Therapeutics on the Epidemic\u2019s Front Line. New England Journal of Medicine, 382(20), 1873\u20131875. https://doi.org/10.1056/NEJMp2005492\n\n\n[5] Orfali, K. (2020). What Triage Issues Reveal: Ethics in the COVID-19 Pandemic in Italy and France. Journal of Bioethical Inquiry, 17(4), 675\u2013679. https://doi.org/10.1007/s11673-020-10059-y\n\n\n[6] Romney, D., Fox, H., Carlson, S., Bachmann, D., O\u2019Mathuna, D., & Kman, N. (2020). Allocation of Scarce Resources in a Pandemic: A Systematic Review of US State Crisis Standards of Care Documents. Disaster Medicine and Public Health Preparedness, 14(5), 677\u2013683. https://doi.org/10.1017/dmp.2020.101\n\n\n[7] Butler, C. R., Webster, L. B., Diekema, D. S., Gray, M. M., Sakata, V. L., Tonelli, M. R., & Vranas, K. C. (2022). Perspectives of Triage Team Members Participating in Statewide Triage Simulations for Scarce Resource Allocation During the COVID-19 Pandemic in Washington State. JAMA Network Open, 5(4), e227639. https://doi.org/10.1001/jamanetworkopen.2022.7639\n\n\n[8] Dwyer, J. (2020, May 14). One Hospital Was Besieged by the Virus. Nearby Was \u2018Plenty of Space.\u2019\u2014The New York Times. The New York Times. https://www.nytimes.com/2020/05/14/nyregion/coronavirus-ny-hospitals.html\n\n\n[9] Persad, G., Wertheimer, A., & Emanuel, E. J. (2009). Principles for allocation of scarce medical interventions. Lancet (London, England), 373(9661), 423\u2013431. https://doi.org/10.1016/S0140-6736(09)60137-9\n\n\n[10] Mitchell, S. H., Rigler, J., & Baum, K. (2022). Regional Transfer Coordination and Hospital Load Balancing During COVID-19 Surges. JAMA Health Forum, 3(2), e215048. https://doi.org/10.1001/jamahealthforum.2021.5048\n\n\n[11] ASPE. (2022, May 3). Impact of the COVID-19 Pandemic on the Hospital and Outpatient Clinician Workforce: Challenges and Policy Responses. ASPE. https://aspe.hhs.gov/reports/covid-19-health-care-workforce\n\n\n[12] Executive Office of Health and Human Services. (2021). Baker-Polito Administration Provides COVID-19 Update on Mask Advisory, Hospital Support | Mass.gov. https://www.mass.gov/news/baker-polito-administration-provides-covid-19-update-on-mask-advisory-hospital-support\n\n\n[13] The Lancet Rheumatology. (2021). Too long to wait: The impact of COVID-19 on elective surgery. The Lancet Rheumatology, 3(2), e83. https://doi.org/10.1016/S2665-9913(21)00001-1\n\n\n[14] For an example of transition planning between crisis and contingency standards, see Minnesota Department of Health. (2021). Ethical Framework for Transitions Between Conventional, Contingency, and Crisis Conditions in Pervasive or Catastrophic Public Health Events with Medical Surge Implications (Minnesota Crisis Standards of Care). https://www.health.state.mn.us/communities/ep/surge/crisis/framework_transitions.pdf\n\n\n[15] Powell, T., & Chuang, E. (2020). COVID in NYC: What We Could Do Better. The American Journal of Bioethics, 20(7), 62\u201366. https://doi.org/10.1080/15265161.2020.1764146\n\n\n[16] Persoff, J., & Wynia, M. K. (2021). Ethically Navigating the Murky Waters of \u201cContingency Standards of Care.\u201d The American Journal of Bioethics, 21(8), 20\u201321. https://doi.org/10.1080/15265161.2021.1939810\n\n\n[17] Board on Health Sciences Policy & Institute of Medicine. (2013). Indicators and Triggers. In Crisis Standards of Care: A Toolkit for Indicators and Triggers. National Academies Press (US). http://www.ncbi.nlm.nih.gov/books/NBK202381/\n\n\n[18] Frith, L., Draper, H., Fovargue, S., Baines, P., Redhead, C., & Chiumento, A. (2021). Neither \u2018Crisis Light\u2019 nor \u2018Business as Usual\u2019: Considering the Distinctive Ethical Issues Raised by the Contingency and Reset Phases of a Pandemic. The American Journal of Bioethics, 21(8), 34\u201337. https://doi.org/10.1080/15265161.2021.1940363\n\n\n[19] Rosseau, M. (2022, January 14). New emergency orders issued to help understaffed Mass. Hospitals. Boston.Com. https://www.boston.com/news/coronavirus/2022/01/14/new-emergency-orders-issued-to-help-understaffed-mass-hospitals/\n\n\n[20] Zhang, X., Carabello, M., Hill, T., Bell, S. A., Stephenson, R., & Mahajan, P. (2020). Trends of Racial/Ethnic Differences in Emergency Department Care Outcomes Among Adults in the United States From 2005 to 2016. Frontiers in Medicine, 7. https://www.frontiersin.org/articles/10.3389/fmed.2020.00300\n\n\n[21] Hick, J. L., Hanfling, D., & Wynia, M. (2022). Hospital Planning for Contingency and Crisis Conditions: Crisis Standards of Care Lessons from COVID-19. The Joint Commission Journal on Quality and Patient Safety. https://doi.org/10.1016/j.jcjq.2022.02.003\n\n\n[22] Musy, S. N., Endrich, O., Leichtle, A. B., Griffiths, P., Nakas, C. T., & Simon, M. (2021). The association between nurse staffing and inpatient mortality: A shift-level retrospective longitudinal study. International Journal of Nursing Studies, 120, 103950. https://doi.org/10.1016/j.ijnurstu.2021.103950\n\n\n[23] Brooks Carthon, M., Brom, H., McHugh, M., Sloane, D. M., Berg, R., Merchant, R., Girotra, S., & Aiken, L. H. (2021). Better Nurse Staffing Is Associated With Survival for Black Patients and Diminishes Racial Disparities in Survival After In-Hospital Cardiac Arrests. Medical Care, 59(2), 169\u2013176. https://doi.org/10.1097/MLR.0000000000001464\n\n\n[24] Annas, G. J., & Crosby, S. S. (2021). Standard Racism: Trying to Use \u201cCrisis Standards of Care\u201d in the COVID-19 Pandemic. The American Journal of Bioethics, 21(8), 1\u20133. https://doi.org/10.1080/15265161.2021.1941424\n\n\n[25] Wynia, M. K., & Sottile, P. D. (2020). Ethical Triage Demands a Better Triage Survivability Score. The American Journal of Bioethics, 20(7), 75\u201377. https://doi.org/10.1080/15265161.2020.1779412\n\n\n[26] Fink, S. (2020). Ethical Dilemmas in Covid-19 Medical Care: Is a Problematic Triage Protocol Better or Worse than No Protocol at All? The American Journal of Bioethics, 20(7), 1\u20135. https://doi.org/10.1080/15265161.2020.1788663\n\n\n[27] Knighton, A. J., Savitz, L., Belnap, T., Stephenson, B., & VanDerslice, J. (2016). Introduction of an Area Deprivation Index Measuring Patient Socioeconomic Status in an Integrated Health System: Implications for Population Health. EGEMS (Washington, DC), 4(3), 1238. https://doi.org/10.13063/2327-9214.1238\n\n\n[28] Kurani, S. S., Lampman, M. A., Funni, S. A., Giblon, R. E., Inselman, J. W., Shah, N. D., Allen, S., Rushlow, D., & McCoy, R. G. (2021). Association Between Area-Level Socioeconomic Deprivation and Diabetes Care Quality in US Primary Care Practices. JAMA Network Open, 4(12), e2138438. https://doi.org/10.1001/jamanetworkopen.2021.38438\n",
+        "title": "Addressing Shortcomings in Contingency Standards of Care"
+      },
+      "id": "6c15d223927c42fa89d90b3cce036dc8",
+      "created_date": "2022-09-17T19:16:09Z"
+    },
+    {
+      "last_updated": "2025-08-19T23:07:37Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.1186/s12889-024-18890-3",
+            "type": "doi"
+          },
+          {
+            "id": "1471-2458",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "24",
+          "number": "1",
+          "country": "GB",
+          "issns": [
+            "1471-2458"
+          ],
+          "publisher": "BMC",
+          "language": [
+            "EN"
+          ],
+          "title": "BMC Public Health"
+        },
+        "month": "5",
+        "end_page": "15",
+        "keywords": [
+          "COVID-19",
+          "Community transmission",
+          "Response capacity",
+          "Situational level",
+          "Public health"
+        ],
+        "year": "2024",
+        "start_page": "1",
+        "subject": [
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Sarbhan Singh"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Lai Chee Herng"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Nuur Hafizah Md. Iderus"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Sumarni Mohd Ghazali"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Lonny Chen Rong Qi Ahmad"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Nur\u2019ain Mohd Ghazali"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Mohd Nadzmi Md Nadzri"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Asrul Anuar"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Mohd Kamarulariffin Kamarudin"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Lim Mei Cheng"
+          },
+          {
+            "affiliation": "Department of Medicine, Faculty of Medicine, Universiti Malaya",
+            "name": "Kok Keng Tee"
+          },
+          {
+            "affiliation": "Institute for Public Health (IPH), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Chong Zhuo Lin"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Balvinder Singh Gill"
+          },
+          {
+            "affiliation": "Institute for Medical Research (IMR), National Institutes of Health (NIH), Ministry of Health Malaysia",
+            "name": "Nur Ar Rabiah Binti Ahmad"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "https://doi.org/10.1186/s12889-024-18890-3"
+          }
+        ],
+        "abstract": "Abstract Objectives Public Health Social Measures (PHSM) such as movement restriction movement needed to be adjusted accordingly during the COVID-19 pandemic to ensure low disease transmission alongside adequate health system capacities based on the COVID-19 situational matrix proposed by the World Health Organization (WHO). This paper aims to develop a mechanism to determine the COVID-19 situational matrix to adjust movement restriction intensity for the control of COVID-19 in Malaysia. Methods Several epidemiological indicators were selected based on the WHO PHSM interim guidance report and validated individually and in several combinations to estimate the community transmission level (CT) and health system response capacity (RC) variables. Correlation analysis between CT and RC with COVID-19 cases was performed to determine the most appropriate CT and RC variables. Subsequently, the CT and RC variables were combined to form a composite COVID-19 situational matrix (SL). The SL matrix was validated using correlation analysis with COVID-19 case trends. Subsequently, an automated web-based system that generated daily CT, RC, and SL was developed. Results CT and RC variables were estimated using case incidence and hospitalization rate; Hospital bed capacity and COVID-19 ICU occupancy respectively. The estimated CT and RC were strongly correlated [\u03c1\u2009=\u20090.806 (95% CI 0.752, 0.848); and \u03c1\u2009=\u20090.814 (95% CI 0.778, 0.839), p\u2009<\u20090.001] with the COVID-19 cases. The estimated SL was strongly correlated with COVID-19 cases (\u03c1\u2009=\u20090.845, p\u2009<\u20090.001) and responded well to the various COVID-19 case trends during the pandemic. SL changes occurred earlier during the increase of cases but slower during the decrease, indicating a conservative response. The automated web-based system developed produced daily real-time CT, RC, and SL for the COVID-19 pandemic. Conclusions The indicators selected and combinations formed were able to generate validated daily CT and RC levels for Malaysia. Subsequently, the CT and RC levels were able to provide accurate and sensitive information for the estimation of SL which provided valuable evidence on the progression of the pandemic and movement restriction adjustment for the control of Malaysia.",
+        "title": "Utilizing disease transmission and response capacities to optimize covid-19 control in Malaysia"
+      },
+      "id": "6c4b8818c11443aeb3e63a4018cedbaf",
+      "created_date": "2024-06-02T11:36:20Z"
+    },
+    {
+      "last_updated": "2025-08-19T19:41:42Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "1179-1500",
+            "type": "pissn"
+          }
+        ],
+        "journal": {
+          "volume": "Volume 12",
+          "country": "GB",
+          "issns": [
+            "1179-1500"
+          ],
+          "publisher": "Dove Medical Press",
+          "language": [
+            "EN"
+          ],
+          "title": "Open Access Emergency Medicine"
+        },
+        "month": "11",
+        "end_page": "387",
+        "keywords": [
+          "simulation",
+          "maximum emergency",
+          "table top simulation",
+          "bed surge capacity",
+          "disaster medicine",
+          "maxiemergency."
+        ],
+        "year": "2020",
+        "start_page": "377",
+        "subject": [
+          {
+            "code": "RC86-88.9",
+            "scheme": "LCC",
+            "term": "Medical emergencies. Critical care. Intensive care. First aid"
+          }
+        ],
+        "author": [
+          {
+            "name": "Ceresa IF"
+          },
+          {
+            "name": "Savioli G"
+          },
+          {
+            "name": "Angeli V"
+          },
+          {
+            "name": "Novelli V"
+          },
+          {
+            "name": "Muzzi A"
+          },
+          {
+            "name": "Grugnetti G"
+          },
+          {
+            "name": "Cobianchi L"
+          },
+          {
+            "name": "Manzoni F"
+          },
+          {
+            "name": "Klersy C"
+          },
+          {
+            "name": "Lago P"
+          },
+          {
+            "name": "Marchese P"
+          },
+          {
+            "name": "Marena C"
+          },
+          {
+            "name": "Ricevuti G"
+          },
+          {
+            "name": "Bressan MA"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "https://www.dovepress.com/preparing-for-the-maximum-emergency-with-a-simulation-a-table-top-test-peer-reviewed-article-OAEM"
+          }
+        ],
+        "abstract": "Iride Francesca Ceresa,1 Gabriele Savioli,1,2 Valentina Angeli,3 Viola Novelli,4 Alba Muzzi,4 Giuseppina Grugnetti,5 Lorenzo Cobianchi,6 Federica Manzoni,7 Catherine Klersy,7 Paolo Lago,8 Pierantonio Marchese,9 Carlo Marena,4 Giovanni Ricevuti,10 Maria Antonietta Bressan11 1Emergency Department, San Matteo IRCCS Hospital Foundation, Pavia 27100, Italy; 2Department of Clinical-Surgical, Diagnostic and Pediatric Sciences, PhD School in Experimental Medicine, University of Pavia, Pavia 27100, Italy; 3Emergency Department, Sant&rsquo;Andrea Hospital, Vercelli, 13100, Italy; 4Direzione Medica di Presidio, San Matteo IRCCS Hospital Foundation, Pavia 27100, Italy; 5SITRA, San Matteo IRCCS Hospital Foundation, Pavia 27100, Italy; 6Surgery, University of Pavia, Pavia 27100, Italy; 7Clinical Epidemiology and Biometric Unit, Scientific Direction, San Matteo IRCCS Hospital Foundation, Pavia, Italy; 8Ingegneria Clinica, IRCCS Policlinico San Matteo, Pavia 27100, Italy; 9Servizio Prevenzione e Protezione, IRCCS Policlinico San Matteo, Pavia 27100, Italy; 10Department of Drug Science, University of Pavia, Saint Camillus International University of Health Sciences, Rome, Italy; 11Emergency Department, IRCCS Policlinico San Matteo, Pavia 27100, ItalyCorrespondence: Gabriele SavioliEmergency Department, Irccs Policlinico San Matteo, Piazza Botta, 2, Pavia 27100, ItalyTel +39 340 9070001Email gabrielesavioli@gmail.comIntroduction: The sudden increase in the number of critically ill patients following a disaster can be overwhelming.Study Objective: The main objective of this study was to assess the real number of available and readily freeable beds (&ldquo;bed surge capacity&rdquo;) and the availability of emergency operating rooms (OR) in a maximum emergency using a theoretical simulation.Patients and Methods: The proportion of dismissible patients in four areas (Medical Area, Surgical Area, Sub-intensive Care Units, Intensive Care Units) and three emergency OR was assessed at 2 and 24 hours after a simulated maximum emergency. Four scenarios were modeled. Hospitalization and surgical capacities were assessed on weekdays and holidays. The creation of new beds was presumed by the possibility of moving patients to a lower level of care than that provided at the time of detection, of dislocation of patients to a discharge room, with care transferred to lower-intensity hospitals, rehabilitation, or discharge facilities. The Phase 1 table-top simulations were conducted during the weekday morning hours. In particular, the 24-hour table-top simulations of a hypothetical event lasted about 150 minutes compared to those conducted at 2 hours, which were found to be longer (about 195 minutes). Phase 2 was conducted on two public holidays and a quick response time was observed within the first 40 minutes of the start of the test (about 45% of departments).Results: The availability of simulated beds was greater than that indicated in the maximum emergency plans (which was based solely on the census of beds). Patients admitted to Intensive Care and The Sub-Intensive Area may be more difficult to move than those in low-intensity care. The availability of emergency OR was not problematic. Age influenced the possibility of remitting/transferring patients.Conclusion: Simulation in advance of a maximum emergency is helpful in designing an efficient response plan.Keywords: simulation, maximum emergency, table-top simulation, bed surge capacity, disaster medicine, maxiemergency",
+        "title": "Preparing for the Maximum Emergency with a Simulation: A Table-Top Test to Evaluate Bed Surge Capacity and Staff Compliance with Training"
+      },
+      "id": "7963defbee354a06812b0a862fe35201",
+      "created_date": "2020-11-17T21:43:06Z"
+    },
+    {
+      "last_updated": "2025-08-19T19:22:09Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.1186/s12916-019-1288-7",
+            "type": "doi"
+          },
+          {
+            "id": "1741-7015",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "17",
+          "number": "1",
+          "country": "GB",
+          "issns": [
+            "1741-7015"
+          ],
+          "publisher": "BMC",
+          "language": [
+            "EN"
+          ],
+          "title": "BMC Medicine"
+        },
+        "month": "3",
+        "end_page": "11",
+        "keywords": [
+          "Diphtheria",
+          "Real-time modelling",
+          "Bangladesh",
+          "Refugees",
+          "Infectious disease",
+          "Epidemiological modelling"
+        ],
+        "year": "2019",
+        "start_page": "1",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Centre for the Mathematical Modelling of Infectious Diseases, London School of Hygiene and Tropical Medicine",
+            "name": "Flavio Finger"
+          },
+          {
+            "affiliation": "Centre for the Mathematical Modelling of Infectious Diseases, London School of Hygiene and Tropical Medicine",
+            "name": "Sebastian Funk"
+          },
+          {
+            "affiliation": "M\u00e9decins Sans Fronti\u00e8res",
+            "name": "Kate White"
+          },
+          {
+            "affiliation": "M\u00e9decins Sans Fronti\u00e8res",
+            "name": "M. Ruby Siddiqui"
+          },
+          {
+            "affiliation": "Centre for the Mathematical Modelling of Infectious Diseases, London School of Hygiene and Tropical Medicine",
+            "name": "W. John Edmunds"
+          },
+          {
+            "affiliation": "Centre for the Mathematical Modelling of Infectious Diseases, London School of Hygiene and Tropical Medicine",
+            "name": "Adam J. Kucharski"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "http://link.springer.com/article/10.1186/s12916-019-1288-7"
+          }
+        ],
+        "abstract": "Abstract Background Between August and December 2017, more than 625,000 Rohingya from Myanmar fled into Bangladesh, settling in informal makeshift camps in Cox\u2019s Bazar district and joining 212,000 Rohingya already present. In early November, a diphtheria outbreak hit the camps, with 440 reported cases during the first month. A rise in cases during early December led to a collaboration between teams from M\u00e9decins sans Fronti\u00e8res\u2014who were running a provisional diphtheria treatment centre\u2014and the London School of Hygiene and Tropical Medicine with the goal to use transmission dynamic models to forecast the potential scale of the outbreak and the resulting resource needs. Methods We first adjusted for delays between symptom onset and case presentation using the observed distribution of reporting delays from previously reported cases. We then fit a compartmental transmission model to the adjusted incidence stratified by age group and location. Model forecasts with a lead time of 2\u00a0weeks were issued on 12, 20, 26 and 30 December and communicated to decision-makers. Results The first forecast estimated that the outbreak would peak on 19 December in Balukhali camp with 303 (95% posterior predictive interval 122\u2013599) cases and would continue to grow in Kutupalong camp, requiring a bed capacity of 316 (95% posterior predictive interval (PPI) 197\u2013499). On 19 December, a total of 54 cases were reported, lower than forecasted. Subsequent forecasts were more accurate: on 20 December, we predicted a total of 912 cases (95% PPI 367\u20132183) and 136 (95% PPI 55\u2013327) hospitalizations until the end of the year, with 616 cases actually reported during this period. Conclusions Real-time modelling enabled feedback of key information about the potential scale of the epidemic, resource needs and mechanisms of transmission to decision-makers at a time when this information was largely unknown. By 20 December, the model generated reliable forecasts and helped support decision-making on operational aspects of the outbreak response, such as hospital bed and staff needs, and with advocacy for control measures. Although modelling is only one component of the evidence base for decision-making in outbreak situations, suitable analysis and forecasting techniques can be used to gain insights into an ongoing outbreak.",
+        "title": "Real-time analysis of the diphtheria outbreak in forcibly displaced Myanmar nationals in Bangladesh"
+      },
+      "id": "7b7680f878c24fb597847234ec022a14",
+      "created_date": "2019-03-17T12:31:39Z"
+    }
+  ],
+  "next": "https://doaj.org/api/v4/search/articles/hospital%20bed%20capacity%20real%20time?page=2&pageSize=10",
+  "last": "https://doaj.org/api/v4/search/articles/hospital%20bed%20capacity%20real%20time?page=3&pageSize=10"
+}

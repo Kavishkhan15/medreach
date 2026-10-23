@@ -1,0 +1,46 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "184",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13671531",
+      "13523435",
+      "13507664",
+      "13456652",
+      "13419191",
+      "13391048",
+      "13368440",
+      "13173564",
+      "13164309",
+      "13158658"
+    ],
+    "translationset": [
+      {
+        "from": "blood donor",
+        "to": "\"blood donors\"[MeSH Terms] OR (\"blood\"[All Fields] AND \"donors\"[All Fields]) OR \"blood donors\"[All Fields] OR (\"blood\"[All Fields] AND \"donor\"[All Fields]) OR \"blood donor\"[All Fields]"
+      },
+      {
+        "from": "recruitment",
+        "to": "\"recruit\"[All Fields] OR \"recruited\"[All Fields] OR \"recruiter\"[All Fields] OR \"recruiters\"[All Fields] OR \"recruiting\"[All Fields] OR \"recruitment\"[All Fields] OR \"recruitments\"[All Fields] OR \"recruits\"[All Fields]"
+      },
+      {
+        "from": "social media",
+        "to": "\"social media\"[MeSH Terms] OR (\"social\"[All Fields] AND \"media\"[All Fields]) OR \"social media\"[All Fields]"
+      },
+      {
+        "from": "twitter",
+        "to": "\"twitter\"[All Fields] OR \"twitter's\"[All Fields] OR \"twitters\"[All Fields]"
+      },
+      {
+        "from": "india",
+        "to": "\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india's\"[All Fields] OR \"indias\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"blood donors\"[MeSH Terms] OR (\"blood\"[All Fields] AND \"donors\"[All Fields]) OR \"blood donors\"[All Fields] OR (\"blood\"[All Fields] AND \"donor\"[All Fields]) OR \"blood donor\"[All Fields]) AND (\"recruit\"[All Fields] OR \"recruited\"[All Fields] OR \"recruiter\"[All Fields] OR \"recruiters\"[All Fields] OR \"recruiting\"[All Fields] OR \"recruitment\"[All Fields] OR \"recruitments\"[All Fields] OR \"recruits\"[All Fields]) AND (\"social media\"[MeSH Terms] OR (\"social\"[All Fields] AND \"media\"[All Fields]) OR \"social media\"[All Fields]) AND (\"twitter\"[All Fields] OR \"twitter s\"[All Fields] OR \"twitters\"[All Fields]) AND (\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india s\"[All Fields] OR \"indias\"[All Fields])"
+  }
+}

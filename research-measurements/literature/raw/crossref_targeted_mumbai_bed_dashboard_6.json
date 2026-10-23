@@ -1,0 +1,525 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 7264828,
+    "items": [
+      {
+        "DOI": "10.1038/nindia.2020.109",
+        "title": [
+          "Crowdsourcing for robust, real-time COVID-19 data"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              7,
+              14
+            ]
+          ]
+        },
+        "container-title": [
+          "Nature India"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1038/nindia.2020.109",
+        "score": 33.034214
+      },
+      {
+        "abstract": "<jats:p>In this Viewpoint, Lauren Gardner, winner of the 2022 Lasker-Bloomberg Public Service Award for creating the COVID-19 Dashboard, discusses the development of the Dashboard and the factors that contributed to its success.</jats:p>",
+        "DOI": "10.1001/jama.2022.15590",
+        "type": "journal-article",
+        "title": [
+          "The COVID-19 Dashboard for Real-time Tracking of the Pandemic"
+        ],
+        "author": [
+          {
+            "given": "Lauren",
+            "family": "Gardner",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Center for Systems Science and Engineering (CSSE), Department of Civil and Systems Engineering, Johns Hopkins University, Baltimore, Maryland"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "JAMA"
+        ],
+        "score": 32.479816,
+        "URL": "https://doi.org/10.1001/jama.2022.15590",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              10,
+              4
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Since the beginning of the pandemic, the world has registered more than 250 million confirmed cases and more than 5 million deaths. A web-based interactive dashboard with real-time hosted data was developed by the John Hopkins University Center for Systems Science and Engineering (CSSE) to provide researchers, public health officials and the general public with an easy-to-use tool to visualize and track the pandemic as it unfolds around the world. The incidence rate is a measure of events that represents the transition between two states, not from disease to disease, so it is an estimate of risk. When looking at the aforementioned incidence rate that is reported for Angola and other countries, we note that the observation period in which the incidence rate is calculated and presented in the Panel is missing or not clearly defined, although the choice of this element is entirely arbitrary, but must be clearly defined in the calculation. The panel considers as new cases all cases from notification of the first confirmed case (March 21, 2020 in the Angola example) to the review date (Nov. 30, 2021). In our view, it is completely irrelevant to estimate the risk of a potentially epidemic disease over long observation periods, as presented in the panel when the objective is to allow decision-making to control and assess the pandemic by public health authorities. We think that it would be entirely sensible and convenient to present this indicator in short observation periods of a maximum of 28 days and a minimum of 7 days.</jats:p>",
+        "DOI": "10.2139/ssrn.4122259",
+        "type": "posted-content",
+        "title": [
+          "John Hopkins Got Incidence Rate Wrong: a Close Look at John Hopkins University's Web-Based Interactive Dashboard for Real-Time Tracking of COVID-19"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0001-5709-5264",
+            "authenticated-orcid": true,
+            "given": "Santland",
+            "family": "Lemos",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Paulo Ney",
+            "family": "Solari",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 31.42625,
+        "URL": "https://doi.org/10.2139/ssrn.4122259",
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.26782/jmcms.2020.06.00001",
+        "title": [
+          "GO-COVID: AN INTERACTIVE CROSS-PLATFORM BASED DASHBOARD FOR REAL-TIME TRACKING OF COVID-19 USING DATA ANALYTICS"
+        ],
+        "author": [
+          {
+            "given": "Sagnick",
+            "family": "Biswas",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              6,
+              24
+            ]
+          ]
+        },
+        "container-title": [
+          "JOURNAL OF MECHANICS OF CONTINUA AND MATHEMATICAL SCIENCES"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.26782/jmcms.2020.06.00001",
+        "score": 31.212517
+      },
+      {
+        "DOI": "10.1016/s1473-3099(20)30120-1",
+        "title": [
+          "An interactive web-based dashboard to track COVID-19 in real time"
+        ],
+        "author": [
+          {
+            "given": "Ensheng",
+            "family": "Dong",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Hongru",
+            "family": "Du",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Lauren",
+            "family": "Gardner",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "The Lancet Infectious Diseases"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/s1473-3099(20)30120-1",
+        "score": 29.909128
+      },
+      {
+        "DOI": "10.1016/s2589-7500(20)30086-8",
+        "title": [
+          "A real-time dashboard of clinical trials for COVID-19"
+        ],
+        "author": [
+          {
+            "given": "Kristian",
+            "family": "Thorlund",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Louis",
+            "family": "Dron",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jay",
+            "family": "Park",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Grace",
+            "family": "Hsu",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jamie I",
+            "family": "Forrest",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Edward J",
+            "family": "Mills",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              6
+            ]
+          ]
+        },
+        "container-title": [
+          "The Lancet Digital Health"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/s2589-7500(20)30086-8",
+        "score": 28.38956
+      },
+      {
+        "DOI": "10.7765/9781526122520.00021",
+        "title": [
+          "From real-time city to asynchronicity"
+        ],
+        "author": [
+          {
+            "given": "Michiel de",
+            "family": "Lange",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              6,
+              29
+            ]
+          ]
+        },
+        "container-title": [
+          "Time for mapping"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.7765/9781526122520.00021",
+        "score": 28.159843
+      },
+      {
+        "abstract": "<jats:p>COVID-19 is very dynamic in nature, and it is varying drastically with time, and this requires continuous monitoring of the situation for better resource management during the pandemic such as medical facilities and daily necessities. The situation needs to be evaluated on a regular interval by all the stakeholders such as all the government officials for making strategic decisions such as lockdown or lifting lockdown in a phase-wise manner. In order to manage pandemics such as COVID-19, the administration needs to know statistical information, trends, forecasting, and overall aggregated real-time information, and this can be achieved through a well-designed dashboard. A dashboard is used for efficient monitoring of continuously evolving situations, and it provides an overall picture in addition to historical information. This chapter proposes a real-time dashboard design for COVID-19, and it will provide insight about different elements such as design and application of the dashboard in pandemic management.</jats:p>",
+        "DOI": "10.4018/978-1-7998-7188-0.ch014",
+        "type": "book-chapter",
+        "title": [
+          "Designing a Real-Time Dashboard for Pandemic Management"
+        ],
+        "author": [
+          {
+            "given": "Rahul",
+            "family": "Rai",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Indira Gandhi National Open University, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Advances in Medical Technologies and Clinical Practice",
+          "Machine Learning and Data Analytics for Predicting, Managing, and Monitoring Disease"
+        ],
+        "score": 27.811108,
+        "URL": "https://doi.org/10.4018/978-1-7998-7188-0.ch014",
+        "published": {
+          "date-parts": [
+            [
+              2021
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n               <jats:p>In response to the coronavirus disease-19 (COVID-19) pandemic, numerous institutions published COVID-19 dashboards for reporting epidemiological statistics at the county, state, or national level. However, statistics for smaller cities were often not reported, requiring these areas to develop their own data processing pipelines. For under-resourced departments of health, the development of these pipelines was challenging, leading them to rely on nonspecific and often delayed infection statistics during the pandemic. To avoid this issue, the Stamford, Connecticut Department of Health (SDH) contracted with the Columbia Mailman School of Public Health to develop an online dashboard that displays real-time case, death, test, vaccination, hospitalization, and forecast data for their city, allowing SDH to monitor trends for specific demographic and geographic groups. Insights from the dashboard allowed SDH to initiate timely and targeted testing/vaccination campaigns. The dashboard is widely used and highlights the benefit of public-academic partnerships in public health, especially during the COVID-19 pandemic.</jats:p>",
+        "DOI": "10.1093/jamia/ocac025",
+        "type": "journal-article",
+        "title": [
+          "A real-time COVID-19 surveillance dashboard to support epidemic response in Connecticut: lessons from an academic-health department partnership"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-7900-8763",
+            "authenticated-orcid": false,
+            "given": "Abhinav",
+            "family": "Suri",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Epidemiology, Columbia Mailman School of Public Health, New York City, New York, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Melanie",
+            "family": "Askari",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Epidemiology, Columbia Mailman School of Public Health, New York City, New York, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jennifer",
+            "family": "Calder",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Epidemiology, Columbia Mailman School of Public Health, New York City, New York, USA"
+              },
+              {
+                "name": "Formerly The Stamford, Connecticut Department of Health, Stamford, Connecticut, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Charles",
+            "family": "Branas",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Epidemiology, Columbia Mailman School of Public Health, New York City, New York, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Andrew",
+            "family": "Rundle",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Epidemiology, Columbia Mailman School of Public Health, New York City, New York, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Journal of the American Medical Informatics Association"
+        ],
+        "score": 27.305933,
+        "URL": "https://doi.org/10.1093/jamia/ocac025",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              2,
+              23
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1007/978-1-4842-7074-5_7",
+        "title": [
+          "Building a Real-Time Call Tracking Dashboard"
+        ],
+        "author": [
+          {
+            "given": "Roger",
+            "family": "Stringer",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021
+            ]
+          ]
+        },
+        "container-title": [
+          "Real-Time Twilio and Flybase"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-1-4842-7074-5_7",
+        "score": 27.145302
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "real-time bed dashboard COVID-19 India"
+    }
+  }
+}

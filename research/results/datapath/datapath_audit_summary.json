@@ -1,0 +1,617 @@
+[
+  {
+    "id": "bootstrap_root",
+    "url": "https://medreachmumbai.vercel.app/",
+    "type": "html",
+    "variant": "bootstrap",
+    "route": "/",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 1135,
+    "contentLength": 51939,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "32583",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"d1b1df3abdccdd5d7109793cdc9ecb07\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "bootstrap_hospitals",
+    "url": "https://medreachmumbai.vercel.app/hospitals",
+    "type": "html",
+    "variant": "bootstrap",
+    "route": "/hospitals",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 335,
+    "contentLength": 29850,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31611",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"3454aa5e44a20e0e98d12e6bd9c096d2\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "bootstrap_emergency",
+    "url": "https://medreachmumbai.vercel.app/emergency",
+    "type": "html",
+    "variant": "bootstrap",
+    "route": "/emergency",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 350,
+    "contentLength": 33432,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31518",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"a7df297e8b4d77dac7649c13012e835f\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "bootstrap_blood_banks",
+    "url": "https://medreachmumbai.vercel.app/blood-banks",
+    "type": "html",
+    "variant": "bootstrap",
+    "route": "/blood-banks",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 358,
+    "contentLength": 29019,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31424",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"3b72df0287c9a25a8c15e2794afa3297\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "bootstrap_ambulances",
+    "url": "https://medreachmumbai.vercel.app/ambulances",
+    "type": "html",
+    "variant": "bootstrap",
+    "route": "/ambulances",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 356,
+    "contentLength": 26355,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31237",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"7546f22c35fa3111781931f9ff017e0a\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "tailwind_root",
+    "url": "https://medreach-tailwind.vercel.app/",
+    "type": "html",
+    "variant": "tailwind",
+    "route": "/",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 1266,
+    "contentLength": 52429,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "32591",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"1afb1c917324d94a342e66c9a2d2ab32\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "tailwind_hospitals",
+    "url": "https://medreach-tailwind.vercel.app/hospitals",
+    "type": "html",
+    "variant": "tailwind",
+    "route": "/hospitals",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 384,
+    "contentLength": 33827,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31612",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"841169fa5a90114773bc5b245bcfae20\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {
+        "ventilator": 2
+      },
+      "hasVolatileClinicalData": true
+    }
+  },
+  {
+    "id": "tailwind_emergency",
+    "url": "https://medreach-tailwind.vercel.app/emergency",
+    "type": "html",
+    "variant": "tailwind",
+    "route": "/emergency",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 456,
+    "contentLength": 35172,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31519",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"8195259a9d5f11a6ddc62a5112831b2e\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "tailwind_blood_banks",
+    "url": "https://medreach-tailwind.vercel.app/blood-banks",
+    "type": "html",
+    "variant": "tailwind",
+    "route": "/blood-banks",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 462,
+    "contentLength": 28843,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31425",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"f4a81d02f23926eb1d36270d13ee7f2e\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "tailwind_ambulances",
+    "url": "https://medreach-tailwind.vercel.app/ambulances",
+    "type": "html",
+    "variant": "tailwind",
+    "route": "/ambulances",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 406,
+    "contentLength": 26086,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31239",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"c457f3e8ec6b22f917d1969b69d8ed26\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "skeleton_root",
+    "url": "https://medreach-skeleton.vercel.app/",
+    "type": "html",
+    "variant": "skeleton",
+    "route": "/",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 1301,
+    "contentLength": 51451,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "32596",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"e3110b742a17a901e116d676f6bef012\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "skeleton_hospitals",
+    "url": "https://medreach-skeleton.vercel.app/hospitals",
+    "type": "html",
+    "variant": "skeleton",
+    "route": "/hospitals",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 514,
+    "contentLength": 30811,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31614",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"7f1192ee0dfbd2c0df5f96538c59d9f1\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {
+        "ventilator": 2
+      },
+      "hasVolatileClinicalData": true
+    }
+  },
+  {
+    "id": "skeleton_emergency",
+    "url": "https://medreach-skeleton.vercel.app/emergency",
+    "type": "html",
+    "variant": "skeleton",
+    "route": "/emergency",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 390,
+    "contentLength": 32390,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31521",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"88f1e75efae27d2885b7cddef2d6c7fc\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "skeleton_blood_banks",
+    "url": "https://medreach-skeleton.vercel.app/blood-banks",
+    "type": "html",
+    "variant": "skeleton",
+    "route": "/blood-banks",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 357,
+    "contentLength": 28099,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31427",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"f3c4e97736bf48f0813a52c871ea133e\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "skeleton_ambulances",
+    "url": "https://medreach-skeleton.vercel.app/ambulances",
+    "type": "html",
+    "variant": "skeleton",
+    "route": "/ambulances",
+    "endpoint": null,
+    "status": 200,
+    "elapsedMs": 416,
+    "contentLength": 25369,
+    "cacheHeaders": {
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "age": "31240",
+      "xVercelCache": "HIT",
+      "xNextjsPrerender": "1",
+      "xNextjsStaleTime": "300",
+      "etag": "W/\"4515a84ceb4755497abf7a15bafdc143\"",
+      "server": "Vercel",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": true,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "api_health",
+    "url": "https://medreach-production.up.railway.app/health",
+    "type": "api",
+    "variant": null,
+    "route": null,
+    "endpoint": "/health",
+    "status": 200,
+    "elapsedMs": 1515,
+    "contentLength": 104,
+    "cacheHeaders": {
+      "cacheControl": null,
+      "age": null,
+      "xVercelCache": null,
+      "xNextjsPrerender": null,
+      "xNextjsStaleTime": null,
+      "etag": "W/\"68-dtghNH69pO62Nu0ku9Z9G6i+RLI\"",
+      "server": "railway-hikari",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": false,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  },
+  {
+    "id": "api_hospitals",
+    "url": "https://medreach-production.up.railway.app/api/hospitals",
+    "type": "api",
+    "variant": null,
+    "route": null,
+    "endpoint": "/api/hospitals",
+    "status": 200,
+    "elapsedMs": 3722,
+    "contentLength": 13189,
+    "cacheHeaders": {
+      "cacheControl": null,
+      "age": null,
+      "xVercelCache": null,
+      "xNextjsPrerender": null,
+      "xNextjsStaleTime": null,
+      "etag": "W/\"3385-7bolW+tzkzTOfwD4GzxVtPh3+Dg\"",
+      "server": "railway-hikari",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": false,
+      "rscContainsVolatileData": false,
+      "foundMatches": {
+        "Hiranandani": 3,
+        "Cooper": 2,
+        "Bhabha": 4
+      },
+      "hasVolatileClinicalData": true
+    }
+  },
+  {
+    "id": "api_blood_banks",
+    "url": "https://medreach-production.up.railway.app/api/blood-banks",
+    "type": "api",
+    "variant": null,
+    "route": null,
+    "endpoint": "/api/blood-banks",
+    "status": 200,
+    "elapsedMs": 571,
+    "contentLength": 3753,
+    "cacheHeaders": {
+      "cacheControl": null,
+      "age": null,
+      "xVercelCache": null,
+      "xNextjsPrerender": null,
+      "xNextjsStaleTime": null,
+      "etag": "W/\"ea9-qS9OjKWNalZnB5RsWkgjpzmEYBo\"",
+      "server": "railway-hikari",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": false,
+      "rscContainsVolatileData": false,
+      "foundMatches": {
+        "KEM": 1,
+        "King Edward": 1
+      },
+      "hasVolatileClinicalData": true
+    }
+  },
+  {
+    "id": "api_ambulances",
+    "url": "https://medreach-production.up.railway.app/api/ambulances",
+    "type": "api",
+    "variant": null,
+    "route": null,
+    "endpoint": "/api/ambulances",
+    "status": 200,
+    "elapsedMs": 572,
+    "contentLength": 6045,
+    "cacheHeaders": {
+      "cacheControl": null,
+      "age": null,
+      "xVercelCache": null,
+      "xNextjsPrerender": null,
+      "xNextjsStaleTime": null,
+      "etag": "W/\"179f-z6Z6WF8NuvxnHnmyk0AabIw/z5I\"",
+      "server": "railway-hikari",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": false,
+      "rscContainsVolatileData": false,
+      "foundMatches": {
+        "ventilator": 2
+      },
+      "hasVolatileClinicalData": true
+    }
+  },
+  {
+    "id": "api_diagnostics",
+    "url": "https://medreach-production.up.railway.app/api/diagnostics",
+    "type": "api",
+    "variant": null,
+    "route": null,
+    "endpoint": "/api/diagnostics",
+    "status": 200,
+    "elapsedMs": 859,
+    "contentLength": 14200,
+    "cacheHeaders": {
+      "cacheControl": null,
+      "age": null,
+      "xVercelCache": null,
+      "xNextjsPrerender": null,
+      "xNextjsStaleTime": null,
+      "etag": "W/\"3794-wKpz4eYPFicgqlocR42WuKja50M\"",
+      "server": "railway-hikari",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": false,
+      "rscContainsVolatileData": false,
+      "foundMatches": {
+        "Tata Memorial": 2
+      },
+      "hasVolatileClinicalData": true
+    }
+  },
+  {
+    "id": "api_jobs",
+    "url": "https://medreach-production.up.railway.app/api/jobs",
+    "type": "api",
+    "variant": null,
+    "route": null,
+    "endpoint": "/api/jobs",
+    "status": 200,
+    "elapsedMs": 1744,
+    "contentLength": 136245,
+    "cacheHeaders": {
+      "cacheControl": null,
+      "age": null,
+      "xVercelCache": null,
+      "xNextjsPrerender": null,
+      "xNextjsStaleTime": null,
+      "etag": "W/\"216a5-uBi7bHv7OduOYYm/g+yOwKt+JDY\"",
+      "server": "railway-hikari",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": false,
+      "rscContainsVolatileData": false,
+      "foundMatches": {
+        "Lilavati": 12,
+        "KEM": 24,
+        "King Edward": 12,
+        "Tata Memorial": 24,
+        "ventilator": 4
+      },
+      "hasVolatileClinicalData": true
+    }
+  },
+  {
+    "id": "api_tracking_status",
+    "url": "https://medreach-production.up.railway.app/api/tracking/non-existent-token-probe",
+    "type": "api",
+    "variant": null,
+    "route": null,
+    "endpoint": "/api/tracking/:token",
+    "status": 404,
+    "elapsedMs": 311,
+    "contentLength": 21,
+    "cacheHeaders": {
+      "cacheControl": "no-store",
+      "age": null,
+      "xVercelCache": null,
+      "xNextjsPrerender": null,
+      "xNextjsStaleTime": null,
+      "etag": "W/\"15-bm7tJgu8FHlq5QU+Y6gDxOGPfRc\"",
+      "server": "railway-hikari",
+      "via": null
+    },
+    "analysis": {
+      "hasRSC": false,
+      "rscContainsVolatileData": false,
+      "foundMatches": {},
+      "hasVolatileClinicalData": false
+    }
+  }
+]

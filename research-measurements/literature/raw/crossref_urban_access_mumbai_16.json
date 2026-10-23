@@ -1,0 +1,375 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 1135903,
+    "items": [
+      {
+        "DOI": "10.21956/wellcomeopenres.14239.r30080",
+        "title": [
+          "Peer Review Report For: Healthcare choices in Mumbai slums: A cross-sectional study [version 1; peer review: 3 approved with reservations]"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              2,
+              15
+            ]
+          ]
+        },
+        "type": "peer-review",
+        "URL": "https://doi.org/10.21956/wellcomeopenres.14239.r30080",
+        "score": 30.17235
+      },
+      {
+        "DOI": "10.21956/wellcomeopenres.14239.r30077",
+        "title": [
+          "Peer Review Report For: Healthcare choices in Mumbai slums: A cross-sectional study [version 1; peer review: 3 approved with reservations]"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              2,
+              27
+            ]
+          ]
+        },
+        "type": "peer-review",
+        "URL": "https://doi.org/10.21956/wellcomeopenres.14239.r30077",
+        "score": 29.871256
+      },
+      {
+        "DOI": "10.21956/wellcomeopenres.14239.r28674",
+        "title": [
+          "Peer Review Report For: Healthcare choices in Mumbai slums: A cross-sectional study [version 1; peer review: 3 approved with reservations]"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2017,
+              12,
+              27
+            ]
+          ]
+        },
+        "type": "peer-review",
+        "URL": "https://doi.org/10.21956/wellcomeopenres.14239.r28674",
+        "score": 29.668753
+      },
+      {
+        "DOI": "10.21956/wellcomeopenres.16002.r33452",
+        "title": [
+          "Peer Review Report For: Healthcare choices in Mumbai slums: A cross-sectional study [version 2; peer review: 2 approved, 1 approved with reservations]"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              7,
+              16
+            ]
+          ]
+        },
+        "type": "peer-review",
+        "URL": "https://doi.org/10.21956/wellcomeopenres.16002.r33452",
+        "score": 29.642143
+      },
+      {
+        "DOI": "10.21956/wellcomeopenres.16002.r33451",
+        "title": [
+          "Peer Review Report For: Healthcare choices in Mumbai slums: A cross-sectional study [version 2; peer review: 2 approved, 1 approved with reservations]"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              7,
+              9
+            ]
+          ]
+        },
+        "type": "peer-review",
+        "URL": "https://doi.org/10.21956/wellcomeopenres.16002.r33451",
+        "score": 28.956585
+      },
+      {
+        "DOI": "10.21956/wellcomeopenres.16002.r33450",
+        "title": [
+          "Peer Review Report For: Healthcare choices in Mumbai slums: A cross-sectional study [version 2; peer review: 2 approved, 1 approved with reservations]"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              7,
+              30
+            ]
+          ]
+        },
+        "type": "peer-review",
+        "URL": "https://doi.org/10.21956/wellcomeopenres.16002.r33450",
+        "score": 28.848227
+      },
+      {
+        "DOI": "10.1046/j.1365-2524.2002.00365.x",
+        "title": [
+          "Inequalities in access to healthcare faced by women who are deaf"
+        ],
+        "author": [
+          {
+            "given": "J.",
+            "family": "Ubido",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "J.",
+            "family": "Huntington",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "D.",
+            "family": "Warburton",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2002,
+              6,
+              27
+            ]
+          ]
+        },
+        "container-title": [
+          "Health &amp; Social Care in the Community"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1046/j.1365-2524.2002.00365.x",
+        "score": 26.417292
+      },
+      {
+        "DOI": "10.55248/gengpi.06.1125.4095",
+        "title": [
+          "Possibility of Redevelopment of Slums in Santacruz, Mumbai: A Case Study Approach"
+        ],
+        "author": [
+          {
+            "given": "Kashish",
+            "family": "Trivedi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              11
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Research Publication and Reviews"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.55248/gengpi.06.1125.4095",
+        "score": 26.277405
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n                <jats:p>Diabetes onset precedes diabetic retinopathy (DR) by 5-10 years, but many people with diabetes remain free of this microvascular complication. Our aim was to identify risk factors for DR progression in a unique and diverse population, the slums of Mumbai.</jats:p>\n                <jats:p>We performed a population-based cross-sectional analysis of 1163 diabetics over 40 years of age from slums in 18 wards of Mumbai. Data was collected on 33 variables and assessed for association with DR using both univariate and multivariate analyses. Stratified analyses were also performed on males and females, separately. Among hypertensive individuals we also assessed whether duration of hypertension associated with DR.</jats:p>\n                <jats:p>Of 31 non-correlated variables analysed as risk factors for DR, 15 showed evidence of significant association. The most prominent included sex, where being a female associated with decreased risk of DR, while longer duration of diabetes and poor glycaemic control associated with increased risk. The duration of diabetes risk was partially, but significantly, mediated by age of diabetes diagnoses (8.6% of variance explained, p = 0.012). Obesity as measured by several measures, including body mass index (BMI) and measures of central obesity had a negative association with DR; increased measures of obesity consistently reduced risk of DR.</jats:p>\n                <jats:p>\n                  There was some agreement with risk factors described in earlier studies (e.g., duration of diabetes and glycaemic control), but other factors such as obesity measures appeared to have a reversed direction of effect compared to most prior studies. These results indicated that the overall pattern of association in the Mumbai slums was novel. Thus, in previously uncharacterized populations, such as the slums that we examined, it is important to evaluate all risk factors\n                  <jats:italic>de novo</jats:italic>\n                  to appropriately assess patterns of risk.\n                </jats:p>",
+        "DOI": "10.1101/2022.03.16.22272514",
+        "type": "posted-content",
+        "title": [
+          "Unusual patterns of risk for diabetic retinopathy in the Mumbai slums: The Aditya Jyot Diabetic Retinopathy in Urban Mumbai Slums Study (AJ-DRUMSS) Report 3"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0001-9977-9891",
+            "authenticated-orcid": false,
+            "given": "Radhika",
+            "family": "Krishnan",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Astha",
+            "family": "Jain",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Siddhita",
+            "family": "Nare",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Rajkumar",
+            "family": "Shankar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Jacquelaine",
+            "family": "Bartlett",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Sudha K.",
+            "family": "Iyengar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-4835-9544",
+            "authenticated-orcid": false,
+            "given": "Scott M.",
+            "family": "Williams",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Natarajan",
+            "family": "Sundaram",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 26.094257,
+        "URL": "https://doi.org/10.1101/2022.03.16.22272514",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              3,
+              16
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.70675/4683cb02za852z4109zad36z12f9d0825494",
+        "title": [
+          "Healthcare supply shortage, inequalities in access and healthcare quality : towards new forms of practice organization for French family physicians"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-1535-1148",
+            "authenticated-orcid": false,
+            "given": "Anna",
+            "family": "Zaytseva",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "id": [
+                  {
+                    "id": "https://ror.org/035xkbk20",
+                    "id-type": "ROR",
+                    "asserted-by": "publisher"
+                  }
+                ],
+                "name": "Aix-Marseille"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "abstract": "<jats:title>Rar\u00e9faction de l'offre m\u00e9dicale, in\u00e9galit\u00e9s d'acc\u00e8s et qualit\u00e9 des soins : le r\u00f4le de nouvelles formes d'organisation des m\u00e9decins g\u00e9n\u00e9ralistes fran\u00e7ais</jats:title>\n                <jats:p xml:lang=\"fr\">Cette th\u00e8se analyse empiriquement l'impact de la variation de la densit\u00e9 des m\u00e9decins g\u00e9n\u00e9ralistes sur la quantit\u00e9 et la qualit\u00e9 des soins qu'ils fournissent. Cette th\u00e8se est compos\u00e9e de quatre chapitres. Les deux premiers chapitres abordent les probl\u00e8mes li\u00e9s \u00e0 l'exercice dans les zones sous-dot\u00e9es. Le chapitre 1 analyse les effets de pratique dans une zone \u00e0 faible densit\u00e9 de g\u00e9n\u00e9ralistes sur les conditions de travail et la qualit\u00e9 de soins \u00e0 l'aide de donn\u00e9es d'enqu\u00eates transversales, tandis que le chapitre 2 les examine dans une perspective longitudinale. Nous d\u00e9montrons que les g\u00e9n\u00e9ralistes exer\u00e7ant dans des zones sous-dot\u00e9es font des consultations plus courtes et ont tendance \u00e0 remplacer les proc\u00e9dures jug\u00e9es chronophages par des prescriptions alternatives qui n\u00e9cessitent moins de ressources humaines, en particulier en ce qui concerne la gestion de la douleur. La suite de la th\u00e8se tente d'aller au-del\u00e0 de la simple observation du probl\u00e8me des zones sous-dot\u00e9es, et cherche \u00e0 \u00e9valuer l'impact des nouvelles formes d'organisations des pratiques (maisons de sant\u00e9 pluriprofessionnelles), sur la quantit\u00e9 et la qualit\u00e9 des soins. Chapitre 3 t\u00e9moigne de la meilleure performance des g\u00e9n\u00e9ralistes exer\u00e7ant dans les maisons de sant\u00e9 pluriprofessionnelles en mati\u00e8re de suivi de leurs patients chroniques pendant la pand\u00e9mie de Covid-19. Chapitre 4 examine la mani\u00e8re dont la faible densit\u00e9 de g\u00e9n\u00e9ralistes impacte la quantit\u00e9 et la qualit\u00e9 des soins primaires et comment celle-ci est m\u00e9di\u00e9e par la pratique dans des maisons de sant\u00e9 pluriprofessionnelles. De mani\u00e8re g\u00e9n\u00e9rale, nos r\u00e9sultats plaident en faveur d'un d\u00e9veloppement des pratiques de soins primaires int\u00e9gr\u00e9s.</jats:p>",
+        "type": "dissertation",
+        "URL": "https://doi.org/10.70675/4683cb02za852z4109zad36z12f9d0825494",
+        "score": 25.170578
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "healthcare access inequalities Mumbai slums"
+    }
+  }
+}

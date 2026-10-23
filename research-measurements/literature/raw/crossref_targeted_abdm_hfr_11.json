@@ -1,0 +1,565 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 14429312,
+    "items": [
+      {
+        "DOI": "10.1055/b-0046-222106",
+        "title": [
+          "5 Digital Health Interoperability and Standards: Powering the Ayushman Bharat Digital Mission"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "container-title": [
+          "Digital Health for All"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1055/b-0046-222106",
+        "score": 35.854675
+      },
+      {
+        "abstract": "<jats:sec><jats:title>Introduction</jats:title><jats:p>Ecosystem-centered healthcare innovations, such as digital health platforms, patient-centric records, and mobile health applications, depend on the semantic interoperability of health data. This ensures efficient, patient-focused healthcare delivery in a mobile world where citizens frequently travel for work and leisure. Beyond healthcare delivery, semantic interoperability is crucial for secondary health data use. This paper introduces a tool and techniques for achieving health data semantic interoperability, using reusable visual transformation components to create and validate transformation rules and maps, making them usable for domain experts with minimal technical skills.</jats:p></jats:sec><jats:sec><jats:title>Methods</jats:title><jats:p>The tool and techniques for health data semantic interoperability have been developed and validated using Design Science, a common methodology for developing software artifacts, including tools and techniques.</jats:p></jats:sec><jats:sec><jats:title>Results</jats:title><jats:p>Our tool and techniques are designed to facilitate the interoperability of Electronic Health Records (EHRs) by enabling the seamless unification of various health data formats in real time, without the need for extensive physical data migrations. These tools simplify complex health data transformations, allowing domain experts to specify and validate intricate data transformation rules and maps. The need for such a solution arises from the ongoing transition of the Estonian National Health Information System (ENHIS) from Clinical Document Architecture (CDA) to Fast Healthcare Interoperability Resources (FHIR), but it is general enough to be used for other data transformation needs, including the European Health Data Space (EHDS) ecosystem.</jats:p></jats:sec><jats:sec><jats:title>Conclusion</jats:title><jats:p>The proposed tool and techniques simplify health data transformation by allowing domain experts to specify and validate the necessary data transformation rules and maps. Evaluation by ENHIS domain experts demonstrated the usability, effectiveness, and business value of the tool and techniques.</jats:p></jats:sec>",
+        "DOI": "10.3389/fdgth.2024.1480600",
+        "type": "journal-article",
+        "title": [
+          "Interoperability of health data using FHIR Mapping Language: transforming HL7 CDA to FHIR with reusable visual components"
+        ],
+        "author": [
+          {
+            "given": "Igor",
+            "family": "Bossenko",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Rainer",
+            "family": "Randmaa",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Gunnar",
+            "family": "Piho",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Peeter",
+            "family": "Ross",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Frontiers in Digital Health"
+        ],
+        "score": 35.628284,
+        "URL": "https://doi.org/10.3389/fdgth.2024.1480600",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              12,
+              19
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1007/978-3-319-30370-3_22",
+        "title": [
+          "Implementing FHIR"
+        ],
+        "author": [
+          {
+            "given": "Tim",
+            "family": "Benson",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Grahame",
+            "family": "Grieve",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Information Technology Standards",
+          "Principles of Health Interoperability"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-319-30370-3_22",
+        "score": 33.1805
+      },
+      {
+        "DOI": "10.1007/978-3-319-30370-3_20",
+        "title": [
+          "FHIR Resources"
+        ],
+        "author": [
+          {
+            "given": "Tim",
+            "family": "Benson",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Grahame",
+            "family": "Grieve",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Information Technology Standards",
+          "Principles of Health Interoperability"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-319-30370-3_20",
+        "score": 32.828888
+      },
+      {
+        "DOI": "10.1007/978-3-319-30370-3_18",
+        "title": [
+          "Principles of FHIR"
+        ],
+        "author": [
+          {
+            "given": "Tim",
+            "family": "Benson",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Grahame",
+            "family": "Grieve",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Information Technology Standards",
+          "Principles of Health Interoperability"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-319-30370-3_18",
+        "score": 32.78537
+      },
+      {
+        "DOI": "10.1007/978-3-030-56883-2_10",
+        "title": [
+          "Implementing FHIR"
+        ],
+        "author": [
+          {
+            "given": "Tim",
+            "family": "Benson",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Grahame",
+            "family": "Grieve",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              10,
+              20
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Information Technology Standards",
+          "Principles of Health Interoperability"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-030-56883-2_10",
+        "score": 32.772232
+      },
+      {
+        "DOI": "10.1007/978-3-319-30370-3_19",
+        "title": [
+          "The FHIR RESTful API"
+        ],
+        "author": [
+          {
+            "given": "Tim",
+            "family": "Benson",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Grahame",
+            "family": "Grieve",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Information Technology Standards",
+          "Principles of Health Interoperability"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-319-30370-3_19",
+        "score": 32.72354
+      },
+      {
+        "DOI": "10.1007/978-3-030-56883-2_5",
+        "title": [
+          "Principles of FHIR"
+        ],
+        "author": [
+          {
+            "given": "Tim",
+            "family": "Benson",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Grahame",
+            "family": "Grieve",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              10,
+              20
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Information Technology Standards",
+          "Principles of Health Interoperability"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-030-56883-2_5",
+        "score": 32.518696
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title><jats:sec>\n                <jats:title>Background</jats:title>\n                <jats:p>Hypertension is a major health problem globally and in India. Around 60% of people with hypertension in India are not aware that they have the condition. Less than 30% of individuals with hypertension are on treatment. Existing studies have indicated that community health workers (CHWs) can play a useful role in expanding the care for hypertension. Evaluations are needed to study the impact when an intervention is implemented by the government in its existing large-scale CHW programme to improve the identification, regular follow-up and medication adherence for hypertension.</jats:p>\n              </jats:sec><jats:sec>\n                <jats:title>Methods</jats:title>\n                <jats:p>Chhattisgarh state implemented a pilot intervention to improve screening and follow-up for hypertension by equipping Mitanin-CHWs to measure blood pressure (BP). The study design involved an intervention-group and a comparison-group of urban slum population. The survey covered 5974 individuals (30\u201379 years age) in intervention-group and 5131 in comparison-group. Multivariate analysis was conducted to find out the effect of intervention on the desired outcomes.</jats:p>\n              </jats:sec><jats:sec>\n                <jats:title>Results</jats:title>\n                <jats:p>In intervention-group, 80.2% of the individuals (30\u201379 years age) had been screened for hypertension whereas the proportion was 37.9% in comparison-group. For 47.0% of individuals in intervention-group, Mitanin CHW was the provider who measured BP for the first time. Around 16.3% of individuals in intervention-group and 9.5% in comparison-group had been diagnosed with hypertension. Around 85.9% of hypertension cases in intervention-group and 77.0% in comparison-group were on treatment. BP had been measured in preceding 30 days for 81.8% of hypertension-cases in intervention-group and 64.3% in comparison-group. Around 70.3% of hypertension-cases in intervention-group and 55.1% in comparison-group had taken their complete medication for last seven days. Multivariate analysis showed that CHW intervention was associated significantly with improvements in all the desired outcomes.</jats:p>\n              </jats:sec><jats:sec>\n                <jats:title>Conclusion</jats:title>\n                <jats:p>Equipping the CHWs to measure BP was effective in increasing the screening and identification of hypertension, regular measurement of BP of individuals with hypertension and the adherence to medication. This shows the potential if the one-million strong work-force of Accredited-Social-Health-Activists (ASHA) CHWs in India gets equipped for this role. Governments need to provide a stronger policy push to get this materialised.</jats:p>\n              </jats:sec>",
+        "DOI": "10.1186/s12875-023-02231-1",
+        "type": "journal-article",
+        "title": [
+          "Impact of community health workers on improving identification and primary care of hypertension among the urban poor \u2013 findings from Chhattisgarh state of India"
+        ],
+        "author": [
+          {
+            "given": "Samir",
+            "family": "Garg",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Mukesh",
+            "family": "Dewangan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Prabodh",
+            "family": "Nanda",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Ashu",
+            "family": "Sahu",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Lalita",
+            "family": "Xalxo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Kirtti Kumar",
+            "family": "Bebarta",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Vishnu",
+            "family": "Gupta",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Mohammad Jawed",
+            "family": "Quereishi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Anand Kumar",
+            "family": "Sahu",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Pradeep",
+            "family": "Tandan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "BMC Primary Care"
+        ],
+        "score": 32.47405,
+        "URL": "https://doi.org/10.1186/s12875-023-02231-1",
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              12,
+              13
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1007/978-3-030-91563-6_8",
+        "title": [
+          "Pre-FHIR Interoperability and Decision Support Standards"
+        ],
+        "author": [
+          {
+            "given": "Mark L.",
+            "family": "Braunstein",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Informatics",
+          "Health Informatics on FHIR: How HL7's API is Transforming Healthcare"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-030-91563-6_8",
+        "score": 32.43392
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "interoperability FHIR India National Digital Health Mission"
+    }
+  }
+}

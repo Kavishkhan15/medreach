@@ -50,7 +50,8 @@ outside version control. Do not reset/reseed it to reproduce a guide.
 
 | Document | Status |
 | --- | --- |
-| [Evaluation tools](../evaluation/README.md) | Implemented commands and their measurement limits |
+| [Evaluation tools](../evaluation/README.md) | Reproducible hosted measurements and their limits |
+| [Hosted evaluation](../evaluation/HOSTED_RESULTS.md) | Dated Vercel/Railway observations, Lighthouse scores and passive security evidence |
 | [Research plan](MedReach_Corrected_Plan.md) | Proposed study; not completed empirical findings |
 | [Paper outline](../paper/outline.md) | Proposed structure and evidence requirements |
 | [User study](../user-study/README.md) | Draft protocol; participant recruitment/ethics approval not established |

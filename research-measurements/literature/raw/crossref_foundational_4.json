@@ -1,0 +1,151 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 2211431,
+    "items": [
+      {
+        "DOI": "10.1377/forefront.20230731.522883",
+        "title": [
+          "Tracking The Elusive Medicaid Workforce To Improve Access"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              8,
+              2
+            ]
+          ]
+        },
+        "container-title": [
+          "Forefront Group"
+        ],
+        "type": "dataset",
+        "URL": "https://doi.org/10.1377/forefront.20230731.522883"
+      },
+      {
+        "DOI": "10.2139/ssrn.4246600",
+        "title": [
+          "How Does Medicaid Managed Care Affect Provider Behavior? New Evidence from Spillovers on Private Health Care"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-4863-2280",
+            "authenticated-orcid": true,
+            "given": "Ajin",
+            "family": "Lee",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "abstract": "<jats:p>Medicaid is increasingly provided by private managed care plans. I investigate the staggered rollout of mandates across counties in New York, which required Medicaid beneficiaries to enroll in a private managed care plan. I find improvements following the mandate, as evidenced by increased routine office visits and child immunizations for Medicaid beneficiaries. Routine office visits similarly increased for the privately insured, especially in low-income areas, suggesting that physicians updated their overall practice styles when the mandate affected a large share of their patients. The same-signed spillover suggests that managed care directly shifted provider practice styles instead of simply sorting patients toward certain providers. Consistent with this result, I show that managed care expanded Medicaid beneficiaries&amp;apos; access to physicians and reduced market concentration relative to the public system.</jats:p>",
+        "type": "posted-content",
+        "URL": "https://doi.org/10.2139/ssrn.4246600"
+      },
+      {
+        "DOI": "10.2139/ssrn.4745029",
+        "title": [
+          "How Does Medicaid Managed Care Affect Provider Behavior? New Evidence from Spillovers on Private Health Care"
+        ],
+        "author": [
+          {
+            "given": "Ajin",
+            "family": "Lee",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        },
+        "type": "posted-content",
+        "URL": "https://doi.org/10.2139/ssrn.4745029"
+      },
+      {
+        "DOI": "10.37765/ajmc.2026.90005",
+        "title": [
+          "Should I Stay, or Should I Go? Provider Considerations for Leaving Medicaid Managed Care Organizations"
+        ],
+        "author": [
+          {
+            "given": "Monisa",
+            "family": "Aijaz",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              9,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "The American Journal of Managed Care"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.37765/ajmc.2026.90005"
+      },
+      {
+        "DOI": "10.37765/ajmc.2024.89638",
+        "title": [
+          "Disconnects Between Provider Network Directories and Patient Preferences"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              12,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "The American Journal of Managed Care"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.37765/ajmc.2024.89638"
+      }
+    ],
+    "items-per-page": 5,
+    "query": {
+      "start-index": 0,
+      "search-terms": "Secret shopper provider directories Medicaid managed care"
+    }
+  }
+}

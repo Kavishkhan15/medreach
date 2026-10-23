@@ -1,0 +1,73 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 2,
+    "items": [
+      {
+        "DOI": "10.7717/peerj-cs.3123/supp-1",
+        "title": [
+          "Supplemental Information 1: The real-time transactional data extracted from the e-Raktkosh portal."
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.7717/peerj-cs.3123/supp-1",
+        "score": 20.366364
+      },
+      {
+        "abstract": "<jats:p>The E-raktkosh initiative, launched by the Government of India, is a pioneering effort in the field of healthcare and technology. This paper explores the inception, objectives, and recent advancements of the E-raktkosh project, shedding light on its impact on blood management in India. By harnessing the power of digitalization, E-raktkosh has revolutionized the way blood is collected, stored, and distributed across the nation, ensuring efficient and safe access to this life-saving resource. This paper delves into the significance of E-raktkosh in addressing blood shortage challenges, enhancing transparency, and saving countless lives.</jats:p>",
+        "DOI": "10.36948/ijfmr.2024.v06i02.14122",
+        "type": "journal-article",
+        "title": [
+          "Digital Transformation In Blood Banking: The Story Of E-Raktkosh"
+        ],
+        "author": [
+          {
+            "given": "Syeda Tahseen Kulsum",
+            "family": "-",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "K Madan Gopal",
+            "family": "-",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal For Multidisciplinary Research"
+        ],
+        "score": 17.109701,
+        "URL": "https://doi.org/10.36948/ijfmr.2024.v06i02.14122",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              3,
+              8
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "e-RaktKosh"
+    }
+  }
+}

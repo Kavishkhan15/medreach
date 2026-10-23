@@ -1,0 +1,729 @@
+{
+  "total": 15,
+  "page": 1,
+  "pageSize": 10,
+  "timestamp": "2026-10-23T11:31:45.077543Z",
+  "query": "healthcare access mumbai",
+  "results": [
+    {
+      "last_updated": "2025-08-19T19:37:41Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2296-2565",
+            "type": "eissn"
+          },
+          {
+            "id": "10.3389/fpubh.2015.00255",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "3",
+          "country": "CH",
+          "issns": [
+            "2296-2565"
+          ],
+          "publisher": "Frontiers Media S.A.",
+          "language": [
+            "EN"
+          ],
+          "title": "Frontiers in Public Health"
+        },
+        "month": "11",
+        "keywords": [
+          "Migration",
+          "healthcare",
+          "intervention",
+          "Community participation",
+          "process evaluation"
+        ],
+        "year": "2015",
+        "subject": [
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Tata Institute of Social Sciences",
+            "name": "Nilesh Chandrakant Gawde"
+          },
+          {
+            "affiliation": "Tata Institute of Social Sciences",
+            "name": "Muthusamy eSivakami"
+          },
+          {
+            "affiliation": "Indian Council of Medical Research",
+            "name": "Bontha V Babu"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "http://journal.frontiersin.org/Journal/10.3389/fpubh.2015.00255/full"
+          }
+        ],
+        "abstract": "Objectives: An intervention to improve migrants\u2019 access to healthcare was piloted in Mumbai with purpose of informing health policy and planning. This paper aims to describe the process of building partnership for improving migrants\u2019 access to healthcare of the pilot intervention including the role played by different stakeholders and the contextual factors affecting the intervention. Methods: The process evaluation was based upon Baranowski and Stables\u2019 framework. their Observations in community and conversations with stakeholders as recorded in daily diaries, minutes of pre-intervention workshops and stakeholder meetings served as data sources. Data were coded using the framework and descriptive summaries of evaluation components were prepared.Results: Recruitment of stakeholders was easier than sustaining their interest. Community representatives led the intervention assisted by government officials. They planned community level interventions to improve access to healthcare which involved predominantly information, education and communication activities for which pre-existing formal and informal social networks and community events were used. Although the intervention reached migrants living with families, single male migrants neither participated nor did the intervention reach them consistently. Contextual factors such as culture differences between migrants and native population and illegality in the nature of the settlement resulting in the exclusion from services were the barriers. Conclusion: Inclusive multi-stakeholder partnership including migrants themselves and using both formal and informal networks in community is a feasible strategy for health education and has potential to improve the migrants\u2019 access to healthcare. However, there are challenges to the partnership process and new strategies to overcome these challenges need to be tested such as peer-led models for involvement of single male migrants. For sustaining such efforts and mainstreaming migrants, addressing contextual factors and having formal mechanisms for their inclusion are equally important.",
+        "title": "Building partnership to improve migrants\u2019 access to healthcare in Mumbai"
+      },
+      "created_date": "2016-07-08T10:01:51Z",
+      "id": "428006f70cb9493a89ceac8aaab7673e"
+    },
+    {
+      "last_updated": "2025-08-20T01:38:40Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.1186/s12913-024-11919-8",
+            "type": "doi"
+          },
+          {
+            "id": "1472-6963",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "24",
+          "number": "1",
+          "country": "GB",
+          "issns": [
+            "1472-6963"
+          ],
+          "publisher": "BMC",
+          "language": [
+            "EN"
+          ],
+          "title": "BMC Health Services Research"
+        },
+        "month": "11",
+        "end_page": "13",
+        "keywords": [
+          "Informal providers",
+          "Informal health sector",
+          "Non-degree allopathic providers (NDAPs)",
+          "Non-communicable diseases",
+          "Primary health care",
+          "Diabetes"
+        ],
+        "year": "2024",
+        "start_page": "1",
+        "subject": [
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Society for Nutrition, Education and Health Action",
+            "name": "Manjula Bahuguna"
+          },
+          {
+            "affiliation": "Society for Nutrition, Education and Health Action",
+            "name": "Jennifer Spencer"
+          },
+          {
+            "affiliation": "Society for Nutrition, Education and Health Action",
+            "name": "Sudha Ramani"
+          },
+          {
+            "affiliation": "Society for Nutrition, Education and Health Action",
+            "name": "Sweety Pathak"
+          },
+          {
+            "affiliation": "Society for Nutrition, Education and Health Action",
+            "name": "Sushma Shende"
+          },
+          {
+            "affiliation": "Society for Nutrition, Education and Health Action",
+            "name": "Shanti Pantvaidya"
+          },
+          {
+            "affiliation": "Society for Nutrition, Education and Health Action",
+            "name": "Vanessa D\u2019Souza"
+          },
+          {
+            "affiliation": "Society for Nutrition, Education and Health Action",
+            "name": "Anuja Jayaraman"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "https://doi.org/10.1186/s12913-024-11919-8"
+          }
+        ],
+        "abstract": "Abstract Background In India, Non-Degree Allopathic Providers (NDAPs), who do not have formal training in allopathic medicine, play a prominent role in basic healthcare delivery in both rural areas and urban informal settlements. Often recognized as providers of \u2018first contact\u2019 care for minor acute ailments, there is little information regarding the roles they play in providing services for non-communicable diseases (NCDs). In this study, we explore the roles played by NDAPs in diagnosing and managing two NCDs\u2014diabetes and hypertension\u2014in urban informal settlements of the Mumbai Metropolitan Region. Methods This is a qualitative study involving data collection with 25 NDAPs (19 males and 6 females). Data was collected between December 2022 and September 2023. Data was coded inductively, and an iterative process of coding was followed to derive key themes. These themes were further refined through reflections within the author group. The qualitative software NVivo Version 10.3 was used to facilitate the analysis process. Results All NDAPs we spoke to noted an increase in diabetes and hypertension patients in the urban informal settlements they worked in. All of them provided medication for \u2018quick relief\u2019 to patients from the bothersome symptoms of the two diseases. But in some cases, NDAPs also reported acting as counsellors, patient navigators, and local supervisors of therapy initiated by other doctors. Generally, risk-averse, NDAPs were cautious about how much of the diagnosis and treatment process they participated in. Those with informal and formal connections with private, qualified allopathic providers involved themselves more extensively in the management of the two NCDs. NDAPs had limited ties with the public health system and preferred sending patients to other private doctors if they felt a case was beyond their purview. Conclusion The informal health sector in India is currently offering a range of services to address the needs of patients with NCDs. Our study suggests that the strong presence of this sector in resource-constrained communities can be leveraged by the public health system to enable community-level screening for NCDs, facilitate access to specialist care, improve treatment adherence, and promote wellness initiatives. In light of the changing epidemiological burden, our study underscores that despite the contentious nature of practices in the informal health sector, overlooking this group of providers is no longer an option for health policies.",
+        "title": "Walking a tightrope: perspectives of non-degree allopathic providers (NDAPs) on providing diabetes and hypertension care in urban informal settlements of Mumbai Metropolitan Region"
+      },
+      "id": "4ac6f71123c2416aa5b681201271ec42",
+      "created_date": "2024-11-24T12:16:31Z"
+    },
+    {
+      "last_updated": "2025-08-19T21:45:51Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2086-9614",
+            "type": "pissn"
+          },
+          {
+            "id": "2087-2100",
+            "type": "eissn"
+          },
+          {
+            "id": "10.14716/ijtech.v14i5.6578",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "14",
+          "number": "5",
+          "country": "ID",
+          "issns": [
+            "2086-9614",
+            "2087-2100"
+          ],
+          "publisher": "Universitas Indonesia",
+          "language": [
+            "EN"
+          ],
+          "title": "International Journal of Technology"
+        },
+        "month": "7",
+        "end_page": "953",
+        "year": "2023",
+        "start_page": "948",
+        "subject": [
+          {
+            "code": "T",
+            "scheme": "LCC",
+            "term": "Technology"
+          },
+          {
+            "code": "T1-995",
+            "scheme": "LCC",
+            "term": "Technology (General)"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Department of Mechanical Engineering, Faculty of Engineering, Universitas Indonesia, Kampus Baru UI, Depok 16424, Indonesia",
+            "name": "Yudan Whulanza"
+          },
+          {
+            "affiliation": "Department of Chemical Engineering, Faculty of Engineering, Universitas Indonesia, Kampus Baru UI, Depok 16424, Indonesia",
+            "name": "Eny Kusrini"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "https://ijtech.eng.ui.ac.id/article/view/6578"
+          }
+        ],
+        "abstract": "\" Healthy citizens are the greatest asset any country\r\ncan possess.\" Winston Churchill's profound statement emphasizes the paramount\r\nimportance of investing in robust healthcare infrastructure, disease\r\nprevention, and comprehensive public health initiatives. Amidst the global outbreak of the COVID-19 pandemic,\r\nthe importance of designing healthy cities has gained significant attention. In\r\naddition to addressing healthcare provisions and optimizing social and urban\r\nenvironments, a comprehensive understanding of the population inhabiting the\r\ncity is imperative. \r\n\r\nIt is contended that the\r\nhealth status of city residents serves as a paramount determinant of urban\r\nwell-being. By recognizing the intricate interplay between population health\r\nand urban environments, policymakers and urban planners can effectively address\r\nthe challenges posed by pandemics and cultivate thriving urban ecosystems that\r\npromote public health. This impact\r\nextends to all age groups, including infants, youth, and the elderly, making a\r\nholistic approach to urban design and public health imperative.\r\n\r\nThe aging demographic shift\r\nhas emerged as one of the major challenges of the 21st century. This\r\nglobal phenomenon is evident when examining the trend data on the percentage of\r\nthe population over 60 years of age. While the world as a whole falls in the\r\nmiddle range, more developed regions exhibit a significantly higher proportion\r\nof individuals over 60. However, it is important to note that the slope of low-\r\nand middle-income regions and countries is gradually increasing. Therefore,\r\naging is no longer solely an issue confined to northern regions but has become\r\na global concern.\r\n\r\nIn addition to the aging\r\npopulation, non-infectious diseases and injuries impose a significant burden on\r\npublic health. Cancer and cardiovascular disease continue to account for the\r\nhighest death rates, highlighting the ongoing challenges in managing these\r\nconditions. Furthermore, while remarkable strides have been achieved in\r\nreducing mortality from acute infectious diseases like Human Immunodeficiency\r\nVirus (HIV), tuberculosis (TB), and malaria, road traffic accidents have\r\nsurfaced as a growing concern. These accidents are interconnected with broader\r\ndeterminants of health, necessitating comprehensive strategies to address their\r\nimpact.\r\n\r\n\u00a0\r\n\r\n\r\n\r\n\r\nDefinition of Health\r\nand Quality of Life Measurement\r\n\r\nThe World Health Organization\r\n(WHO) defines health as a state of complete physical, mental,\r\nand social well-being, encompassing more than the mere absence of disease or\r\n\r\ninfirmity. Consequently, factors contributing to the state of health\r\ninclude both natural and man-made environments, constituting a complex\r\necosystem with interconnected elements that impact individuals in various ways.\r\nThe measurement of quality of life is primarily conducted through surveys, and\r\nthe WHO has developed its own survey instruments that are utilized worldwide.\r\nThese instruments are administered to both patients and individuals who are in\r\ngood health, as well as healthcare professionals. Available in over 20\r\ncountries and languages, these surveys serve as valuable tools for assessing\r\nvarious aspects of quality of life, including subjective well-being, life\r\nsatisfaction, and objective determinants across different nations.\r\n\r\n\u00a0In addition to surveys, various ranking systems\r\nplay a significant role in enhancing our understanding of the quality of life\r\non a global scale. One such system is the US News ranking, which considers\r\nmultiple factors such as healthcare, education, infrastructure, and economic\r\nstability to assess the overall quality of life in different countries. These\r\nrankings provide insights into the objective determinants influencing quality\r\nof life.\r\n\r\nThe Economist Intelligence Unit\r\nemploys a unique concept termed the \"where-do-they-born index\" to\r\nevaluate the quality of life. This index transforms the notion of quality of\r\nlife into \"the way to be born,\" focusing on opportunities for a\r\nhealthy, safe, and prosperous life. By examining subjective factors, life\r\nsatisfaction, and objective determinants across various countries, this index\r\noffers a comprehensive assessment of the quality of life.\r\n\r\nAnother noteworthy measure of the\r\nquality of life is the Muscles Quality of Life Index. This index evaluates\r\nvarious dimensions of well-being, including physical health, psychological\r\nwell-being, social connections, and environmental factors. It provides a\r\nholistic perspective on quality of life, considering both subjective\r\nexperiences and objective determinants. Singapore's top ranking in the Muscles\r\nQuality of Life Index for Asia highlights its exceptional performance in terms\r\nof providing a high quality of life to its residents. This recognition\r\nunderscores the city-state's success in areas such as healthcare accessibility,\r\nsocial infrastructure, and environmental sustainability.\r\n\r\n\u00a0\r\n\r\nDesign\r\nConsiderations for Healthy Cities\r\n\r\nDesigning healthy cities\r\nnecessitates moving beyond two-dimensional spatial planning. Instead, a\r\nthree-dimensional approach is required, considering the volume of space in\r\nwhich individuals exist. The COVID-19 pandemic has\r\nunderscored the importance of volumetric considerations, such as adequate\r\nventilation, to create healthy environments and mitigate the spread of\r\ninfectious diseases.\r\n\r\nClimate change is a complex and\r\nmultifaceted topic that encompasses various aspects, one of which is the heat\r\nisland effect observed in cities. This phenomenon refers to the concentration\r\nof heat within urban areas, which exacerbates the challenges posed by climate\r\nchange. One particular concern associated with increased heat is its impact on\r\nvulnerable populations, such as older individuals and those who lack access to\r\nair conditioning or sufficient cooling in their residences. These populations\r\nare at a higher risk of heat-related health issues.\r\n\r\n\u00a0Extremely high temperatures can significantly\r\nimpact the productivity of the workforce. Working in such conditions can lead\r\nto decreased efficiency and well-being, highlighting the importance of\r\naddressing heat-related challenges in occupational settings. Furthermore,\r\nensuring environmental sustainability, maintaining cool temperatures, and\r\npreserving air quality contribute to the creation of a healthy urban ecosystem.\r\n\r\nAnother critical issue arising\r\nfrom climate change is the rising sea levels, particularly for coastal cities\r\nlike New York, Mumbai, Tokyo, and others located near bodies of water. Sea\r\nlevel rise poses substantial risks and challenges to these cities,\r\nnecessitating proactive measures to mitigate and adapt to the changing coastal\r\nenvironment. \r\n\r\n\u00a0\r\n\r\nPromoting\r\nInteraction and Efficiency\r\n\r\nTraditional city plans often\r\nemphasize the segregation of recreational, industrial, and residential areas\r\nfor efficiency. However, optimal city design calls for creating variability and\r\nconnectivity in both form and function. Transportation choices have a visible\r\nand tangible effect on the well-being of individuals and communities. Decisions\r\nregarding the allocation of transportation resources can have profound health\r\nimplications. \r\n\r\nInvesting in mass transit systems\r\nand promoting active modes of transport, such as bike lanes,\r\npedestrian-friendly sidewalks, and walkability initiatives, can positively\r\ninfluence health outcomes. These measures contribute to reducing sedentary\r\nbehaviors, combating issues like obesity, and promoting mental health by\r\ncreating opportunities for outdoor activities and encouraging engagement with\r\nthe urban environment.\r\n\r\nConversely, decisions that\r\nprioritize car-centric transportation systems can have detrimental effects on\r\nhealth. Cars contribute to air pollution, which can worsen respiratory\r\nconditions and have broader implications for public health. Furthermore, road\r\ntraffic accidents pose a significant risk to the safety and well-being of city\r\nresidents.",
+        "title": "Defining Healthy City and Its Influence on Urban Well-being"
+      },
+      "id": "51dfbdfc7eb1473eaf91031c4f347cb2",
+      "created_date": "2023-07-28T08:59:02Z"
+    },
+    {
+      "last_updated": "2025-08-20T00:42:33Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2767-3170",
+            "type": "eissn"
+          },
+          {
+            "id": "10.1371/journal.pdig.0000363",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "2",
+          "number": "11",
+          "country": "US",
+          "issns": [
+            "2767-3170"
+          ],
+          "publisher": "Public Library of Science (PLoS)",
+          "language": [
+            "EN"
+          ],
+          "title": "PLOS Digital Health"
+        },
+        "month": "11",
+        "year": "2023",
+        "start_page": "e0000363",
+        "subject": [
+          {
+            "code": "R858-859.7",
+            "scheme": "LCC",
+            "term": "Computer applications to medicine. Medical informatics"
+          }
+        ],
+        "author": [
+          {
+            "name": "Manasi Patil"
+          },
+          {
+            "name": "Athar Qureshi"
+          },
+          {
+            "name": "Elina Naydenova"
+          },
+          {
+            "name": "Anand Bang"
+          },
+          {
+            "name": "Jay Halbert"
+          },
+          {
+            "name": "Maarten De Vos"
+          },
+          {
+            "name": "Poornima Nair"
+          },
+          {
+            "name": "Madhumita Patil"
+          },
+          {
+            "name": "Melissa M Medvedev"
+          }
+        ],
+        "link": [
+          {
+            "type": "fulltext",
+            "url": "https://journals.plos.org/digitalhealth/article/file?id=10.1371/journal.pdig.0000363&type=printable"
+          }
+        ],
+        "abstract": "An estimated 5.0 million children aged under 5 years died in 2020, with 82% of these deaths occurring in sub-Saharan Africa and southern Asia. Over one-third of Mumbai's population has limited access to healthcare, and child health outcomes are particularly grave among the urban poor. We describe the implementation of a digital technology-based child health programme in Mumbai and evaluate its holistic impact. Using an artificial intelligence (AI)-powered mobile health platform, we developed a programme for community-based management of child health. Leveraging an existing workforce, community health workers (CHW), the programme was designed to strengthen triage and referral, improve access to healthcare in the community, and reduce dependence on hospitals. A Social Return on Investment (SROI) framework is used to evaluate holistic impact. The programme increased the proportion of illness episodes treated in the community from 4% to 76%, subsequently reducing hospitalisations and out-of-pocket expenditure on private healthcare providers. For the total investment of Indian Rupee (INR) 2,632,271, the social return was INR 34,435,827, delivering an SROI ratio of 13. The annual cost of the programme per child was INR 625. Upskilling an existing workforce such as CHWs, with the help of AI-driven decision- support tools, has the potential to extend capacity for critical health services into community settings. This study provides a blueprint for evaluating the holistic impact of health technologies using evidence-based tools like SROI. These findings have applicability across income settings, offering clear rationale for the promotion of technology-supported interventions that strengthen healthcare delivery.",
+        "title": "Assessing a digital technology-supported community child health programme in India using the Social Return on Investment framework."
+      },
+      "id": "578d4151eae64e01895c5b14baf4f3e0",
+      "created_date": "2023-11-07T05:45:09Z"
+    },
+    {
+      "last_updated": "2025-08-20T03:00:58Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2347-7946",
+            "type": "pissn"
+          },
+          {
+            "id": "2347-7962",
+            "type": "eissn"
+          },
+          {
+            "id": "10.4103/mgmj.mgmj_131_24",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "11",
+          "number": "4",
+          "country": "IN",
+          "issns": [
+            "2347-7946",
+            "2347-7962"
+          ],
+          "publisher": "Wolters Kluwer Medknow Publications",
+          "language": [
+            "EN"
+          ],
+          "title": "MGM Journal of Medical Sciences"
+        },
+        "month": "12",
+        "end_page": "615",
+        "keywords": [
+          "acute transfusion reactions",
+          "blood components",
+          "febrile non-hemolytic transfusion reactions",
+          "hemovigilance"
+        ],
+        "year": "2024",
+        "start_page": "610",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "name": "Damayanti R. Dey"
+          },
+          {
+            "name": "Shweta W. Dhote"
+          },
+          {
+            "name": "Subhangi Y. Lad"
+          },
+          {
+            "name": "Sonal S. Gupta"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "https://doi.org/10.4103/mgmj.mgmj_131_24"
+          }
+        ],
+        "abstract": "Background: Blood transfusion refers to the therapeutic use of blood products, and while often lifesaving, it carries a variety of potential complications. Ensuring access to safe and sufficient blood is a critical component of healthcare, leading to the development of hemovigilance. Hemovigilance is essential for improving patient safety by learning from errors and implementing system-wide changes to prevent their recurrence. A comprehensive assessment of adverse events is the primary goal of hemovigilance. Aim: To assess the frequency and types of acute transfusion reactions (ATRs). Objectives: (1) To examine the types of ATRs related to the specific blood components transfused. (2) To analyze ATRs based on different clinical parameters. Materials and Methods: A retrospective analysis was conducted over 3 years, evaluating all transfusion reactions reported to the Department of Immunohematology and Blood Transfusion at Mahatma Gandhi Mission College and Hospital, Navi Mumbai. Reactions were assessed according to the institution\u2019s established protocol. Statistical analysis was performed using IBM Statistical Package for the Social Sciences version 20, with significance at P < 0.05. Results: During the study period, 22,188 blood component units were issued, of which 38 (0.174%) resulted in an ATR. Febrile non-hemolytic transfusion reactions (FNHTR) accounted for 31 cases (81.58%), allergic transfusion reactions for six cases (15.79%), and one case (2.63%) involved an immunologic hemolytic transfusion reaction caused by alloantibodies. Among the reported ATRs, 37 (97.36%) were associated with packed red cells (PRC), while 1 (2.64%) occurred with fresh frozen plasma (FFP). Conclusion: FNHTR was the most common ATR, followed by allergic reactions. These findings highlight the importance of continuous monitoring and strict adherence to standard protocols in blood transfusion practices to enhance patient safety.",
+        "title": "A study of acute transfusion reactions at a tertiary care center: a retrospective analysis"
+      },
+      "id": "67a684041abf42de9269d6fccaa61f59",
+      "created_date": "2025-01-17T10:55:34Z"
+    },
+    {
+      "last_updated": "2025-08-20T02:28:37Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.25071/2817-5344/96",
+            "type": "doi"
+          },
+          {
+            "id": "2817-5344",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "2",
+          "number": "2",
+          "country": "CA",
+          "issns": [
+            "2817-5344"
+          ],
+          "publisher": "York University",
+          "language": [
+            "EN"
+          ],
+          "title": "Canadian Journal for the Academic Mind"
+        },
+        "month": "May",
+        "keywords": [
+          "trans-masculine",
+          "transgender rights",
+          "healthcare access",
+          "public health",
+          "urban health",
+          "Mumbai"
+        ],
+        "year": "2025",
+        "subject": [
+          {
+            "code": "H",
+            "scheme": "LCC",
+            "term": "Social Sciences"
+          }
+        ],
+        "author": [
+          {
+            "orcid_id": "https://orcid.org/0009-0007-1797-7482",
+            "affiliation": "Department of Literatures in English, Bryn Mawr College",
+            "name": "Roshan Perry"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "https://cjam.journals.yorku.ca/index.php/default/article/view/96"
+          }
+        ],
+        "abstract": "\nIn moving towards liberatory healing for the trans-masculine community, it is imperative to understand their healthcare obstacles and the impact they have on the relationship between trans patients and the medical systems with which they interact. While there is little research on Indian transgender healthcare in general, scholarship about trans masculine experiences in routine, non-gender related healthcare is virtually non-existent. This study begins to fill this research gap with the central objective of understanding trans men and trans masculine people\u2019s experiences in medicine and the barriers they face to general healthcare access in urban and suburban Mumbai. Through in-depth interviews with eight trans-masculine people and three healthcare providers in the Mumbai area, data showed that trans-masculine healthcare barriers presented much more in the public sector than the private. Several key health risks and barriers to care were found. Added health risks for trans-masculine participants include side effects of transition care, mental health challenges arising from stigma and dysphoria, and physical health demotivation and inaccessibility. Barriers to care include ignorance, (double) stigma, the risks of disclosure, and unaffordability. Participants discuss the individual and communal ways they navigate these spaces and propose solutions such as sensitization, more respectful care, and more awareness of trans people.\n",
+        "title": "\u201cThey Treat You Like Some Alien\u201d"
+      },
+      "id": "71dfd23e8425439a9f3584f0430644bc",
+      "created_date": "2025-05-09T22:53:10Z"
+    },
+    {
+      "last_updated": "2025-08-19T20:45:50Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "0975-3605",
+            "type": "pissn"
+          },
+          {
+            "id": "10.4103/0975-3605.203393",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "17",
+          "number": "1",
+          "country": "IN",
+          "issns": [
+            "0975-3605",
+            "2589-1235"
+          ],
+          "publisher": "Wolters Kluwer Medknow Publications",
+          "language": [
+            "EN"
+          ],
+          "title": "Journal of Marine Medical Society"
+        },
+        "end_page": "43",
+        "keywords": [
+          "Community Aquired Pneumonia (CAP)"
+        ],
+        "year": "2015",
+        "start_page": "40",
+        "subject": [
+          {
+            "code": "V",
+            "scheme": "LCC",
+            "term": "Naval Science"
+          },
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "name": "Sushant Patil"
+          },
+          {
+            "name": "Sunil Rai"
+          },
+          {
+            "name": "Ashok K Yadav"
+          },
+          {
+            "name": "Shankar Narayan"
+          },
+          {
+            "name": "S Das"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "http://www.marinemedicalsociety.in/article.asp?issn=0975-3605;year=2015;volume=17;issue=1;spage=40;epage=43;aulast=Patil;type=0"
+          }
+        ],
+        "abstract": "Background: Community acquired Pneumonia (CAP) can be defined clinically as the presence of signs and symptoms of pneumonia in a previously healthy child caused by an infection acquired outside a hospital. CAP is a substantial cause of childhood morbidity and mortality throughout the world. We studied the clinical features, laboratory findings, radiological features of CAP and its complications in children admitted to a tertiary care hospital.\nMaterial And Methods: This is a retrospective observational study of 50 children aged 2 months to 14 years admitted under Paediatric care at a tertiary care hospital in Mumbai between Jan 2014 to April 2015. Pneumonia was diagnosed based on evidence of consolidation on chest radiograph and lor presence of clinical findings suggestive of pneumonia.\nResults: The mean age of children was 4.5 years with range from 4 months to 13 years. Male to Female ratio was 0.98:1. 16 children had pre-existing risk factors. 65% children had history of fever? 5 days with tachypnea noted in 3 2 % children and 2 0 % had SP02 < 95%. Tachypnea was noted in 32 % of children. As per WHO clinical classification, the distribution of pneumonia as very severe pneumonia, severe pneumonia; pneumonia; and no pneumonia was 4%,2%, 32% , 62% respectively. However 42% of children as no pneumonia as per WHO criteria had evidence of pneumonia on chest radiograph and remainder 20% had clinical findings on auscultation. 80% of study subjects had evidence ofpneumonia on chest radiograph. Average length of hospital stay was 7.2 days. A l l children were started on intravenous antibiotics. Complications developed in 5 patients. 4% of patients died in our study which co-relates with the outcome in developed nation.\nConclusion: Community acquired pneumonia has been on the decline in developed countries due to newer vaccines, anti-microbial therapy, advances in diagnostic modalities and excellent access to healthcare; childhood pneumonia still remains a major cause of morbidity and mortality in developing countries.",
+        "title": "Community acquired pneumonia and its complications in children in a tertiary care hospital"
+      },
+      "created_date": "2018-04-06T09:08:43Z",
+      "id": "7f82b24f1812404087b70b0a3df78089"
+    },
+    {
+      "last_updated": "2025-08-19T21:38:09Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "1179-8467",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "Volume 15",
+          "country": "GB",
+          "issns": [
+            "1179-8467"
+          ],
+          "publisher": "Dove Medical Press",
+          "language": [
+            "EN"
+          ],
+          "title": "Substance Abuse and Rehabilitation"
+        },
+        "month": "1",
+        "end_page": "7",
+        "keywords": [
+          "nmra",
+          "substance abuse",
+          "drug abuse",
+          "somalia",
+          "somali police force."
+        ],
+        "year": "2024",
+        "start_page": "1",
+        "subject": [
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          }
+        ],
+        "author": [
+          {
+            "name": "Mohamed SAM"
+          },
+          {
+            "name": "Bashir AM"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "html",
+            "type": "fulltext",
+            "url": "https://www.dovepress.com/voices-of-change-stakeholders-roles-in-the-fight-against-substance-abu-peer-reviewed-fulltext-article-SAR"
+          }
+        ],
+        "abstract": "Shafii Abdullahi Maalim Mohamed,1\u2013 3 Ahmed Muhammad Bashir2\u2013 4 1Indian Management School and Research Centre, Mumbai, India; 2Center for Postgraduate Studies, Horseed International University, Mogadishu, Somalia; 3Focus Healthcare Initiative, Mogadishu, Somalia; 4Mogadishu Somali Turkey Training and Research Hospital, Mogadishu, SomaliaCorrespondence: Shafii Abdullahi Maalim Mohamed, Email alshafi45@gmail.comAim: This study explores the roles, challenges, and collaborative efforts of key stakeholders engaged in addressing substance abuse.Methods: Using a qualitative narrative approach, the study examined stakeholder roles in tackling substance abuse in Mogadishu, Somalia. Purposive sampling was utilised to select all available community stakeholders actively addressing substance abuse. Semi-structured interviews were conducted to collect data, allowing participants the freedom to share their experiences openly. Thematic analysis was employed to identify patterns, commonalities, and diversities in the stakeholders\u2019 roles. The study focused on a population of five key stakeholders, including the Somali police force, a National Medicines Regulatory Authority officer, two social workers, and a representative from the Ministry of Endowments & Religious Affairs.Results: The research reveals a significant prevalence of psychoactive substances in Mogadishu, with emerging trends like the misuse of pregabalin driven by accessibility and affordability. Emphasising collaborative efforts, the study highlights the importance of effective communication and coordination among stakeholders to provide comprehensive support for individuals with substance abuse issues. Despite these challenges, such as limited resources, evolving drug trends, and addiction complexity, ongoing efforts and adaptation are crucial. Additionally, the research elucidates the established link between substance abuse and criminal behaviour, emphasising the potential consequences of drug addiction on financial desperation, violent acts, drug trafficking, and other criminal behaviours.Conclusion: The study reveals widespread substance abuse, necessitating adaptable authorities. Collaborative stakeholder efforts are vital for supporting individuals affected. Challenges demand sustained efforts. The study links substance abuse to crime. Effective resolution requires stakeholder unity, prevention programs, expanded treatment access, and adaptation to the evolving drug landscape while supporting those affected.Plain Language Summary: Main Findings 1. Role of Those InvolvedThe study shows how important the police, National Medicines Regulatory Authority (NMRA), religious leaders, and social workers are in dealing with substance abuse. Each group brings special skills and resources to help with this complex problem. 2. Substances Being UsedThe research points out that there are a lot of psychoactive substances being used in Mogadishu. This includes new trends like the misuse of pregabalin. These substances are becoming more common because they are easy to get and affordable. 3. Working TogetherThese groups need to work together to deal with substance abuse. Good communication and coordination between them can make sure people struggling with substance abuse get the help and guidance they need. 4. ChallengesThe study talks about problems like not having enough resources, the changing ways people use drugs, and how addiction is complicated. Dealing with these challenges means putting in ongoing effort and being able to change as needed. 5. Link to Doing Bad ThingsThe research also shows that using drugs is connected to doing criminal activities. Being addicted to drugs can lead to things like not having enough money, being violent, selling drugs, and other criminal behaviours.Keywords: NMRA, substance abuse, drug abuse, Somalia, Somali police force",
+        "title": "Voices of Change: Stakeholders&rsquo; Roles in the Fight Against Substance Abuse in Mogadishu, Somalia"
+      },
+      "id": "99c9a15a724c416aa336c726ff41869e",
+      "created_date": "2024-01-04T18:08:31Z"
+    },
+    {
+      "last_updated": "2025-12-27T04:10:26Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.1136/bmjopen-2025-103591",
+            "type": "doi"
+          },
+          {
+            "id": "2044-6055",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "15",
+          "number": "12",
+          "country": "GB",
+          "issns": [
+            "2044-6055"
+          ],
+          "publisher": "BMJ Publishing Group",
+          "language": [
+            "EN"
+          ],
+          "title": "BMJ Open"
+        },
+        "month": "December",
+        "year": "2025",
+        "subject": [
+          {
+            "code": "R",
+            "scheme": "LCC",
+            "term": "Medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Department of Pharmacology (Division of Clinical Pharmacology), Kasturba Medical College, Manipal, Manipal Academy of Higher Education, Manipal, Karnataka, India",
+            "name": "Jeffrey Pradeep Raj"
+          },
+          {
+            "affiliation": "Department of Community Medicine, Seth Gordhandas Sunderdas Medical College and King Edward Memorial Hospital, Mumbai, India",
+            "name": "Dattaprasad Avinash Sawant"
+          },
+          {
+            "affiliation": "Hinduhridaysamrat Balasaheb Thackeray Medical College and Dr Rustom Narsi Cooper Municipal General Hospital, Mumbai, Maharashtra, India",
+            "name": "Sowntappan Balasubramanian"
+          },
+          {
+            "affiliation": "Department of Community Medicine, Seth Gordhandas Sunderdas Medical College and King Edward Memorial Hospital, Mumbai, India",
+            "name": "Shilpa Nellikal"
+          },
+          {
+            "affiliation": "Department of Community Medicine, Seth Gordhandas Sunderdas Medical College and King Edward Memorial Hospital, Mumbai, India",
+            "name": "Deepika Sadawarte"
+          }
+        ],
+        "link": [
+          {
+            "type": "fulltext",
+            "url": "https://bmjopen.bmj.com/content/15/12/e103591.full"
+          }
+        ],
+        "abstract": "Objectives To explore public perceptions of COVID-19 vaccine acceptance and hesitancy in India, and to identify underlying factors influencing attitudes toward vaccination during the second wave of the pandemic.Design A cross-sectional qualitative study based on a grounded theory approach.Setting Community-based interviews conducted in Mumbai, a densely populated metropolitan city in India, during the second COVID-19 wave (April\u2013June 2021).Participants Twenty purposively selected adults (men and women aged 22\u201387 years) from varied educational and occupational backgrounds. Inclusion criteria were willingness to participate and the ability to provide informed consent; individuals directly involved in COVID-19 vaccine policy or administration were excluded.Methods In-depth semi-structured interviews were conducted using an interview guide exploring perceptions of COVID-19 vaccination. Interviews were audio-recorded, transcribed verbatim and analysed inductively following grounded theory principles. Reflexivity was maintained throughout data collection and analysis.Primary and secondary outcome measures Key emergent themes relating to vaccine acceptance, hesitancy and influencing factors such as safety concerns, efficacy perceptions, media influence and social determinants of vaccine choice.Results Attitudes toward vaccination ranged from strong acceptance to hesitancy driven by concerns about safety, side effects and the speed of vaccine development. Media coverage, peer and healthcare professional opinions, and personal experiences shaped the decision of the participants. Cost considerations and lack of vaccine choice influenced uptake. Many participants favoured vaccination being voluntary rather than mandatory for the general population.Conclusion Trust in authorities, transparent risk communication and culturally sensitive engagement are critical to improving vaccine confidence. Public health strategies should address safety concerns, ensure equitable access and promote consistent messaging to enhance vaccine acceptance in current and future pandemic contexts.",
+        "title": "Ethics and dilemmas regarding acceptance of COVID-19 vaccine among people living in an Indian metropolitan city during the pandemic: a qualitative study"
+      },
+      "id": "9edb8bd273274cd7bdc7638ff18081ca",
+      "created_date": "2025-12-26T04:45:16Z"
+    },
+    {
+      "last_updated": "2026-02-20T17:10:14Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "10.1136/bmjph-2025-003943",
+            "type": "doi"
+          },
+          {
+            "id": "2753-4294",
+            "type": "eissn"
+          }
+        ],
+        "journal": {
+          "volume": "4",
+          "number": "1",
+          "country": "GB",
+          "issns": [
+            "2753-4294"
+          ],
+          "publisher": "BMJ Publishing Group",
+          "language": [
+            "EN"
+          ],
+          "title": "BMJ Public Health"
+        },
+        "month": "February",
+        "year": "2026",
+        "subject": [
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Population Health Sciences, Bristol Medical School, University of Bristol, Bristol, UK",
+            "name": "Maya Gobin"
+          },
+          {
+            "affiliation": "Health Workforce Group, Division of Medical Education, The University of Manchester, Manchester, UK",
+            "name": "Rebecca Rose Turner"
+          },
+          {
+            "affiliation": "The University of Manchester, Manchester, UK",
+            "name": "Ritu Khanna"
+          },
+          {
+            "affiliation": "Medical Education, The University of Manchester, Manchester, UK",
+            "name": "Lucie M T Byrne-Davis"
+          },
+          {
+            "affiliation": "Gynaecworld, The Centre for Women\u2019s Health and Fertility, Mumbai, Maharasthra, India",
+            "name": "Duru Shah"
+          }
+        ],
+        "link": [
+          {
+            "type": "fulltext",
+            "url": "https://bmjpublichealth.bmj.com/content/4/1/e003943.full"
+          }
+        ],
+        "abstract": "Introduction Access to comprehensive sexual health education (SHE) is limited in India\u2019s urban slum communities, where socio-structural barriers restrict awareness of reproductive health. Existing interventions have emphasised menstruation and contraception, with less emphasis on other domains of SHE such as consent, abortion, infertility and gender norms. This study investigated the extent of sexual health knowledge among women in Dharavi, Mumbai, exploring how sociodemographic factors influence understanding across key domains.Methods A cross-sectional survey was administered in Dharavi, Mumbai in 2024 across 4 weeks. A 30-item, multilingual questionnaire, adapted from the Demographic Health Survey Woman\u2019s Questionnaire, was fully completed by 430 participants aged 10 and above. Descriptive statistics were used to assess awareness levels. Chi-square tests and logistic regression models evaluated associations between knowledge, age, education and information sources.Results Most participants reported access to sexual health information (74.7%) and decision-making confidence (65.3%), yet 77.7% still expressed a need for further education. Knowledge and awareness were highest for menstrual health (83.7%) and hygiene (91.4%), but lower for consent (67.0%), contraception (58.6%), abortion (55.3%) and infertility (52.3%). Older participants and those with higher education demonstrated greater knowledge, but key gaps within domains persisted across all groups. Health clinics were the most common information source (36.7%), but participants who accessed media, despite low usage (4.9%), demonstrated the highest levels of knowledge overall.Conclusions Significant disparities remain in SHE knowledge among marginalised urban populations, particularly in domains beyond menstruation and hygiene. These findings underscore the importance of embedding inclusive, evidence-based sexuality education within healthcare services, school curricula and digital platforms. Addressing topic-specific gaps and diversifying trusted information sources are critical to improving reproductive health literacy and autonomy in low-resource urban settings.",
+        "title": "Survey study on self-perceived knowledge and gaps in sexual health knowledge and awareness among women in Mumbai\u2019s urban slum communities"
+      },
+      "id": "ce22e46467e34d7fad183e812561aa57",
+      "created_date": "2026-02-20T17:10:14Z"
+    }
+  ],
+  "next": "https://doaj.org/api/v4/search/articles/healthcare%20access%20mumbai?page=2&pageSize=10",
+  "last": "https://doaj.org/api/v4/search/articles/healthcare%20access%20mumbai?page=2&pageSize=10"
+}

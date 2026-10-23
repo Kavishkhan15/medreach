@@ -1,0 +1,3 @@
+Target Endpoint,Requests_Total,Throughput_Mean_req_s,TP_StdDev,TP_CV_pct,Median_ms,p90_ms,p97_5_ms,p99_ms,Timeouts,Errors,Error_Rate_pct,Statistical_Validity
+GET /health (Middleware baseline),232720,7052.9,354.7,5.03%,0.00,0.00,0.00,0.00,0,0,0.000%,Valid (N=232720)
+GET /api/hospitals (DB Query baseline),9140,284.7,24.8,8.71%,3.00,3.33,8.33,9.67,0,0,0.000%,Valid (N=9140)

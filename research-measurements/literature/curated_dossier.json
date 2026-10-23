@@ -1,0 +1,742 @@
+{
+  "10.59067/afjhms.v11i2.126": {
+    "doi": "10.59067/afjhms.v11i2.126",
+    "title": "Digital Patient Navigation Systems and Treatment Acceptance: A Mixed-Methods Study of Patient Coordination in Modern Healthcare Clinics",
+    "authors": [
+      "Alvine Esung Metuge"
+    ],
+    "year": 2026,
+    "venue": "African Journal of Health and Medical Sciences (AFJHMS)",
+    "publisher": "Jamhuriya University of Science and Technology (JUST)",
+    "abstract": "Abstract: Background and Objectives: Digital patient navigation systems have transformed healthcare delivery through electronic coordination of patient care pathways. These systems facilitate appointment scheduling, treatment reminders, and communication between patients and healthcare providers. This study sought to examine the relationship between digital navigation system usage and treatment acceptance rates among patients attending outpatient clinics in London. Given the cross-sectional design, causality cannot be inferred. Material and Methods: A convergent mixed-methods design was employed across four National Health Service outpatient clinics between March and November 2024. The platform under investigation was CarePath Navigator (NHS Digital/Cerner), a cloud-based system integrated with electronic health records. The quantitative component involved 412 patients who completed structured questionnaires measuring system usage patterns, perceived ease of use, and treatment acceptance intentions. Treatment acceptance was operationalised using the nine-item Treatment Acceptance Scale (TAS-9), a validated instrument measuring behavioural intention, confidence, and self-reported adherence (Cronbach's \u03b1 = .912). The qualitative component comprised 28 semi-structured interviews with patients and 12 interviews with healthcare staff, analysed in NVivo 14 using thematic analysis with independent dual coding (Cohen's \u03ba = .893). Data were analysed using SPSS version 27 for quantitative analysis and Braun and Clarke's six-phase approach for qualitative data. Mixed-methods integration was achieved through a joint display table. Results: Quantitative findings demonstrated a positive correlation between digital navigation system usage and treatment acceptance (r = 0.64, p < 0.001). However, this association is observational and may reflect self-selection by motivated patients. Patients who used the system regularly showed higher acceptance rates (78.3%) compared to infrequent users (52.1%; F(3, 408) = 48.72, p < .001, \u03b7\u00c7 = .264). Multiple regression indicated that system usage frequency (\u03b2 = 0.312, p < .001), perceived usefulness (\u03b2 = 0.298, p < .001), and digital literacy (\u03b2 = 0.198, p < .001) collectively explained 47.2% of variance in treatment acceptance, with no multicollinearity (all VIF < 2.0). Qualitative analysis identified three primary themes with nine sub-themes: enhanced patient autonomy (control over scheduling, access to information, informed decision-making), reduced administrative burden (efficient booking, automated reminders, staff workload reduction), and improved care continuity (secure messaging, perceived support, reduced unnecessary visits). Staff interviews highlighted the importance of system integration with existing electronic health records. Joint display analysis revealed convergence across all major themes, with divergence identified regarding staff training deficits. Conclusions: Digital patient navigation systems are positively associated with treatment acceptance through improved care coordination and patient empowerment. However, the cross-sectional design precludes causal conclusions. Healthcare organisations should invest in user-friendly navigation platforms that integrate with clinical workflows, whilst acknowledging that selection bias may inflate observed associations. Training programmes for both patients and staff remain essential for optimal system utilisation.",
+    "url": "https://doi.org/10.59067/afjhms.v11i2.126",
+    "bib_key": "metuge2026digital"
+  },
+  "10.21203/rs.3.rs-10831662/v1": {
+    "doi": "10.21203/rs.3.rs-10831662/v1",
+    "title": "Design and Prototype Development of a Patient Navigation Platform for Healthcare Services in Kigali, Rwanda",
+    "authors": [
+      "Delphine Sugira",
+      "Kizito Nkurikiyeyezu",
+      "Alpha-Ars\u00e8ne Marara",
+      "Mugisha Emmy",
+      "Celestin Twizere",
+      "David K. Tumusiime"
+    ],
+    "year": 2026,
+    "venue": "Research Square",
+    "publisher": "Springer Science and Business Media LLC",
+    "abstract": "",
+    "url": "https://doi.org/10.21203/rs.3.rs-10831662/v1",
+    "bib_key": "sugira2026design"
+  },
+  "10.1371/journal.pone.0223537": {
+    "doi": "10.1371/journal.pone.0223537",
+    "title": "Patient navigation services for cancer care in low-and middle-income countries: A scoping review",
+    "authors": [
+      "Milena Dalton",
+      "Emily Holzman",
+      "Erica Erwin",
+      "Sophia Michelen",
+      "Anne F. Rositch",
+      "Somesh Kumar",
+      "Verna Vanderpuye",
+      "Karen Yeates",
+      "Erica J. Liebermann",
+      "Ophira Ginsburg"
+    ],
+    "year": 2019,
+    "venue": "PLOS ONE",
+    "publisher": "Public Library of Science (PLoS)",
+    "abstract": "BACKGROUND: Nearly 70% of all cancer deaths occur in low- and middle-income countries (LMICs) and many of these cancer deaths are preventable. In high-income countries (HICs), patient navigation strategies have been successfully implemented to facilitate the patient's journey at multiple points along the cancer care continuum. The purpose of this scoping review is to understand and describe the scope of patient navigation interventions and services employed in LMICs. METHODS: A systematic search of published articles was conducted including Medline, Biosis, Embase, Global Health, and Web of Science. Articles were examined for evidence of patient navigation interventions used in cancer care in LMICs. Evidence was synthesized by navigation service provided and by type of outcome. RESULTS: Fourteen studies reported on patient navigation interventions in cancer care in low-income and middle-income countries in Asia, South America, and Africa. Most studies reported on women's cancers and included navigation interventions at most points along the cancer care continuum i.e. awareness, education, screening participation, adherence to treatment and surveillance protocols. CONCLUSION: Few studies report on cancer patient navigation in LMICs. With the use of an implementation science framework, patient navigation research can explore a broader range of outcomes to better evaluate its potential role in improving cancer control in LMICs.",
+    "url": "https://doi.org/10.1371/journal.pone.0223537",
+    "bib_key": "dalton2019patient"
+  },
+  "10.1007/s11912-024-01514-9": {
+    "doi": "10.1007/s11912-024-01514-9",
+    "title": "Patient Navigation in Cancer Treatment: A Systematic Review",
+    "authors": [
+      "Matthew Chen",
+      "Victoria S. Wu",
+      "Derek Falk",
+      "Chesley Cheatham",
+      "Jennifer Cullen",
+      "Richard Hoehn"
+    ],
+    "year": 2024,
+    "venue": "Current Oncology Reports",
+    "publisher": "Springer Science and Business Media LLC",
+    "abstract": "PURPOSE OF REVIEW: Patient navigation promotes access to timely treatment of chronic diseases by eliminating barriers to care. Patient navigation programs have been well-established in improving screening rates and diagnostic resolution. This systematic review aimed to characterize the multifaceted role of patient navigators within the realm of cancer treatment. RECENT FINDINGS: A comprehensive electronic literature review of PubMed and Embase databases was conducted to identify relevant studies investigating the role of patient navigators in cancer treatment from August 1, 2009 to March 27, 2023. Fifty-nine articles were included in this review. Amongst studies focused on cancer treatment initiation, 70% found a significant improvement in treatment initiation amongst patients who were enrolled in patient navigation programs, 71% of studies focused on treatment adherence demonstrated significant improvements in treatment adherence, 87% of studies investigating patient satisfaction showed significant benefits, and 81% of studies reported a positive impact of patient navigators on quality care indicators. Three palliative care studies found beneficial effects of patient navigation. Thirty-seven studies investigated disadvantaged populations, with 76% of them concluded that patient navigators made a positive impact during treatment. This systematic review provides compelling evidence supporting the value of patient navigation programs in cancer treatment. The findings suggest that patient navigation plays a crucial role in improving access to care and optimizing treatment outcomes, especially for disadvantaged cancer patients. Incorporating patient navigation into standard oncology practice can reduce disparities and improve the overall quality of cancer care.",
+    "url": "https://doi.org/10.1007/s11912-024-01514-9",
+    "bib_key": "chen2024patient"
+  },
+  "10.1136/fmch-2023-002397": {
+    "doi": "10.1136/fmch-2023-002397",
+    "title": "Community cancer screening at primary care level in Northern India: determinants and policy implications for cancer prevention",
+    "authors": [
+      "Priyanka Sharma",
+      "Divya Khanna",
+      "Satyajit Pradhan",
+      "Praveen Birur"
+    ],
+    "year": 2023,
+    "venue": "Family Medicine and Community Health",
+    "publisher": "BMJ",
+    "abstract": "OBJECTIVE: Despite the established cancer screening programme for oral, breast and cervical cancer by the Government of India, the screening coverage remains inadequate. This study aimed to describe the determinants for oral, breast and cervical cancer prevention in a rural community at the primary care level of Northern India and its policy implications. DESIGN: This was a camp-based project conducted for 1 year, using oral visual examination, clinical breast examination and visual inspection of cervix by application of 5% acetic acid according to primary healthcare operational guidelines. During the project, screen-positive participants were followed through reverse navigation. Information about socio-demographic profile, clinical and behavioural history and screening were collected. Predictors for screen-positivity and follow-up compliance were identified through multivariable analysis. SETTINGS: Based on the aim of project, one of the remotely located and low socioeconomic rural blocks, having 148 villages (estimated population of 254 285) in Varanasi district, India was selected as the service site. There is an established healthcare delivery and referral system as per the National Health Mission of Government of India. Oral, breast, gallbladder and cervical cancers are the leading cancers in the district. PARTICIPANTS: We invited all men and women aged 30-65 years residing in the selected block for the last 6 months for the screening camps. Unmarried women, women with active vaginal bleeding, those currently pregnant and those who have undergone hysterectomy were excluded from cervical cancer screening. RESULTS: A total of 14 338 participants were screened through 190 camps and the majority (61.9%) were women. Hindu religion, tobacco use, intention to quit tobacco and presence of symptoms were significantly associated with screen-positivity. Nearly one-third (220; 30.1%) of the screened-positives complied with follow-up. Young age and illiteracy were significantly associated with lower compliance. CONCLUSION: Poor follow-up compliance, despite the availability of tertiary cancer care, patient navigation, free transportation and diagnostic services, calls for research to explore the role of contextual factors and develop pragmatic interventions to justify 'close the care gap'. Community cancer screening needs strengthening through cancer awareness, establishing referral system and integration with the National Tobacco Control and Cancer Registry Programmes.",
+    "url": "https://doi.org/10.1136/fmch-2023-002397",
+    "bib_key": "sharma2023community"
+  },
+  "10.1109/infcom.2012.6195689": {
+    "doi": "10.1109/infcom.2012.6195689",
+    "title": "Real-time status: How often should one update?",
+    "authors": [
+      "Sanjit Kaul",
+      "Roy Yates",
+      "Marco Gruteser"
+    ],
+    "year": 2012,
+    "venue": "2012 Proceedings IEEE INFOCOM",
+    "publisher": "IEEE",
+    "abstract": "",
+    "url": "https://doi.org/10.1109/infcom.2012.6195689",
+    "bib_key": "kaul2012realtime"
+  },
+  "10.1109/itw44776.2019.8988983": {
+    "doi": "10.1109/itw44776.2019.8988983",
+    "title": "Relative Age of Information: A New Metric for Status Update Systems",
+    "authors": [
+      "Peng Zou",
+      "Omur Ozel",
+      "Suresh Subramaniam"
+    ],
+    "year": 2019,
+    "venue": "2019 IEEE Information Theory Workshop (ITW)",
+    "publisher": "IEEE",
+    "abstract": "In this paper, we introduce a new data freshness metric, relative Age of Information (rAoI), and examine it in a single server system with various packet management schemes. The (classical) AoI metric was introduced to measure the end to end freshness of status updates at the receiver with respect to their generation at the source. In order to understand the efficiency of the update delivery system in isolation, we introduce rAoI metric to measure how fresh the data is at the receiver with respect to the data at the transmitter. This metric introduces an explicit dependence on the arrival process in the evaluation of age. We investigate several queuing disciplines and provide closed form expressions for rAoI and numerical comparisons.",
+    "url": "https://doi.org/10.1109/itw44776.2019.8988983",
+    "bib_key": "zou2019relative"
+  },
+  "10.1109/vtc2020-fall49728.2020.9348764": {
+    "doi": "10.1109/vtc2020-fall49728.2020.9348764",
+    "title": "Optimal Status Update in IoT Systems: An Age of Information Violation Probability Perspective",
+    "authors": [
+      "Limei Hu",
+      "Zhengchuan Chen",
+      "Yunquan Dong",
+      "Yunjian Jia",
+      "Min Wang",
+      "Liang Liang",
+      "Chen Chen"
+    ],
+    "year": 2020,
+    "venue": "2020 IEEE 92nd Vehicular Technology Conference (VTC2020-Fall)",
+    "publisher": "IEEE",
+    "abstract": "Internet of Things (IoT) has emerged as one of the key features of the next-generation wireless networks, where timely delivery of status update packets is essential for many real-time IoT applications. Age of Information (AoI) is a new metric to measure the freshness of update. Reduction of the violation probability that AoI of status updates exceeds a given age constraint is of great significance for guaranteeing the data freshness in IoT systems. This work focuses on characterizing the violation probability of AoI in IoT systems where a sensor delivers updates to a monitor under M/M/1 queue with first-come-first-served (FCFS) policy. By exploring the correlation between inter-departure time and system time, the closed-form expression of the violation probability for any AoI constraint is derived. The obtained result induces an accurate characterization of the probability distribution function of AoI. The optimal generation rate of the status update that induces the minimal violation probability is also found. Numerical results show that the optimal update rate can significantly reduce the AoI violation probability for a wide range of AoI constraints.",
+    "url": "https://doi.org/10.1109/vtc2020-fall49728.2020.9348764",
+    "bib_key": "hu2020optimal"
+  },
+  "10.1145/3639830.3639849": {
+    "doi": "10.1145/3639830.3639849",
+    "title": "Data Freshness in Information-update Systems: Modeling, Scheduling, and Tradeoffs",
+    "authors": [
+      "Zhongdong Liu"
+    ],
+    "year": 2024,
+    "venue": "ACM SIGMETRICS Performance Evaluation Review",
+    "publisher": "Association for Computing Machinery (ACM)",
+    "abstract": "<jats:p>Brief Biography: Zhongdong Liu is a final-year Ph.D. student in the Department of Computer Science at Virginia Tech. He received his B.S. degree in Mathematics and Applied Mathematics with honors from Northeast Forestry University in 2016. His research interests are in the modeling, analysis, control, and optimization of complex network systems. His specific area of focus lies in analyzing and improving data freshness within real-time applications and services through the development of efficient scheduling algorithms. Zhongdong's research has been featured in notable publications, including IEEE INFOCOM, Proceedings of ICCCN (as an invited paper), IEEE Internet of Things Journal, and IEEE/ACM Transactions on Networking.</jats:p>",
+    "url": "https://doi.org/10.1145/3639830.3639849",
+    "bib_key": "liu2024data"
+  },
+  "10.1109/tits.2020.3039617": {
+    "doi": "10.1109/tits.2020.3039617",
+    "title": "Data Freshness and Energy-Efficient UAV Navigation Optimization: A Deep Reinforcement Learning Approach",
+    "authors": [
+      "Sarder Fakhrul Abedin",
+      "Md. Shirajum Munir",
+      "Nguyen H. Tran",
+      "Zhu Han",
+      "Choong Seon Hong"
+    ],
+    "year": 2021,
+    "venue": "IEEE Transactions on Intelligent Transportation Systems",
+    "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+    "abstract": "In this paper, we design a navigation policy for multiple unmanned aerial vehicles (UAVs) where mobile base stations (BSs) are deployed to improve the data freshness and connectivity to the Internet of Things (IoT) devices. First, we formulate an energy-efficient trajectory optimization problem in which the objective is to maximize the energy efficiency by optimizing the UAV-BS trajectory policy. We also incorporate different contextual information such as energy and age of information (AoI) constraints to ensure the data freshness at the ground BS. Second, we propose an agile deep reinforcement learning with experience replay model to solve the formulated problem concerning the contextual constraints for the UAV-BS navigation. Moreover, the proposed approach is well-suited for solving the problem, since the state space of the problem is extremely large and finding the best trajectory policy with useful contextual features is too complex for the UAV-BSs. By applying the proposed trained model, an effective real-time trajectory policy for the UAV-BSs captures the observable network states over time. Finally, the simulation results illustrate the proposed approach is 3.6% and 3.13% more energy efficient than those of the greedy and baseline deep Q Network (DQN) approaches.",
+    "url": "https://doi.org/10.1109/tits.2020.3039617",
+    "bib_key": "abedin2021data"
+  },
+  "10.18203/2394-6040.ijcmph20260718": {
+    "doi": "10.18203/2394-6040.ijcmph20260718",
+    "title": "Unlocking India's hospital beds: why a digital portal is the cure for a stretched system",
+    "authors": [
+      "Harikarthikeyan Karuthamalai Rajasundar"
+    ],
+    "year": 2026,
+    "venue": "International Journal Of Community Medicine And Public Health",
+    "publisher": "Medip Academy",
+    "abstract": "India\u2019s health system faces chronic resource gaps and inefficiencies. With public health spending at only 1.84% of GDP and very low hospital bed densities (around 0.6 beds per 1000 population), simply adding beds is unaffordable and slow. A more efficient alternative is to improve utilisation: a real-time digital platform that tracks staffed bed availability can raise effective capacity and reduce inequity. Early experiments \u2013 from Delhi\u2019s COVID-19 bed portal to the bed management system in AIG Hospitals, Hyderabad \u2013 show substantially higher occupancy and throughput. International evidence also supports these results, confirming that real-time tracking systems can deliver major efficiency gains. This brief proposes piloting a national bed-tracking dashboard and shows it can yield large gains for much lower cost and risk than new construction, with safeguards to address data accuracy, incentives and privacy. These promising results are tempered by limited evidence from a small number of pilots and by systemic constraints such as staff shortages, uneven digital readiness, and governance challenges that will require independent evaluation and safeguards during scale-up.",
+    "url": "https://doi.org/10.18203/2394-6040.ijcmph20260718",
+    "bib_key": "rajasundar2026unlocking"
+  },
+  "10.1016/j.inhs.2026.100048": {
+    "doi": "10.1016/j.inhs.2026.100048",
+    "title": "Optimizing hospital bed capacity: How lean-AI integration prevents capacity constraints from multiplying demand",
+    "authors": [
+      "Sindhura Anumolu",
+      "Mandar Samant"
+    ],
+    "year": 2026,
+    "venue": "Intelligent Hospital",
+    "publisher": "Elsevier BV",
+    "abstract": "Hospital bed management requires optimizing occupancy levels while maintaining sufficient surge capacity to prevent patient boarding and extended wait times. Industry guidelines target 80-85% occupancy, as levels beyond 90% create patient waits and diversions. Traditional operations-improvement methods have provided incremental gains, while recent data-driven tools and command centers offer new optimization potential. This study synthesizes insights from global case studies and institutional interviews to evaluate how integrated Lean principles and artificial intelligence approaches optimize hospital bed capacity management across diverse healthcare settings. We analyzed implementations using the 4S framework (Statement, Selling Point, Summary, Sources), reviewing Lean methods (Kanban, Andon, push-pull flows) alongside AI-enabled scheduling models (LeanTaaS iQueue, Qventus) and command-center platforms. Analysis covered multiple departments including emergency, inpatient, operating rooms, laboratories, and pediatrics, with empirical outcomes assessed qualitatively and quantitatively. Combined Lean-AI approaches demonstrated substantial improvements in wait times, length of stay, and effective capacity. Command center implementations achieved equivalent capacity gains of 30+ beds without physical expansion. Key enabling factors included real-time data visibility, organizational culture supporting change, and interdepartmental coordination. Implementation challenges centered on data reliability and return-on-investment measurement. Hospitals can address rising demand through three strategic priorities: investing in real-time visibility infrastructure (dashboards, location tracking), adopting flexible workflows (Lean huddles, automated alerts), and deploying advanced forecasting using machine learning. Success requires integrating technological solutions with operational process improvements rather than implementing either approach independently.",
+    "url": "https://doi.org/10.1016/j.inhs.2026.100048",
+    "bib_key": "anumolu2026optimizing"
+  },
+  "10.1007/978-981-16-1740-9_27": {
+    "doi": "10.1007/978-981-16-1740-9_27",
+    "title": "Predicting Hospital Bed Requirements for COVID-19 Patients in Mumbai City and Mumbai Suburban Region",
+    "authors": [
+      "Narayana Darapaneni",
+      "Chandrashekhar Bhakuni",
+      "Ujjval Bhatt",
+      "Khamir Purohit",
+      "Vikas Sardana",
+      "Prabir Chakraborty",
+      "Vivek Jain",
+      "Anwesh Reddy Paduri"
+    ],
+    "year": 2021,
+    "venue": "Advances in Intelligent Systems and Computing",
+    "publisher": "Springer Singapore",
+    "abstract": "",
+    "url": "https://doi.org/10.1007/978-981-16-1740-9_27",
+    "bib_key": "darapaneni2021predicting"
+  },
+  "10.1136/bmj.q883": {
+    "doi": "10.1136/bmj.q883",
+    "title": "Why hospital capacity is more complex than bed capacity",
+    "authors": [
+      "Kamran Abbasi"
+    ],
+    "year": 2024,
+    "venue": "BMJ",
+    "publisher": "BMJ",
+    "abstract": "",
+    "url": "https://doi.org/10.1136/bmj.q883",
+    "bib_key": "abbasi2024hospital"
+  },
+  "10.1109/iccnct68477.2026.11590821": {
+    "doi": "10.1109/iccnct68477.2026.11590821",
+    "title": "CARESYNC: Cloud-Backed Real-Time Hospital Bed &amp; ICU Tracking System for Ambulances",
+    "authors": [
+      "Dr.D.Prasanna",
+      "Bharanikavi P",
+      "Bharathkumar P",
+      "Hari Prasanth D",
+      "Harisudhan S.U"
+    ],
+    "year": 2026,
+    "venue": "2026 International Conference on Computer Networks and Inventive Communication Technologies (ICCNCT)",
+    "publisher": "IEEE",
+    "abstract": "",
+    "url": "https://doi.org/10.1109/iccnct68477.2026.11590821",
+    "bib_key": "drdprasanna2026caresync"
+  },
+  "10.64753/jcasc.v10i3.3643": {
+    "doi": "10.64753/jcasc.v10i3.3643",
+    "title": "Machine Learning in Hospital Bed Management and Patient Flow: A Comprehensive Review of Evidence Synthesis and Implementation Guidance",
+    "authors": [
+      "Derren Rampengan",
+      "Noah Jefferson Permana",
+      "Dewi Wuisan"
+    ],
+    "year": 2025,
+    "venue": "Journal of Cultural Analysis and Social Change",
+    "publisher": "Brighteredge Press Resources",
+    "abstract": "Efficient hospital bed management and patient flow are fundamental to healthcare quality, operational efficiency, and cost containment. Traditional approaches such as regression modeling, simulation, and queueing theory have offered limited flexibility in addressing the dynamic and nonlinear nature of hospital operations. The rise of machine learning (ML) has transformed this landscape by enabling predictive, adaptive, and automated decision-making across multiple facets of hospital management. Recent advances demonstrate how ML supports real-time hospital intelligence through applications including demand forecasting, length-of-stay prediction, discharge readiness assessment, and dynamic bed allocation. Techniques such as random forest, XGBoost, long short-term memory, transformer models, and reinforcement learning have been successfully applied to anticipate admission surges, predict recovery trajectories, and optimize capacity distribution. These systems enhance decision support for administrators and clinicians alike, enabling faster throughput, reduced congestion, and improved coordination of resources. Emerging innovations like AI-powered hospital command centers, digital twin simulations, and federated learning frameworks are redefining operational adaptability and resilience, particularly in crisis contexts like pandemics and mass casualty events. Yet, significant translational barriers persist, including fragmented data systems, limited interoperability, and the gap between technical model design and clinical relevance. Bridging this divide requires the development of explainable, ethically governed, and clinically meaningful AI that integrates seamlessly with hospital workflows. Overall, ML is steering hospitals toward a new operational paradigm, transforming routine management into a dynamic system capable of learning and adapting in real time.",
+    "url": "https://doi.org/10.64753/jcasc.v10i3.3643",
+    "bib_key": "rampengan2025machine"
+  },
+  "10.36948/ijfmr.2024.v06i02.14122": {
+    "doi": "10.36948/ijfmr.2024.v06i02.14122",
+    "title": "Digital Transformation In Blood Banking: The Story Of E-Raktkosh",
+    "authors": [
+      "Syeda Tahseen Kulsum -",
+      "K Madan Gopal -"
+    ],
+    "year": 2024,
+    "venue": "International Journal For Multidisciplinary Research",
+    "publisher": "International Journal for Multidisciplinary Research (IJFMR)",
+    "abstract": "<jats:p>The E-raktkosh initiative, launched by the Government of India, is a pioneering effort in the field of healthcare and technology. This paper explores the inception, objectives, and recent advancements of the E-raktkosh project, shedding light on its impact on blood management in India. By harnessing the power of digitalization, E-raktkosh has revolutionized the way blood is collected, stored, and distributed across the nation, ensuring efficient and safe access to this life-saving resource. This paper delves into the significance of E-raktkosh in addressing blood shortage challenges, enhancing transparency, and saving countless lives.</jats:p>",
+    "url": "https://doi.org/10.36948/ijfmr.2024.v06i02.14122",
+    "bib_key": "2024digital"
+  },
+  "10.21088/ijprp.2278.148x.7418.12": {
+    "doi": "10.21088/ijprp.2278.148x.7418.12",
+    "title": "A Research Analysis of Inevitable Blood Wastage in Blood Bank of a Tertiary Care Teaching Hospital: A Retrospective Study of Five Years",
+    "authors": [
+      "Asha P. Purohit",
+      "Puja B. Jarwani",
+      "Shantibhai M. Patel"
+    ],
+    "year": 2018,
+    "venue": "Indian Journal of Pathology: Research and Practice",
+    "publisher": "Red Flower Publication Private, Ltd.",
+    "abstract": "",
+    "url": "https://doi.org/10.21088/ijprp.2278.148x.7418.12",
+    "bib_key": "purohit2018research"
+  },
+  "10.7759/cureus.20500": {
+    "doi": "10.7759/cureus.20500",
+    "title": "Exploring the Causes of Wastage of Blood and Its Components in a Tertiary Care Hospital Blood Bank",
+    "authors": [
+      "Farrah Bashir",
+      "Attika Khalid",
+      "Shahbaz Iqbal",
+      "Tariq Ghafoor",
+      "Moiz Ahmed"
+    ],
+    "year": 2021,
+    "venue": "Cureus",
+    "publisher": "Springer Science and Business Media LLC",
+    "abstract": "Background Blood donated by healthy people is extremely important as it is integral in emergent situations. The authors aimed to address and highlight the main causes of the wastage of donated blood and its components. Methodology A cross-sectional study was conducted at a blood bank of a tertiary care center between January 2019 and March 2020. All the information regarding blood donated and blood components during the study period was documented on a predefined proforma. The blood bags which were seropositive, reached their shelf-life expiry, expired due to non-utilization, or quantity was non-sufficient were discarded. Blood showing any changes of either hemolysis or turbidity was also discarded. Other reasons for discarding blood units included leakage (damage to or fault in the blood bag), hemolytic reasons, or miscellaneous reasons. Results A total of 9308 blood donations were received as donations during the study period. Out of the total donations, 7,988 (85.8%) were subjected for component formation including red cell component (RCC), fresh frozen plasma (FFP), and platelets. A total of 23,964 components were prepared using the donated blood. Out of these 2128 (8.87%) units were discarded. Upon stratifying the discarded blood according to the type of component, it was found that platelets made up 1148 (53.9%) units, red cell component composed 324 (15.2%) units, and fresh frozen plasma composed 313 (14.7%) units of discarded blood. Seropositive was reported to be 32.3%. Of this, the red cell component made up 276 (85.2%) units. Conclusion The present study reported a discard rate of 8.87%. Of these, the majority was composed of platelets due to the shortest shelf life. Leakage of blood bags remained a predominant cause for the discard of blood components. Seropositivity for hepatitis B, C, and human immunodeficiency virus (HIV) was reported in almost 30% units of donated blood. Further large-scale studies should be conducted to reassess how wastage of donated blood can be minimized.",
+    "url": "https://doi.org/10.7759/cureus.20500",
+    "bib_key": "bashir2021exploring"
+  },
+  "10.21276/ijcmr.2019.6.5.60": {
+    "doi": "10.21276/ijcmr.2019.6.5.60",
+    "title": "Reasons and Recommendations to Reduce Wastage Pattern of the Blood Component in the Newly Started Tertiary Care Center Blood Bank in East India",
+    "authors": [
+      "Nawanita Kumari",
+      "Ashish Maheshwari",
+      "Nidhish Kumar",
+      "Shadan Rabab"
+    ],
+    "year": 2019,
+    "venue": "International Journal of Contemporary Medical Research [IJCMR]",
+    "publisher": "Marwah Infotech",
+    "abstract": "Introduction: In quality management system for process improvement and better inventory management, a performance monitoring tool is critical in the blood bank to improve quality and discard rate of blood component is one of the essential elements.This study was designed to analyse blood component discard and their reason in a newly developed institute and blood bank setup.Material and Methods: It was a retrospective observational study from May 2018 to March 2019.During the study period data was captured and analysed for component preparation and discarded individually and cumulatively.Major reasons were analysed for blood component discard.Results: Total number of blood component discard observed were 1714 out of which 368 red cell component (21.4%); 1139 Platelet component (66.4%), 210 fresh frozen plasmas (11.7%); 6 cryoprecipitate and cryo poor plasma respectively (0.6%) were discarded.Major reasons for discard of blood component were expiry, TTI reactivity, leakage, and red cell contaminations.Conclusion: The current study reflects very high discard rate compared to other published studies and recommend the following the necessary policies and supervision for reduction of blood component discard are need based change and production of blood components and better inventory management in new hospital based setup and following standard procedure for manufacturing, storage and transfer of blood components.",
+    "url": "https://doi.org/10.21276/ijcmr.2019.6.5.60",
+    "bib_key": "kumari2019reasons"
+  },
+  "10.1109/icitr69413.2025.11353793": {
+    "doi": "10.1109/icitr69413.2025.11353793",
+    "title": "Digital Transformation of Blood Bank Operations: Design and Implementation of a National Blood Bank Management System",
+    "authors": [
+      "Onaliy Vinukiy Jayawardana",
+      "Mohamed Sapraz"
+    ],
+    "year": 2025,
+    "venue": "2025 10th International Conference on Information Technology Research (ICITR)",
+    "publisher": "IEEE",
+    "abstract": "",
+    "url": "https://doi.org/10.1109/icitr69413.2025.11353793",
+    "bib_key": "jayawardana2025digital"
+  },
+  "10.4103/ajts.ajts_75_25": {
+    "doi": "10.4103/ajts.ajts_75_25",
+    "title": "Blood inventory display: Emoji style",
+    "authors": [
+      "Abhishekh Basavarajegowda",
+      "Esha Toora",
+      "Ajay Barala",
+      "Pratul Sinha"
+    ],
+    "year": 2026,
+    "venue": "Asian Journal of Transfusion Science",
+    "publisher": "Ovid Technologies (Wolters Kluwer Health)",
+    "abstract": "The regulations in India mandate the display of available blood units at the blood center as well as in central databases like e-RaktKosh. E-RaktKosh provides a centralized system for blood bank management and allows for checking blood availability by blood type and location. Most of the blood centers display the absolute numbers of the units available. This does not give sufficient information to the people whether these are more, sufficient, or less. The rule of thumb is to maintain a stock inventory equivalent of approximately 4\u20136 days of average daily use of packed red blood cells and 2 days of average daily use of platelets, based on the average calculated per day using annual consumption.[1] However, this deduction cannot be arrived at just by looking at the stock depicted in numbers. Hence, we came up with a method using emojis that conveys information to the onlooker as to what it means without displaying the actual number, but at the same time drives the message about the sufficiency to the onlooker. The interpretation is shown in Table 1.Table 1: Interpretation of the emojisSteps of preparation of this chart: The daily requirement is calculated by dividing the total consumption of the previous year by 365. This would be the average daily red cell demand (ADRD). The same is done groupwise The daily stock with groupwise availability on a particular day in the inventory is divided by the ADRD to get the Inventory index. The inventory index is the number of days for which the current number of units will suffice. For example, the annual utilization of the O units in the previous year was 9260. ADRD is 9260/365 = 25.4. If the current stock of O is 80, then the Inventory index would be 80/25.2 = 3.2. This means the current stock would suffice for 3 days and would get a smiley of yellow color. Similarly, this would be calculated for other blood groups as well and represented. The same method was used for Fresh Frozen Plasma (FFPs) as wells. For Random Donor platelets (RDPs), the same method is used except that the interpretation is different, as the allowed days as shelf life for RDPs in India is limited to 5 days. The same is shown in Table 1. Representation like this makes the public and other stakeholders understand the implications much better and have an understanding of what to expect from the blood center [Figure 1].Figure 1: Daily Blood Stock represented using emojisWhen the inventory is shown as numbers, the people who come with blood requisitions complain as to why we are not issuing them when we have the requisite units. However with this depiction, they understand whether the stocks are at critical levels or not. We are not aware of any literature on using these emojis previously elsewhere. It is a simple algorithm and can be easily added to or adapted to existing blood inventory software. Author contributions AB, ET prepared the manuscript, Ajay collected the data, PS helped with intellectual content. Financial support and sponsorship Nil. Conflicts of interest There are no conflicts of interest.",
+    "url": "https://doi.org/10.4103/ajts.ajts_75_25",
+    "bib_key": "basavarajegowda2026blood"
+  },
+  "10.71097/ijsat.v16.i4.8701": {
+    "doi": "10.71097/ijsat.v16.i4.8701",
+    "title": "From Donation to Distribution: The Regulatory Anatomy of India\u2019s Blood Bank EcoSystem",
+    "authors": [
+      "Gloria Quadros",
+      "Deepak Paliwal"
+    ],
+    "year": 2025,
+    "venue": "International Journal on Science and Technology",
+    "publisher": "International Research Publication and Journals",
+    "abstract": "Blood transfusion services in India have evolved from the first wartime blood bank in 1942 to a complex, digitally enabled network of over 4,200 licensed centres, yet continue to grapple with a national shortfall of 3\u20134 million units annually. Through a comprehensive review of historical records, regulatory texts, policy documents, and peer-reviewed literature, this study maps key milestones\u2014from the enactment of the Drugs and Cosmetics Act (1940) to the launch of the E-RaktKosh portal (2016) and the 2022 National Standards for Blood Centres. Advanced screening techniques such as nucleic acid testing and hemovigilance programs have markedly improved safety, while component separation units and automation have enhanced clinical utility and traceability. However, fragmented oversight across multiple agencies (CDSCO, NBTC, NACO, SBTCs), regional infrastructure deficits, and persistent ethical barriers\u2014especially gender exclusion and identity-based donor deferrals\u2014undermine equity and supply resilience. The study concludes that achieving universal, safe, and timely blood access demands a unified National Blood Law, mandatory adoption of advanced screening (NAT/PRT), expansion of voluntary non-remunerated donation, and investment in cold-chain logistics and digital infrastructure.",
+    "url": "https://doi.org/10.71097/ijsat.v16.i4.8701",
+    "bib_key": "quadros2025from"
+  },
+  "10.1111/trf.15998": {
+    "doi": "10.1111/trf.15998",
+    "title": "Barriers to blood donation on social media: An analysis of Facebook and Twitter posts",
+    "authors": [
+      "Steven Ramondt",
+      "Melissa Zijlstra",
+      "Peter Kerkhof",
+      "Eva\u2010Maria Merz"
+    ],
+    "year": 2020,
+    "venue": "Transfusion",
+    "publisher": "Wiley",
+    "abstract": "<jats:title>Abstract</jats:title><jats:sec><jats:title>Background</jats:title><jats:p>To better understand donor behavior and ensure a safe and sufficient blood supply, various observational studies have examined barriers to blood donation. This study used Facebook and Twitter data to enhance existing research on donation barriers and associated emotions communicated on social media by both donors and non\u2010donors.</jats:p></jats:sec><jats:sec><jats:title>Study design and methods</jats:title><jats:p>We conducted a semantic network analysis (SNA) with 168\u2009232 public Dutch language social media messages from Facebook and Twitter during 2012\u20102018. SNA uses concepts as nodes in a network and the relationship (ie, co\u2010occurrence) as links between them. We identified the relationship between donation barriers, non\u2010donation (voluntary and involuntary), and dissatisfaction (anger and disappointment) within social media messages. This computational method was combined with an analysis examining significant relationships in\u2010depth.</jats:p></jats:sec><jats:sec><jats:title>Results</jats:title><jats:p>Twelve donation barriers were identified: lifestyle, donation location, medical reasons, no invitation, opening times, physical reactions, pregnancy, remuneration, sexual risk behavior, time constraints, travels, and waiting times. More messages related to involuntary non\u2010donation compared to voluntary non\u2010donation. Involuntary non\u2010donation was associated most strongly with medical reasons and sexual risk behavior, while voluntary non\u2010donation was associated most strongly with resentment regarding remuneration of the blood bank\u02bcs top management. Anger associated most strongly with sexual risk behavior and disappointment most strongly with medical reasons.</jats:p></jats:sec><jats:sec><jats:title>Conclusion</jats:title><jats:p>Discussions around blood donation are increasingly taking place online. Donation barriers found in this study differ from those in survey research. Insights into how donation barriers are communicated in an ever\u2010growing online environment can be utilized to enhance recruitment and retention strategies.</jats:p></jats:sec>",
+    "url": "https://doi.org/10.1111/trf.15998",
+    "bib_key": "ramondt2020barriers"
+  },
+  "10.2139/ssrn.5988514": {
+    "doi": "10.2139/ssrn.5988514",
+    "title": "Ayushman Bharat Digital Mission | From Infrastructure to Impact: A Tri-lens assessment of India's Digital Health System",
+    "authors": [
+      "Pooja Kadambi",
+      "Peter T Joseph",
+      "Divya Ajitsaria"
+    ],
+    "year": 2026,
+    "venue": "",
+    "publisher": "Elsevier BV",
+    "abstract": "<jats:p>&lt;span&gt;This whitepaper evaluates the Ayushman Bharat Digital Mission (ABDM) through a tri-lens framework combining policy and benchmark analysis, economic modelling, and stakeholder sentiment insights. Using global references (WHO/OECD), fiscal evaluation tools (ICER, NPV, BCR, SROI, \u03bb_IN), and qualitative interviews, the paper assesses whether India\u2019s digital health infrastructure is translating into measurable and equitable public value. Findings show strong architectural and standards maturity but persistent gaps in point-of-care adoption, interoperability, equity, and outcomes measurement. The analysis identifies six strategic reform levers to help ABDM evolve from an infrastructure-building programme to a fully outcome-oriented digital health ecosystem.&lt;/span&gt;</jats:p>",
+    "url": "https://doi.org/10.2139/ssrn.5988514",
+    "bib_key": "kadambi2026ayushman"
+  },
+  "10.18203/2394-6040.ijcmph20262227": {
+    "doi": "10.18203/2394-6040.ijcmph20262227",
+    "title": "Bridging the digital divide: a longitudinal analysis of health equity in India\u2019s Ayushman Bharat Digital Mission (2024-2025)",
+    "authors": [
+      "Sai Sreevalli Sreepada"
+    ],
+    "year": 2026,
+    "venue": "International Journal Of Community Medicine And Public Health",
+    "publisher": "Medip Academy",
+    "abstract": "<jats:p>Background: The Ayushman Bharat Digital Mission (ABDM) aims to provide unique digital health identities to India's 1.4 billion citizens. Deploying such technology in deeply unequal societies risks exacerbating the digital divide. This study examines whether ABDM adoption followed the \"Inverse Care Law\" or successfully bridged the gap between digital haves and have-nots.\nMethods: A longitudinal ecological study across 28 Indian states over 18 months (January 2024-July 2025) analyzed Ayushman Bharat Health Account (ABHA) generation data from the ABDM dashboard and Ministry of Health releases. States were stratified by NSDP per capita. Key indicators included ABHA saturation, percentage growth, and income-related inequality via the Concentration Index (CI) and Lorenz Curves.\nResults: National ABHA saturation rose significantly from 32.7% (\u00b115.2%) to 53.9% (\u00b116.1%) (p&lt;0.001). A clear \"Catch-Up Effect\" emerged: the poorest state quartile grew by 145.2%, nearly three times the 58.4% recorded in the richest quartile. Inequality analysis revealed a striking inversion from a pro-rich distribution (CI= +0.062) to near-perfect equity (CI= -0.011). Lower-middle-income states such as Andhra Pradesh and Odisha were top performers, while wealthier states exhibited slower adoption due to \"legacy friction\".\nConclusions: ABDM achieved rapid \"regression to equity,\" driven not by organic demand but by supply-side \"physical involvement in digital space\" interventions frontline health workers facilitating assisted onboarding in rural areas. These findings offer a replicable blueprint for LMICs seeking to democratize digital health infrastructure.</jats:p>",
+    "url": "https://doi.org/10.18203/2394-6040.ijcmph20262227",
+    "bib_key": "sreepada2026bridging"
+  },
+  "10.20944/preprints202606.1791.v1": {
+    "doi": "10.20944/preprints202606.1791.v1",
+    "title": "From Compliance to Ecosystem Adoption: A Mixed-Methods Assessment of HL7 FHIR Implementation in India",
+    "authors": [
+      "Abhishek Jain",
+      "Satyam Kumar",
+      "Padmini Vishwanath",
+      "Mayank Garg",
+      "Karthik Adapa"
+    ],
+    "year": 2026,
+    "venue": "Preprints.org",
+    "publisher": "MDPI AG",
+    "abstract": "Introduction: HL7 Fast Healthcare Interoperability Resources (FHIR) has emerged as a leading global standard for health information exchange and is increasingly central to national digital health architecture and to interoperability across the wider health ecosystem. In India, FHIR underpins key national digital health programmes, including the Ayushman Bharat Digital Mission (ABDM) and the National Health Claims Exchange (NHCX). However, the practical, ecosystem-wide adoption of FHIR beyond national programme requirements has not been systematically assessed.Methods: We conducted a mixed-methods landscape assessment between September and October 2025. Data sources included a structured online survey of ecosystem participants (n=22) representing health information system vendors, hospitals, insurers, third-party administrators, diagnostic laboratories, start-ups, government digital health teams, and academic institutions; ten semi-structured key informant interviews with stakeholders (n=10) engaged in ABDM- or FHIR-related implementation; desk research covering ABDM, NHCX, NRCeS implementation guides, global HL7 resources, and international FHIR practice; and structured field validation with early implementers. Findings were analysed descriptively and thematically, triangulated across data sources, and interpreted against selected international FHIR ecosystems, including the United States, United Kingdom, Australia, Singapore, and Israel.Results: India has established a mandate-driven national foundation for FHIR-aligned health information exchange through ABDM and NHCX, including national implementation guides based on FHIR R4, sandbox environments, and a growing ecosystem of ABDM-certified vendors. However, adoption across the wider ecosystem remains uneven and largely compliance-driven. Most participating organisations self-positioned at exploration or limited-pilot stages, while national programmes and a small number of larger vendors reported sustained operational use. Lack of funding or business incentives appeared among the top three adoption barriers for nearly two-thirds of survey respondents. Twenty-one barriers were identified across institutional, technical, and operational domains, including weak incentives, fragmented and rigid governance, limited validator and tooling infrastructure, terminology gaps, workforce constraints, and confusion between ABDM compliance and broader FHIR conformance.Conclusion: India has moved beyond formal standards adoption in selected national programmes, but ecosystem-wide implementation remains at an early stage. The central challenge is ecosystem-wide adoption \u2014 moving beyond compliance within national programmes so that implementers can validate, trust, and use FHIR as shared infrastructure (i.e., institutionalising it beyond mandate). Priorities include participatory governance, a layered, openly governed IG model \u2014 with the India Core as a recommended (not mandated) baseline, complemented by domain and programme/network layers, public validator and sandbox infrastructure, terminology services, procurement and reimbursement incentives, focused high-value public-sector use cases, and sustained workforce development. India\u2019s experience offers lessons for other large, federated, and resource-diverse health systems seeking to scale standards-based interoperability.",
+    "url": "https://doi.org/10.20944/preprints202606.1791.v1",
+    "bib_key": "jain2026from"
+  },
+  "10.1002/hcs2.67": {
+    "doi": "10.1002/hcs2.67",
+    "title": "Inception of the Indian Digital Health Mission: <i>Connecting\u2026the\u2026Dots</i>",
+    "authors": [
+      "Gerard Marshall Raj",
+      "Sathian Dananjayan",
+      "Neeraj Agarwal"
+    ],
+    "year": 2023,
+    "venue": "Health Care Science",
+    "publisher": "Wiley",
+    "abstract": "The purpose of the National Digital Health Mission (or more precisely, the Ayushman Bharat Digital Mission) is to promote and facilitate the evolution of the National Digital Health Ecosystem in India. The Health Facility Registry, the Healthcare Professionals Registry, and the Unified Health Interface are the major components of the proposed system-which is intended to be a co-operative federated architecture with optimal interoperability provision coupled with authorized access.",
+    "url": "https://doi.org/10.1002/hcs2.67",
+    "bib_key": "raj2023inception"
+  },
+  "10.36948/ijfmr.2026.v08i03.79174": {
+    "doi": "10.36948/ijfmr.2026.v08i03.79174",
+    "title": "Effectiveness of Digital Health in India: Opportunities, Challenges, and Future Directions",
+    "authors": [
+      "Sudarshan Paik"
+    ],
+    "year": 2026,
+    "venue": "International Journal For Multidisciplinary Research",
+    "publisher": "International Journal for Multidisciplinary Research (IJFMR)",
+    "abstract": "Digital health has emerged as a transformative force in India\u2019s healthcare system, aiming to improve accessibility, affordability, efficiency, and quality of healthcare services. The implementation of the Ayushman Bharat Digital Mission (ABDM), telemedicine platforms, electronic health records (EHRs), mobile health applications, artificial intelligence (AI), and health information exchanges has accelerated healthcare digitization across urban and rural India. This research paper critically evaluates the effectiveness of digital health initiatives in India by examining healthcare accessibility, patient outcomes, healthcare delivery efficiency, cost reduction, interoperability, public health surveillance, and policy implementation. The study also analyses barriers such as digital illiteracy, infrastructural inequality, cybersecurity concerns, and ethical challenges. Findings indicate that digital health significantly enhances healthcare access and continuity of care, especially in underserved regions, though substantial gaps remain in data privacy, infrastructure, and equitable implementation. The paper concludes with recommendations for strengthening India\u2019s digital health ecosystem through policy reforms, technological standardization, workforce training, and robust cybersecurity frameworks.",
+    "url": "https://doi.org/10.36948/ijfmr.2026.v08i03.79174",
+    "bib_key": "paik2026effectiveness"
+  },
+  "10.36948/ijfmr.2026.v08i02.80872": {
+    "doi": "10.36948/ijfmr.2026.v08i02.80872",
+    "title": "Digital Public Infrastructure and Sectoral Transformation in India: Evidence from Multi-Sector Startup Innovation",
+    "authors": [
+      "M. Balaraju",
+      "M. Thyagaraju"
+    ],
+    "year": 2026,
+    "venue": "International Journal For Multidisciplinary Research",
+    "publisher": "International Journal for Multidisciplinary Research (IJFMR)",
+    "abstract": "India's Digital Public Infrastructure (DPI) has become the main force which drives complete economic changes in different sectors of the economy. India established its digital infrastructure which operates at large scale through its public digital systems that include Aadhaar, Unified Payments Interface (UPI), Account Aggregator Framework, Open Network for Digital Commerce (ONDC), Ayushman Bharat Digital Mission, and Goods and Services Tax Network. The research shows how Digital Public Infrastructure (DPI) has driven changes in various sectors through startup development of new technologies from 2016 to 2025. The research study uses a comparative longitudinal research design which depends entirely on secondary data that comes from the Reserve Bank of India, National Payments Corporation of India, DPIIT, Startup India database, ONDC reports, ABDM dashboards and industry publications. The evaluation involves two parts which assess startup development in six sectors, namely FinTech, HealthTech, Agri Tech, Retail Tech, MSME services, and EdTech. The evaluation process requires a comparison between sector growth patterns and Digital Public Infrastructure (DPI) adoption benchmarks, which include digital transaction volumes and merchant onboarding and health ID registrations and consent-based financial data sharing. Using compound annual growth rate (CAGR) analysis, trend comparisons, and sectoral mapping, the study assesses the strength of association between DPI expansion and startup ecosystem development. Preliminary evidence indicates that sectors directly integrated with DPI layers demonstrate accelerated growth relative to indirectly integrated sectors. FinTech and Retail Tech startups exhibit strong expansion aligned with UPI adoption and ONDC network growth, while HealthTech innovation correlates with the rollout of ABDM digital health IDs. The Account Aggregator ecosystem and digital GST-based formalisation have further enabled data-driven lending, embedded finance models, and MSME digital inclusion. The findings suggest that DPI functions not merely as a digitisation tool but as a structural enabler of new business models, including platform-based commerce, API-driven services, consent-based credit architecture, and interoperable public\u2013private innovation systems. The study contributes to entrepreneurship and innovation literature by conceptualising DPI as a form of public digital capital that reshapes sectoral value chains, reduces market entry barriers, and democratises access to digital markets. DPI establishes network effects which enable different industries to innovate through its use as digital infrastructure. Policy implications show that organizations need to maintain their open-access digital systems which support interoperability to achieve inclusive growth and drive innovative progress. The public digital architecture models of India demonstrate that digital public infrastructure serves as a fundamental driver for entrepreneurial growth across multiple sectors.",
+    "url": "https://doi.org/10.36948/ijfmr.2026.v08i02.80872",
+    "bib_key": "balaraju2026digital"
+  },
+  "10.3389/fpubh.2026.1986759": {
+    "doi": "10.3389/fpubh.2026.1986759",
+    "title": "When fluency outpaces provenance: source traceability and digital health literacy against AI health misinformation",
+    "authors": [
+      "Mingsheng Peng",
+      "Lu Feng"
+    ],
+    "year": 2026,
+    "venue": "Frontiers in Public Health",
+    "publisher": "Frontiers Media SA",
+    "abstract": "Generative artificial intelligence (AI) can make health explanations accessible while separating persuasive language from inspectable evidence. This creates a public health problem beyond plainly false content: an answer may mislead through unsupported attribution, obsolete evidence, omitted uncertainty, or inappropriate application. This Conceptual Analysis uses a targeted integrative approach to connect health literacy, misinformation, trust, large language model evaluation, and content provenance around the pathway from a generated claim to a health decision. Its contribution is an integration and operationalization of established concepts, not a new literacy construct or truth-certification mechanism. We distinguish five source traceability functions: origin, claim, evidentiary, procedural, and correction traceability. These functions interact with four iterative, context-dependent user practices: inspect, triangulate, calibrate, and escalate. Calibrated trust means discriminating between stronger and weaker support and relying proportionately on it, rather than maximizing or minimizing trust. Effective traceability also requires accessible, comprehensible evidence pathways and reasonable verification effort. Institutional and platform accountability is therefore part of the model, not an optional supplement to individual competence. We provide illustrative operational indicators, provisional risk-tiered safeguards, and six testable propositions organized around evidentiary discrimination, confidence calibration, decision appropriateness, verification behavior, verification burden, and escalation behavior. Neither the unified model nor its indicators or risk tiers have been empirically validated. The framework offers a decision-oriented research and design architecture for evaluating when evidence visibility and literacy can jointly support safer use of synthetic health information.",
+    "url": "https://doi.org/10.3389/fpubh.2026.1986759",
+    "bib_key": "peng2026when"
+  },
+  "10.1145/3610061": {
+    "doi": "10.1145/3610061",
+    "title": "Examining the Impact of Provenance-Enabled Media on Trust and Accuracy Perceptions",
+    "authors": [
+      "K. J. Kevin Feng",
+      "Nick Ritchie",
+      "Pia Blumenthal",
+      "Andy Parsons",
+      "Amy X. Zhang"
+    ],
+    "year": 2023,
+    "venue": "Proceedings of the ACM on Human-Computer Interaction",
+    "publisher": "Association for Computing Machinery (ACM)",
+    "abstract": "In recent years, industry leaders and researchers have proposed to use technical provenance standards to address visual misinformation spread through digitally altered media. By adding immutable and secure provenance information such as authorship and edit date to media metadata, social media users could potentially better assess the validity of the media they encounter. However, it is unclear how end users would respond to provenance information, or how to best design provenance indicators to be understandable to laypeople. We conducted an online experiment with 595 participants from the US and UK to investigate how provenance information altered users' accuracy perceptions and trust in visual content shared on social media. We found that provenance information often lowered trust and caused users to doubt deceptive media, particularly when it revealed that the media was composited. We additionally tested conditions where the provenance information itself was shown to be incomplete or invalid, and found that these states have a significant impact on participants' accuracy perceptions and trust in media, leading them, in some cases, to disbelieve honest media. Our findings show that provenance, although enlightening, is still not a concept well-understood by users, who confuse media credibility with the orthogonal (albeit related) concept of provenance credibility. We discuss how design choices may contribute to provenance (mis)understanding, and conclude with implications for usable provenance systems, including clearer interfaces and user education.",
+    "url": "https://doi.org/10.1145/3610061",
+    "bib_key": "feng2023examining"
+  },
+  "10.1109/icedeg58167.2023.10121951": {
+    "doi": "10.1109/icedeg58167.2023.10121951",
+    "title": "How Trust in Authority and Trust in Networks Relates to Verification and Sharing Behaviours: COVID-19 Health Information Sharing on WhatsApp",
+    "authors": [
+      "Benjamin Vermeulen",
+      "Jean-Paul Van Belle"
+    ],
+    "year": 2023,
+    "venue": "2023 Ninth International Conference on eDemocracy &amp; eGovernment (ICEDEG)",
+    "publisher": "IEEE",
+    "abstract": "",
+    "url": "https://doi.org/10.1109/icedeg58167.2023.10121951",
+    "bib_key": "vermeulen2023trust"
+  },
+  "10.1177/02663821261487913": {
+    "doi": "10.1177/02663821261487913",
+    "title": "Out-of-the-box: Provenance, verification, and the ethics of generative AI in information work",
+    "authors": [
+      "Luke Tredinnick"
+    ],
+    "year": 2026,
+    "venue": "Business Information Review",
+    "publisher": "SAGE Publications",
+    "abstract": "<jats:p>Generative AI is increasingly woven into organisational information practice, challenging established assumptions about trust, accountability, and professional responsibility. Contemporary AI ethics frameworks emphasise transparency and provenance but often assume discrete, visible instances of AI use. This paper argues that the central ethical question is not where information originates but how much verification it requires before it can responsibly inform action. Drawing on foundational theories of information behaviour, including Belkin's anomalous state of knowledge, Taylor's question negotiation, and Kuhlthau's information search process, it reconceptualises interaction with generative AI as a process of task specification rather than content generation. Building on this perspective, the paper links informational tasks and contextual risk factors to differing verification burdens. Provenance remains important, but as a diagnostic indicator of likely forms of error rather than a guarantor of reliability. Human and generative systems are understood as complementary information production systems characterised by distinct patterns of failure requiring different forms of evaluative scrutiny. The paper concludes by distinguishing first-order AI literacy, concerned with the practical competence needed to use generative systems effectively, from second-order literacy, concerned with understanding how information acquires meaning, authority, and trust within social and organisational contexts. It argues that second-order literacy constitutes the key professional capability for ethical information work in AI-mediated environments.</jats:p>",
+    "url": "https://doi.org/10.1177/02663821261487913",
+    "bib_key": "tredinnick2026outofthebox"
+  },
+  "10.2139/ssrn.7130058": {
+    "doi": "10.2139/ssrn.7130058",
+    "title": "Reviewed for Quality and Security: Advertising Injection Through a Verified Connector, Trust Laundering, and the Limits of Directory Verification",
+    "authors": [
+      "Travis Gilly"
+    ],
+    "year": 2026,
+    "venue": "",
+    "publisher": "Elsevier BV",
+    "abstract": "<jats:p>A conversational assistant whose maker publicly commits that it carries no advertising was observed delivering a paid tier upgrade advertisement at the close of every academic search, across seven consecutive queries spanning distinct research domains. The advertisement did not originate with the assistant. It arrived inside the result payload of a third party connector, carried by a literal instruction directed at the model: you must include the above message at the end of your response. This is indirect prompt injection, the failure mode ranked first among risks to large language model applications, executing through a connector that the platform lists in a curated directory and marks with a badge whose hover text states that the platform has reviewed the connector for quality and security. One line below the badge, the same card disclaims the capacity to verify that listed connectors work as intended or that they will not change. This paper documents the specimen, establishes its reproducibility, and situates it in the protocol specific security literature, which supplies both the correct name for the attack, function return injection rather than tool poisoning, and the evidence that this vector is stronger and less studied than the descriptor poisoning the field concentrates on. It then maps the conduct against the platform's own directory policy, which prohibits both software that evades model instructions and software that serves advertisements. It then locates the harm in two established bodies of authority. The consumer protection frame is the Federal Trade Commission's treatment of deceptively formatted advertising, under which a message must be identifiable as advertising and a misleadingly formatted advertisement is deceptive even when its claims are literally true. The behavioral frame is the persuasion knowledge literature, under which a reader who cannot recognize a message as advertising cannot mount the skepticism that advertising recognition normally triggers. The design frame is the deceptive design literature, which holds that the most consequential dark patterns sit beneath the interface in system architecture, where interface bound scrutiny cannot reach them. The economic frame is twofold: the connector is a credence good whose quality the user cannot verify even after use, which is the condition that makes a certification mark necessary in the first place, and the badge is a signal that cannot separate compliant from non compliant connectors because obtaining it costs both the same. The attack class is well described in that literature; what is not documented there is a listed, badged, first party connector performing it against ordinary users for commercial gain, in production rather than in a benchmark. The paper names the general phenomenon the specimen exposes as trust laundering: the conversion of a platform's verification mark into credibility for a third party's promotional content, credibility the content did not earn and the platform did not knowingly extend. A verification badge that speaks in the present tense about an artifact its issuer concedes may have changed since review is the mechanism that makes trust laundering possible. The advertisement is the proof the assurance fails. The structure will outlast the advertisement.</jats:p>",
+    "url": "https://doi.org/10.2139/ssrn.7130058",
+    "bib_key": "gilly2026reviewed"
+  },
+  "10.12688/wellcomeopenres.13127.1": {
+    "doi": "10.12688/wellcomeopenres.13127.1",
+    "title": "Healthcare choices in Mumbai slums: A cross-sectional study",
+    "authors": [
+      "Elina Naydenova",
+      "Arvind Raghu",
+      "Johanna Ernst",
+      "Sirazul A. Sahariah",
+      "Meera Gandhi",
+      "Georgina Murphy"
+    ],
+    "year": 2017,
+    "venue": "Wellcome Open Research",
+    "publisher": "F1000 Research Ltd",
+    "abstract": "Background: Informal urban settlements, known as slums, are the home for a large proportion of the world population. Healthcare in these environments is extremely complex, driven by poverty, environmental challenges, and poor access to formal health infrastructures. This study investigated healthcare challenges faced and choices made by slum dwellers in Mumbai, India. Methods : Structured interviews with 549 slum dwellers from 13 slum areas in Mumbai, India, were conducted in order to obtain a population profile of health-related socio-economic and lifestyle factors, disease history and healthcare access. Statistical tools such as multinomial logistic regression were used to examine the association between such factors and health choices. Results : Private providers (or a mixture of public and private) were seen to be preferred by the study population for most health conditions (62% - 90% health consultations), apart from pregnancy (43% health consultations). Community-based services were also preferred to more remote options. Stark differences in healthcare access were observed between well-known conditions, such as minor injuries, pulmonary conditions, and pregnancy and emerging challenges, such as hypertension and diabetes. A number of socio-economic and lifestyle factors were found to be associated with health-related decisions, including choice of provider and expenditure. Conclusions: Better planning and coordination of health services, across public and private providers, is required to address mortality and morbidity in slum communities in India. This study provides insights into the complex landscape of diseases and health providers that slum dwellers navigate when accessing healthcare. Findings suggest that integrated services and public-private partnerships could help address demand for affordable community-based care and progress towards the target of universal health coverage.",
+    "url": "https://doi.org/10.12688/wellcomeopenres.13127.1",
+    "bib_key": "naydenova2017healthcare"
+  },
+  "10.7759/cureus.104142": {
+    "doi": "10.7759/cureus.104142",
+    "title": "Insights into Public-Private Sector Variations in Maternal Health Care Utilization in an Urban Slum in Mumbai",
+    "authors": [
+      "Shwetangi R Shinde",
+      "Swati R Deshpande"
+    ],
+    "year": 2026,
+    "venue": "Cureus",
+    "publisher": "Springer Science and Business Media LLC",
+    "abstract": "Introduction Understanding variations in maternal health across public and private sectors is essential for improving service delivery. This study aimed to (i) compare maternal health service utilization across public and private facilities in an urban slum of Mumbai, and (ii) assess switching between sectors during childbirth and factors influencing it. Methods An analytical cross-sectional study was conducted from March 2023 to February 2024 among recently delivered women, selected through bi-monthly simple random sampling from health post and community health worker delivery records. Data were collected through household surveys and verification of health records. Variables included sociodemographic and obstetric profiles, core indicators of the antenatal care (ANC) process, delivery characteristics, and postnatal practices. Switching patterns between the registration sector and the place of delivery were assessed. Analysis included descriptive statistics, chi-square tests, and logistic regression. Results A total of 283 women were enrolled through systematic bi-monthly simple random sampling over the 12-month study period. Among them, 170 (60%) were registered in the public sector and 113 (40%) in the private sector. Higher maternal education (p<0.001), pre-existing medical disorders (p=0.004), and a previous cesarean section delivery (p=0.03) independently predicted private-sector registration. ANC utilization was high across both sectors, with no significant differences in core ANC components; however, Mother and Child Protection card coverage was higher in the public sector (p<0.001), while first-trimester ultrasonography was more frequent in the private sector (p=0.01). Sectoral switching between registration and delivery occurred in 31 women (11%), with no significant net shift (p=0.27). Cesarean section rates (p=0.01) and out-of-pocket expenditure (OOPE; p<0.001) were significantly higher in private facilities, whereas birth immunization (p=0.006) and exclusive breastfeeding at discharge (p<0.001) were better in public sector deliveries. Conclusion The study suggests that the public sector was the more frequent entry point for maternal care, while private-sector registration was associated with higher maternal education, prior cesarean section, and pre-existing medical disorders. The ANC quality was uniformly high across sectors and switching was low, driven by factors such as perceived quality of services and cost considerations among others. Private-sector deliveries had significantly higher cesarean rates and OOPE. Public facilities performed better in program linkage, newborn immunization, and exclusive breastfeeding practices. Strengthening coordination, standardizing obstetric practices, and reducing unnecessary interventions are essential to improve continuity, equity, and financial protection in urban maternal health care.",
+    "url": "https://doi.org/10.7759/cureus.104142",
+    "bib_key": "shinde2026insights"
+  },
+  "10.1186/1471-2458-11-150": {
+    "doi": "10.1186/1471-2458-11-150",
+    "title": "Maternal and neonatal health expenditure in mumbai slums (India): A cross sectional study",
+    "authors": [
+      "Jolene Skordis-Worrall",
+      "Noemi Pace",
+      "Ujwala Bapat",
+      "Sushmita Das",
+      "Neena S More",
+      "Wasundhara Joshi",
+      "Anni-Maria Pulkki-Brannstrom",
+      "David Osrin"
+    ],
+    "year": 2011,
+    "venue": "BMC Public Health",
+    "publisher": "Springer Science and Business Media LLC",
+    "abstract": "BACKGROUND: The cost of maternity care can be a barrier to access that may increase maternal and neonatal mortality risk. We analyzed spending on maternity care in urban slum communities in Mumbai to better understand the equity of spending and the impact of spending on household poverty. METHODS: We used expenditure data for maternal and neonatal care, collected during post-partum interviews. Interviews were conducted in 2005-2006, with a sample of 1200 slum residents in Mumbai (India). We analysed expenditure by socio-economic status (SES), calculating a Kakwani Index for a range of spending categories. We also calculated catastrophic health spending both with and without adjustment for coping strategies. This identified the level of catastrophic payments incurred by a household and the prevalence of catastrophic payments in this population. The analysis also gave an understanding of the protection from medical poverty afforded by coping strategies (for example saving and borrowing). RESULTS: A high proportion of respondents spent catastrophically on care. Lower SES was associated with a higher proportion of informal payments. Indirect health expenditure was found to be (weakly) regressive as the poorest were more likely to use wage income to meet health expenses, while the less poor were more likely to use savings. Overall, the incidence of catastrophic maternity expenditure was 41%, or 15% when controlling for coping strategies. We found no significant difference in the incidence of catastrophic spending across wealth quintiles, nor could we conclude that total expenditure is regressive. CONCLUSIONS: High expenditure as a proportion of household resources should alert policymakers to the burden of maternal spending in this context. Differences in informal payments, significantly regressive indirect spending and the use of savings versus wages to finance spending, all highlight the heavier burden borne by the most poor. If a policy objective is to increase institutional deliveries without forcing households deeper into poverty, these inequities will need to be addressed. Reducing out-of-pocket payments and better regulating informal payments should have direct benefits for the most poor. Alternatively, targeted schemes aimed at assisting the most poor in coping with maternal spending (including indirect spending) could reduce the household impact of high costs.",
+    "url": "https://doi.org/10.1186/1471-2458-11-150",
+    "bib_key": "skordisworrall2011maternal"
+  },
+  "10.1186/1475-9276-8-21": {
+    "doi": "10.1186/1475-9276-8-21",
+    "title": "Inequalities in maternity care and newborn outcomes: one-year surveillance of births in vulnerable slum communities in Mumbai",
+    "authors": [
+      "Neena Shah More",
+      "Ujwala Bapat",
+      "Sushmita Das",
+      "Sarah Barnett",
+      "Anthony Costello",
+      "Armida Fernandez",
+      "David Osrin"
+    ],
+    "year": 2009,
+    "venue": "International Journal for Equity in Health",
+    "publisher": "Springer Science and Business Media LLC",
+    "abstract": "BACKGROUND: Aggregate urban health statistics mask inequalities. We described maternity care in vulnerable slum communities in Mumbai, and examined differences in care and outcomes between more and less deprived groups. METHODS: We collected information through a birth surveillance system covering a population of over 280 000 in 48 vulnerable slum localities. Resident women identified births in their own localities and mothers and families were interviewed at 6 weeks after delivery. We analysed data on 5687 births over one year to September 2006. Socioeconomic status was classified using quartiles of standardized asset scores. RESULTS: Women in higher socioeconomic quartile groups were less likely to have married and conceived in their teens (Odds ratio 0.74, 95% confidence interval 0.69-0.79, and 0.82, 0.78-0.87, respectively). There was a socioeconomic gradient away from public sector maternity care with increasing socioeconomic status (0.75, 0.70-0.79 for antenatal care and 0.66, 0.61-0.71 for institutional delivery). Women in the least poor group were five times less likely to deliver at home (0.17, 0.10-0.27) as women in the poorest group and about four times less likely to deliver in the public sector (0.27, 0.21-0.35). Rising socioeconomic status was associated with a lower prevalence of low birth weight (0.91, 0.85-0.97). Stillbirth rates did not vary, but neonatal mortality rates fell non-significantly as socioeconomic status increased (0.88, 0.71-1.08). CONCLUSION: Analyses of this type have usually been applied across the population spectrum from richest to poorest, and we were struck by the regularly stepped picture of inequalities within the urban poor, a group that might inadvertently be considered relatively homogeneous. The poorest slum residents are more dependent upon public sector health care, but the regular progression towards the private sector raises questions about its quality and regulation. It also underlines the need for healthcare provision strategies to take account of both sectors.",
+    "url": "https://doi.org/10.1186/1475-9276-8-21",
+    "bib_key": "more2009inequalities"
+  },
+  "10.26727/njrcm.2018.7.1.26-31": {
+    "doi": "10.26727/njrcm.2018.7.1.26-31",
+    "title": "Stroke among slum dwellers: Risk factors and health-seeking behavior in elderly residents of Dharavi, Mumbai",
+    "authors": [
+      "Amita Mukhopadhyay",
+      "Daksha Pandit",
+      "Uma Sundar",
+      "Sikandar Adwani"
+    ],
+    "year": 2018,
+    "venue": "National Journal of Research in Community Medicine",
+    "publisher": "Community Medicine Faculties Association",
+    "abstract": "",
+    "url": "https://doi.org/10.26727/njrcm.2018.7.1.26-31",
+    "bib_key": "mukhopadhyay2018stroke"
+  },
+  "10.18203/2394-6040.ijcmph20162055": {
+    "doi": "10.18203/2394-6040.ijcmph20162055",
+    "title": "Study of health seeking behavior and its determinants among attendees of urban health center, Dharavi, Mumbai, India",
+    "authors": [
+      "Subita Patil",
+      "Satish Parbhankar",
+      "Seema Bansode-Gokhe",
+      "Pallavi Shelke",
+      "Rakesh Singh"
+    ],
+    "year": 2016,
+    "venue": "International Journal of Community Medicine and Public Health",
+    "publisher": "Medip Academy",
+    "abstract": "",
+    "url": "https://doi.org/10.18203/2394-6040.ijcmph20162055",
+    "bib_key": "patil2016study"
+  },
+  "10.37765/ajmc.2024.89627": {
+    "doi": "10.37765/ajmc.2024.89627",
+    "title": "Persistence of Provider Directory Inaccuracies After the No Surprises Act",
+    "authors": [
+      "Simon F. Haeder",
+      "Jane M. Zhu"
+    ],
+    "year": 2024,
+    "venue": "The American Journal of Managed Care",
+    "publisher": "Clinical Care Targeted Communications Group, LLC",
+    "abstract": "OBJECTIVES: Provider directory inaccuracies have important implications for care navigation and access as well as ongoing regulatory efforts. We assessed the extent to which identified provider directory inaccuracies persisted across 7 specialties (cardiology, dermatology, endocrinology, gastroenterology, neurology, obstetrics-gynecology, primary care) and 5 carriers in the Pennsylvania Affordable Care Act insurance marketplace. STUDY DESIGN: A secret shopper survey recontacted inaccurately listed providers (N = 1802) between 403 and 574 days after they were identified in an earlier secret shopper survey. METHODS: Descriptive analyses, with tests of proportion and t tests to assess whether differences across carriers, specialties, and geographic locations were statistically significant. RESULTS: Of 1802 inaccurate provider listings, 451 (25.0%) had been removed at follow-up, 966 providers (53.6%) were successfully contacted, and 385 providers (21.4%) could not be reached. Of the recontacted providers, 240 (13.3%) were listed accurately at follow-up and 726 (40.3%) were listed with various inaccuracies, including 31.0% (n = 558) with inaccurate contact information, 11.2% (n = 201) listed under the wrong specialty, and 1.9% (n = 34) erroneously listed as being in network despite being out of network. We found substantial differences across carriers and specialties but not by rurality. Inaccuracies also were less likely to persist in the state's 2 metropolitan areas. Among inaccurate provider listings, on average, 540 days (median, 544 days) had passed between the initial and subsequent contacts. CONCLUSIONS: A large number of provider directory inaccuracies persist well beyond the 90-day expectation mandated by federal regulations, raising substantial concerns about compliance. These inaccuracies may impose substantial barriers to patient access and may render existing assessments of network adequacy ineffective.",
+    "url": "https://doi.org/10.37765/ajmc.2024.89627",
+    "bib_key": "haeder2024persistence"
+  },
+  "10.37765/ajmc.2025.89791": {
+    "doi": "10.37765/ajmc.2025.89791",
+    "title": "ACA Network Regulatory Filings Are Inaccurate, Poorly Match Provider Directories",
+    "authors": [
+      "Simon F. Haeder",
+      "Jane M. Zhu"
+    ],
+    "year": 2025,
+    "venue": "The American Journal of Managed Care",
+    "publisher": "Clinical Care Targeted Communications Group, LLC",
+    "abstract": "OBJECTIVES: Access to mental health services has been shown to be particularly inadequate, with limited understanding of the efficacy of existing network adequacy regulations. State and federal regulations mandate insurance carriers to submit regulatory filings to help maintain network adequacy compliance, but the accuracy of these data remains unassessed. STUDY DESIGN: We employed a secret shopper survey to verify regulatory filings and assess the congruence between the filings and provider directory listings as well as appointment availability and wait time for 8306 mental health counselors submitted by all carriers participating in Pennsylvania's Affordable Care Act (ACA) Marketplace for plan year 2024. METHODS: Descriptive analyses, with tests of proportion and t tests to assess differences between carriers and between adult and pediatric provider specialties. RESULTS: A total of 19.9% of filed regulatory listings (n = 1649) were not present in consumer-facing provider directories, and only 35.3% of filed listings (n = 2928) fully matched provider directory entries. Of the 2152 provider listings we were able to verify fully via secret shopper calls, 65.2% (n = 1404) exhibited at least 1 inaccuracy. Inaccurate phone number was the most common issue (56.6%; n = 1219). Appointments were available for only 321 of the 2152 providers (14.9%), with a mean of 33.2 days lapsed between call and scheduled appointment time. Although we identified substantial differences in appointment wait times by carrier, we found no difference between adult and pediatric providers. CONCLUSIONS: ACA network adequacy assessments that rely on carrier regulatory filings and/or consumer-facing directories substantially overestimated provider availability and access to mental health services.",
+    "url": "https://doi.org/10.37765/ajmc.2025.89791",
+    "bib_key": "haeder2025network"
+  },
+  "10.1002/wmh3.607": {
+    "doi": "10.1002/wmh3.607",
+    "title": "Provider directory inaccuracy and timely access to physical therapy",
+    "authors": [
+      "Thomas Elton",
+      "Wendy Y. Xu",
+      "Simon F. Haeder"
+    ],
+    "year": 2024,
+    "venue": "World Medical &amp; Health Policy",
+    "publisher": "Wiley",
+    "abstract": "<jats:title>Abstract</jats:title><jats:p>Can patients find physical therapists in their networks, and can they access physical therapy when they need to? To answer these questions, we analyzed provider directory accuracy and timely access for physical therapists for all managed care plans available in California in 2018 and 2019 using secondary data obtained from the California Department of Managed Health Care for a total of 119,084 physical therapy listings (60,967 for 2018 and 58,117 for 2019). Overall, 19% of listed providers in 2018 and 8% of listed providers in 2019 showed inaccuracies. However, we found substantial differences across markets, with a low of 54% accuracy for Medicaid listings in 2018. Commercial plans were consistently most accurate. In terms of adequacy, we found that more than 90% of listed providers were accessible within 15 days and 97% within 30 days, with Medicaid providing the highest rates of timely access. Overall, barriers to consumer access with regard to physical therapy appear to be primarily in the form of provider directory inaccuracies. High rates of inaccuracies raise concerns for patients as well as regulators. Ultimately, California is one of the most regulated states when it comes to network adequacy and access.</jats:p>",
+    "url": "https://doi.org/10.1002/wmh3.607",
+    "bib_key": "elton2024provider"
+  },
+  "10.1215/03616878-10852610": {
+    "doi": "10.1215/03616878-10852610",
+    "title": "State Efforts to Regulate Provider Networks and Directories: Lessons for the Future",
+    "authors": [
+      "Simon F. Haeder",
+      "Wendy Y. Xu",
+      "Thomas Elton",
+      "Ariana Pitcher"
+    ],
+    "year": 2023,
+    "venue": "Journal of Health Politics, Policy and Law",
+    "publisher": "Duke University Press",
+    "abstract": "<jats:title>Abstract</jats:title><jats:p>Managed care arrangements are the dominant form of insurance coverage in the United States today. These arrangements rely on a network of contracted providers to deliver services to their enrollees. After the managed care backlash, governments moved to ensure consumer access by issuing a number of requirements for carriers related to the composition and size of their networks and how this information is shared with consumers. The authors provide a comprehensive review of these state-based efforts to regulate provider network adequacy and provider directory accuracy for commercial insurance markets. In addition to common measures of adequacy, they also include requirements specifically targeted to underserved populations. Their assessment comes on the heels of recent empirical work that has raised significant questions about whether these efforts are effective, particularly considering the limited nature of enforcement. They also provide a brief overview and assessment of recent federal government efforts that replicate these state regulations with a focus on lessons learned from state regulations that may help improve their federal counterparts. Furthermore, they outline a future research agenda focused on a more comprehensive evaluation of efforts to ensure consumer access.</jats:p>",
+    "url": "https://doi.org/10.1215/03616878-10852610",
+    "bib_key": "haeder2023state"
+  },
+  "10.1002/wmh3.625": {
+    "doi": "10.1002/wmh3.625",
+    "title": "Consumer experiences navigating health care provider directories and support of federal policy action",
+    "authors": [
+      "Simon F. Haeder",
+      "Wendy Yi Xu"
+    ],
+    "year": 2024,
+    "venue": "World Medical &amp; Health Policy",
+    "publisher": "Wiley",
+    "abstract": "<jats:title>Abstract</jats:title><jats:p>Most Americans rely on managed care networks and provider directories to access care. Little is known about how patients experience navigating directories, how it affects their lives, and whether Americans support federal action on the issue. We fielded a large, and demographically diverse survey of US adults (<jats:italic>N</jats:italic>\u2009=\u200910,739) from January to April 2022. The survey queried respondents about their experience using provider directories, problems they encountered, and support for federal policy action. Analyses were conducted using Weighted Ordinary Least Squares regression. We found that 43% of Americans used provider directories last year. Among these, provider directory inaccuracy affected 56%, with inaccurate network status (34%), providers having left the practice (18%), and wrong contact information (15%) serving as primary problems. A majority of those using provider directories faced challenges in accessing care subsequently. This included 28% delaying care, 10% seeking out Urgent Care and 6% Emergency Care, respectively, 5% going out of network, and 10% forging care. A substantial number suffered health (54%) and financial (51%) problems as a result and about half took some action as a result. Overall, Americans strongly supported various federal actions to improve directory accuracy. Provider directory inaccuracy affects a larger number of Americans, many of whom are severely affected by the challenges. Broad public support should encourage federal action on the issue.</jats:p>",
+    "url": "https://doi.org/10.1002/wmh3.625",
+    "bib_key": "haeder2024consumer"
+  },
+  "10.1080/03630242.2022.2083284": {
+    "doi": "10.1080/03630242.2022.2083284",
+    "title": "Provider directory accuracy and timely access to mammograms in California",
+    "authors": [
+      "Abigail Burman",
+      "Simon F. Haeder"
+    ],
+    "year": 2022,
+    "venue": "Women &amp; Health",
+    "publisher": "Informa UK Limited",
+    "abstract": "",
+    "url": "https://doi.org/10.1080/03630242.2022.2083284",
+    "bib_key": "burman2022provider"
+  },
+  "10.37765/ajmc.2023.89318": {
+    "doi": "10.37765/ajmc.2023.89318",
+    "title": "Provider Directory Inaccuracy and Timely Access for Mental Health Care",
+    "authors": [],
+    "year": 2023,
+    "venue": "The American Journal of Managed Care",
+    "publisher": "Managed Care and Healthcare Communications, LLC",
+    "abstract": "",
+    "url": "https://doi.org/10.37765/ajmc.2023.89318",
+    "bib_key": "anon2023provider"
+  }
+}

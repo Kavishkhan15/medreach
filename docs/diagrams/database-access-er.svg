@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1280" viewBox="0 0 1600 1280" role="img" aria-labelledby="title desc"><title id="title">Data relationships · accounts &amp; provider scope</title><desc id="desc">Assignments connect an account to an organisation; an application alone grants no access.</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9" fill="none" stroke="#087D8E" stroke-width="1.5"/></marker></defs><rect width="1600" height="1280" fill="white"/><rect x="1" y="1" width="1598" height="1278" fill="none" stroke="#CCDCE5"/><path d="M64 46 H112" stroke="#087D8E" stroke-width="6"/>
+<text x="132" y="53" fill="#087D8E" font-size="20" font-weight="700" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="1000">MEDREACH  /  ENGINEERING</text>
+<text x="64" y="116" fill="#12384A" font-size="44" font-weight="700" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="1472">Data relationships · accounts &amp; provider scope</text>
+<text x="64" y="160" fill="#4B6575" font-size="25" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="1472">Assignments connect an account to an organisation; an application alone grants no access.</text>
+<rect x="64" y="244" width="448" height="228" rx="14" fill="#FFFFFF" stroke="#CCDCE5" stroke-width="2"/>
+<path d="M78 244 H498 Q512 244 512 258 V309 H64 V258 Q64 244 78 244" fill="#EAF5F5"/>
+<text x="86" y="287" fill="#12384A" font-size="28" font-weight="700" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="404">User</text>
+<text x="86" y="343" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">_id</text>
+<text x="490" y="343" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId PK</text>
+<text x="86" y="381" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">email</text>
+<text x="490" y="381" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">unique</text>
+<text x="86" y="419" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">role</text>
+<text x="490" y="419" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">enum</text>
+<text x="86" y="457" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">accountStatus</text>
+<text x="490" y="457" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">enum</text>
+<rect x="576" y="244" width="448" height="228" rx="14" fill="#FFFFFF" stroke="#CCDCE5" stroke-width="2"/>
+<path d="M590 244 H1010 Q1024 244 1024 258 V309 H576 V258 Q576 244 590 244" fill="#EAF5F5"/>
+<text x="598" y="287" fill="#12384A" font-size="28" font-weight="700" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="404">ProviderMembership</text>
+<text x="598" y="343" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">_id</text>
+<text x="1002" y="343" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId PK</text>
+<text x="598" y="381" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">user</text>
+<text x="1002" y="381" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId</text>
+<text x="598" y="419" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">kind + organization</text>
+<text x="1002" y="419" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">key / ref</text>
+<text x="598" y="457" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">active</text>
+<text x="1002" y="457" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">Boolean</text>
+<rect x="1088" y="244" width="448" height="228" rx="14" fill="#FFFFFF" stroke="#CCDCE5" stroke-width="2"/>
+<path d="M1102 244 H1522 Q1536 244 1536 258 V309 H1088 V258 Q1088 244 1102 244" fill="#EAF5F5"/>
+<text x="1110" y="287" fill="#12384A" font-size="28" font-weight="700" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="404">Hospital</text>
+<text x="1110" y="343" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">_id</text>
+<text x="1514" y="343" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId PK</text>
+<text x="1110" y="381" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">name</text>
+<text x="1514" y="381" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">String</text>
+<text x="1110" y="419" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">admins</text>
+<text x="1514" y="419" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">User[]</text>
+<text x="1110" y="457" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">approvalStatus</text>
+<text x="1514" y="457" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">enum</text>
+<path d="M512 352 L576 352" fill="none" stroke="#087D8E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"  marker-end="url(#arrow)"/>
+<text x="544" y="334" fill="#4B6575" font-size="21" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="middle" data-max-width="60">1:n</text>
+<path d="M1024 352 L1088 352" fill="none" stroke="#087D8E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<text x="1056" y="334" fill="#4B6575" font-size="21" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="middle" data-max-width="60">n:1</text>
+<path d="M1024 428 L1056 428 L1056 860 L1088 860" fill="none" stroke="#087D8E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<text x="1110" y="613" fill="#087D8E" font-size="24" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="425">kind resolves the target</text>
+<text x="1110" y="649" fill="#4B6575" font-size="23" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="425">hospital → Hospital</text>
+<text x="1110" y="685" fill="#4B6575" font-size="22" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="425">other kinds → ResourceProvider</text>
+<path d="M288 472 L288 810" fill="none" stroke="#087D8E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"  marker-end="url(#arrow)"/>
+<text x="312" y="636" fill="#4B6575" font-size="23" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="350">user · 1:n</text>
+<path d="M512 428 L544 428 L544 925 L576 925" fill="none" stroke="#087D8E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<text x="590" y="639" fill="#4B6575" font-size="23" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="400">account reference</text>
+<text x="590" y="679" fill="#4B6575" font-size="22" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="410">Created or linked on approval</text>
+<rect x="64" y="810" width="448" height="228" rx="14" fill="#FFFFFF" stroke="#CCDCE5" stroke-width="2"/>
+<path d="M78 810 H498 Q512 810 512 824 V875 H64 V824 Q64 810 78 810" fill="#EAF5F5"/>
+<text x="86" y="853" fill="#12384A" font-size="28" font-weight="700" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="404">AuthToken</text>
+<text x="86" y="909" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">_id</text>
+<text x="490" y="909" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId PK</text>
+<text x="86" y="947" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">user</text>
+<text x="490" y="947" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId ?</text>
+<text x="86" y="985" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">tokenHash</text>
+<text x="490" y="985" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">String</text>
+<text x="86" y="1023" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">expiresAt</text>
+<text x="490" y="1023" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">Date / TTL</text>
+<rect x="576" y="810" width="448" height="228" rx="14" fill="#FFFFFF" stroke="#CCDCE5" stroke-width="2"/>
+<path d="M590 810 H1010 Q1024 810 1024 824 V875 H576 V824 Q576 810 590 810" fill="#EAF5F5"/>
+<text x="598" y="853" fill="#12384A" font-size="28" font-weight="700" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="404">ProviderApplication</text>
+<text x="598" y="909" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">_id</text>
+<text x="1002" y="909" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId PK</text>
+<text x="598" y="947" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">kind + organization</text>
+<text x="1002" y="947" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">key / ref</text>
+<text x="598" y="985" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">account</text>
+<text x="1002" y="985" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId ?</text>
+<text x="598" y="1023" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">status</text>
+<text x="1002" y="1023" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">enum</text>
+<rect x="1088" y="810" width="448" height="228" rx="14" fill="#FFFFFF" stroke="#CCDCE5" stroke-width="2"/>
+<path d="M1102 810 H1522 Q1536 810 1536 824 V875 H1088 V824 Q1088 810 1102 810" fill="#EAF5F5"/>
+<text x="1110" y="853" fill="#12384A" font-size="28" font-weight="700" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="404">ResourceProvider</text>
+<text x="1110" y="909" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">_id</text>
+<text x="1514" y="909" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId PK</text>
+<text x="1110" y="947" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">kind</text>
+<text x="1514" y="947" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">enum</text>
+<text x="1110" y="985" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">hospital</text>
+<text x="1514" y="985" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">ObjectId ?</text>
+<text x="1110" y="1023" fill="#12384A" font-size="22" font-weight="400" font-family="monospace" text-anchor="start" data-max-width="274">active</text>
+<text x="1514" y="1023" fill="#4B6575" font-size="21" font-weight="400" font-family="monospace" text-anchor="end" data-max-width="146">Boolean</text>
+<rect x="64" y="1082" width="1472" height="118" rx="14" fill="#F3F8FB" stroke="#CCDCE5" stroke-width="2"/>
+<text x="88" y="1125" fill="#12384A" font-size="24" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="1400">Scope key: ProviderMembership(user, kind, organization) is unique; only active assignments grant access.</text>
+<text x="88" y="1166" fill="#4B6575" font-size="23" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="1400">Dashed links are optional or kind-resolved. Hospital.admins retains historical assignment compatibility.</text>
+<path d="M64 1216 L1536 1216" fill="none" stroke="#CCDCE5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"  />
+<text x="64" y="1253" fill="#4B6575" font-size="20" font-weight="400" font-family="Arial, Helvetica, sans-serif" text-anchor="start" data-max-width="1472">Account and onboarding view · Roles: system_admin, provider_admin, user · Approval and activation remain separate.</text></svg>

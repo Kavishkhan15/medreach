@@ -1,13 +1,15 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "@playwright/test";
+import { primaryFigures } from "./diagram-figures.mjs";
 
 const DIAGRAMS_DIR = path.resolve("docs/diagrams");
 
 async function main() {
-  console.log("Rendering Mermaid diagrams to SVG and PNG...");
+  console.log("Rendering curated architecture figures (offline)...");
   const files = await fs.readdir(DIAGRAMS_DIR);
-  const mmdFiles = files.filter((f) => f.endsWith(".mmd"));
+  const primaryNames = new Set(primaryFigures().map(figure => figure.id));
+  const mmdFiles = files.filter((f) => f.endsWith(".mmd") && !primaryNames.has(path.basename(f, ".mmd")));
 
   if (mmdFiles.length === 0) {
     console.log("No .mmd files found.");
@@ -20,6 +22,33 @@ async function main() {
     viewport: { width: 1600, height: 1200 },
     deviceScaleFactor: 2,
   });
+
+  for (const figure of primaryFigures()) {
+    await page.setViewportSize({ width: figure.width, height: figure.height });
+    await page.setContent(`<html><head><style>html,body{margin:0;padding:0;background:#fff}svg{display:block}</style></head><body>${figure.svg}</body></html>`);
+    await page.evaluate(() => document.fonts.ready);
+    const overflow = await page.evaluate(() => [...document.querySelectorAll("text")].flatMap(node => {
+      const box=node.getBBox(), limit=Number(node.dataset.maxWidth);
+      return box.width > limit + 1 || box.x < 0 || box.x + box.width > 1600 ? [{text:node.textContent,width:box.width,limit}] : [];
+    }));
+    if (overflow.length) throw new Error(`Text overflow in ${figure.id}: ${JSON.stringify(overflow)}`);
+    const svgPath=path.join(DIAGRAMS_DIR,`${figure.id}.svg`);
+    const pngPath=path.join(DIAGRAMS_DIR,`${figure.id}.png`);
+    if (process.argv.includes("--check")) {
+      if (await fs.readFile(svgPath,"utf8") !== figure.svg) throw new Error(`Stale SVG: ${figure.id}`);
+      const png=await fs.readFile(pngPath);
+      if (png.readUInt32BE(16)!==figure.width*2 || png.readUInt32BE(20)!==figure.height*2) throw new Error(`Wrong PNG dimensions: ${figure.id}`);
+    } else {
+      await fs.writeFile(svgPath,figure.svg);
+      await page.locator("svg").screenshot({path:pngPath});
+    }
+    console.log(`  ✓ ${figure.id}: ${figure.width}×${figure.height}, text fits, SVG + 2× PNG`);
+  }
+  if (!process.argv.includes("--workflows")) {
+    await browser.close();
+    return;
+  }
+  console.log("Rendering optional workflow Mermaid sources (requires network)...");
 
   // Base HTML with Mermaid
   await page.setContent(`
@@ -51,7 +80,7 @@ async function main() {
           mermaid.initialize({
             startOnLoad: false,
             theme: 'default',
-            securityLevel: 'loose',
+            securityLevel: 'strict',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
           });
         </script>
@@ -94,6 +123,7 @@ async function main() {
       console.log(`  ✓ Rendered ${baseName}.svg and ${baseName}.png`);
     } catch (err) {
       console.error(`  ✗ Failed rendering ${file}:`, err.message);
+      process.exitCode = 1;
     }
   }
 

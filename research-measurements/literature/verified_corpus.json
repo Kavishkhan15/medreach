@@ -1,0 +1,688 @@
+{
+  "10.59067/afjhms.v11i2.126": {
+    "doi": "10.59067/afjhms.v11i2.126",
+    "title": "Digital Patient Navigation Systems and Treatment Acceptance: A Mixed-Methods Study of Patient Coordination in Modern Healthcare Clinics",
+    "authors": [
+      "Alvine Esung Metuge"
+    ],
+    "year": 2026,
+    "venue": "African Journal of Health and Medical Sciences (AFJHMS)",
+    "publisher": "Jamhuriya University of Science and Technology (JUST)",
+    "url": "https://doi.org/10.59067/afjhms.v11i2.126",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.21203/rs.3.rs-10831662/v1": {
+    "doi": "10.21203/rs.3.rs-10831662/v1",
+    "title": "Design and Prototype Development of a Patient Navigation Platform for Healthcare Services in Kigali, Rwanda",
+    "authors": [
+      "Delphine Sugira",
+      "Kizito Nkurikiyeyezu",
+      "Alpha-Ars\u00e8ne Marara",
+      "Mugisha Emmy",
+      "Celestin Twizere",
+      "David K. Tumusiime"
+    ],
+    "year": 2026,
+    "venue": "",
+    "publisher": "Springer Science and Business Media LLC",
+    "url": "https://doi.org/10.21203/rs.3.rs-10831662/v1",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1371/journal.pone.0223537": {
+    "doi": "10.1371/journal.pone.0223537",
+    "title": "Patient navigation services for cancer care in low-and middle-income countries: A scoping review",
+    "authors": [
+      "Milena Dalton",
+      "Emily Holzman",
+      "Erica Erwin",
+      "Sophia Michelen",
+      "Anne F. Rositch",
+      "Somesh Kumar",
+      "Verna Vanderpuye",
+      "Karen Yeates",
+      "Erica J. Liebermann",
+      "Ophira Ginsburg"
+    ],
+    "year": 2019,
+    "venue": "PLOS ONE",
+    "publisher": "Public Library of Science (PLoS)",
+    "url": "https://doi.org/10.1371/journal.pone.0223537",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1007/s11912-024-01514-9": {
+    "doi": "10.1007/s11912-024-01514-9",
+    "title": "Patient Navigation in Cancer Treatment: A Systematic Review",
+    "authors": [
+      "Matthew Chen",
+      "Victoria S. Wu",
+      "Derek Falk",
+      "Chesley Cheatham",
+      "Jennifer Cullen",
+      "Richard Hoehn"
+    ],
+    "year": 2024,
+    "venue": "Current Oncology Reports",
+    "publisher": "Springer Science and Business Media LLC",
+    "url": "https://doi.org/10.1007/s11912-024-01514-9",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1136/fmch-2023-002397": {
+    "doi": "10.1136/fmch-2023-002397",
+    "title": "Community cancer screening at primary care level in Northern India: determinants and policy implications for cancer prevention",
+    "authors": [
+      "Priyanka Sharma",
+      "Divya Khanna",
+      "Satyajit Pradhan",
+      "Praveen Birur"
+    ],
+    "year": 2023,
+    "venue": "Family Medicine and Community Health",
+    "publisher": "BMJ",
+    "url": "https://doi.org/10.1136/fmch-2023-002397",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1109/infcom.2012.6195689": {
+    "doi": "10.1109/infcom.2012.6195689",
+    "title": "Real-time status: How often should one update?",
+    "authors": [
+      "Sanjit Kaul",
+      "Roy Yates",
+      "Marco Gruteser"
+    ],
+    "year": 2012,
+    "venue": "2012 Proceedings IEEE INFOCOM",
+    "publisher": "IEEE",
+    "url": "https://doi.org/10.1109/infcom.2012.6195689",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1109/itw44776.2019.8988983": {
+    "doi": "10.1109/itw44776.2019.8988983",
+    "title": "Relative Age of Information: A New Metric for Status Update Systems",
+    "authors": [
+      "Peng Zou",
+      "Omur Ozel",
+      "Suresh Subramaniam"
+    ],
+    "year": 2019,
+    "venue": "2019 IEEE Information Theory Workshop (ITW)",
+    "publisher": "IEEE",
+    "url": "https://doi.org/10.1109/itw44776.2019.8988983",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1109/vtc2020-fall49728.2020.9348764": {
+    "doi": "10.1109/vtc2020-fall49728.2020.9348764",
+    "title": "Optimal Status Update in IoT Systems: An Age of Information Violation Probability Perspective",
+    "authors": [
+      "Limei Hu",
+      "Zhengchuan Chen",
+      "Yunquan Dong",
+      "Yunjian Jia",
+      "Min Wang",
+      "Liang Liang",
+      "Chen Chen"
+    ],
+    "year": 2020,
+    "venue": "2020 IEEE 92nd Vehicular Technology Conference (VTC2020-Fall)",
+    "publisher": "IEEE",
+    "url": "https://doi.org/10.1109/vtc2020-fall49728.2020.9348764",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1145/3639830.3639849": {
+    "doi": "10.1145/3639830.3639849",
+    "title": "Data Freshness in Information-update Systems: Modeling, Scheduling, and Tradeoffs",
+    "authors": [
+      "Zhongdong Liu"
+    ],
+    "year": 2024,
+    "venue": "ACM SIGMETRICS Performance Evaluation Review",
+    "publisher": "Association for Computing Machinery (ACM)",
+    "url": "https://doi.org/10.1145/3639830.3639849",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1109/tits.2020.3039617": {
+    "doi": "10.1109/tits.2020.3039617",
+    "title": "Data Freshness and Energy-Efficient UAV Navigation Optimization: A Deep Reinforcement Learning Approach",
+    "authors": [
+      "Sarder Fakhrul Abedin",
+      "Md. Shirajum Munir",
+      "Nguyen H. Tran",
+      "Zhu Han",
+      "Choong Seon Hong"
+    ],
+    "year": 2021,
+    "venue": "IEEE Transactions on Intelligent Transportation Systems",
+    "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+    "url": "https://doi.org/10.1109/tits.2020.3039617",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.18203/2394-6040.ijcmph20260718": {
+    "doi": "10.18203/2394-6040.ijcmph20260718",
+    "title": "Unlocking India's hospital beds: why a digital portal is the cure for a stretched system",
+    "authors": [
+      "Harikarthikeyan Karuthamalai Rajasundar"
+    ],
+    "year": 2026,
+    "venue": "International Journal Of Community Medicine And Public Health",
+    "publisher": "Medip Academy",
+    "url": "https://doi.org/10.18203/2394-6040.ijcmph20260718",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1016/j.inhs.2026.100048": {
+    "doi": "10.1016/j.inhs.2026.100048",
+    "title": "Optimizing hospital bed capacity: How lean-AI integration prevents capacity constraints from multiplying demand",
+    "authors": [
+      "Sindhura Anumolu",
+      "Mandar Samant"
+    ],
+    "year": 2026,
+    "venue": "Intelligent Hospital",
+    "publisher": "Elsevier BV",
+    "url": "https://doi.org/10.1016/j.inhs.2026.100048",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1007/978-981-16-1740-9_27": {
+    "doi": "10.1007/978-981-16-1740-9_27",
+    "title": "Predicting Hospital Bed Requirements for COVID-19 Patients in Mumbai City and Mumbai Suburban Region",
+    "authors": [
+      "Narayana Darapaneni",
+      "Chandrashekhar Bhakuni",
+      "Ujjval Bhatt",
+      "Khamir Purohit",
+      "Vikas Sardana",
+      "Prabir Chakraborty",
+      "Vivek Jain",
+      "Anwesh Reddy Paduri"
+    ],
+    "year": 2021,
+    "venue": "Advances in Intelligent Systems and Computing",
+    "publisher": "Springer Singapore",
+    "url": "https://doi.org/10.1007/978-981-16-1740-9_27",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1136/bmj.q883": {
+    "doi": "10.1136/bmj.q883",
+    "title": "Why hospital capacity is more complex than bed capacity",
+    "authors": [
+      "Kamran Abbasi"
+    ],
+    "year": 2024,
+    "venue": "BMJ",
+    "publisher": "BMJ",
+    "url": "https://doi.org/10.1136/bmj.q883",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1109/iccnct68477.2026.11590821": {
+    "doi": "10.1109/iccnct68477.2026.11590821",
+    "title": "CARESYNC: Cloud-Backed Real-Time Hospital Bed &amp; ICU Tracking System for Ambulances",
+    "authors": [
+      "Dr.D.Prasanna",
+      "Bharanikavi P",
+      "Bharathkumar P",
+      "Hari Prasanth D",
+      "Harisudhan S.U"
+    ],
+    "year": 2026,
+    "venue": "2026 International Conference on Computer Networks and Inventive Communication Technologies (ICCNCT)",
+    "publisher": "IEEE",
+    "url": "https://doi.org/10.1109/iccnct68477.2026.11590821",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.64753/jcasc.v10i3.3643": {
+    "doi": "10.64753/jcasc.v10i3.3643",
+    "title": "Machine Learning in Hospital Bed Management and Patient Flow: A Comprehensive Review of Evidence Synthesis and Implementation Guidance",
+    "authors": [
+      "Derren Rampengan",
+      "Noah Jefferson Permana",
+      "Dewi Wuisan"
+    ],
+    "year": 2025,
+    "venue": "Journal of Cultural Analysis and Social Change",
+    "publisher": "Brighteredge Press Resources",
+    "url": "https://doi.org/10.64753/jcasc.v10i3.3643",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.36948/ijfmr.2024.v06i02.14122": {
+    "doi": "10.36948/ijfmr.2024.v06i02.14122",
+    "title": "Digital Transformation In Blood Banking: The Story Of E-Raktkosh",
+    "authors": [
+      "Syeda Tahseen Kulsum -",
+      "K Madan Gopal -"
+    ],
+    "year": 2024,
+    "venue": "International Journal For Multidisciplinary Research",
+    "publisher": "International Journal for Multidisciplinary Research (IJFMR)",
+    "url": "https://doi.org/10.36948/ijfmr.2024.v06i02.14122",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.21088/ijprp.2278.148x.7418.12": {
+    "doi": "10.21088/ijprp.2278.148x.7418.12",
+    "title": "A Research Analysis of Inevitable Blood Wastage in Blood Bank of a Tertiary Care Teaching Hospital: A Retrospective Study of Five Years",
+    "authors": [
+      "Asha P. Purohit",
+      "Puja B. Jarwani",
+      "Shantibhai M. Patel"
+    ],
+    "year": 2018,
+    "venue": "Indian Journal of Pathology: Research and Practice",
+    "publisher": "Red Flower Publication Private, Ltd.",
+    "url": "https://doi.org/10.21088/ijprp.2278.148x.7418.12",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.7759/cureus.20500": {
+    "doi": "10.7759/cureus.20500",
+    "title": "Exploring the Causes of Wastage of Blood and Its Components in a Tertiary Care Hospital Blood Bank",
+    "authors": [
+      "Farrah Bashir",
+      "Attika Khalid",
+      "Shahbaz Iqbal",
+      "Tariq Ghafoor",
+      "Moiz Ahmed"
+    ],
+    "year": 2021,
+    "venue": "Cureus",
+    "publisher": "Springer Science and Business Media LLC",
+    "url": "https://doi.org/10.7759/cureus.20500",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.21276/ijcmr.2019.6.5.60": {
+    "doi": "10.21276/ijcmr.2019.6.5.60",
+    "title": "Reasons and Recommendations to Reduce Wastage Pattern of the Blood Component in the Newly Started Tertiary Care Center Blood Bank in East India",
+    "authors": [
+      "Nawanita Kumari",
+      "Ashish Maheshwari",
+      "Nidhish Kumar",
+      "Shadan Rabab"
+    ],
+    "year": 2019,
+    "venue": "International Journal of Contemporary Medical Research [IJCMR]",
+    "publisher": "Marwah Infotech",
+    "url": "https://doi.org/10.21276/ijcmr.2019.6.5.60",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1109/icitr69413.2025.11353793": {
+    "doi": "10.1109/icitr69413.2025.11353793",
+    "title": "Digital Transformation of Blood Bank Operations: Design and Implementation of a National Blood Bank Management System",
+    "authors": [
+      "Onaliy Vinukiy Jayawardana",
+      "Mohamed Sapraz"
+    ],
+    "year": 2025,
+    "venue": "2025 10th International Conference on Information Technology Research (ICITR)",
+    "publisher": "IEEE",
+    "url": "https://doi.org/10.1109/icitr69413.2025.11353793",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.4103/ajts.ajts_75_25": {
+    "doi": "10.4103/ajts.ajts_75_25",
+    "title": "Blood inventory display: Emoji style",
+    "authors": [
+      "Abhishekh Basavarajegowda",
+      "Esha Toora",
+      "Ajay Barala",
+      "Pratul Sinha"
+    ],
+    "year": 2026,
+    "venue": "Asian Journal of Transfusion Science",
+    "publisher": "Ovid Technologies (Wolters Kluwer Health)",
+    "url": "https://doi.org/10.4103/ajts.ajts_75_25",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.71097/ijsat.v16.i4.8701": {
+    "doi": "10.71097/ijsat.v16.i4.8701",
+    "title": "From Donation to Distribution: The Regulatory Anatomy of India\u2019s Blood Bank EcoSystem",
+    "authors": [
+      "Gloria Quadros",
+      "Deepak Paliwal"
+    ],
+    "year": 2025,
+    "venue": "International Journal on Science and Technology",
+    "publisher": "International Research Publication and Journals",
+    "url": "https://doi.org/10.71097/ijsat.v16.i4.8701",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1111/trf.15998": {
+    "doi": "10.1111/trf.15998",
+    "title": "Barriers to blood donation on social media: An analysis of Facebook and Twitter posts",
+    "authors": [
+      "Steven Ramondt",
+      "Melissa Zijlstra",
+      "Peter Kerkhof",
+      "Eva\u2010Maria Merz"
+    ],
+    "year": 2020,
+    "venue": "Transfusion",
+    "publisher": "Wiley",
+    "url": "https://doi.org/10.1111/trf.15998",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.2139/ssrn.5988514": {
+    "doi": "10.2139/ssrn.5988514",
+    "title": "Ayushman Bharat Digital Mission | From Infrastructure to Impact: A Tri-lens assessment of India's Digital Health System",
+    "authors": [
+      "Pooja Kadambi",
+      "Peter T Joseph",
+      "Divya Ajitsaria"
+    ],
+    "year": 2026,
+    "venue": "",
+    "publisher": "Elsevier BV",
+    "url": "https://doi.org/10.2139/ssrn.5988514",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.18203/2394-6040.ijcmph20262227": {
+    "doi": "10.18203/2394-6040.ijcmph20262227",
+    "title": "Bridging the digital divide: a longitudinal analysis of health equity in India\u2019s Ayushman Bharat Digital Mission (2024-2025)",
+    "authors": [
+      "Sai Sreevalli Sreepada"
+    ],
+    "year": 2026,
+    "venue": "International Journal Of Community Medicine And Public Health",
+    "publisher": "Medip Academy",
+    "url": "https://doi.org/10.18203/2394-6040.ijcmph20262227",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.20944/preprints202606.1791.v1": {
+    "doi": "10.20944/preprints202606.1791.v1",
+    "title": "From Compliance to Ecosystem Adoption: A Mixed-Methods Assessment of HL7 FHIR Implementation in India",
+    "authors": [
+      "Abhishek Jain",
+      "Satyam Kumar",
+      "Padmini Vishwanath",
+      "Mayank Garg",
+      "Karthik Adapa"
+    ],
+    "year": 2026,
+    "venue": "",
+    "publisher": "MDPI AG",
+    "url": "https://doi.org/10.20944/preprints202606.1791.v1",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1002/hcs2.67": {
+    "doi": "10.1002/hcs2.67",
+    "title": "Inception of the Indian Digital Health Mission: <i>Connecting\u2026the\u2026Dots</i>",
+    "authors": [
+      "Gerard Marshall Raj",
+      "Sathian Dananjayan",
+      "Neeraj Agarwal"
+    ],
+    "year": 2023,
+    "venue": "Health Care Science",
+    "publisher": "Wiley",
+    "url": "https://doi.org/10.1002/hcs2.67",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.36948/ijfmr.2026.v08i03.79174": {
+    "doi": "10.36948/ijfmr.2026.v08i03.79174",
+    "title": "Effectiveness of Digital Health in India: Opportunities, Challenges, and Future Directions",
+    "authors": [
+      "Sudarshan Paik"
+    ],
+    "year": 2026,
+    "venue": "International Journal For Multidisciplinary Research",
+    "publisher": "International Journal for Multidisciplinary Research (IJFMR)",
+    "url": "https://doi.org/10.36948/ijfmr.2026.v08i03.79174",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.36948/ijfmr.2026.v08i02.80872": {
+    "doi": "10.36948/ijfmr.2026.v08i02.80872",
+    "title": "Digital Public Infrastructure and Sectoral Transformation in India: Evidence from Multi-Sector Startup Innovation",
+    "authors": [
+      "M. Balaraju",
+      "M. Thyagaraju"
+    ],
+    "year": 2026,
+    "venue": "International Journal For Multidisciplinary Research",
+    "publisher": "International Journal for Multidisciplinary Research (IJFMR)",
+    "url": "https://doi.org/10.36948/ijfmr.2026.v08i02.80872",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.3389/fpubh.2026.1986759": {
+    "doi": "10.3389/fpubh.2026.1986759",
+    "title": "When fluency outpaces provenance: source traceability and digital health literacy against AI health misinformation",
+    "authors": [
+      "Mingsheng Peng",
+      "Lu Feng"
+    ],
+    "year": 2026,
+    "venue": "Frontiers in Public Health",
+    "publisher": "Frontiers Media SA",
+    "url": "https://doi.org/10.3389/fpubh.2026.1986759",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1145/3610061": {
+    "doi": "10.1145/3610061",
+    "title": "Examining the Impact of Provenance-Enabled Media on Trust and Accuracy Perceptions",
+    "authors": [
+      "K. J. Kevin Feng",
+      "Nick Ritchie",
+      "Pia Blumenthal",
+      "Andy Parsons",
+      "Amy X. Zhang"
+    ],
+    "year": 2023,
+    "venue": "Proceedings of the ACM on Human-Computer Interaction",
+    "publisher": "Association for Computing Machinery (ACM)",
+    "url": "https://doi.org/10.1145/3610061",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1109/icedeg58167.2023.10121951": {
+    "doi": "10.1109/icedeg58167.2023.10121951",
+    "title": "How Trust in Authority and Trust in Networks Relates to Verification and Sharing Behaviours: COVID-19 Health Information Sharing on WhatsApp",
+    "authors": [
+      "Benjamin Vermeulen",
+      "Jean-Paul Van Belle"
+    ],
+    "year": 2023,
+    "venue": "2023 Ninth International Conference on eDemocracy &amp; eGovernment (ICEDEG)",
+    "publisher": "IEEE",
+    "url": "https://doi.org/10.1109/icedeg58167.2023.10121951",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1177/02663821261487913": {
+    "doi": "10.1177/02663821261487913",
+    "title": "Out-of-the-box: Provenance, verification, and the ethics of generative AI in information work",
+    "authors": [
+      "Luke Tredinnick"
+    ],
+    "year": 2026,
+    "venue": "Business Information Review",
+    "publisher": "SAGE Publications",
+    "url": "https://doi.org/10.1177/02663821261487913",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.2139/ssrn.7130058": {
+    "doi": "10.2139/ssrn.7130058",
+    "title": "Reviewed for Quality and Security: Advertising Injection Through a Verified Connector, Trust Laundering, and the Limits of Directory Verification",
+    "authors": [
+      "Travis Gilly"
+    ],
+    "year": 2026,
+    "venue": "",
+    "publisher": "Elsevier BV",
+    "url": "https://doi.org/10.2139/ssrn.7130058",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.12688/wellcomeopenres.13127.1": {
+    "doi": "10.12688/wellcomeopenres.13127.1",
+    "title": "Healthcare choices in Mumbai slums: A cross-sectional study",
+    "authors": [
+      "Elina Naydenova",
+      "Arvind Raghu",
+      "Johanna Ernst",
+      "Sirazul A. Sahariah",
+      "Meera Gandhi",
+      "Georgina Murphy"
+    ],
+    "year": 2017,
+    "venue": "Wellcome Open Research",
+    "publisher": "F1000 Research Ltd",
+    "url": "https://doi.org/10.12688/wellcomeopenres.13127.1",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.7759/cureus.104142": {
+    "doi": "10.7759/cureus.104142",
+    "title": "Insights into Public-Private Sector Variations in Maternal Health Care Utilization in an Urban Slum in Mumbai",
+    "authors": [
+      "Shwetangi R Shinde",
+      "Swati R Deshpande"
+    ],
+    "year": 2026,
+    "venue": "Cureus",
+    "publisher": "Springer Science and Business Media LLC",
+    "url": "https://doi.org/10.7759/cureus.104142",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1186/1471-2458-11-150": {
+    "doi": "10.1186/1471-2458-11-150",
+    "title": "Maternal and neonatal health expenditure in mumbai slums (India): A cross sectional study",
+    "authors": [
+      "Jolene Skordis-Worrall",
+      "Noemi Pace",
+      "Ujwala Bapat",
+      "Sushmita Das",
+      "Neena S More",
+      "Wasundhara Joshi",
+      "Anni-Maria Pulkki-Brannstrom",
+      "David Osrin"
+    ],
+    "year": 2011,
+    "venue": "BMC Public Health",
+    "publisher": "Springer Science and Business Media LLC",
+    "url": "https://doi.org/10.1186/1471-2458-11-150",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1186/1475-9276-8-21": {
+    "doi": "10.1186/1475-9276-8-21",
+    "title": "Inequalities in maternity care and newborn outcomes: one-year surveillance of births in vulnerable slum communities in Mumbai",
+    "authors": [
+      "Neena Shah More",
+      "Ujwala Bapat",
+      "Sushmita Das",
+      "Sarah Barnett",
+      "Anthony Costello",
+      "Armida Fernandez",
+      "David Osrin"
+    ],
+    "year": 2009,
+    "venue": "International Journal for Equity in Health",
+    "publisher": "Springer Science and Business Media LLC",
+    "url": "https://doi.org/10.1186/1475-9276-8-21",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.26727/njrcm.2018.7.1.26-31": {
+    "doi": "10.26727/njrcm.2018.7.1.26-31",
+    "title": "Stroke among slum dwellers: Risk factors and health-seeking behavior in elderly residents of Dharavi, Mumbai",
+    "authors": [
+      "Amita Mukhopadhyay",
+      "Daksha Pandit",
+      "Uma Sundar",
+      "Sikandar Adwani"
+    ],
+    "year": 2018,
+    "venue": "National Journal of Research in Community Medicine",
+    "publisher": "Community Medicine Faculties Association",
+    "url": "https://doi.org/10.26727/njrcm.2018.7.1.26-31",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.18203/2394-6040.ijcmph20162055": {
+    "doi": "10.18203/2394-6040.ijcmph20162055",
+    "title": "Study of health seeking behavior and its determinants among attendees of urban health center, Dharavi, Mumbai, India",
+    "authors": [
+      "Subita Patil",
+      "Satish Parbhankar",
+      "Seema Bansode-Gokhe",
+      "Pallavi Shelke",
+      "Rakesh Singh"
+    ],
+    "year": 2016,
+    "venue": "International Journal of Community Medicine and Public Health",
+    "publisher": "Medip Academy",
+    "url": "https://doi.org/10.18203/2394-6040.ijcmph20162055",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.37765/ajmc.2024.89627": {
+    "doi": "10.37765/ajmc.2024.89627",
+    "title": "Persistence of Provider Directory Inaccuracies After the No Surprises Act",
+    "authors": [],
+    "year": 2024,
+    "venue": "The American Journal of Managed Care",
+    "publisher": "Clinical Care Targeted Communications Group, LLC",
+    "url": "https://doi.org/10.37765/ajmc.2024.89627",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.37765/ajmc.2025.89791": {
+    "doi": "10.37765/ajmc.2025.89791",
+    "title": "ACA Network Regulatory Filings Are Inaccurate, Poorly Match Provider Directories",
+    "authors": [],
+    "year": 2025,
+    "venue": "The American Journal of Managed Care",
+    "publisher": "Clinical Care Targeted Communications Group, LLC",
+    "url": "https://doi.org/10.37765/ajmc.2025.89791",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1002/wmh3.607": {
+    "doi": "10.1002/wmh3.607",
+    "title": "Provider directory inaccuracy and timely access to physical therapy",
+    "authors": [
+      "Thomas Elton",
+      "Wendy Y. Xu",
+      "Simon F. Haeder"
+    ],
+    "year": 2024,
+    "venue": "World Medical &amp; Health Policy",
+    "publisher": "Wiley",
+    "url": "https://doi.org/10.1002/wmh3.607",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1215/03616878-10852610": {
+    "doi": "10.1215/03616878-10852610",
+    "title": "State Efforts to Regulate Provider Networks and Directories: Lessons for the Future",
+    "authors": [
+      "Simon F. Haeder",
+      "Wendy Y. Xu",
+      "Thomas Elton",
+      "Ariana Pitcher"
+    ],
+    "year": 2023,
+    "venue": "Journal of Health Politics, Policy and Law",
+    "publisher": "Duke University Press",
+    "url": "https://doi.org/10.1215/03616878-10852610",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1002/wmh3.625": {
+    "doi": "10.1002/wmh3.625",
+    "title": "Consumer experiences navigating health care provider directories and support of federal policy action",
+    "authors": [
+      "Simon F. Haeder",
+      "Wendy Yi Xu"
+    ],
+    "year": 2024,
+    "venue": "World Medical &amp; Health Policy",
+    "publisher": "Wiley",
+    "url": "https://doi.org/10.1002/wmh3.625",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.1080/03630242.2022.2083284": {
+    "doi": "10.1080/03630242.2022.2083284",
+    "title": "Provider directory accuracy and timely access to mammograms in California",
+    "authors": [
+      "Abigail Burman",
+      "Simon F. Haeder"
+    ],
+    "year": 2022,
+    "venue": "Women &amp; Health",
+    "publisher": "Informa UK Limited",
+    "url": "https://doi.org/10.1080/03630242.2022.2083284",
+    "status": "VERIFIED_CROSSREF"
+  },
+  "10.37765/ajmc.2023.89318": {
+    "doi": "10.37765/ajmc.2023.89318",
+    "title": "Provider Directory Inaccuracy and Timely Access for Mental Health Care",
+    "authors": [],
+    "year": 2023,
+    "venue": "The American Journal of Managed Care",
+    "publisher": "Managed Care and Healthcare Communications, LLC",
+    "url": "https://doi.org/10.37765/ajmc.2023.89318",
+    "status": "VERIFIED_CROSSREF"
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 5981871,
+    "items": [
+      {
+        "DOI": "10.37473/dac/10.1101/2020.06.03.20121210",
+        "title": [
+          "The Current COVID-19 Spread Pattern in India"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.06.03.20121210",
+        "score": 32.04983
+      },
+      {
+        "DOI": "10.37473/dac/10.1101/2020.04.06.20055848",
+        "title": [
+          "The efficiency in the ordinary hospital bed management in Italy: an in-depth analysis of intensive care unit in the areas affected by COVID-19 before the outbreak"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.04.06.20055848",
+        "score": 31.274937
+      },
+      {
+        "DOI": "10.37473/dac/10.1101/2020.09.18.20197095",
+        "title": [
+          "The COVID-19 Spread in the State of Assam, India"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.09.18.20197095",
+        "score": 30.76298
+      },
+      {
+        "abstract": "<jats:title>ABSTRACT</jats:title>\n                <jats:p>Although its international airports served as the country\u2019s main entry points for SARS-CoV-2, the factors driving the uneven geographic spread of COVID-19 cases and deaths in Brazil remain largely unknown. Here we show that four major factors likely accounted for the entire dynamics of COVID-19 in Brazil. Mathematical modeling revealed that, initially, the \u201csuper-spreading city\u201d of S\u00e3o Paulo accounted for roughly 80% of the case spread in the entire country. During the first 3 months of the epidemic, by adding only 16 other spreading cities, we accounted for 98-99% of the cases reported in Brazil at the time. Moreover, 26 of the major Brazilian federal highways accounted for about 30% of SARS-CoV-2\u2019s case spread. As cases accumulated rapidly in the Brazilian countryside, the distribution of COVID-19 deaths began to correlate with a third parameter: the geographic distribution of the country\u2019s hospital intensive care unit (ICU) beds, which is highly skewed towards state capitals where the epidemic began. That meant that severely ill patients living in the countryside had to be transported to state capitals to access ICU beds where they often died, creating a \u201cboomerang effect\u201d that contributed to the skew of the geographic distribution of COVID-19 deaths. Finally, we discovered that the geographic distribution of dengue fever, amounting to more than 3.5 million cases from January 2019 to July 2020, was highly complementary to that of COVID-19. This was confirmed by the identification of significant negative correlations between COVID-19\u2019s incidence, infection growth rate, and mortality to the percentage of people with antibody (IgM) levels for dengue fever in each of the country\u2019s states. No such correlations were observed when IgM data for chikungunya virus, which is transmitted by the same mosquito vector as dengue, was used. Thus, states in which a large fraction of the population had contracted dengue fever in 2019-2020 reported lower COVID-19 cases and deaths, and took longer to reach exponential community transmission, due to slower SARS-CoV-2 infection growth rates. This inverse correlation between COVID-19 and dengue fever was further observed in a sample of countries around Asia and Latin America, as well as in islands in the Pacific and Indian Oceans. This striking finding raises the intriguing possibility of an immunological cross-reactivity between DENV serotypes and SARS-CoV-2. If proven correct, this hypothesis could mean that dengue infection or immunization with an efficacious and safe dengue vaccine could produce some level of immunological protection for SARS-CoV-2, before a vaccine for SARS-CoV-2 becomes available.</jats:p>",
+        "DOI": "10.1101/2020.09.19.20197749",
+        "type": "posted-content",
+        "title": [
+          "How super-spreader cities, highways, hospital bed availability, and dengue fever influenced the COVID-19 epidemic in Brazil"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-5502-9324",
+            "authenticated-orcid": false,
+            "given": "Miguel A.L.",
+            "family": "Nicolelis",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-8166-3241",
+            "authenticated-orcid": false,
+            "given": "Rafael L. G.",
+            "family": "Raimundo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-2358-3221",
+            "authenticated-orcid": false,
+            "given": "Pedro S.",
+            "family": "Peixoto",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-9817-0635",
+            "authenticated-orcid": false,
+            "given": "Cec\u00edlia S.",
+            "family": "de Andreazzi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 30.175995,
+        "URL": "https://doi.org/10.1101/2020.09.19.20197749",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              9,
+              21
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.37473/dac/10.1101/2020.05.19.20107094",
+        "title": [
+          "Ethnic and regional variation in hospital mortality from COVID-19 in Brazil"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.05.19.20107094",
+        "score": 29.687927
+      },
+      {
+        "DOI": "10.37473/dac/10.1101/2020.07.16.20155358",
+        "title": [
+          "The risk of severe COVID-19: hospital and ICU admission rates in Norway"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.07.16.20155358",
+        "score": 29.143938
+      },
+      {
+        "DOI": "10.37473/dac/10.1101/2020.06.11.20128587",
+        "title": [
+          "Age Pattern of Premature Mortality under varying scenarios of COVID-19 Infection in India"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.06.11.20128587",
+        "score": 28.666513
+      },
+      {
+        "DOI": "10.37473/dac/10.1101/2020.06.13.20130096",
+        "title": [
+          "Nearly Perfect Forecasting of the Total COVID-19 Cases in India: A Numerical Approach"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.06.13.20130096",
+        "score": 28.61109
+      },
+      {
+        "DOI": "10.1353/plc.2025.a959259",
+        "title": [
+          "Ash Trees | Covid-19, and: Hospital Bed | Covid-19"
+        ],
+        "author": [
+          {
+            "given": "Alecia",
+            "family": "Beymer",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              3
+            ]
+          ]
+        },
+        "container-title": [
+          "Pleiades: Literature in Context"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1353/plc.2025.a959259",
+        "score": 28.50312
+      },
+      {
+        "DOI": "10.37473/dac/10.1101/2020.08.30.20184598",
+        "title": [
+          "The Uncertain COVID-19 Spread Pattern in India: A Statistical Analysis of the Current Situation"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.08.30.20184598",
+        "score": 28.10542
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "hospital bed availability dashboard COVID-19 India"
+    }
+  }
+}

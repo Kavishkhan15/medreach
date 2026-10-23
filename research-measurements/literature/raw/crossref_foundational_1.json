@@ -1,0 +1,304 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 9075207,
+    "items": [
+      {
+        "DOI": "10.5220/0013036900003825",
+        "title": [
+          "Analyzing Tweets Using Topic Modeling and ChatGPT: What We Can Learn About Teachers and Topics During COVID-19 Pandemic-Related School Closures"
+        ],
+        "author": [
+          {
+            "given": "Anna",
+            "family": "Weigand",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Computer Languages and Systems, University of Seville, Seville, Spain, --- Select a Country ---"
+              },
+              {
+                "name": "Faculty of Technology, University of Applied Sciences Emden/Leer, Emden, Germany, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Maj",
+            "family": "Jacob",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Faculty of Technology, University of Applied Sciences Emden/Leer, Emden, Germany, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Maria",
+            "family": "Rauschenberger",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Faculty of Technology, University of Applied Sciences Emden/Leer, Emden, Germany, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Maria Jos\u00e9",
+            "family": "Escalona Cuaresma",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Computer Languages and Systems, University of Seville, Seville, Spain, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 20th International Conference on Web Information Systems and Technologies"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.5220/0013036900003825"
+      },
+      {
+        "DOI": "10.32789/publichealth.2022.1003",
+        "title": [
+          "Analyzing the Effectiveness of Vaccination as a Preventive Measure in Combating COVID-19 and Recommendations for Future Health Emergencies in India"
+        ],
+        "author": [
+          {
+            "name": "National Health Systems Resource Centre, India",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Avani",
+            "family": "Saraswat",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Tejal",
+            "family": "Varekar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "name": "National Health Systems Resource Centre, India",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              7,
+              10
+            ]
+          ]
+        },
+        "container-title": [
+          "Conference Proceedings of the 4th International Conference on Public Health and Well-being"
+        ],
+        "abstract": "<jats:p>In order to mitigate the impact of the COVID-19 pandemic, India launched the world\u2019s most extensive vaccination drive. Almost 1.9 billion vaccination doses were given until May 13, 2022, since the beginning of the drive, with 1 billion people vaccinated for the first dose and 0.87 billion people for the second dose. The objective of the study is to analyze the impact of vaccination on the control of SARS-CoV-2 infection. The secondary data was obtained by the World Health Organization for COVID-19 cases and the Ministry of Health and Family Welfare for vaccination from January 22, 2022, to May 13, 2022. Exponential regression was performed for total cumulative vaccinations (18 years and older received at least one dose) as an independent variable and the rate of COVID infection (0.1million per week) as a dependent variable. The p-value is 0.001, with a negative slope emphasizing that the correlation is significant for the selected time period. Further, the predictive model with R2 = 0.96 shows the model is best fitted. The mathematical model supports the role of vaccination in decreasing cases of COVID-19. Predicting the rate of occurrence of infection against the backdrop of a vaccination drive can be a valuable tool for assessing vaccine effectiveness and planning for future actions.   Keywords: COVID-19, vaccination, health emergencies, preventive measures</jats:p>",
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.32789/publichealth.2022.1003"
+      },
+      {
+        "DOI": "10.1109/iiai-aai50415.2020.00166",
+        "title": [
+          "Analyzing Geo-tagged Tweets about COVID-19 in Japan using MACD-Histogram-based Burst Detection"
+        ],
+        "author": [
+          {
+            "given": "Tatsuhiro",
+            "family": "Sakai",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Institute of Science and Engineering, Academic Assembly, Shimane University,Shimane,Japan"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Keiichi",
+            "family": "Tamura",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Graduate School of Information Sciences, Hiroshima City University,Hiroshima,Japan"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "2020 9th International Congress on Advanced Applied Informatics (IIAI-AAI)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/iiai-aai50415.2020.00166"
+      },
+      {
+        "DOI": "10.26034/ne.vals-asla.2021.1254",
+        "title": [
+          "Covid-19 et communication de crise. Focus linguistique sur les tweets francophones de Belgique"
+        ],
+        "author": [
+          {
+            "given": "Louise-Am\u00e9lie",
+            "family": "Cougnon",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Louis",
+            "family": "De Viron",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              7,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Bulletin suisse de linguistique appliqu\u00e9e"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.26034/ne.vals-asla.2021.1254"
+      },
+      {
+        "DOI": "10.1016/s1473-3099(21)00355-8",
+        "title": [
+          "COVID-19 and SOS tweets in India"
+        ],
+        "author": [
+          {
+            "given": "Anuraag",
+            "family": "Jena",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              8
+            ]
+          ]
+        },
+        "container-title": [
+          "The Lancet Infectious Diseases"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/s1473-3099(21)00355-8"
+      }
+    ],
+    "items-per-page": 5,
+    "query": {
+      "start-index": 0,
+      "search-terms": "Analyzing COVID-19 tweets for medical resource requests India"
+    }
+  }
+}

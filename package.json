@@ -28,8 +28,13 @@
     "release:check": "node scripts/release-check.mjs",
     "verify:mongo-backup": "node scripts/verify-mongo-backup.mjs",
     "eval:performance": "node evaluation/performance/measure.mjs",
-    "eval:results": "node evaluation/results/aggregate.mjs",
-    "eval:all": "npm run bundles && npm run audit:deps || true; npm run eval:performance && npm run eval:results"
+    "eval:results": "node evaluation/aggregate.mjs",
+    "eval:all": "npm run bundles && npm run audit:deps && npm run eval:performance && npm run eval:results",
+    "eval:hosted": "node evaluation/performance/hosted.mjs",
+    "eval:hosted:security": "node evaluation/security/hosted.mjs",
+    "eval:lighthouse": "node evaluation/performance/lighthouse.mjs",
+    "eval:report": "node evaluation/render-report.mjs",
+    "eval:network": "node evaluation/performance/network-check.mjs"
   },
   "engines": {
     "node": ">=22.19.0"

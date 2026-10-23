@@ -1,0 +1,407 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 1466328,
+    "items": [
+      {
+        "DOI": "10.37765/ajmc.2023.89318",
+        "title": [
+          "Provider Directory Inaccuracy and Timely Access for Mental Health Care"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              2,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "The American Journal of Managed Care"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.37765/ajmc.2023.89318",
+        "score": 31.504253
+      },
+      {
+        "DOI": "10.1111/pde.70329",
+        "title": [
+          "Chasing Ghosts in Pediatric Dermatology: Provider\u2010Directory Inaccuracy and Medicaid Access for Children With Skin Disease"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0003-2497-8003",
+            "authenticated-orcid": false,
+            "given": "Martha\u2010Grace",
+            "family": "McLean",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Anne Burnett Marion School of Medicine at Texas Christian University  Fort Worth Texas USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              4
+            ]
+          ]
+        },
+        "container-title": [
+          "Pediatric Dermatology"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1111/pde.70329",
+        "score": 31.281492
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title><jats:p>Can patients find physical therapists in their networks, and can they access physical therapy when they need to? To answer these questions, we analyzed provider directory accuracy and timely access for physical therapists for all managed care plans available in California in 2018 and 2019 using secondary data obtained from the California Department of Managed Health Care for a total of 119,084 physical therapy listings (60,967 for 2018 and 58,117 for 2019). Overall, 19% of listed providers in 2018 and 8% of listed providers in 2019 showed inaccuracies. However, we found substantial differences across markets, with a low of 54% accuracy for Medicaid listings in 2018. Commercial plans were consistently most accurate. In terms of adequacy, we found that more than 90% of listed providers were accessible within 15 days and 97% within 30 days, with Medicaid providing the highest rates of timely access. Overall, barriers to consumer access with regard to physical therapy appear to be primarily in the form of provider directory inaccuracies. High rates of inaccuracies raise concerns for patients as well as regulators. Ultimately, California is one of the most regulated states when it comes to network adequacy and access.</jats:p>",
+        "DOI": "10.1002/wmh3.607",
+        "type": "journal-article",
+        "title": [
+          "Provider directory inaccuracy and timely access to physical therapy"
+        ],
+        "author": [
+          {
+            "suffix": "IV",
+            "given": "Thomas",
+            "family": "Elton",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Division of Health Services Management and Policy, College of Public Health The Ohio State University Columbus Ohio USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Wendy Y.",
+            "family": "Xu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Division of Health Services Management and Policy, College of Public Health The Ohio State University Columbus Ohio USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-0077-6047",
+            "authenticated-orcid": false,
+            "given": "Simon F.",
+            "family": "Haeder",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Health Policy &amp; Management, School of Public Healthy Texas A&amp;M University College Station Texas USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "World Medical &amp; Health Policy"
+        ],
+        "score": 28.424145,
+        "URL": "https://doi.org/10.1002/wmh3.607",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              4
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1176/pn.44.14.0009a",
+        "title": [
+          "State Fines MH Insurers Over 'Phantom' Provider Networks"
+        ],
+        "author": [
+          {
+            "given": "Rich",
+            "family": "Daly",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2009,
+              7,
+              17
+            ]
+          ]
+        },
+        "container-title": [
+          "Psychiatric News"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1176/pn.44.14.0009a",
+        "score": 25.428383
+      },
+      {
+        "abstract": "<jats:p>Access to general dental care is essential for preventing and treating oral diseases. To ensure adequate spatial accessibility for the most vulnerable populations, New York State mandates a ratio of one general dentist to 2000 Medicaid recipients within 30 min of public transportation. This study employed geospatial methods to determine whether the requirement is met in Manhattan by verifying the online directories of ten New York managed care organizations (MCOs), which collectively presented 868 available dentists from 259 facilities. Our survey of 118 dental facilities representing 509 dentists revealed that significantly fewer dentists are available to treat Medicaid recipients compared to MCO directories. The average dentist-to-patient ratio derived from the MCO listings by the Two-Step Floating Catchment Area (2SFCA) method was 1:315, while the average verified ratio was only 1:1927. \u201cPhantom networks\u201d, or inaccurate provider listings, substantially overstated Medicaid dental accessibility. Surprisingly, our study also discovered additional Medicaid providers unlisted in any MCO directory, which we coined \u201chidden networks\u201d. However, their inclusion was inconsequential to the overall dental supply. We further scrutinized dental care access by uniquely applying six \u201cpatient-centered characteristics\u201d, and these criteria vastly reduced accessibility to an average ratio of merely 1:4587. Our novel evaluation of the spatial association between poverty, dental care access, and phantom networks suggests that Medicaid dental providers wish to be located in wealthier census tracts that are in proximity to impoverished areas for maximum profitability. Additionally, we discovered that poverty and phantom networks were positively correlated, and phantom providers masked a lack of dental care access for Medicaid recipients.</jats:p>",
+        "DOI": "10.3390/ijerph182312383",
+        "type": "journal-article",
+        "title": [
+          "How Phantom Networks, Provider Qualities, and Poverty Sway Medicaid Dental Care Access: A Geospatial Analysis of Manhattan"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0001-5031-0742",
+            "authenticated-orcid": false,
+            "given": "Destiny",
+            "family": "Kelley",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Geography and Environmental Science, Hunter College, CUNY, 695 Park Avenue, New York, NY 10065, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-5350-9631",
+            "authenticated-orcid": false,
+            "given": "Shipeng",
+            "family": "Sun",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Geography and Environmental Science, Hunter College, CUNY, 695 Park Avenue, New York, NY 10065, USA"
+              },
+              {
+                "name": "Earth and Environmental Sciences Program, Graduate Center, CUNY, 365 Fifth Avenue, New York, NY 10016, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal of Environmental Research and Public Health"
+        ],
+        "score": 22.497358,
+        "URL": "https://doi.org/10.3390/ijerph182312383",
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              11,
+              25
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1377/forefront.20211102.706419",
+        "title": [
+          "Without A Dedicated Enforcement Mechanism, New Federal Protections Are Unlikely To Improve Provider Directory Accuracy"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              11,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Forefront Group"
+        ],
+        "type": "dataset",
+        "URL": "https://doi.org/10.1377/forefront.20211102.706419",
+        "score": 20.430998
+      },
+      {
+        "DOI": "10.1097/00002030-200209060-00021",
+        "title": [
+          "Provider inaccuracy in assessing adherence and outcomes with newly initiated antiretroviral therapy"
+        ],
+        "author": [
+          {
+            "given": "Robert",
+            "family": "Gross",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Warren B.",
+            "family": "Bilker",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Harvey M.",
+            "family": "Friedman",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "James C.",
+            "family": "Coyne",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Brian L.",
+            "family": "Strom",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2002,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "AIDS"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1097/00002030-200209060-00021",
+        "score": 20.363789
+      },
+      {
+        "DOI": "10.1016/s0022-3182(86)80150-9",
+        "title": [
+          "Nutrition at the worksite program site and provider directory"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1986,
+              4
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Nutrition Education"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/s0022-3182(86)80150-9",
+        "score": 20.294893
+      },
+      {
+        "DOI": "10.1377/hpb20160728.898461",
+        "title": [
+          "Regulation of Health Plan Provider Networks"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              7,
+              28
+            ]
+          ]
+        },
+        "type": "report",
+        "URL": "https://doi.org/10.1377/hpb20160728.898461",
+        "score": 20.094185
+      },
+      {
+        "DOI": "10.1016/c2009-0-26977-7",
+        "title": [
+          "The User's Directory of Computer Networks"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1990
+            ]
+          ]
+        },
+        "type": "edited-book",
+        "URL": "https://doi.org/10.1016/c2009-0-26977-7",
+        "score": 19.84589
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "phantom networks provider directory inaccuracy"
+    }
+  }
+}

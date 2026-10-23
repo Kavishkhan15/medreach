@@ -1,0 +1,766 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 1993464,
+    "items": [
+      {
+        "DOI": "10.1016/j.clindermatol.2026.07.006",
+        "title": [
+          "Assessing wait times for new dermatology patients: A secret shopper study across United States academic centers"
+        ],
+        "author": [
+          {
+            "given": "Cindy",
+            "family": "Hakim",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Alexander",
+            "family": "Gitin",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-4957-3910",
+            "authenticated-orcid": false,
+            "given": "Yolanda R.",
+            "family": "Helfrich",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              7
+            ]
+          ]
+        },
+        "container-title": [
+          "Clinics in Dermatology"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.clindermatol.2026.07.006",
+        "score": 30.536776
+      },
+      {
+        "DOI": "10.1016/j.jid.2024.06.185",
+        "title": [
+          "169 Dermatology appointment wait times by practice model: A secret-shopper study"
+        ],
+        "author": [
+          {
+            "given": "K.M.",
+            "family": "Thomas",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "C.M.",
+            "family": "Wilkowski",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "M.",
+            "family": "Bhatty",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "L.D.",
+            "family": "Rothermel",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "R.S.",
+            "family": "Hoehn",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "J.S.",
+            "family": "Bordeaux",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              8
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Investigative Dermatology"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.jid.2024.06.185",
+        "score": 28.312176
+      },
+      {
+        "DOI": "10.1097/ju.0000000000002542.08",
+        "title": [
+          "MP13-08\u2003ADVANCED PRACTICE PROVIDERS AND WAIT TIMES IN UROLOGY PRACTICES: A SECRET SHOPPER STUDY"
+        ],
+        "author": [
+          {
+            "given": "Armaan",
+            "family": "Singh",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jared",
+            "family": "Lassner",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Marc",
+            "family": "Sleiman",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Parth",
+            "family": "Modi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Urology"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1097/ju.0000000000002542.08",
+        "score": 28.21282
+      },
+      {
+        "DOI": "10.1007/s00403-024-02961-x",
+        "title": [
+          "Dermatology appointment wait times by practice model: an Ohio secret-shopper study"
+        ],
+        "author": [
+          {
+            "given": "Kaden M.",
+            "family": "Thomas",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Caroline M.",
+            "family": "Wilkowski",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Maira A.",
+            "family": "Bhatty",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Luke D.",
+            "family": "Rothermel",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Richard S.",
+            "family": "Hoehn",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Jeremy S.",
+            "family": "Bordeaux",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              5,
+              22
+            ]
+          ]
+        },
+        "container-title": [
+          "Archives of Dermatological Research"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1007/s00403-024-02961-x",
+        "score": 27.79723
+      },
+      {
+        "DOI": "10.1097/upj.0000000000000333",
+        "title": [
+          "Advanced Practice Providers and Wait Times in Urology Offices: A Secret Shopper Study"
+        ],
+        "author": [
+          {
+            "given": "Armaan",
+            "family": "Singh",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Pritzker School of Medicine, University of Chicago, Chicago, Illinois"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Jared W.",
+            "family": "Lassner",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Pritzker School of Medicine, University of Chicago, Chicago, Illinois"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Marc G.",
+            "family": "Sleiman",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Pritzker School of Medicine, University of Chicago, Chicago, Illinois"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ashley",
+            "family": "Diaz",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Pritzker School of Medicine, University of Chicago, Chicago, Illinois"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Susanne",
+            "family": "Quallich",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Urology, Michigan Medicine, Ann Arbor, Michigan"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Parth K.",
+            "family": "Modi",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Section of Urology, Department of Surgery, University of Chicago Medicine, Chicago, Illinois"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "Urology Practice"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1097/upj.0000000000000333",
+        "score": 27.559484
+      },
+      {
+        "DOI": "10.5040/9781501365287.2396",
+        "title": [
+          "secret shopper"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "The Fairchild Books Dictionary of Fashion"
+        ],
+        "type": "other",
+        "URL": "https://doi.org/10.5040/9781501365287.2396",
+        "score": 26.856873
+      },
+      {
+        "DOI": "10.1001/jama.2010.1666",
+        "title": [
+          "Secret Shopper"
+        ],
+        "author": [
+          {
+            "given": "Amy L.",
+            "family": "Friedman",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2010,
+              11,
+              17
+            ]
+          ]
+        },
+        "container-title": [
+          "JAMA"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1001/jama.2010.1666",
+        "score": 26.828966
+      },
+      {
+        "DOI": "10.1200/jco.2016.34.15_suppl.6595",
+        "title": [
+          "Improving patient wait-time and patient/provider wait-time satisfaction by the room pooling model."
+        ],
+        "author": [
+          {
+            "given": "Shawn J",
+            "family": "Janarthanan",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "The University of Texas MD Anderson Cancer Center, Department of Sarcoma Medical Oncology, Section of Cytokines and Supportive Oncology, Houston, TX;"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Xiao",
+            "family": "Zhou",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "The University of Texas MD Anderson Cancer Center, Department of Sarcoma Medical Oncology, Section of Cytokines and Supportive Oncology, Houston, TX;"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Mary",
+            "family": "Daniel",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "The University of Texas MD Anderson Cancer Center, Department of Sarcoma Medical Oncology, Section of Cytokines and Supportive Oncology, Houston, TX;"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Colleen",
+            "family": "Jernigan",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "The University of Texas MD Anderson Cancer Center, Department of Sarcoma Medical Oncology, Houston, TX;"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Shreyaskumar",
+            "family": "Patel",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "The University of Texas MD Anderson Cancer Center, Department of Sarcoma Medical Oncology, Houston, TX;"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Laura",
+            "family": "Kaufman",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "The University of Texas MD Anderson Cancer Center, Clin Quality Improvement, Process Improv. &amp; Quality Edu, Houston, TX;"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Doris",
+            "family": "Quinn",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "The University of Texas MD Anderson Cancer Center, Cancer Network Quality, Operations, Houston, TX;"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Saroj",
+            "family": "Vadhan-Raj",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "The University of Texas MD Anderson Cancer Center, Department of Sarcoma Medical Oncology, Section of Cytokines and Supportive Oncology, Houston, TX;"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              5,
+              20
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Clinical Oncology"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1200/jco.2016.34.15_suppl.6595",
+        "score": 24.50642
+      },
+      {
+        "DOI": "10.1002/9781119197416.ch25",
+        "title": [
+          "Secret Shopper"
+        ],
+        "author": [
+          {
+            "given": "Jay",
+            "family": "Dawdy",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2012,
+              1,
+              2
+            ]
+          ]
+        },
+        "container-title": [
+          "Computer Fraud Casebook"
+        ],
+        "type": "other",
+        "URL": "https://doi.org/10.1002/9781119197416.ch25",
+        "score": 24.005981
+      },
+      {
+        "abstract": "<jats:p>&lt;p&gt;In the world of personal finance, gender disparities aren\u2019t just about gaps in income or wealth accumulation\u2014they also extend to the quality of financial advice. This study explores whether financial advisors give women systematically worse advice than they give men and, if so, why. Through a secret shopper study conducted in Hong Kong, we uncover gendered patterns in financial advice that could have implications for women's financial empowerment.&lt;/p&gt;</jats:p>",
+        "DOI": "10.2139/ssrn.5574731",
+        "type": "posted-content",
+        "title": [
+          "Gender Differences in Financial Advice:&amp;nbsp;Lessons from a Secret Shopper Study"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-1379-7488",
+            "authenticated-orcid": true,
+            "given": "Utpal",
+            "family": "Bhattacharya",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-0636-0133",
+            "authenticated-orcid": true,
+            "given": "Amit",
+            "family": "Kumar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-7406-4929",
+            "authenticated-orcid": true,
+            "given": "Sujata",
+            "family": "Visaria",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jing",
+            "family": "Zhao",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 23.362068,
+        "URL": "https://doi.org/10.2139/ssrn.5574731",
+        "published": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "secret shopper provider directory wait time inaccurate"
+    }
+  }
+}

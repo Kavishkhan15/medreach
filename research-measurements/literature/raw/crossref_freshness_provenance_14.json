@@ -1,0 +1,322 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 8101102,
+    "items": [
+      {
+        "DOI": "10.37473/dac/10.1101/2020.01.09.900266",
+        "title": [
+          "PPM-Decay: A Computational Model of Auditory Prediction with Memory Decay"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.01.09.900266",
+        "score": 26.766426
+      },
+      {
+        "DOI": "10.14264/uql.2015.651",
+        "title": [
+          "The dynamic effects of task demands on resource availability, resource allocation and metacognitive states"
+        ],
+        "author": [
+          {
+            "given": "Kingsley",
+            "family": "Fletcher",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "type": "dissertation",
+        "URL": "https://doi.org/10.14264/uql.2015.651",
+        "score": 26.506145
+      },
+      {
+        "DOI": "10.2139/ssrn.4860892",
+        "title": [
+          "A Priority-Aware Dynamic Scheduling Algorithm for Ensuring Data Freshness in 5g Networks"
+        ],
+        "author": [
+          {
+            "given": "Beom-Su",
+            "family": "Kim",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        },
+        "type": "posted-content",
+        "URL": "https://doi.org/10.2139/ssrn.4860892",
+        "score": 24.680859
+      },
+      {
+        "DOI": "10.1109/itsim.2010.5561605",
+        "title": [
+          "Dynamic service placement and redundancy to ensure service availability during resource failures"
+        ],
+        "author": [
+          {
+            "given": "Boon Yaik",
+            "family": "Ooi",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Huah Yong",
+            "family": "Chan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Yu-N",
+            "family": "Cheah",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2010,
+              6
+            ]
+          ]
+        },
+        "container-title": [
+          "2010 International Symposium on Information Technology"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/itsim.2010.5561605",
+        "score": 24.645967
+      },
+      {
+        "DOI": "10.37473/dac/10.1101/2020.02.19.956037",
+        "title": [
+          "Alternative splicing coupled nonsense-mediated decay shapes the temperature-dependent transcriptome"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.02.19.956037",
+        "score": 24.614048
+      },
+      {
+        "DOI": "10.1109/itw62417.2025.11240391",
+        "title": [
+          "Information Freshness in Dynamic Gossip Networks"
+        ],
+        "author": [
+          {
+            "given": "Arunabh",
+            "family": "Srivastava",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "University of Maryland,Department of Electrical and Computer Engineering,College Park,MD,20742"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Thomas Jacob",
+            "family": "Maranzatto",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "University of Maryland,Department of Electrical and Computer Engineering,College Park,MD,20742"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Sennur",
+            "family": "Ulukus",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "University of Maryland,Department of Electrical and Computer Engineering,College Park,MD,20742"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              9,
+              29
+            ]
+          ]
+        },
+        "container-title": [
+          "2025 IEEE Information Theory Workshop (ITW)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/itw62417.2025.11240391",
+        "score": 24.558647
+      },
+      {
+        "DOI": "10.7717/peerj-cs.2066/supp-9",
+        "title": [
+          "Supplemental Information 9: Data availability status across manuscripts on the basis of data availability statement."
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.7717/peerj-cs.2066/supp-9",
+        "score": 24.442982
+      },
+      {
+        "DOI": "10.37473/dac/10.1101/2020.01.27.920850",
+        "title": [
+          "Dynamic Order in Allosteric Interactions"
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.37473/dac/10.1101/2020.01.27.920850",
+        "score": 24.393387
+      },
+      {
+        "DOI": "10.7717/peerj-cs.2178/supp-4",
+        "title": [
+          "Supplemental Information 4: Code availability, data availability, supporting table and figures."
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.7717/peerj-cs.2178/supp-4",
+        "score": 24.22039
+      },
+      {
+        "abstract": "<jats:p>This work proposes a multi-objective resource optimization framework for integrated access and backhaul (IAB) networks, tackling the dual challenges of timely data updates and spectral efficiency under dynamic wireless conditions. Conventional single-objective optimization is often impractical for IAB networks, where objective preferences are unknown or difficult to predefine. Therefore, we formulate a multi-objective problem that minimizes the age of information (AoI) and maximizes spectral efficiency, subject to a risk-aware AoI constraint, accessbackhaul throughput fairness, and other contextual requirements. A lightweight proportional fair (PF) scheduling algorithm first handles user association and access resource allocation. Subsequently, a Pareto Q-learning-based reinforcement learning (RL) scheme allocates backhaul resources, with the PF scheduler's outcomes integrated into the state and constrained action spaces of a Markov decision process (MDP). The reward function balances AoI and spectral efficiency objectives while explicitly capturing fairness, thereby resulting in robust longterm performance without imposing fixed weights. Furthermore, an adaptive value-difference-based exploration technique adjusts exploration rates based on Q-value estimate variances, promoting strategic exploration for optimal trade-offs. Simulations show that the proposed method outperforms baselines, reducing the convexity gap between approximated and optimal Pareto fronts by 68.6% and improving fairness by 16.9%.</jats:p>",
+        "DOI": "10.36227/techrxiv.174650513.36264593/v1",
+        "type": "posted-content",
+        "title": [
+          "Resource Optimization in Multi-Hop IAB Networks: Balancing Data Freshness and Spectral Efficiency"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-2966-6469",
+            "authenticated-orcid": false,
+            "given": "Sarder Fakhrul",
+            "family": "Abedin",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-3717-7793",
+            "authenticated-orcid": false,
+            "given": "Aamir",
+            "family": "Mahmood",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Zhu",
+            "family": "Han",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "University of Houston, TX, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-0873-7827",
+            "authenticated-orcid": false,
+            "given": "Mikael",
+            "family": "Gidlund",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 23.95453,
+        "URL": "https://doi.org/10.36227/techrxiv.174650513.36264593/v1",
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              5,
+              6
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "data freshness information decay dynamic resource availability"
+    }
+  }
+}

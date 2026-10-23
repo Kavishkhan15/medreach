@@ -1,0 +1,45 @@
+%% organization is resolved by kind in services, not a fixed Mongoose ref.
+erDiagram
+  User ||--o{ ProviderMembership : user
+  User o|--o{ AuthToken : user
+  User o|--o{ ProviderApplication : "account after approval"
+  Hospital ||--o{ ProviderMembership : "organization when kind=hospital"
+  ResourceProvider ||--o{ ProviderMembership : "organization for other kinds"
+  User {
+    ObjectId _id PK
+    string email UK
+    string role "system_admin, provider_admin, user"
+    string accountStatus
+  }
+  ProviderMembership {
+    ObjectId _id PK
+    ObjectId user FK
+    string kind
+    ObjectId organization "kind-resolved reference"
+    boolean active
+  }
+  ProviderApplication {
+    ObjectId _id PK
+    string kind
+    ObjectId organization "kind-resolved reference"
+    ObjectId account FK "optional"
+    string status
+  }
+  AuthToken {
+    ObjectId _id PK
+    ObjectId user FK
+    string tokenHash
+    Date expiresAt "TTL index"
+  }
+  Hospital {
+    ObjectId _id PK
+    string name
+    ObjectId[] admins "historical assignment compatibility"
+    string approvalStatus
+  }
+  ResourceProvider {
+    ObjectId _id PK
+    string kind
+    ObjectId hospital "optional parent"
+    boolean active
+  }

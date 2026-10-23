@@ -1,0 +1,42 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "129",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13656965",
+      "13650326",
+      "13595510",
+      "13586014",
+      "13576245",
+      "13569030",
+      "13525273",
+      "13493578",
+      "13486357",
+      "13487521"
+    ],
+    "translationset": [
+      {
+        "from": "Digital",
+        "to": "\"digitalisation\"[All Fields] OR \"digitalised\"[All Fields] OR \"digitalization\"[All Fields] OR \"digitalize\"[All Fields] OR \"digitalized\"[All Fields] OR \"digitalizer\"[All Fields] OR \"digitalizing\"[All Fields] OR \"digitally\"[All Fields] OR \"digitals\"[All Fields] OR \"digitization\"[All Fields] OR \"digitizations\"[All Fields] OR \"digitize\"[All Fields] OR \"digitized\"[All Fields] OR \"digitizer\"[All Fields] OR \"digitizers\"[All Fields] OR \"digitizes\"[All Fields] OR \"digitizing\"[All Fields] OR \"radiographic image enhancement\"[MeSH Terms] OR (\"radiographic\"[All Fields] AND \"image\"[All Fields] AND \"enhancement\"[All Fields]) OR \"radiographic image enhancement\"[All Fields] OR \"digital\"[All Fields]"
+      },
+      {
+        "from": "Mission",
+        "to": "\"mission's\"[All Fields] OR \"religious missions\"[MeSH Terms] OR (\"religious\"[All Fields] AND \"missions\"[All Fields]) OR \"religious missions\"[All Fields] OR \"mission\"[All Fields] OR \"missions\"[All Fields]"
+      },
+      {
+        "from": "health facility",
+        "to": "\"health facilities\"[MeSH Terms] OR (\"health\"[All Fields] AND \"facilities\"[All Fields]) OR \"health facilities\"[All Fields] OR (\"health\"[All Fields] AND \"facility\"[All Fields]) OR \"health facility\"[All Fields]"
+      },
+      {
+        "from": "registry",
+        "to": "\"registries\"[MeSH Terms] OR \"registries\"[All Fields] OR \"registry\"[All Fields] OR \"registry's\"[All Fields]"
+      }
+    ],
+    "querytranslation": "\"Ayushman\"[All Fields] AND \"Bharat\"[All Fields] AND (\"digitalisation\"[All Fields] OR \"digitalised\"[All Fields] OR \"digitalization\"[All Fields] OR \"digitalize\"[All Fields] OR \"digitalized\"[All Fields] OR \"digitalizer\"[All Fields] OR \"digitalizing\"[All Fields] OR \"digitally\"[All Fields] OR \"digitals\"[All Fields] OR \"digitization\"[All Fields] OR \"digitizations\"[All Fields] OR \"digitize\"[All Fields] OR \"digitized\"[All Fields] OR \"digitizer\"[All Fields] OR \"digitizers\"[All Fields] OR \"digitizes\"[All Fields] OR \"digitizing\"[All Fields] OR \"radiographic image enhancement\"[MeSH Terms] OR (\"radiographic\"[All Fields] AND \"image\"[All Fields] AND \"enhancement\"[All Fields]) OR \"radiographic image enhancement\"[All Fields] OR \"digital\"[All Fields]) AND (\"mission s\"[All Fields] OR \"religious missions\"[MeSH Terms] OR (\"religious\"[All Fields] AND \"missions\"[All Fields]) OR \"religious missions\"[All Fields] OR \"mission\"[All Fields] OR \"missions\"[All Fields]) AND (\"health facilities\"[MeSH Terms] OR (\"health\"[All Fields] AND \"facilities\"[All Fields]) OR \"health facilities\"[All Fields] OR (\"health\"[All Fields] AND \"facility\"[All Fields]) OR \"health facility\"[All Fields]) AND (\"registries\"[MeSH Terms] OR \"registries\"[All Fields] OR \"registry\"[All Fields] OR \"registry s\"[All Fields])"
+  }
+}

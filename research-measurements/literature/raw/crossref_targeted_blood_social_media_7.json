@@ -1,0 +1,481 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 6672141,
+    "items": [
+      {
+        "abstract": "<p>The main aim behind writing this paper is to know the consensus or the opinion of people on the global scale towards Indian and Chinese vaccination drive by doing a comparative analysis with the help of twitter data and global media reviews (which includes the textual data other than Indian and Chinese media).</p>",
+        "DOI": "10.31219/osf.io/ytqan",
+        "type": "posted-content",
+        "title": [
+          "Analysis of twitter data for India and China Covid-19 Vaccination"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-6393-2441",
+            "authenticated-orcid": true,
+            "given": "Chesta",
+            "family": "Dhingra",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 29.45985,
+        "URL": "https://doi.org/10.31219/osf.io/ytqan",
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              2,
+              23
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<sec>\n                    <title>BACKGROUND</title>\n                        <p>Since the COVID-19 pandemic started, the public has been eager for news about promising treatments, and social media has played a large role in information dissemination.</p>\n                </sec>\n                                <sec>\n                    <title>OBJECTIVE</title>\n                        <p>In this paper, our objectives are to characterize the public discussion of treatments on Twitter, and demonstrate the utility of these discussions for public health surveillance.</p>\n                </sec>\n                                <sec>\n                    <title>METHODS</title>\n                        <p>We pulled tweets related to three promising COVID-19 treatments (hydroxychloroquine, remdevisir and convalescent plasma), between the dates of February 28th and May 22nd using the Twitter public API. We characterize treatment tweet trends over this time period.</p>\n                </sec>\n                                <sec>\n                    <title>RESULTS</title>\n                        <p>Most major tweet/retweet/sentiment trends correlated to public announcement made by the white house and/or to new clinical trial evidence about treatments. Most of the websites people shared in treatment-related tweets were non-scientific media sources that leaned conservative. Hydroxychloroquine was the most discussed treatment on Twitter, and over 10% of hydroxychloroquine tweets mentioned an adverse drug reaction.</p>\n                </sec>\n                                <sec>\n                    <title>CONCLUSIONS</title>\n                        <p>There is a gap between the public\u2019s attention/discussion around COVID-19 treatments and their evidence. Twitter data can and should be used public health surveillance during this pandemic, as it is informative for monitoring adverse drug reactions, especially as many people avoid going to hospitals/doctors.</p>\n                </sec>",
+        "DOI": "10.2196/preprints.21253",
+        "type": "posted-content",
+        "title": [
+          "Twitter activity about treatments during the COVID-19 pandemic: case studies of remdesivir, hydroxychloroquine, and convalescent plasma. (Preprint)"
+        ],
+        "author": [
+          {
+            "given": "Tymor",
+            "family": "Hamamsy",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Richard",
+            "family": "Bonneau",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 26.757027,
+        "URL": "https://doi.org/10.2196/preprints.21253",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              6,
+              10
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n                <jats:p>Since the COVID-19 pandemic started, the public has been eager for news about promising treatments, and social media has played a large role in information dissemination. In this paper, our objectives are to characterize the public discussion of treatments on Twitter, and demonstrate the utility of these discussions for public health surveillance. We pulled tweets related to three promising COVID-19 treatments (hydroxychloroquine, remdesivir and convalescent plasma), between the dates of February 28th and May 22nd using the Twitter public API. We characterize treatment tweet trends over this time period. Most major tweet/retweet/sentiment trends correlated to public announcement made by the white house and/or to new clinical trial evidence about treatments. Most of the websites people shared in treatment-related tweets were non-scientific media sources that leaned conservative. Hydroxychloroquine was the most discussed treatment on Twitter, and over 10% of hydroxychloroquine tweets mentioned an adverse drug reaction. There is a gap between the public attention/discussion around COVID-19 treatments and their evidence. Twitter data can and should be used for public health surveillance during this pandemic, as it is informative for monitoring adverse drug reactions, especially as many people avoid going to hospitals/doctors.</jats:p>",
+        "DOI": "10.1101/2020.06.18.20134668",
+        "type": "posted-content",
+        "title": [
+          "Twitter activity about treatments during the COVID-19 pandemic: case studies of remdesivir, hydroxychloroquine, and convalescent plasma"
+        ],
+        "author": [
+          {
+            "given": "Tymor",
+            "family": "Hamamsy",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Richard",
+            "family": "Bonneau",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 26.440725,
+        "URL": "https://doi.org/10.1101/2020.06.18.20134668",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              6,
+              20
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>No Abstract</jats:p>",
+        "DOI": "10.5348/100062z02sm2021ed",
+        "type": "journal-article",
+        "title": [
+          "One year of COVID-19 pandemic: Challenges and lessons learnt on the transfusion of convalescent plasma to COVID-19 patients"
+        ],
+        "author": [
+          {
+            "given": "Sadhana",
+            "family": "Mangwana",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "MD, MBA, Head, Department of Transfusion Medicine and Immunohematology, Sri Balaji Action Medical Institute, A-4, Paschim Vihar, New Delhi, India"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal of Blood Transfusion and Immunohematology"
+        ],
+        "score": 26.304329,
+        "URL": "https://doi.org/10.5348/100062z02sm2021ed",
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              8,
+              10
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>This paper aims to understand the formal characteristics, the spaces of dissemination and the anti-science narratives related to COVID-19 and their engagement in Ibero-America. This type of disinformation has hardly been specifically investigated in this context; the research has been more focused on the study of fake news about this crisis from more general perspectives. A total of 238 fake contents were analyzed in two phases: a study of all verified fake contents spread in 2020 in this region and an analysis of the most propagated tweets included in the hashtag #plandemia. Quantitative results were analyzed with descriptive and inferential statistical procedures using chi-square, Kruskal-Wallis, U-Mann-Whitney tests, correlational studies, and linear regression. This research advances some of the patterns of scientific disinformation, which may be useful for future health crises: the high prevalence of fabricated content, the relevance of visual elements (although they are not predictors of engagement in this type of narrative), and the growing importance of instant messaging services as propagation spaces. It also discusses the remarkable role of fact-checkers against disinformation. These entities are proving to be effective in dismantling the denialist and conspiracy narratives circulating about the disease and to achieve a more effective communication of science.</jats:p>",
+        "DOI": "10.7764/cdi.52.42795",
+        "type": "journal-article",
+        "title": [
+          "Desinformaci\u00f3n anticient\u00edfica sobre la COVID-19 difundida en Twitter en Hispanoam\u00e9rica",
+          "Anti-science disinformation about COVID-19 spread on Twitter in Hispanic America",
+          "Desinforma\u00e7\u00e3o anticient\u00edfica sobre o COVID-19 espalhada no Twitter na Hispanoam\u00e9rica"
+        ],
+        "author": [
+          {
+            "given": "David",
+            "family": "Garc\u00eda-Mar\u00edn",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Marta",
+            "family": "Merino-Ortego",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Cuadernos.info"
+        ],
+        "score": 26.104225,
+        "URL": "https://doi.org/10.7764/cdi.52.42795",
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              5,
+              20
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>In new decade new coronavirus emerged. By April 2020, there is no\naccepted antiviral drug or antibody against COVID-19. COVID-19\n(SARS-CoV-2) has nucleic acid sequence similarity 96% with bat\ncoronavirus, 79.6% SARS-CoV-1. SARS-CoV-2 and SARS-CoV-1have common\nhuman host-cell ACE2 receptor. This similarity helps for effective\nvaccine and antibody development. At Wuhan, China, convalescent plasma\ntherapy achieved 70% recovery results. ABO blood group susceptibility\nstudy revealed O blood group were very low risk whereas A were at high\nrisk against COVID-19. ABO natural antibodies have positive effect to\nslowdown COVID-19 in less hygienic environment (less developed region).\nIsolation of specific antibody from EBV transformed B-lymphocyte\nrecovered patients is encouraged. Urgent production of potent\nneutralizing antibody and vaccine is required and we identified\nsensitive immunogenic amino acid segment (318-510) in S1-protein domain\nthat contains important and essential amino acids including cysteine,\nglutamic acid and aspartic acid, which associated with ACE2 expression.</jats:p>",
+        "DOI": "10.22541/au.159076907.71161267",
+        "type": "posted-content",
+        "title": [
+          "Monoclonal antibody and blood plasma ABO blood group based therapy against COVID-19"
+        ],
+        "author": [
+          {
+            "given": "Kalayu",
+            "family": "Shimuye",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Fujian Medical University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jianda",
+            "family": "Hu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Fujian Medical University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Minhui",
+            "family": "Lin",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Fujian Medical University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 26.026646,
+        "URL": "https://doi.org/10.22541/au.159076907.71161267",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              5,
+              29
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.7759/cureus.76320",
+        "title": [
+          "People\u2019s Attitude and Perception of the Pandemic on Twitter: A Case Study of COVID-19 in India"
+        ],
+        "author": [
+          {
+            "given": "Meera",
+            "family": "PV",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Dhivya",
+            "family": "Karmegam",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Suriya",
+            "family": "Saravanan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              12,
+              24
+            ]
+          ]
+        },
+        "container-title": [
+          "Cureus"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.7759/cureus.76320",
+        "score": 25.70613
+      },
+      {
+        "DOI": "10.55776/p34655",
+        "type": "grant",
+        "URL": "https://doi.org/10.55776/p34655",
+        "score": 25.663465
+      },
+      {
+        "abstract": "<jats:p>Introduction: Blood group antibodies are associated with susceptibility to Coronavirus Disease 2019 (COVID-19) infection among different blood groups. Factors such as age and male sex have been identified as risk factors for COVID-19 and disease severity.  Aim: Determination of blood groups of COVID-19 positive plasma donors and examine the association of blood groups with different sexes and age groups. Additionally, the study aims to investigate the factors that either prevent or motivate COVID-19 positive individuals to donate plasma.  Materials and Methods: This retrospective cross-sectional study analysed records from July 2020 to June 2021 at the Blood Bank of Mandya Institute of Medical Sciences, Mandya, Karnataka, India. The sample size included 115 COVID-19 plasma donors, selected using inclusion and exclusion criteria. Data on blood group, age, sex, and factors influencing plasma donation were recorded. The collected data was entered into a Microsoft Excel sheet and analysed using Statistical Package for Social Sciences (SPSS) version 20.0 statistical software, applying the Chi-square test.  Results: Among the 115 COVID-19 positive patients, 113 were males and two were females. The most commonly affected age group was between 31-40 years (44 donors), and the most commonly observed blood group was O+ve (44 cases). There was no significant association between gender and age group (p-value-0.299). Similarly, there was no significant association between blood group and age groups (p-value-0.730). When evaluating the reasons for donating blood, the majority of people (33 out of 115) mentioned that their family member required blood. The provision of transport facilities by the blood bank did not significantly increase the number of blood donations, as most people preferred using their own vehicles (44 out of 115) due to the fear of COVID-19 infection. Among their friends, the main reason for not donating blood was the fear of infection (63 out of 115).  Conclusion: Individual with blood group \u2018O\u2019 were more affected by COVID-19 compared to other blood groups. The pandemic has impacted blood transfusion services as fewer donors are visiting hospitals for blood donation. It is important to thoroughly assess and address the various reasons that prevent individuals from donating plasma through mass awareness campaigns.</jats:p>",
+        "DOI": "10.7860/jcdr/2023/63291.18821",
+        "type": "journal-article",
+        "title": [
+          "Factors Affecting Blood Donations among COVID-19 Plasma Donors at a Tertiary Care Hospital in Mandya, Karnataka, India"
+        ],
+        "author": [
+          {
+            "given": "P",
+            "family": "Yogendra",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "MU",
+            "family": "Mythreyi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "BG",
+            "family": "Malathi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Sumaisa",
+            "family": ".",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "JOURNAL OF CLINICAL AND DIAGNOSTIC RESEARCH"
+        ],
+        "score": 25.476994,
+        "URL": "https://doi.org/10.7860/jcdr/2023/63291.18821",
+        "published": {
+          "date-parts": [
+            [
+              2023
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.21037/aob-21-24",
+        "title": [
+          "COVID-19 convalescent plasma experience in the US"
+        ],
+        "author": [
+          {
+            "given": "Barry",
+            "family": "Siegfried",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Jeffrey",
+            "family": "McCullough",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              12
+            ]
+          ]
+        },
+        "container-title": [
+          "Annals of Blood"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21037/aob-21-24",
+        "score": 25.114405
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "COVID-19 Twitter blood plasma requests India"
+    }
+  }
+}

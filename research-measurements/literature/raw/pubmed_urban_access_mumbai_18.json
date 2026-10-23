@@ -1,0 +1,46 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "4166",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13687472",
+      "13687313",
+      "13683120",
+      "13684495",
+      "13680628",
+      "13681958",
+      "13679962",
+      "13671993",
+      "13670156",
+      "7619550"
+    ],
+    "translationset": [
+      {
+        "from": "urban",
+        "to": "\"urban\"[All Fields] OR \"urbanicity\"[All Fields] OR \"urbanism\"[All Fields] OR \"urbanity\"[All Fields] OR \"urbanization\"[MeSH Terms] OR \"urbanization\"[All Fields] OR \"urbanizations\"[All Fields] OR \"urbanize\"[All Fields] OR \"urbanized\"[All Fields] OR \"urbanizes\"[All Fields] OR \"urbanizing\"[All Fields] OR \"urbans\"[All Fields]"
+      },
+      {
+        "from": "primary healthcare",
+        "to": "\"primary health care\"[MeSH Terms] OR (\"primary\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"primary health care\"[All Fields] OR (\"primary\"[All Fields] AND \"healthcare\"[All Fields]) OR \"primary healthcare\"[All Fields]"
+      },
+      {
+        "from": "access",
+        "to": "\"access\"[All Fields] OR \"accessed\"[All Fields] OR \"accesses\"[All Fields] OR \"accessibilities\"[All Fields] OR \"accessibility\"[All Fields] OR \"accessible\"[All Fields] OR \"accessing\"[All Fields]"
+      },
+      {
+        "from": "public",
+        "to": "\"public\"[All Fields] OR \"public's\"[All Fields] OR \"publically\"[All Fields] OR \"publication's\"[All Fields] OR \"publications\"[MeSH Terms] OR \"publications\"[All Fields] OR \"publicity\"[All Fields] OR \"publicize\"[All Fields] OR \"publicized\"[All Fields] OR \"publicizing\"[All Fields] OR \"publics\"[All Fields] OR \"publishing\"[MeSH Terms] OR \"publishing\"[All Fields] OR \"publication\"[All Fields]"
+      },
+      {
+        "from": "private",
+        "to": "\"patients' rooms\"[MeSH Terms] OR (\"patients'\"[All Fields] AND \"rooms\"[All Fields]) OR \"patients' rooms\"[All Fields] OR \"private\"[All Fields] OR \"privately\"[All Fields] OR \"privates\"[All Fields] OR \"privatization\"[MeSH Terms] OR \"privatization\"[All Fields] OR \"privatizations\"[All Fields] OR \"privatize\"[All Fields] OR \"privatized\"[All Fields] OR \"privatizing\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"urban\"[All Fields] OR \"urbanicity\"[All Fields] OR \"urbanism\"[All Fields] OR \"urbanity\"[All Fields] OR \"urbanization\"[MeSH Terms] OR \"urbanization\"[All Fields] OR \"urbanizations\"[All Fields] OR \"urbanize\"[All Fields] OR \"urbanized\"[All Fields] OR \"urbanizes\"[All Fields] OR \"urbanizing\"[All Fields] OR \"urbans\"[All Fields]) AND (\"primary health care\"[MeSH Terms] OR (\"primary\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"primary health care\"[All Fields] OR (\"primary\"[All Fields] AND \"healthcare\"[All Fields]) OR \"primary healthcare\"[All Fields]) AND (\"access\"[All Fields] OR \"accessed\"[All Fields] OR \"accesses\"[All Fields] OR \"accessibilities\"[All Fields] OR \"accessibility\"[All Fields] OR \"accessible\"[All Fields] OR \"accessing\"[All Fields]) AND (\"public\"[All Fields] OR \"public s\"[All Fields] OR \"publically\"[All Fields] OR \"publication s\"[All Fields] OR \"publications\"[MeSH Terms] OR \"publications\"[All Fields] OR \"publicity\"[All Fields] OR \"publicize\"[All Fields] OR \"publicized\"[All Fields] OR \"publicizing\"[All Fields] OR \"publics\"[All Fields] OR \"publishing\"[MeSH Terms] OR \"publishing\"[All Fields] OR \"publication\"[All Fields]) AND (\"patients rooms\"[MeSH Terms] OR (\"patients\"[All Fields] AND \"rooms\"[All Fields]) OR \"patients rooms\"[All Fields] OR \"private\"[All Fields] OR \"privately\"[All Fields] OR \"privates\"[All Fields] OR \"privatization\"[MeSH Terms] OR \"privatization\"[All Fields] OR \"privatizations\"[All Fields] OR \"privatize\"[All Fields] OR \"privatized\"[All Fields] OR \"privatizing\"[All Fields]) AND \"Mumbai\"[All Fields]"
+  }
+}

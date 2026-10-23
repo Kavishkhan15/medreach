@@ -1,0 +1,527 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 7368846,
+    "items": [
+      {
+        "DOI": "10.56805/grrbe.26.12.1.118",
+        "title": [
+          "Digital future Readiness of the rural mass under ABDM in India"
+        ],
+        "author": [
+          {
+            "given": "Atheed Abid",
+            "family": "Manna",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Dr. Y. Muni",
+            "family": "Raju",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "container-title": [
+          "Global Research Review in Business and Economics"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.56805/grrbe.26.12.1.118",
+        "score": 31.670044
+      },
+      {
+        "abstract": "<jats:p>Background:Ayushman Bharat, launched in 2018, is India\u2019s flagship initiative toward Universal Health Coverage through the Pradhan Mantri Jan Arogya Yojana (PM-JAY) and strengthened primary healthcare services. The Ayushman Bharat Digital Mission (ABDM), introduced in 2021, further aims to improve healthcare access, efficiency, and transparency through digital health innovations. However, emerging evidence suggests that digital inequities may limit equitable access to these initiatives, particularly among rural, low-income, and digitally marginalised populations.\nObjective:This review examines the role of digital barriers in shaping access to and utilisation of Ayushman Bharat and ABDM, with a focus on digital literacy, infrastructure, awareness, trust, and ethical concerns within the Indian healthcare context.\nMethods:A narrative literature review was conducted using PubMed, Google Scholar, government reports, and policy documents published between 2018 and 2025. Relevant studies were identified using key search terms related to Ayushman Bharat, ABDM, digital health, and healthcare access in India, and were thematically synthesised.\nResults:The review identified persistent gaps in awareness and utilisation of PM-JAY and ABDM, especially in rural and underserved areas. Major barriers included low digital literacy, inadequate internet connectivity, limited access to digital devices, and concerns regarding data privacy and system trust. While digital tools such as ABHA IDs, electronic health records, and telemedicine platforms offer significant potential, their benefits remain unevenly distributed. Community-based intermediaries, including ASHAs and Ayushman Mitras, play a crucial role in bridging digital gaps, though systemic challenges persist.\nConclusion:Despite notable progress, digital inequities continue to constrain the equity goals of Ayushman Bharat and ABDM. Strengthening digital literacy, ensuring data protection, expanding infrastructure, and maintaining offline access mechanisms are essential for achieving inclusive and equitable Universal Health Coverage in India.</jats:p>",
+        "DOI": "10.37506/p3z0xq64",
+        "type": "journal-article",
+        "title": [
+          "Digital Inequity in Health Access: A Literature Review of Ayushman Bharatand ABDM in India"
+        ],
+        "author": [
+          {
+            "given": "Renia",
+            "family": "Ganguly",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Henrietta Barnett School, London UK."
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Nagaraj",
+            "family": "Patil",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "KLE Academy of Higher Education and Research Deemed to be University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Indian Journal of Public Health Research &amp; Development"
+        ],
+        "score": 29.67477,
+        "URL": "https://doi.org/10.37506/p3z0xq64",
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              6,
+              29
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<title>Abstract</title>\n                <p>Background\n Digital health systems are increasingly embedded in public health initiatives across low- and middle-income countries. Nevertheless, there is limited evidence on whether women\u2019s access to digital technology\u2014especially mobile phones\u2014serves as a facilitating public health resource or if it deepens existing inequalities in maternal healthcare.\nObjectives\n This research investigates whether women\u2019s access to digital tools, such as mobile phones and the Mother and Child Protection (MCP) card, serves as a foundational enabler of maternal healthcare utilization in India, with a particular focus on the adoption of four or more antenatal care visits (ANC4).\nMethods\n A mixed-methods approach incorporated a PRISMA-guided systematic review along with a quasi-experimental analysis of three waves of the National Family Health Survey (NFHS-3, NFHS-4, NFHS-5; from 2005 to 2021). State-level panel data were examined using Difference-in-Differences and Propensity Score Matching methods, with placebo and parallel trend tests conducted to ensure validity robustness.\nResults\n Throughout the country, ANC4 coverage grew between NFHS-4 and NFHS-5, especially in states with initially lower mobile ownership. Quasi-experimental data indicated that increasing mobile access was notably linked to a 9.2 percentage-point rise in ANC4 use in areas with weak digital infrastructure. Both the systematic review and empirical analysis underscore that digital access forms a vital part of health system infrastructure, shaped by governance and trust.\nConclusions\n Mobile access among women should not be viewed as a standalone technology but as an integral part of public health infrastructure. Enhancing equitable digital connectivity is crucial for advancing maternal healthcare and increasing health system accountability.</p>",
+        "DOI": "10.21203/rs.3.rs-8834223/v1",
+        "type": "posted-content",
+        "title": [
+          "Digital access as public health infrastructure: Evidence on maternal healthcare utilization from India"
+        ],
+        "author": [
+          {
+            "given": "Atantra Das",
+            "family": "Gupta",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "NIMS University"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Yashpal",
+            "family": "Yadav",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "NIMS University"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 24.716234,
+        "URL": "https://doi.org/10.21203/rs.3.rs-8834223/v1",
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              2,
+              27
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>The Ayushman Bharat Digital Mission (ABDM) represents India's principal national policy effort to create an interoperable, citizen-centered digital health ecosystem connecting patients, healthcare professionals, and medical facilities [1, 4, 11]. This study evaluates the policy trajectory, systemic government implementation, hospital-level adoption, and remaining functional implementation gaps under ABDM using qualitative policy analysis and secondary data from official Ministry of Health and Family Welfare (MoHFW) releases, National Health Authority (NHA) dashboards, parliamentary disclosures, and peer-reviewed literature [2, 6, 7, 10]. By September 2026, the mission achieved massive macro scale, recording over 97.54 crore Ayushman Bharat Health Accounts (ABHA), 119.45 crore linked digital health records, 5.76 lakh registered health facilities on the Health Facility Registry (HFR), and 10.96 lakh verified healthcare professionals on the Healthcare Professionals Registry (HPR) [2, 6]. However, granular analysis reveals a stark divergence between registration scale and functional utilization [10, 15]. Despite high account creation, ABHA integration within operational national health programs remains severely constrained, with major programs such as Reproductive and Child Health (RCH) and Sickle Cell disease exhibiting linkage rates of approximately 0.3% [10, 15]. Furthermore, facility adoption is structurally skewed toward public institutions (~86% public vs. 14% private), and functional module depth is uneven, with front-office QR-based OPD registration vastly outstripping transaction-level modules such as digital payments [10]. The paper concludes that evaluating ABDM solely through aggregate registration metrics masks critical operational friction. Long-term success necessitates shifting performance management from registration KPIs to functional outcome indicators, expanding private-sector integration, enhancing workflow interoperability, addressing digital literacy barriers, and enforcing robust data governance under the Digital Personal Data Protection Act, 2023 [8, 10, 13].</jats:p>",
+        "DOI": "10.2139/ssrn.7466598",
+        "type": "posted-content",
+        "title": [
+          "&lt;div&gt;\n India's Digital Health Revolution: ABDM Policy and Implementation Gaps\n&lt;/div&gt;\n&lt;br&gt;"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0008-1834-7404",
+            "authenticated-orcid": true,
+            "given": "Aashika",
+            "family": "Panicker",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Anjali",
+            "family": "Dahiya",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Annu",
+            "family": "Kushwaha",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Dolly",
+            "family": "Yadav",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Nisha",
+            "family": "Yadav",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Shayeestah",
+            "family": "Ejaz",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Stalone",
+            "family": "Fernandes",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 24.413462,
+        "URL": "https://doi.org/10.2139/ssrn.7466598",
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>India's rapid smartphone adoption and short device replacement cycles have led to a significant accumulation of surplus Android phones-contributing to the over 1 million tonnes of e-waste generated annually in the country [2]. These discarded devices, despite having adequate processing, sensing, and communication capabilities, are frequently retired due to superficial hardware issues or software obsolescence. This paper presents a theoretical framework to model the repurposing of surplus Android smartphones as a cost-effective and scalable layer of decentralized digital infrastructure. We argue that these devices can be re-integrated into public systems to enable edge computing capabilities for various social impact domains, including healthcare, education, environmental monitoring, and smart agriculture. To support this proposition, we introduce three core constructs: techno-social innovation, describing the co-evolution of community practices and technology; frugal digital infrastructure, which emphasizes low-cost, locally adaptable digital systems; and decentralized edge ecology, a conceptual model for loosely coupled edge devices operating collaboratively in resource-constrained environments. We propose a taxonomy of reuse applications and detail a prototype deployment focused on air quality monitoring using refurbished Android devices. Our findings illustrate how surplus smartphones can contribute to sustainable ICT infrastructure, digital inclusion, and e-waste mitigation efforts. This research extends the discourse on circular technology economies and offers actionable insights for low-resource settings in the Global South.</jats:p>",
+        "DOI": "10.2139/ssrn.5315514",
+        "type": "posted-content",
+        "title": [
+          "Leveraging Surplus Android Phones in India: Scalable Use Cases in Edge Computing, Digital Health, and Smart Infrastructure"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0002-6471-5008",
+            "authenticated-orcid": true,
+            "given": "Nikheel Vishwas",
+            "family": "Savant",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 24.329268,
+        "URL": "https://doi.org/10.2139/ssrn.5315514",
+        "published": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1007/s40012-023-00375-0",
+        "title": [
+          "The Ayushman Bharat Digital Mission (ABDM): making of India\u2019s Digital Health Story"
+        ],
+        "author": [
+          {
+            "given": "R. S.",
+            "family": "Sharma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Aishwarya",
+            "family": "Rohatgi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sandeep",
+            "family": "Jain",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Dilip",
+            "family": "Singh",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              3,
+              31
+            ]
+          ]
+        },
+        "container-title": [
+          "CSI Transactions on ICT"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1007/s40012-023-00375-0",
+        "score": 24.05772
+      },
+      {
+        "DOI": "10.21275/mr211010171914",
+        "title": [
+          "From Digital India to Digital Economy: Understanding India's Cyber Infrastructure and Cyber Security"
+        ],
+        "author": [
+          {
+            "given": "Roshan",
+            "family": "Rai",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              10,
+              27
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Science and Research (IJSR)"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21275/mr211010171914",
+        "score": 23.638529
+      },
+      {
+        "DOI": "10.59425/eabc.1786010400",
+        "title": [
+          "India turns digital infrastructure into soft power"
+        ],
+        "author": [
+          {
+            "given": "Preeti",
+            "family": "Raghunath",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              6
+            ]
+          ]
+        },
+        "type": "report",
+        "URL": "https://doi.org/10.59425/eabc.1786010400",
+        "score": 23.56642
+      },
+      {
+        "DOI": "10.1007/978-981-16-8837-9_11",
+        "title": [
+          "Recent Trends in Digital Infrastructure in India"
+        ],
+        "author": [
+          {
+            "given": "Krishna Teja",
+            "family": "Perannagari",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Vineet",
+            "family": "Gupta",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "Studies in Infrastructure and Control",
+          "Infrastructure Planning and Management in India"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-981-16-8837-9_11",
+        "score": 22.760406
+      },
+      {
+        "DOI": "10.7551/mitpress/9465.003.0011",
+        "title": [
+          "Beyond Infrastructure: Re-humanizing Digital Humanities in India"
+        ],
+        "author": [
+          {
+            "given": "Nishant",
+            "family": "Shah",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2015,
+              5,
+              22
+            ]
+          ]
+        },
+        "container-title": [
+          "Between Humanities and the Digital"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.7551/mitpress/9465.003.0011",
+        "score": 22.638155
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "digital health infrastructure India ABDM"
+    }
+  }
+}

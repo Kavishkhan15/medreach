@@ -1,0 +1,685 @@
+{
+  "suite": "EXP-TX",
+  "title": "MedReach Request Correctness and Transactional Coordination",
+  "startedAt": "2026-10-23T20:11:54.979Z",
+  "databasePort": 27018,
+  "forbiddenPortChecked": 27017,
+  "experiments": [
+    {
+      "experimentId": "EXP-TX-01",
+      "name": "Duplicate Request Prevention and Idempotency Key Handling",
+      "startedAt": "2026-10-23T20:11:57.088Z",
+      "tests": [
+        {
+          "id": "1.1",
+          "description": "Initial emergency request succeeds with 201 Created",
+          "passed": "MR-MVLEONJM-3AF55D",
+          "details": {
+            "status": 201,
+            "requestId": "MR-MVLEONJM-3AF55D"
+          }
+        },
+        {
+          "id": "1.2",
+          "description": "Reusing key with different authenticated user returns 409 IDEMPOTENCY_KEY_REUSED",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "This Idempotency-Key was already used. Check the original request status; do not submit again."
+            }
+          }
+        },
+        {
+          "id": "1.3",
+          "description": "Guest emergency request succeeds with 201 and tracking token",
+          "passed": true,
+          "details": {
+            "status": 201,
+            "hasTrackingToken": true
+          }
+        },
+        {
+          "id": "1.4",
+          "description": "Unauthenticated guest reusing authenticated user's idempotency key is rejected with 409 Conflict",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "This Idempotency-Key was already used. Check the original request status; do not submit again."
+            }
+          }
+        },
+        {
+          "id": "1.5",
+          "description": "BloodRequest duplicate key returns 409 IDEMPOTENCY_KEY_REUSED",
+          "passed": true,
+          "details": {
+            "status1": 201,
+            "status2": 409,
+            "code2": "IDEMPOTENCY_KEY_REUSED"
+          }
+        },
+        {
+          "id": "1.6",
+          "description": "AmbulanceBooking duplicate key returns 409 IDEMPOTENCY_KEY_REUSED",
+          "passed": true,
+          "details": {
+            "status1": 201,
+            "status2": 409,
+            "code2": "IDEMPOTENCY_KEY_REUSED"
+          }
+        },
+        {
+          "id": "1.7",
+          "description": "Unique sparse idempotencyKeyHash indexes verified across all 5 transaction models",
+          "passed": true,
+          "details": {
+            "EmergencyRequest": {
+              "exists": true,
+              "unique": true,
+              "sparse": true
+            },
+            "BloodRequest": {
+              "exists": true,
+              "unique": true,
+              "sparse": true
+            },
+            "AmbulanceBooking": {
+              "exists": true,
+              "unique": true,
+              "sparse": true
+            },
+            "JobApplication": {
+              "exists": true,
+              "unique": true,
+              "sparse": true
+            },
+            "OrganizationApplication": {
+              "exists": true,
+              "unique": true,
+              "sparse": true
+            }
+          }
+        },
+        {
+          "id": "1.8",
+          "description": "Direct DB insert with duplicate idempotencyKeyHash triggers Mongo E11000 error",
+          "passed": true,
+          "details": {
+            "directDuplicateCaught": true,
+            "rawErrorCode": 11000
+          }
+        },
+        {
+          "id": "1.9",
+          "description": "Scope salting prevents cross-resource collision with identical Idempotency-Key",
+          "passed": true,
+          "details": {
+            "emergStatus": 201,
+            "ambStatus": 201
+          }
+        },
+        {
+          "id": "1.10",
+          "description": "Malformed Idempotency-Key formats rejected with 400 Bad Request",
+          "passed": true,
+          "details": [
+            {
+              "key": "short",
+              "status": 400,
+              "ok": true
+            },
+            {
+              "key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "status": 400,
+              "ok": true
+            },
+            {
+              "key": "bad key with spaces",
+              "status": 400,
+              "ok": true
+            },
+            {
+              "key": "!invalid-start",
+              "status": 400,
+              "ok": true
+            }
+          ]
+        }
+      ],
+      "passCount": 10,
+      "failCount": 0,
+      "completedAt": "2026-10-23T20:11:57.284Z"
+    },
+    {
+      "experimentId": "EXP-TX-02",
+      "name": "Idempotent Retries and Simulated Timeout Recovery",
+      "startedAt": "2026-10-23T20:11:59.270Z",
+      "tests": [
+        {
+          "id": "2.1",
+          "description": "Authenticated user replay returns 200 OK with same requestId and no duplicate document",
+          "passed": true,
+          "details": {
+            "initStatus": 201,
+            "retryStatus": 200,
+            "requestId1": "MR-MVLEOP7U-EE3A91",
+            "requestId2": "MR-MVLEOP7U-EE3A91",
+            "dbCount": 1
+          }
+        },
+        {
+          "id": "2.2",
+          "description": "Idempotent replay with altered body returns cached original without mutating record",
+          "passed": true,
+          "details": {
+            "status": 200,
+            "returnedEmergencyType": "Severe Respiratory Distress",
+            "originalRequestId": "MR-MVLEOP7U-EE3A91"
+          }
+        },
+        {
+          "id": "2.3",
+          "description": "Guest idempotent replay returns 200 OK with identical trackingToken and requestId",
+          "passed": true,
+          "details": {
+            "initStatus": 201,
+            "retryStatus": 200,
+            "tokenMatch": true
+          }
+        },
+        {
+          "id": "2.4",
+          "description": "Simulated client timeout followed by retry recovers cleanly with exactly 1 DB record",
+          "passed": true,
+          "details": {
+            "timedOut": true,
+            "recoveryStatus": 200,
+            "requestId": "MR-MVLEOP98-8EFCF4",
+            "countInDb": 1
+          }
+        },
+        {
+          "id": "2.5",
+          "description": "Ambulance booking idempotent replay returns 200 OK with same reference and single DB booking",
+          "passed": true,
+          "details": {
+            "status1": 201,
+            "status2": 200,
+            "reference1": "AMB-MVLEOPBD-CB0C",
+            "reference2": "AMB-MVLEOPBD-CB0C",
+            "dbCount": 1
+          }
+        },
+        {
+          "id": "2.6",
+          "description": "Blood request idempotent replay returns 200 OK with same reference and single DB record",
+          "passed": true,
+          "details": {
+            "status1": 201,
+            "status2": 200,
+            "reference1": "BR-20261023-D62B63",
+            "reference2": "BR-20261023-D62B63",
+            "dbCount": 1
+          }
+        },
+        {
+          "id": "2.7",
+          "description": "10 consecutive idempotent retries all return 200 OK with unchanged database document count",
+          "passed": true,
+          "details": {
+            "repeatedPass": true,
+            "repeatStatuses": [
+              200,
+              200,
+              200,
+              200,
+              200,
+              200,
+              200,
+              200,
+              200,
+              200
+            ],
+            "finalDbCount": 1
+          }
+        }
+      ],
+      "passCount": 7,
+      "failCount": 0,
+      "completedAt": "2026-10-23T20:11:59.476Z"
+    },
+    {
+      "experimentId": "EXP-TX-03",
+      "name": "Concurrent Requests Competing for State Mutations & Resources",
+      "startedAt": "2026-10-23T20:12:01.412Z",
+      "tests": [
+        {
+          "id": "3.1",
+          "description": "N=10 simultaneous EmergencyRequest transitions: exactly 1 wins (200 OK), 9 fail with 409 Conflict",
+          "passed": true,
+          "details": {
+            "N": 10,
+            "statusDistribution": {
+              "200": 1,
+              "409": 9
+            },
+            "initialTimelineLength": 3,
+            "finalTimelineLength": 4,
+            "finalStatus": "ACCEPTED"
+          }
+        },
+        {
+          "id": "3.2",
+          "description": "Optimistic concurrency preserves timeline integrity without duplicate or phantom steps",
+          "passed": true,
+          "details": {
+            "timelineEntries": [
+              {
+                "status": "REQUESTED",
+                "role": "patient"
+              },
+              {
+                "status": "SENT",
+                "role": "system"
+              },
+              {
+                "status": "UNDER_REVIEW",
+                "role": "hospital_staff"
+              },
+              {
+                "status": "ACCEPTED",
+                "role": "hospital_staff",
+                "note": "Bed reserved by staff 0"
+              }
+            ],
+            "auditLogCount": 1
+          }
+        },
+        {
+          "id": "3.3",
+          "description": "N=8 simultaneous conflicting AmbulanceBooking updates: OCC isolates branches with 409s and commits valid terminal status",
+          "passed": true,
+          "details": {
+            "N": 8,
+            "distribution": {
+              "200": 2,
+              "409": 6
+            },
+            "finalStatus": "CANCELLED",
+            "winningBranch": "CANCELLED"
+          }
+        },
+        {
+          "id": "3.4",
+          "description": "N=10 simultaneous requests created successfully (triage queueing, non-blocking ingestion)",
+          "passed": true,
+          "details": {
+            "N": 10,
+            "createdCount": 10,
+            "uniqueRequestIdsCount": 10,
+            "distribution": {
+              "201": 10
+            }
+          }
+        }
+      ],
+      "passCount": 4,
+      "failCount": 0,
+      "completedAt": "2026-10-23T20:12:01.576Z"
+    },
+    {
+      "experimentId": "EXP-TX-04",
+      "name": "Stale-State and Out-of-Order Transition Prevention",
+      "startedAt": "2026-10-23T20:12:03.490Z",
+      "tests": [
+        {
+          "id": "4.1",
+          "description": "Rejection of transition when expectedStatus mismatches actual database state",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "Request changed. Refresh its status before trying again."
+            }
+          }
+        },
+        {
+          "id": "4.2",
+          "description": "Rejection of transition when expectedTimelineLength mismatches actual timeline history",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "Request changed. Refresh its status before trying again."
+            }
+          }
+        },
+        {
+          "id": "4.3",
+          "description": "Invalid state transition from terminal REJECTED status is blocked with 409",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "Invalid status transition"
+            }
+          }
+        },
+        {
+          "id": "4.4",
+          "description": "Stale transition on terminal BloodRequest blocked with 409",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "This status transition is unavailable. Refresh the request before retrying."
+            }
+          }
+        },
+        {
+          "id": "4.5",
+          "description": "Stale transition on terminal AmbulanceBooking blocked with 409",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "This status transition is unavailable. Refresh the request before retrying."
+            }
+          }
+        },
+        {
+          "id": "4.6",
+          "description": "Transition on expired request auto-finalizes to EXPIRED and rejects with 409",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "Request expired"
+            },
+            "docStatusInDb": "EXPIRED"
+          }
+        },
+        {
+          "id": "4.7",
+          "description": "Patient cannot submit reply when status is not INFORMATION_REQUESTED",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "The hospital has not requested more information"
+            }
+          }
+        }
+      ],
+      "passCount": 7,
+      "failCount": 0,
+      "completedAt": "2026-10-23T20:12:03.539Z"
+    },
+    {
+      "experimentId": "EXP-TX-05",
+      "name": "Documented State Machine Transitions and RBAC Enforcement",
+      "startedAt": "2026-10-23T20:12:05.489Z",
+      "tests": [
+        {
+          "id": "5.1",
+          "description": "Full EmergencyRequest happy path: REQUESTED -> SENT -> UNDER_REVIEW -> INFORMATION_REQUESTED -> UNDER_REVIEW -> ACCEPTED -> COMPLETED",
+          "passed": true,
+          "details": {
+            "statuses": [
+              "SENT",
+              "UNDER_REVIEW",
+              "INFORMATION_REQUESTED",
+              "UNDER_REVIEW",
+              "ACCEPTED",
+              "COMPLETED"
+            ],
+            "timelineLength": 7
+          }
+        },
+        {
+          "id": "5.2",
+          "description": "EmergencyRequest rejection path: UNDER_REVIEW -> REJECTED",
+          "passed": true,
+          "details": {
+            "status": 200,
+            "finalStatus": "REJECTED"
+          }
+        },
+        {
+          "id": "5.3",
+          "description": "EmergencyRequest patient cancellation path: UNDER_REVIEW -> CANCELLED",
+          "passed": true,
+          "details": {
+            "status": 200,
+            "finalStatus": "CANCELLED"
+          }
+        },
+        {
+          "id": "5.4",
+          "description": "RBAC & payload validation guards enforced on state transitions (403/400)",
+          "passed": true,
+          "details": {
+            "unrelatedStatus": 403,
+            "emptyInfoStatus": 400,
+            "patientStaffStatus": 403
+          }
+        },
+        {
+          "id": "5.5",
+          "description": "BloodRequest state transitions: REQUESTED -> CONFIRMED -> COMPLETED",
+          "passed": true,
+          "details": {
+            "confirmStatus": 200,
+            "completeStatus": 200
+          }
+        },
+        {
+          "id": "5.6",
+          "description": "AmbulanceBooking state transitions: RECORDED -> UNDER_REVIEW -> CONFIRMED -> DISPATCHED -> COMPLETED",
+          "passed": true,
+          "details": {
+            "ambStepResults": [
+              {
+                "step": "UNDER_REVIEW",
+                "status": 200,
+                "ok": true
+              },
+              {
+                "step": "CONFIRMED",
+                "status": 200,
+                "ok": true
+              },
+              {
+                "step": "DISPATCHED",
+                "status": 200,
+                "ok": true
+              },
+              {
+                "step": "COMPLETED",
+                "status": 200,
+                "ok": true
+              }
+            ]
+          }
+        }
+      ],
+      "passCount": 6,
+      "failCount": 0,
+      "completedAt": "2026-10-23T20:12:05.639Z"
+    },
+    {
+      "experimentId": "EXP-TX-06",
+      "name": "Interrupted In-Flight Operations and Safe Idempotent Resumption",
+      "startedAt": "2026-10-23T20:12:07.487Z",
+      "tests": [
+        {
+          "id": "6.1",
+          "description": "Identical transition retry after simulated network interruption returns 200 without duplicate timeline or audit entries",
+          "passed": true,
+          "details": {
+            "initialStatus": 200,
+            "replayStatus": 200,
+            "timelineLength": 3,
+            "auditCount": 1
+          }
+        },
+        {
+          "id": "6.2",
+          "description": "Altered transition parameters on already-committed state rejected with 409 Conflict",
+          "passed": true,
+          "details": {
+            "status": 409,
+            "data": {
+              "error": "Invalid status transition"
+            }
+          }
+        },
+        {
+          "id": "6.3",
+          "description": "Uncommitted operation retry creates the record cleanly without ghost lock or stale failure",
+          "passed": true,
+          "details": {
+            "status": 201,
+            "requestId": "MR-MVLEOVKR-6EFDE5"
+          }
+        },
+        {
+          "id": "6.4",
+          "description": "Provider status update replay after lost response returns 200 OK ('Status already recorded.')",
+          "passed": true,
+          "details": {
+            "status1": 200,
+            "status2": 200,
+            "message2": "Status already recorded."
+          }
+        }
+      ],
+      "passCount": 4,
+      "failCount": 0,
+      "completedAt": "2026-10-23T20:12:07.543Z"
+    },
+    {
+      "experimentId": "EXP-TX-07",
+      "name": "Request-Status Consistency Across Repeated and Concurrent Reads",
+      "startedAt": "2026-10-23T20:12:09.443Z",
+      "tests": [
+        {
+          "id": "7.1",
+          "description": "50 repeated consecutive reads yield 100% identical state and timeline",
+          "passed": true,
+          "details": {
+            "readsAttempted": 50,
+            "payloadSample": "{\"status\":\"UNDER_REVIEW\",\"timelineLength\":3,\"emergencyType\":\"Anaphylaxis\"}"
+          }
+        },
+        {
+          "id": "7.2",
+          "description": "40 concurrent reads during active state transitions maintain strict status-timeline consistency (0 split-brain reads)",
+          "passed": true,
+          "details": {
+            "splitBrainDetected": false,
+            "readFailures": 0,
+            "uniqueObservedStatuses": [
+              "SENT",
+              "UNDER_REVIEW"
+            ]
+          }
+        },
+        {
+          "id": "7.3",
+          "description": "Database timeline history exactly correlates with AuditLog entries",
+          "passed": true,
+          "details": {
+            "finalTimelineLength": 4,
+            "auditEntriesCount": 2
+          }
+        },
+        {
+          "id": "7.4",
+          "description": "Guest access with incorrect tracking token consistently rejected with 403 Forbidden",
+          "passed": true,
+          "details": {
+            "status": 403
+          }
+        }
+      ],
+      "passCount": 4,
+      "failCount": 0,
+      "completedAt": "2026-10-23T20:12:09.891Z"
+    },
+    {
+      "experimentId": "EXP-TX-08",
+      "name": "Architectural Separation Between Observational Availability and Request Fulfillment",
+      "startedAt": "2026-10-23T20:12:11.805Z",
+      "tests": [
+        {
+          "id": "8.1",
+          "description": "Recorded initial availability observation (5 ICU beds) into append-only observation store",
+          "passed": true,
+          "details": {
+            "status": 201,
+            "obsQuantity": 5,
+            "obsCount": 1
+          }
+        },
+        {
+          "id": "8.2",
+          "description": "Submitting 10 emergency bed requests does NOT decrement reported availability (observations remain strictly observational)",
+          "passed": true,
+          "details": {
+            "requestsSubmitted": 10,
+            "reportedQuantityBefore": 5,
+            "reportedQuantityAfter": 5,
+            "observationCountInDb": 1
+          }
+        },
+        {
+          "id": "8.3",
+          "description": "Accepting hospital bed requests does NOT deduct from AvailabilityObservation (no transactional lock/hold on reported capacity)",
+          "passed": true,
+          "details": {
+            "acceptedCount": 3,
+            "reportedQuantityInDb": 5
+          }
+        },
+        {
+          "id": "8.4",
+          "description": "Completing emergency admission does NOT alter AvailabilityObservation time-series ledger",
+          "passed": true,
+          "details": {
+            "completedCount": 2,
+            "reportedQuantityInDb": 5
+          }
+        },
+        {
+          "id": "8.5",
+          "description": "Stale availability reports (>30 min old) are rejected at ingestion boundary",
+          "passed": true,
+          "details": {
+            "status": 400,
+            "error": "Current availability must be observed within the last 30 minutes"
+          }
+        },
+        {
+          "id": "8.6",
+          "description": "API response contracts explicitly classify submissions as requests requiring clinical confirmation rather than guaranteed reservations",
+          "passed": true,
+          "details": {
+            "ambulanceRecorded": true,
+            "ambulanceMessage": "Ambulance booking request recorded.",
+            "bloodMessage": "Blood request recorded. Contact the blood bank to confirm inventory and fulfillment."
+          }
+        }
+      ],
+      "passCount": 6,
+      "failCount": 0,
+      "completedAt": "2026-10-23T20:12:12.105Z"
+    }
+  ],
+  "totalPassed": 48,
+  "totalFailed": 0,
+  "totalTests": 48,
+  "completedAt": "2026-10-23T20:12:12.105Z"
+}

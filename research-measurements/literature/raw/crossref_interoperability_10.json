@@ -1,0 +1,620 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 14463137,
+    "items": [
+      {
+        "DOI": "10.4103/ijpvm.ijpvm_418_20",
+        "title": [
+          "Implementing National Digital Health Blueprint in India-The future opportunities and challenges"
+        ],
+        "author": [
+          {
+            "given": "Sudip",
+            "family": "Bhattacharya",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Community and Family Medicine, All India Institute of Medical Sciences, Madurai, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sheikh Mohd",
+            "family": "Saleem",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Independent Public Health Researcher, Jammu and Kashmir, India"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Md Mahbub",
+            "family": "Hossain",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Texas A and M University, Texas, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Preventive Medicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.4103/ijpvm.ijpvm_418_20",
+        "score": 31.004648
+      },
+      {
+        "DOI": "10.4103/jascp.jascp_5_20",
+        "title": [
+          "National digital health blueprint of India: A need for implementation research"
+        ],
+        "author": [
+          {
+            "given": "Sudip",
+            "family": "Bhattacharya",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "MdMahbub",
+            "family": "Hossain",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Applied Sciences and Clinical Practice"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.4103/jascp.jascp_5_20",
+        "score": 30.306438
+      },
+      {
+        "DOI": "10.1055/b-0046-222127",
+        "title": [
+          "26 A Digital-First Medical University: Vision and Blueprint for Global Medical Excellence"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "container-title": [
+          "Digital Health for All"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1055/b-0046-222127",
+        "score": 29.51374
+      },
+      {
+        "DOI": "10.1016/j.puhip.2022.100263",
+        "title": [
+          "Integration of national cancer registry program with Ayushman Bharat Digital Mission in India: A necessity or an option"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-7759-2820",
+            "authenticated-orcid": false,
+            "given": "Shubharanjan",
+            "family": "Jena",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-1841-352X",
+            "authenticated-orcid": false,
+            "given": "Venkatarao",
+            "family": "Epari",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Krushna",
+            "family": "Chandra Sahoo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022,
+              6
+            ]
+          ]
+        },
+        "container-title": [
+          "Public Health in Practice"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.puhip.2022.100263",
+        "score": 29.431597
+      },
+      {
+        "DOI": "10.4324/9781003193067",
+        "title": [
+          "A Virtual Care Blueprint"
+        ],
+        "author": [
+          {
+            "given": "Robert",
+            "family": "Longyear",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              7,
+              25
+            ]
+          ]
+        },
+        "type": "monograph",
+        "URL": "https://doi.org/10.4324/9781003193067",
+        "score": 28.689209
+      },
+      {
+        "abstract": "<sec>\n                    <title>UNSTRUCTURED</title>\n                        <p>In-person traditional approaches to mental health care services are facing difficulties amidst the coronavirus disease (COVID-19) crisis. The recent implementation of social distancing has redirected attention to nontraditional mental health care delivery to overcome hindrances to essential services. Telehealth has been established for several decades but has only been able to play a small role in health service delivery. Mobile and teledigital health solutions for mental health are well poised to respond to the upsurge in COVID-19 cases. Screening and tracking with real-time automation and machine learning are useful for both assisting psychological first-aid resources and targeting interventions. However, rigorous evaluation of these new opportunities is needed in terms of quality of interventions, effectiveness, and confidentiality. Service delivery could be broadened to include trained, unlicensed professionals, who may help health care services in delivering evidence-based strategies. Digital mental health services emerged during the pandemic as complementary ways of assisting community members with stress and transitioning to new ways of living and working. As part of a hybrid model of care, technologies (mobile and online platforms) require consolidated and consistent guidelines as well as consensus, expert, and position statements on the screening and tracking (with real-time automation and machine learning) of mental health in general populations as well as considerations and initiatives for underserved and vulnerable subpopulations.</p>\n                </sec>",
+        "DOI": "10.2196/preprints.21718",
+        "type": "posted-content",
+        "title": [
+          "An Integrated Blueprint for Digital Mental Health Services Amidst COVID-19 (Preprint)"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-6761-3659",
+            "authenticated-orcid": false,
+            "given": "Luke",
+            "family": "Balcombe",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-8255-6480",
+            "authenticated-orcid": false,
+            "given": "Diego",
+            "family": "De Leo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "score": 28.533453,
+        "URL": "https://doi.org/10.2196/preprints.21718",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              6,
+              23
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1016/j.jval.2015.03.602",
+        "title": [
+          "Patient Registries In India \u2013 National Cancer Registry Program"
+        ],
+        "author": [
+          {
+            "given": "M.",
+            "family": "Janodia",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "N.",
+            "family": "Udupa",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2015,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "Value in Health"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1016/j.jval.2015.03.602",
+        "score": 28.448183
+      },
+      {
+        "abstract": "<jats:p>While the number of genetic tests continues to grow, publicly accessible information about the analytic and clinical validity of such tests is lagging. Information gaps impede informed decision making by health care providers and patients. Enhancing the transparency of information about what tests are being offered, for which indications tests are being offered, and the analytic and clinical validity of tests is a key prerequisite to ensuring test quality. A recent government recommendation for a mandatory genetic test registry has received wide stakeholder support but leaves many practical questions unanswered. We propose a \u2018blueprint\u2019 for the creation of a genetic test registry in order to expedite its implementation. We describe the goals of a registry, propose criteria for the inclusion of registrants and tests in the registry, and define the categories of information that should be included for such tests. We discuss the sources of legal authority that empower the government to mandate that a registry be established and identify the federal agencies with the relevant expertise and resources to do so. We conclude that establishing a registry is a critical first step in the development of a more transparent, quality-centered system of oversight that will better inform and protect the public.</jats:p>",
+        "DOI": "10.1159/000226593",
+        "type": "journal-article",
+        "title": [
+          "Developing the Blueprint for a Genetic Testing Registry"
+        ],
+        "author": [
+          {
+            "given": "G.",
+            "family": "Javitt",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "S.",
+            "family": "Katsanis",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "J.",
+            "family": "Scott",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "K.",
+            "family": "Hudson",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Public Health Genomics"
+        ],
+        "score": 28.303402,
+        "URL": "https://doi.org/10.1159/000226593",
+        "published": {
+          "date-parts": [
+            [
+              2009,
+              6,
+              29
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:sec>\n                    <jats:title>Introduction</jats:title>\n                    <jats:p>Legacy health information systems pose significant barriers to achieving interoperability, which is crucial for strengthening health systems, especially in low- and middle-income countries. Ethiopia, in its pursuit of an \u2018Information Revolution\u2019, faced such challenges while working to establish a robust, interoperable Master Facility Registry (MFR).</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Method</jats:title>\n                    <jats:p>This case study details a multifaceted approach to overcome these legacy system challenges and integrate the MFR within Ethiopia\u2019s national eHealth Architecture. The methods involved strategically designing and developing the MFR, coupled with implementing a dedicated interoperability layer to facilitate data exchange, primarily with the District Health Information Software 2. Key stakeholders were engaged throughout the process, guided by national eHealth governance structures.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Result</jats:title>\n                    <jats:p>The results demonstrate the successful deployment of a national MFR and achieved interoperability, leading to improvements in health facility data management and accessibility. Challenges related to disparate data sources, varying standards and the need for system-wide coordination were systematically addressed.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Discussion</jats:title>\n                    <jats:p>The successful establishment and integration of a national MFR in Ethiopia, particularly its interoperability with District Health Information Software 2, represents a significant advancement in the country\u2019s health information system capabilities. This achievement is noteworthy given the prevalent legacy system hurdles. The findings indicate that strategic vision, targeted technical solutions and sustained stakeholder engagement were pivotal. The MFR now provides a unified, authoritative source of facility information and its seamless integration with District Health Information Software 2 ensures that routine health data is accurately contextualized geographically and organizationally, addressing data inconsistency and limited accessibility.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusion</jats:title>\n                    <jats:p>The Ethiopian experience offers valuable lessons regarding the strategic importance of a national eHealth vision, targeted technical solutions for interoperability and the necessity of sustained stakeholder collaboration. This initiative underscores the foundational role of an MFR in enhancing HIS performance and provides actionable insights for other low- and middle-income countries striving to modernize their digital health ecosystems despite prevailing legacy constraints.</jats:p>\n                  </jats:sec>",
+        "DOI": "10.1093/oodh/oqaf031",
+        "type": "journal-article",
+        "title": [
+          "Overcoming legacy system hurdles: a case study on enabling master facility registry interoperability within Ethiopia\u2019s national eHealth architecture"
+        ],
+        "author": [
+          {
+            "given": "Alfa Habib",
+            "family": "Bushira",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Digital Health, JSI Research & Training Institute, Inc. , Sunshine Tower #4, Airport Road, P.O. Box 13898, 1000 Addis Ababa ,",
+                "place": [
+                  "Ethiopia"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0005-6780-5633",
+            "authenticated-orcid": false,
+            "given": "Biru",
+            "family": "Amanuel",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Digital Health, JSI Research & Training Institute, Inc. , Sunshine Tower #4, Airport Road, P.O. Box 13898, 1000 Addis Ababa ,",
+                "place": [
+                  "Ethiopia"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Dibaba",
+            "family": "Legesse",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Digital Health, JSI Research & Training Institute, Inc. , Sunshine Tower #4, Airport Road, P.O. Box 13898, 1000 Addis Ababa ,",
+                "place": [
+                  "Ethiopia"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Denboba",
+            "family": "Wubshet",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Digital Health, JSI Research & Training Institute, Inc. , Sunshine Tower #4, Airport Road, P.O. Box 13898, 1000 Addis Ababa ,",
+                "place": [
+                  "Ethiopia"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Kelbessa",
+            "family": "Asfaw",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Digital Health LEO, Ministry of Health , 1234 Sudan Street, P.O. Box 1234, 1000 Addis Ababa ,",
+                "place": [
+                  "Ethiopia"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Kersie",
+            "family": "Tewodros",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Digital Health LEO, Ministry of Health , 1234 Sudan Street, P.O. Box 1234, 1000 Addis Ababa ,",
+                "place": [
+                  "Ethiopia"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Melkamu",
+            "family": "Gemechis",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Digital Health LEO, Ministry of Health , 1234 Sudan Street, P.O. Box 1234, 1000 Addis Ababa ,",
+                "place": [
+                  "Ethiopia"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Oxford Open Digital Health"
+        ],
+        "score": 28.257715,
+        "URL": "https://doi.org/10.1093/oodh/oqaf031",
+        "published": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>In-person traditional approaches to mental health care services are facing difficulties amidst the coronavirus disease (COVID-19) crisis. The recent implementation of social distancing has redirected attention to nontraditional mental health care delivery to overcome hindrances to essential services. Telehealth has been established for several decades but has only been able to play a small role in health service delivery. Mobile and teledigital health solutions for mental health are well poised to respond to the upsurge in COVID-19 cases. Screening and tracking with real-time automation and machine learning are useful for both assisting psychological first-aid resources and targeting interventions. However, rigorous evaluation of these new opportunities is needed in terms of quality of interventions, effectiveness, and confidentiality. Service delivery could be broadened to include trained, unlicensed professionals, who may help health care services in delivering evidence-based strategies. Digital mental health services emerged during the pandemic as complementary ways of assisting community members with stress and transitioning to new ways of living and working. As part of a hybrid model of care, technologies (mobile and online platforms) require consolidated and consistent guidelines as well as consensus, expert, and position statements on the screening and tracking (with real-time automation and machine learning) of mental health in general populations as well as considerations and initiatives for underserved and vulnerable subpopulations.</jats:p>",
+        "DOI": "10.2196/21718",
+        "type": "journal-article",
+        "title": [
+          "An Integrated Blueprint for Digital Mental Health Services Amidst COVID-19"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-6761-3659",
+            "authenticated-orcid": false,
+            "given": "Luke",
+            "family": "Balcombe",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-8255-6480",
+            "authenticated-orcid": false,
+            "given": "Diego",
+            "family": "De Leo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "JMIR Mental Health"
+        ],
+        "score": 27.686726,
+        "URL": "https://doi.org/10.2196/21718",
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              7,
+              22
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "national digital health blueprint India health facility registry"
+    }
+  }
+}

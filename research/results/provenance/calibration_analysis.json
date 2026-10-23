@@ -1,0 +1,58 @@
+{
+  "total_evaluated_claims": 10615,
+  "brier_score": 0.13150541686292982,
+  "expected_calibration_error_ece": 0.12547338671691005,
+  "maximum_calibration_error_mce": 0.7333333333333334,
+  "verdict": "UNBOUNDED_HEURISTIC_RANKING (Not a calibrated probability)",
+  "explanation": "Heuristic confidence levels reflect discrete ordinal source prioritization weights rather than statistically calibrated probabilities. The empirical accuracy deviates significantly from nominal scores, yielding an ECE of 0.125 and Brier score of 0.132.",
+  "calibration_table": [
+    {
+      "confidence_label": "HIGH",
+      "sample_count": 8948,
+      "sample_share": 0.8429580781912388,
+      "nominal_probability": 1.0,
+      "empirical_accuracy": 0.8765087170317389,
+      "std_error": 0.0034780296769172953,
+      "ci_95_low": 0.8696917788649811,
+      "ci_95_high": 0.8833256551984968,
+      "calibration_gap": -0.12349128296826106,
+      "absolute_error": 0.12349128296826106
+    },
+    {
+      "confidence_label": "MEDIUM",
+      "sample_count": 1507,
+      "sample_share": 0.14196891191709846,
+      "nominal_probability": 0.7,
+      "empirical_accuracy": 0.822826808228268,
+      "std_error": 0.009835503443924663,
+      "ci_95_low": 0.8035492214781756,
+      "ci_95_high": 0.8421043949783604,
+      "calibration_gap": 0.12282680822826808,
+      "absolute_error": 0.12282680822826808
+    },
+    {
+      "confidence_label": "LOW",
+      "sample_count": 154,
+      "sample_share": 0.014507772020725389,
+      "nominal_probability": 0.4,
+      "empirical_accuracy": 0.6428571428571429,
+      "std_error": 0.03861160554409538,
+      "ci_95_low": 0.567178395990716,
+      "ci_95_high": 0.7185358897235699,
+      "calibration_gap": 0.24285714285714288,
+      "absolute_error": 0.24285714285714288
+    },
+    {
+      "confidence_label": "UNKNOWN",
+      "sample_count": 6,
+      "sample_share": 0.0005652378709373528,
+      "nominal_probability": 0.1,
+      "empirical_accuracy": 0.8333333333333334,
+      "std_error": 0.15214515486254612,
+      "ci_95_low": 0.535128829802743,
+      "ci_95_high": 1.0,
+      "calibration_gap": 0.7333333333333334,
+      "absolute_error": 0.7333333333333334
+    }
+  ]
+}

@@ -1,0 +1,460 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 1398815,
+    "items": [
+      {
+        "DOI": "10.21275/sr24731133040",
+        "title": [
+          "Impact of FHIR Data Format in Healthcare Interoperability"
+        ],
+        "author": [
+          {
+            "given": "Girish",
+            "family": "Ganachari",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021,
+              12,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Science and Research (IJSR)"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21275/sr24731133040",
+        "score": 38.10455
+      },
+      {
+        "DOI": "10.5220/0010546501670176",
+        "title": [
+          "Extending the Fast Healthcare Interoperability Resources (FHIR) with Meta Resources"
+        ],
+        "author": [
+          {
+            "given": "Timoteus",
+            "family": "Ziminski",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Computer Science and Engineering, University of Connecticut, 371 Fairfield Way, Storrs, U.S.A., --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Steven",
+            "family": "Demurjian",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Computer Science and Engineering, University of Connecticut, 371 Fairfield Way, Storrs, U.S.A., --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Thomas",
+            "family": "Agresta",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Family Medicine, UConn Health, 263 Farmington Avenue, Farmington, U.S.A., --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 16th International Conference on Software Technologies"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.5220/0010546501670176",
+        "score": 37.470924
+      },
+      {
+        "DOI": "10.21275/sr24606041602",
+        "title": [
+          "Bridging Healthcare Systems: Revolutionizing U.S. Public Healthcare through HL7 FHIR Interoperability and API Technology"
+        ],
+        "author": [
+          {
+            "given": "Sivachandran",
+            "family": "Selvaraj",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              6,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "International Journal of Science and Research (IJSR)"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.21275/sr24606041602",
+        "score": 36.926205
+      },
+      {
+        "DOI": "10.5220/0010546500002992",
+        "title": [
+          "Extending the Fast Healthcare Interoperability Resources (FHIR) with Meta Resources"
+        ],
+        "author": [
+          {
+            "given": "Timoteus",
+            "family": "Ziminski",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Computer Science and Engineering, University of Connecticut, 371 Fairfield Way, Storrs, U.S.A., --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Steven",
+            "family": "Demurjian",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Computer Science and Engineering, University of Connecticut, 371 Fairfield Way, Storrs, U.S.A., --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Thomas",
+            "family": "Agresta",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Family Medicine, UConn Health, 263 Farmington Avenue, Farmington, U.S.A., --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2021
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 16th International Conference on Software Technologies"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.5220/0010546500002992",
+        "score": 36.50076
+      },
+      {
+        "abstract": "<jats:p>Prior authorization (PA) remains one of the most administratively burdensome processes in United States healthcare, delaying medically necessary care and generating billions of dollars in annual administrative costs. The CMS Interoperability and Prior Authorization Final Rule (CMS-0057-F), published in January 2024, requires impacted payers to expose standardized HL7 FHIR application programming interfaces by January 1, 2027, and enforce shorter decision timelines beginning January 1, 2026: 72 hours for urgent requests and seven calendar days for standard requests. This regulatory shift creates a strong opportunity for agentic artificial intelligence systems capable of autonomously executing multi-step administrative workflows, invoking external tools, synthesizing heterogeneous clinical documents, and generating structured, auditable outputs. We present a general-purpose agentic framework for healthcare administrative automation built around FHIR-native data exchange, the Model Context Protocol (MCP) for secure tool orchestration, and deterministic structured outputs designed for regulatory traceability. The framework comprises three cooperating agents: an Intake Agent for patient and coverage extraction, a Clinical Review Agent for multi-format document synthesis, and a Policy Evaluation Agent for evidence-to-criterion mapping with confidence scoring. Each agent is grounded by typed FHIR tooling and governed by strict output schemas. We describe design principles for accuracy, latency, auditability, and HIPAA compliance; map system components to CMS-0057-F requirements; and demonstrate the framework on a representative prior authorization case for lumbar spinal fusion. The results show how the multi-agent system assembles clinical evidence, evaluates policy criteria with calibrated confidence, and produces structured outputs aligned with CMS-0057-F transparency requirements.</jats:p>",
+        "DOI": "10.20944/preprints202608.1698.v1",
+        "type": "posted-content",
+        "title": [
+          "Advancing Healthcare Administrative Automation: A Multi-Agent Framework for Prior Authorization and FHIR Interoperability"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0004-1300-7364",
+            "authenticated-orcid": false,
+            "given": "Yao",
+            "family": "Fehlis",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 35.74764,
+        "URL": "https://doi.org/10.20944/preprints202608.1698.v1",
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              25
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:title>Abstract</jats:title>\n               <jats:sec>\n                  <jats:title>Objective</jats:title>\n                  <jats:p>To provide a method for evaluating the interoperability of Fast Healthcare Interoperability Resources (FHIR\u00ae) clients and servers supporting different FHIR resources, profiles, and versions, and to determine the feasibility of FHIR servers supporting multiple FHIR Implementation Guides (IGs).</jats:p>\n               </jats:sec>\n               <jats:sec>\n                  <jats:title>Materials and Methods</jats:title>\n                  <jats:p>A method of analysis, the FHIR Interoperability Table (FHIT), is proposed. The FHIT involves the concept of a \u201ccatchment,\u201d the type or category of data that a profile is intended to represent. The solution first aligns sender and/or receiver profiles according to their catchments, then determines the relationship between the admittances of those profiles, and finally interprets the relationship in terms of the feasibility of data exchange.</jats:p>\n               </jats:sec>\n               <jats:sec>\n                  <jats:title>Results</jats:title>\n                  <jats:p>The FHIT method is demonstrated by analyzing the FHIR-based exchange between the US Core IG and the International Patient Summary IG.</jats:p>\n               </jats:sec>\n               <jats:sec>\n                  <jats:title>Discussion</jats:title>\n                  <jats:p>The last few years have witnessed a significant growth in Fast Healthcare Interoperability Resources (FHIR), resulting in several major versions of FHIR, hundreds of IGs, and thousands of FHIR profiles. Previous work and available tools have not fully addressed the problem of interoperability between clients and servers that support different FHIR resources, profiles, and versions.</jats:p>\n               </jats:sec>\n               <jats:sec>\n                  <jats:title>Conclusion</jats:title>\n                  <jats:p>Application of the proposed methodology allows interoperability problems in FHIR networks to be identified. In some cases, new profiles that resolve those conflicts can be derived, using intersections of the original profiles. There is a need for additional tools that implement the proposed method, as well as structured methods for expressing catchments in FHIR profiles.</jats:p>\n               </jats:sec>",
+        "DOI": "10.1093/jamiaopen/ooad001",
+        "type": "journal-article",
+        "title": [
+          "Interoperability with multiple Fast Healthcare Interoperability Resources (FHIR\u00ae) profiles and versions"
+        ],
+        "author": [
+          {
+            "given": "Mark A",
+            "family": "Kramer",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Health Innovation Center, MITRE Corporation , Bedford, Massachusetts, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Chris",
+            "family": "Moesel",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Open Health Solutions Department, MITRE Corporation , Bedford, Massachusetts, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "JAMIA Open"
+        ],
+        "score": 34.51447,
+        "URL": "https://doi.org/10.1093/jamiaopen/ooad001",
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              1,
+              6
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1007/978-3-319-93414-3_8",
+        "title": [
+          "Pre-FHIR Interoperability and Clinical Decision Support Standards"
+        ],
+        "author": [
+          {
+            "given": "Mark L.",
+            "family": "Braunstein",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Informatics on FHIR: How HL7's New API is Transforming Healthcare"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-319-93414-3_8",
+        "score": 34.503487
+      },
+      {
+        "abstract": "<jats:p>The healthcare industry is at a transformative juncture due to the widespread adoption of electronic health records (EHR). However, interoperability between EHR systems remains a barrier, creating data silos that hinder research and compromise patient care. This chapter explores the role of interoperability standards and SMART on FHIR (fast healthcare interoperability resources) technology in revolutionizing healthcare research. By standardizing data exchange and enabling secure access to patient records, these advances unlock the potential of EHR data for research. Fragmented healthcare data impacts research and care coordination, leading to inefficiencies and potential errors. The author discusses the benefits and challenges of implementing HL7 FHIR, which facilitates seamless data sharing across systems. Key policy initiatives such as the 21st Century Cures Act and the Trusted Exchange Framework and Common Agreement (TEFCA) are crucial for promoting standardized data exchange.</jats:p>",
+        "DOI": "10.4018/979-8-3693-5523-7.ch007",
+        "type": "book-chapter",
+        "title": [
+          "Transforming Healthcare Research With Interoperability"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0003-7497-8255",
+            "authenticated-orcid": true,
+            "given": "Vishwasrao",
+            "family": "Salunkhe",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Independent Researcher, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Advances in Healthcare Information Systems and Administration",
+          "Healthcare Administration and Managerial Training in the 21st Century"
+        ],
+        "score": 34.155228,
+        "URL": "https://doi.org/10.4018/979-8-3693-5523-7.ch007",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              8,
+              30
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1007/978-3-030-91563-6_8",
+        "title": [
+          "Pre-FHIR Interoperability and Decision Support Standards"
+        ],
+        "author": [
+          {
+            "given": "Mark L.",
+            "family": "Braunstein",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "Health Informatics",
+          "Health Informatics on FHIR: How HL7's API is Transforming Healthcare"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.1007/978-3-030-91563-6_8",
+        "score": 33.676323
+      },
+      {
+        "DOI": "10.26717/bjstr.2018.09.001863",
+        "title": [
+          "FHIR Tools for Healthcare Interoperability"
+        ],
+        "author": [
+          {
+            "given": "Amit",
+            "family": "Walinjkar",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              10,
+              10
+            ]
+          ]
+        },
+        "container-title": [
+          "Biomedical Journal of Scientific &amp; Technical Research"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.26717/bjstr.2018.09.001863",
+        "score": 33.4711
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "FHIR healthcare interoperability India"
+    }
+  }
+}

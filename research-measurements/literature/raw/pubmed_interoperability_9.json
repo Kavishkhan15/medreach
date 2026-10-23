@@ -1,0 +1,38 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "402",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13680456",
+      "13668813",
+      "13667771",
+      "13662964",
+      "13658595",
+      "13655024",
+      "13644680",
+      "13639850",
+      "13639433",
+      "13638795"
+    ],
+    "translationset": [
+      {
+        "from": "healthcare",
+        "to": "\"delivery of health care\"[MeSH Terms] OR (\"delivery\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"delivery of health care\"[All Fields] OR \"healthcare\"[All Fields] OR \"healthcare's\"[All Fields] OR \"healthcares\"[All Fields]"
+      },
+      {
+        "from": "interoperability",
+        "to": "\"interoperability\"[All Fields] OR \"interoperable\"[All Fields] OR \"interoperate\"[All Fields] OR \"interoperates\"[All Fields] OR \"interoperating\"[All Fields] OR \"interoperation\"[All Fields]"
+      },
+      {
+        "from": "India",
+        "to": "\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india's\"[All Fields] OR \"indias\"[All Fields]"
+      }
+    ],
+    "querytranslation": "\"FHIR\"[All Fields] AND (\"delivery of health care\"[MeSH Terms] OR (\"delivery\"[All Fields] AND \"health\"[All Fields] AND \"care\"[All Fields]) OR \"delivery of health care\"[All Fields] OR \"healthcare\"[All Fields] OR \"healthcare s\"[All Fields] OR \"healthcares\"[All Fields]) AND (\"interoperability\"[All Fields] OR \"interoperable\"[All Fields] OR \"interoperate\"[All Fields] OR \"interoperates\"[All Fields] OR \"interoperating\"[All Fields] OR \"interoperation\"[All Fields]) AND (\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india s\"[All Fields] OR \"indias\"[All Fields])"
+  }
+}

@@ -1,0 +1,649 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 8299848,
+    "items": [
+      {
+        "DOI": "10.1109/isit62367.2026.11654082",
+        "title": [
+          "Utilizing the Perceived Age to Maximize Freshness in Query-Based Update Systems"
+        ],
+        "author": [
+          {
+            "given": "Sahan",
+            "family": "Liyanaarachchi",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "University of Maryland",
+                "place": [
+                  "College Park, MD, USA"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sennur",
+            "family": "Ulukus",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "University of Maryland",
+                "place": [
+                  "College Park, MD, USA"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Nail",
+            "family": "Akar",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Bilkent University",
+                "place": [
+                  "Ankara, T\u00fcrkiye"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              6
+            ]
+          ]
+        },
+        "container-title": [
+          "2026 IEEE International Symposium on Information Theory (ISIT)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/isit62367.2026.11654082",
+        "score": 28.884111
+      },
+      {
+        "DOI": "10.1109/infocomwkshps50562.2020.9162733",
+        "title": [
+          "Maintaining Information Freshness in Power-Efficient Status Update Systems"
+        ],
+        "author": [
+          {
+            "given": "Parisa",
+            "family": "Rafiee",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Peng",
+            "family": "Zou",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Omur",
+            "family": "Ozel",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Suresh",
+            "family": "Subramaniam",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              7
+            ]
+          ]
+        },
+        "container-title": [
+          "IEEE INFOCOM 2020 - IEEE Conference on Computer Communications Workshops (INFOCOM WKSHPS)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/infocomwkshps50562.2020.9162733",
+        "score": 28.358318
+      },
+      {
+        "DOI": "10.1109/isit.2016.7541763",
+        "title": [
+          "Optimizing data freshness, throughput, and delay in multi-server information-update systems"
+        ],
+        "author": [
+          {
+            "given": "Ahmed M.",
+            "family": "Bedewy",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Dept. of ECE, The Ohio State University, Columbus, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Yin",
+            "family": "Sun",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Dept. of ECE, The Ohio State University, Columbus, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Ness B.",
+            "family": "Shroff",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Dept. of ECE, The Ohio State University, Columbus, USA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              7
+            ]
+          ]
+        },
+        "container-title": [
+          "2016 IEEE International Symposium on Information Theory (ISIT)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/isit.2016.7541763",
+        "score": 28.179546
+      },
+      {
+        "DOI": "10.1109/globecom38437.2019.9013913",
+        "title": [
+          "Age of Information and Delay Tradeoff with Freshness-Aware Mobile Edge Cache Update"
+        ],
+        "author": [
+          {
+            "given": "Shan",
+            "family": "Zhang",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Liudi",
+            "family": "Wang",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Hongbin",
+            "family": "Luo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Xiao",
+            "family": "Ma",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Sheng",
+            "family": "Zhou",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019,
+              12
+            ]
+          ]
+        },
+        "container-title": [
+          "2019 IEEE Global Communications Conference (GLOBECOM)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/globecom38437.2019.9013913",
+        "score": 27.663319
+      },
+      {
+        "DOI": "10.5220/0011320500003274",
+        "title": [
+          "Analyzing Age of Information in Prioritized Status Update Systems using Probabilistic Hybrid Discipline"
+        ],
+        "author": [
+          {
+            "given": "Tamer",
+            "family": "Fahim",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Basic and Applied Sciences Institute, Egypt-Japan University of Science and Technology, Alexandria, Egypt, --- Select a Country ---"
+              },
+              {
+                "name": "Department of Engineering Mathematics and Physics, Faculty of Engineering, Alexandria University, Alexandria, Egypt, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Sherif",
+            "family": "Rabia",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Basic and Applied Sciences Institute, Egypt-Japan University of Science and Technology, Alexandria, Egypt, --- Select a Country ---"
+              },
+              {
+                "name": "Department of Engineering Mathematics and Physics, Faculty of Engineering, Alexandria University, Alexandria, Egypt, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ahmed",
+            "family": "El-Malek",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "School of Electronics, Communications and Computer Engineering, Egypt-Japan University of Science and Technology, Alexandria, Egypt, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Waheed",
+            "family": "Zahra",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Basic and Applied Sciences Institute, Egypt-Japan University of Science and Technology, Alexandria, Egypt, --- Select a Country ---"
+              },
+              {
+                "name": "Department of Engineering Physics and Mathematics, Faculty of Engineering, Tanta University, Tanta, Egypt, --- Select a Country ---"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "container-title": [
+          "Proceedings of the 12th International Conference on Simulation and Modeling Methodologies, Technologies and Applications"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.5220/0011320500003274",
+        "score": 27.288616
+      },
+      {
+        "abstract": "<jats:p>Brief Biography: Zhongdong Liu is a final-year Ph.D. student in the Department of Computer Science at Virginia Tech. He received his B.S. degree in Mathematics and Applied Mathematics with honors from Northeast Forestry University in 2016. His research interests are in the modeling, analysis, control, and optimization of complex network systems. His specific area of focus lies in analyzing and improving data freshness within real-time applications and services through the development of efficient scheduling algorithms. Zhongdong's research has been featured in notable publications, including IEEE INFOCOM, Proceedings of ICCCN (as an invited paper), IEEE Internet of Things Journal, and IEEE/ACM Transactions on Networking.</jats:p>",
+        "DOI": "10.1145/3639830.3639849",
+        "type": "journal-article",
+        "title": [
+          "Data Freshness in Information-update Systems: Modeling, Scheduling, and Tradeoffs"
+        ],
+        "author": [
+          {
+            "given": "Zhongdong",
+            "family": "Liu",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Virginia Tech"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "ACM SIGMETRICS Performance Evaluation Review"
+        ],
+        "score": 26.84845,
+        "URL": "https://doi.org/10.1145/3639830.3639849",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              1,
+              3
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.1109/itw44776.2019.8988983",
+        "title": [
+          "Relative Age of Information: A New Metric for Status Update Systems"
+        ],
+        "author": [
+          {
+            "given": "Peng",
+            "family": "Zou",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "George Washington University,Department of Electrical and Computer Engineering,Washington,DC,USA,20052"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Omur",
+            "family": "Ozel",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "George Washington University,Department of Electrical and Computer Engineering,Washington,DC,USA,20052"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Suresh",
+            "family": "Subramaniam",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "George Washington University,Department of Electrical and Computer Engineering,Washington,DC,USA,20052"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2019,
+              8
+            ]
+          ]
+        },
+        "container-title": [
+          "2019 IEEE Information Theory Workshop (ITW)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/itw44776.2019.8988983",
+        "score": 26.264038
+      },
+      {
+        "DOI": "10.1093/ietisy/e88-d.4.739",
+        "title": [
+          "Controlling View Divergence of Data Freshness in a Replicated Database System Using Statistical Update Delay Estimation"
+        ],
+        "author": [
+          {
+            "given": "T.",
+            "family": "YAMASHITA",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2005,
+              4,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "IEICE Transactions on Information and Systems"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1093/ietisy/e88-d.4.739",
+        "score": 25.523159
+      },
+      {
+        "DOI": "10.1109/jiot.2026.3738094/mm1",
+        "title": [
+          "Freshness-Driven Site Planning for RIS-Assisted Status Update Networks Under Budget Constraints_supp1-3738094.pdf"
+        ],
+        "author": [
+          {
+            "given": "Kuang-Hao",
+            "family": "Liu",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "type": "component",
+        "URL": "https://doi.org/10.1109/jiot.2026.3738094/mm1",
+        "score": 25.476582
+      },
+      {
+        "DOI": "10.1109/ita.2018.8503232",
+        "title": [
+          "Decentralized Status Update for Age-of-Information Optimization in Wireless Multiaccess Channels"
+        ],
+        "author": [
+          {
+            "given": "Zhiyuan",
+            "family": "Jiang",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Bhaskar",
+            "family": "Krishnamachari",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Sheng",
+            "family": "Zhou",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Zhisheng",
+            "family": "Niu",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              2
+            ]
+          ]
+        },
+        "container-title": [
+          "2018 Information Theory and Applications Workshop (ITA)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/ita.2018.8503232",
+        "score": 25.061024
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "Age of Information status update data freshness"
+    }
+  }
+}

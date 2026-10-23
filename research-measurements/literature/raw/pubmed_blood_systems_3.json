@@ -1,0 +1,50 @@
+{
+  "header": {
+    "type": "esearch",
+    "version": "0.3"
+  },
+  "esearchresult": {
+    "count": "194",
+    "retmax": "10",
+    "retstart": "0",
+    "idlist": [
+      "13685808",
+      "13685706",
+      "13682046",
+      "13644079",
+      "13631976",
+      "13629964",
+      "13614999",
+      "13612946",
+      "13601925",
+      "13537061"
+    ],
+    "translationset": [
+      {
+        "from": "blood",
+        "to": "\"blood\"[Subheading] OR \"blood\"[All Fields] OR \"blood\"[MeSH Terms] OR \"bloods\"[All Fields] OR \"haematology\"[All Fields] OR \"hematology\"[MeSH Terms] OR \"hematology\"[All Fields] OR \"haematoma\"[All Fields] OR \"hematoma\"[MeSH Terms] OR \"hematoma\"[All Fields] OR \"haemorrhage\"[All Fields] OR \"hemorrhage\"[MeSH Terms] OR \"hemorrhage\"[All Fields] OR \"haemorrhages\"[All Fields] OR \"hemorrhages\"[All Fields] OR \"haemorrhagic\"[All Fields] OR \"haemorrhaging\"[All Fields] OR \"hematologies\"[All Fields] OR \"haematomas\"[All Fields] OR \"hematomas\"[All Fields] OR \"hematoma's\"[All Fields] OR \"hematomae\"[All Fields] OR \"hemorrhaged\"[All Fields] OR \"hemorrhagic\"[All Fields] OR \"hemorrhagical\"[All Fields] OR \"hemorrhaging\"[All Fields]"
+      },
+      {
+        "from": "shortage",
+        "to": "\"shortage\"[All Fields] OR \"shortages\"[All Fields]"
+      },
+      {
+        "from": "stockout",
+        "to": "\"stockout\"[All Fields] OR \"stockouts\"[All Fields]"
+      },
+      {
+        "from": "inventory",
+        "to": "\"inventoried\"[All Fields] OR \"inventory's\"[All Fields] OR \"inventorying\"[All Fields] OR \"personality inventory\"[MeSH Terms] OR (\"personality\"[All Fields] AND \"inventory\"[All Fields]) OR \"personality inventory\"[All Fields] OR \"inventories\"[All Fields] OR \"equipment and supplies\"[MeSH Terms] OR (\"equipment\"[All Fields] AND \"supplies\"[All Fields]) OR \"equipment and supplies\"[All Fields] OR \"inventory\"[All Fields]"
+      },
+      {
+        "from": "management",
+        "to": "\"manage\"[All Fields] OR \"managed\"[All Fields] OR \"management's\"[All Fields] OR \"managements\"[All Fields] OR \"manager\"[All Fields] OR \"manager's\"[All Fields] OR \"managers\"[All Fields] OR \"manages\"[All Fields] OR \"managing\"[All Fields] OR \"managment\"[All Fields] OR \"organization and administration\"[MeSH Terms] OR (\"organization\"[All Fields] AND \"administration\"[All Fields]) OR \"organization and administration\"[All Fields] OR \"management\"[All Fields] OR \"disease management\"[MeSH Terms] OR (\"disease\"[All Fields] AND \"management\"[All Fields]) OR \"disease management\"[All Fields]"
+      },
+      {
+        "from": "india",
+        "to": "\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india's\"[All Fields] OR \"indias\"[All Fields]"
+      }
+    ],
+    "querytranslation": "(\"blood\"[MeSH Subheading] OR \"blood\"[All Fields] OR \"blood\"[MeSH Terms] OR \"bloods\"[All Fields] OR \"haematology\"[All Fields] OR \"hematology\"[MeSH Terms] OR \"hematology\"[All Fields] OR \"haematoma\"[All Fields] OR \"hematoma\"[MeSH Terms] OR \"hematoma\"[All Fields] OR \"haemorrhage\"[All Fields] OR \"hemorrhage\"[MeSH Terms] OR \"hemorrhage\"[All Fields] OR \"haemorrhages\"[All Fields] OR \"hemorrhages\"[All Fields] OR \"haemorrhagic\"[All Fields] OR \"haemorrhaging\"[All Fields] OR \"hematologies\"[All Fields] OR \"haematomas\"[All Fields] OR \"hematomas\"[All Fields] OR \"hematoma s\"[All Fields] OR \"hematomae\"[All Fields] OR \"hemorrhaged\"[All Fields] OR \"hemorrhagic\"[All Fields] OR \"hemorrhagical\"[All Fields] OR \"hemorrhaging\"[All Fields]) AND (\"shortage\"[All Fields] OR \"shortages\"[All Fields]) AND (\"stockout\"[All Fields] OR \"stockouts\"[All Fields]) AND (\"inventoried\"[All Fields] OR \"inventory s\"[All Fields] OR \"inventorying\"[All Fields] OR \"personality inventory\"[MeSH Terms] OR (\"personality\"[All Fields] AND \"inventory\"[All Fields]) OR \"personality inventory\"[All Fields] OR \"inventories\"[All Fields] OR \"equipment and supplies\"[MeSH Terms] OR (\"equipment\"[All Fields] AND \"supplies\"[All Fields]) OR \"equipment and supplies\"[All Fields] OR \"inventory\"[All Fields]) AND (\"manage\"[All Fields] OR \"managed\"[All Fields] OR \"management s\"[All Fields] OR \"managements\"[All Fields] OR \"manager\"[All Fields] OR \"manager s\"[All Fields] OR \"managers\"[All Fields] OR \"manages\"[All Fields] OR \"managing\"[All Fields] OR \"managment\"[All Fields] OR \"organization and administration\"[MeSH Terms] OR (\"organization\"[All Fields] AND \"administration\"[All Fields]) OR \"organization and administration\"[All Fields] OR \"management\"[All Fields] OR \"disease management\"[MeSH Terms] OR (\"disease\"[All Fields] AND \"management\"[All Fields]) OR \"disease management\"[All Fields]) AND (\"india\"[MeSH Terms] OR \"india\"[All Fields] OR \"india s\"[All Fields] OR \"indias\"[All Fields])"
+  }
+}

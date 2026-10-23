@@ -1,0 +1,12 @@
+{
+  "url": "https://nha.gov.in/NDHM",
+  "status": 403,
+  "headers": {
+    "Server": "awselb/2.0",
+    "Date": "Fri, 23 Oct 2026 11:33:08 GMT",
+    "Content-Type": "text/html",
+    "Content-Length": "118",
+    "Connection": "keep-alive"
+  },
+  "date": "2026-10-23"
+}

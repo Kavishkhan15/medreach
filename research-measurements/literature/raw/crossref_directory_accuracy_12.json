@@ -1,0 +1,419 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 908366,
+    "items": [
+      {
+        "DOI": "10.1097/00004669-200601000-00009",
+        "title": [
+          "Physician Fatigue Error Rate Underreported"
+        ],
+        "author": [
+          {
+            "family": "&NA;",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2006,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Clinical Engineering"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1097/00004669-200601000-00009",
+        "score": 24.477806
+      },
+      {
+        "abstract": "<jats:p>We propose a formulation to capture the dynamics of information decay and use a fairly general cost structure of inspection programs to tackle inventory record inaccuracy (IRI) in a retail context. Within this formulation we devise two optimization models that represent current practices in industry to minimize IRI: daily-fraction inspection and all-or-none inspection. Some qualitative insights about the interaction between inspector fallibility and inspection efforts are derived from steady-state analytics assuming risk-neutrality. We perform an empirical case study and identify deficiencies of store operating practices. To tackle uncertainties of cost factor and inspection error, we explore optimal decisions under risk aversion using Monte-Carlo simulation. Our findings provide practical guidelines for managers to design cost-efficient inspection policy.</jats:p>",
+        "DOI": "10.2139/ssrn.1960594",
+        "type": "posted-content",
+        "title": [
+          "Risk Aversion, Inspection Error, and Inventory Record Inaccuracy"
+        ],
+        "author": [
+          {
+            "given": "Howard Hao-Chun",
+            "family": "Chuang",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-7716-1310",
+            "authenticated-orcid": true,
+            "given": "Rogelio",
+            "family": "Oliva",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "score": 23.736038,
+        "URL": "https://doi.org/10.2139/ssrn.1960594",
+        "published": {
+          "date-parts": [
+            [
+              2011
+            ]
+          ]
+        }
+      },
+      {
+        "DOI": "10.19082/2088",
+        "title": [
+          "The Effect of Exposure to High Noise Levels on the Performance and Rate of Error in Manual Activities"
+        ],
+        "author": [
+          {
+            "given": "Farahnaz",
+            "family": "Khajenasiri",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Alireza",
+            "family": "Zamanian",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Zahra",
+            "family": "Zamanian",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              3,
+              25
+            ]
+          ]
+        },
+        "container-title": [
+          "Electronic physician"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.19082/2088",
+        "score": 23.429539
+      },
+      {
+        "DOI": "10.23919/ccc64809.2025.11178838",
+        "title": [
+          "Calibration of Nonlinear Error Caused by Detection Model Inaccuracy in Rate-Integrating Hemispherical Resonator Gyro"
+        ],
+        "author": [
+          {
+            "given": "Hongbo",
+            "family": "Wu",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Space Control and Inertial Technology Research Center, Harbin Institute of Technology,Harbin,China,150001"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Zhennan",
+            "family": "Wei",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Space Control and Inertial Technology Research Center, Harbin Institute of Technology,Harbin,China,150001"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Ning",
+            "family": "Wang",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Space Control and Inertial Technology Research Center, Harbin Institute of Technology,Harbin,China,150001"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Guoxing",
+            "family": "Yi",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Space Control and Inertial Technology Research Center, Harbin Institute of Technology,Harbin,China,150001"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Zeyuan",
+            "family": "Guan",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Space Control and Inertial Technology Research Center, Harbin Institute of Technology,Harbin,China,150001"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Yiwei",
+            "family": "Sun",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Space Control and Inertial Technology Research Center, Harbin Institute of Technology,Harbin,China,150001"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              7,
+              28
+            ]
+          ]
+        },
+        "container-title": [
+          "2025 44th Chinese Control Conference (CCC)"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.23919/ccc64809.2025.11178838",
+        "score": 22.99868
+      },
+      {
+        "DOI": "10.1080/00913847.1981.11711168",
+        "title": [
+          "Sportsmedicine Directory 1981"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1981,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1981.11711168",
+        "score": 22.24949
+      },
+      {
+        "DOI": "10.1109/icif.2005.1591930",
+        "title": [
+          "Influence of timestamping error on data inaccuracy"
+        ],
+        "author": [
+          {
+            "given": "O.",
+            "family": "Bezet",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "V.",
+            "family": "Cherfaoui",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2005
+            ]
+          ]
+        },
+        "container-title": [
+          "2005 7th International Conference on Information Fusion"
+        ],
+        "type": "proceedings-article",
+        "URL": "https://doi.org/10.1109/icif.2005.1591930",
+        "score": 22.242985
+      },
+      {
+        "DOI": "10.1080/00913847.1987.11702092",
+        "title": [
+          "Sports Medicine Directory 1987"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1987,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1987.11702092",
+        "score": 22.0897
+      },
+      {
+        "DOI": "10.1080/00913847.1983.11708645",
+        "title": [
+          "Sports Medicine Directory 1983"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              1983,
+              9
+            ]
+          ]
+        },
+        "container-title": [
+          "The Physician and Sportsmedicine"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.1080/00913847.1983.11708645",
+        "score": 22.086617
+      },
+      {
+        "DOI": "10.37765/ajmc.2023.89318",
+        "title": [
+          "Provider Directory Inaccuracy and Timely Access for Mental Health Care"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              2,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "The American Journal of Managed Care"
+        ],
+        "type": "journal-article",
+        "URL": "https://doi.org/10.37765/ajmc.2023.89318",
+        "score": 22.073277
+      },
+      {
+        "DOI": "10.4159/harvard.9780674075986.c17",
+        "title": [
+          "11. INACCURACY, ERROR, AND OTHER FLUCTUATIONS"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2013,
+              6,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Tychomancy"
+        ],
+        "type": "book-chapter",
+        "URL": "https://doi.org/10.4159/harvard.9780674075986.c17",
+        "score": 22.073261
+      }
+    ],
+    "items-per-page": 10,
+    "query": {
+      "start-index": 0,
+      "search-terms": "physician directory inaccuracy error rate"
+    }
+  }
+}

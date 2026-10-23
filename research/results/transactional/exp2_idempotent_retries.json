@@ -1,0 +1,98 @@
+{
+  "experimentId": "EXP-TX-02",
+  "name": "Idempotent Retries and Simulated Timeout Recovery",
+  "startedAt": "2026-10-23T20:11:59.270Z",
+  "tests": [
+    {
+      "id": "2.1",
+      "description": "Authenticated user replay returns 200 OK with same requestId and no duplicate document",
+      "passed": true,
+      "details": {
+        "initStatus": 201,
+        "retryStatus": 200,
+        "requestId1": "MR-MVLEOP7U-EE3A91",
+        "requestId2": "MR-MVLEOP7U-EE3A91",
+        "dbCount": 1
+      }
+    },
+    {
+      "id": "2.2",
+      "description": "Idempotent replay with altered body returns cached original without mutating record",
+      "passed": true,
+      "details": {
+        "status": 200,
+        "returnedEmergencyType": "Severe Respiratory Distress",
+        "originalRequestId": "MR-MVLEOP7U-EE3A91"
+      }
+    },
+    {
+      "id": "2.3",
+      "description": "Guest idempotent replay returns 200 OK with identical trackingToken and requestId",
+      "passed": true,
+      "details": {
+        "initStatus": 201,
+        "retryStatus": 200,
+        "tokenMatch": true
+      }
+    },
+    {
+      "id": "2.4",
+      "description": "Simulated client timeout followed by retry recovers cleanly with exactly 1 DB record",
+      "passed": true,
+      "details": {
+        "timedOut": true,
+        "recoveryStatus": 200,
+        "requestId": "MR-MVLEOP98-8EFCF4",
+        "countInDb": 1
+      }
+    },
+    {
+      "id": "2.5",
+      "description": "Ambulance booking idempotent replay returns 200 OK with same reference and single DB booking",
+      "passed": true,
+      "details": {
+        "status1": 201,
+        "status2": 200,
+        "reference1": "AMB-MVLEOPBD-CB0C",
+        "reference2": "AMB-MVLEOPBD-CB0C",
+        "dbCount": 1
+      }
+    },
+    {
+      "id": "2.6",
+      "description": "Blood request idempotent replay returns 200 OK with same reference and single DB record",
+      "passed": true,
+      "details": {
+        "status1": 201,
+        "status2": 200,
+        "reference1": "BR-20261023-D62B63",
+        "reference2": "BR-20261023-D62B63",
+        "dbCount": 1
+      }
+    },
+    {
+      "id": "2.7",
+      "description": "10 consecutive idempotent retries all return 200 OK with unchanged database document count",
+      "passed": true,
+      "details": {
+        "repeatedPass": true,
+        "repeatStatuses": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "finalDbCount": 1
+      }
+    }
+  ],
+  "passCount": 7,
+  "failCount": 0,
+  "completedAt": "2026-10-23T20:11:59.476Z"
+}
