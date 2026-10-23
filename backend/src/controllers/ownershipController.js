@@ -1,3 +1,4 @@
+import { sendMutationResponse } from "../utils/sendMutationResponse.js";
 import { guardSystemAdminMutation } from "../services/adminMutationGuard.js";
 import { OwnershipClaim } from "../models/OwnershipClaim.js";
 import { Hospital } from "../models/Hospital.js";
@@ -24,9 +25,9 @@ export const adminOwnershipClaims = asyncHandler(async (_req, res) => {
     .populate("requester", "name email").sort({ createdAt: -1 }).limit(100).lean();
   res.json({ data });
 });
-export const adminReviewOwnershipClaim = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async () => {
+export const adminReviewOwnershipClaim = asyncHandler(async (req, res) => sendMutationResponse(res, guardSystemAdminMutation(req.user.id, async () => {
   const result = await reviewHospitalOwnership({ claimId: req.params.id, reviewerId: req.user.id,
     decision: req.body.decision, note: req.body.note, providerAccountId: req.body.providerAccountId });
-  if (result.error) return res.status(result.status).json({ error: result.error });
-  res.json({ claim: result.claim });
-}));
+  if (result.error) return { status: result.status, body: { error: result.error } };
+  return { body: { claim: result.claim } };
+})));

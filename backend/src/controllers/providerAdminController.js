@@ -1,3 +1,4 @@
+import { sendMutationResponse } from "../utils/sendMutationResponse.js";
 import { createHmac } from "node:crypto";
 import { env } from "../config/env.js";
 import { notifyProviderApplicationSafely } from "../services/providerApplicationNotifications.js";
@@ -21,7 +22,7 @@ export const listAccounts = asyncHandler(async (_req, res) => {
   const users = await User.find({ role: "provider_admin" }).select("+passwordHash +authVersion").sort({ createdAt: -1 });
   res.json({ data: await accountViews(users), demoEnabled: isolatedDemoEnabled(), manualCredentialsEnabled: localManualCredentialsEnabled() });
 });
-export const createAccount = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async () => res.status(201).json({ ok: true, ...await provisionProvider({ ...req.body, provisioningKey: req.idempotencyKeyHash }, req.user.id) })));
+export const createAccount = asyncHandler(async (req, res) => sendMutationResponse(res, guardSystemAdminMutation(req.user.id, async () => ({ status: 201, body: { ok: true, ...await provisionProvider({ ...req.body, provisioningKey: req.idempotencyKeyHash }, req.user.id) } }))));
 export const accountAction = asyncHandler(async (req, res) => {
   let result = {};
   await guardSystemAdminMutation(req.user.id, async () => {
@@ -53,23 +54,23 @@ export const accountAction = asyncHandler(async (req, res) => {
   if (!result.account) return res.status(404).json({ error: "Provider account not found" });
   res.json({ ok: true, ...result });
 });
-export const assignAccount = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async () => {
+export const assignAccount = asyncHandler(async (req, res) => sendMutationResponse(res, guardSystemAdminMutation(req.user.id, async () => {
   const user = await account(req.params.id);
-  if (!user) return res.status(404).json({ error: "Provider account not found" });
+  if (!user) return { status: 404, body: { error: "Provider account not found" } };
   await addAssignment(user, req.body, req.user.id);
   await revokeProviderAccess(user);
-  res.json({ ok: true, account: await accountView(user) });
-}));
-export const updateAssignment = asyncHandler(async (req, res) => guardSystemAdminMutation(req.user.id, async () => {
+  return { body: { ok: true, account: await accountView(user) } };
+})));
+export const updateAssignment = asyncHandler(async (req, res) => sendMutationResponse(res, guardSystemAdminMutation(req.user.id, async () => {
   const user = await account(req.params.id);
-  if (!user) return res.status(404).json({ error: "Provider account not found" });
+  if (!user) return { status: 404, body: { error: "Provider account not found" } };
   const membership = await ProviderMembership.findOneAndUpdate({ _id: req.params.membershipId, user: user._id },
     { $set: { active: req.body.active } }, { new: true });
-  if (!membership) return res.status(404).json({ error: "Assignment not found" });
+  if (!membership) return { status: 404, body: { error: "Assignment not found" } };
   await revokeProviderAccess(user);
   await writeAudit({ user: req.user.id, action: "update", entityType: "ProviderMembership", entityId: membership._id, after: { active: membership.active } });
-  res.json({ ok: true, account: await accountView(user) });
-}));
+  return { body: { ok: true, account: await accountView(user) } };
+})));
 export const listOrganizations = asyncHandler(async (_req, res) => {
   const [hospitals, providers] = await Promise.all([Hospital.find().select("name verificationStatus approvalStatus").lean(), ResourceProvider.find().select("name kind verificationStatus approvalStatus").lean()]);
   res.json({ data: [...hospitals.map((r) => ({ ...r, kind: "hospital" })), ...providers] });
