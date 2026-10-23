@@ -8,6 +8,45 @@ was rerun that day. The completed code verification below belongs to baseline
 [`1f870b4`](https://github.com/kasim672/medreach/commit/1f870b401f63ac5612217a1626259acfd278b913),
 verified on **21 October 2026**.
 
+## Local CI repair — 23 October 2026
+
+The pushed documentation commit `3523449` had two failing causes: the backend
+account-control test received a transient 409, and the evaluation dependency
+gate rejected newly reported Next.js/Nodemailer advisories. Two sibling
+evaluation jobs were cancelled; frontend builds, browser journeys and Vercel
+checks succeeded. The separate SEO implementation was still uncommitted.
+
+Local fixes wait for mutation-lease cleanup before sending guarded HTTP
+responses, retain the same permission checks/status bodies, and update Next.js
+to 15.5.28 and Nodemailer to 10.0.10. The new regression reproduced headers
+being sent before cleanup, then passed after the fix. The helper's focused
+line/branch/function coverage is 100%; that is not whole-application coverage.
+
+The local SEO work also changed the footer logo's accessible name and the
+custom 404 heading. Browser selectors now support these names while requiring
+the original wordmark source, visibility and an actual HTTP 404 for the retired
+route. No assertion was skipped or weakened to hide a functioning route.
+
+| Local check | Result |
+| --- | --- |
+| Strict backend suite, all 14 database gates | 359 passed, 0 failed, 0 skipped |
+| Focused unit suite | 17 passed |
+| Builds with existing local SEO work | Bootstrap, Tailwind and Skeleton passed; 41 generated pages each |
+| Dependency gate | `npm audit --audit-level=high`: 0 known vulnerabilities |
+| Lint | 0 errors, 12 existing hook dependency warnings |
+| Targeted logo/404 browser journeys | 15 passed across all variants |
+| Full browser matrix | 269 passed, 0 failed, 40 existing scope skips; 309 project cases |
+| Generated SEO endpoints | Robots, 12-URL sitemap, hospital metadata/canonical and custom 404 passed across all variants |
+| Lockfile | `npm ci --dry-run --ignore-scripts` passed |
+| Documentation references | 346 local targets resolve |
+
+Database-changing checks used a disposable MongoDB under `/tmp` on port 27139,
+with email disabled/mocked. The canonical recovered database was not accessed.
+These are local verification results collected before publication. The fixes
+and SEO work are being published in focused commits; remote CI results must
+be checked on the latest commit separately. Rerunning the original commit alone
+does not include the patches.
+
 ## Completed release checks
 
 | Check | Result |
