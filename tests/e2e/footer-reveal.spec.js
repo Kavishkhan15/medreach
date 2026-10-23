@@ -65,7 +65,8 @@ test.describe("MEDREACH Footer Reveal Animation & Layout Parity", () => {
       expect(hasOverflow, "Page must not have horizontal scrollbar").toBe(false);
 
       // Verify original brand image & disclaimer remain visible
-      const brandLogo = footer.locator('img[alt="MedReach"]');
+      const brandLogo = footer.getByRole("img", { name: /^MedReach(?: Connected Healthcare)?$/ });
+      await expect(brandLogo).toHaveAttribute("src", /brand-word-mark/);
       await expect(brandLogo).toBeVisible();
       await expect(footer).toContainText("Not an official emergency service. In danger, call 112.");
     });

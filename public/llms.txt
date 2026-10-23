@@ -1,0 +1,36 @@
+# MedReach — Connected Healthcare for Mumbai
+
+> MedReach is a high-performance, deterministic healthcare discovery, emergency bed coordination, urgent blood requisition, ambulance dispatch, and medical careers platform for Mumbai.
+
+## Overview
+- **Location:** Mumbai Metropolitan Region, Maharashtra, India.
+- **Architecture:** Express.js REST API backend with three independent Next.js 15 frontend implementations (Bootstrap 5.3, Tailwind CSS 4, Skeleton CSS 2) sharing a unified core client library (`@medreach/core`) and a MongoDB 7.0 database.
+- **Privacy Standard:** Privacy-by-design. MedReach stores zero electronic health records (EHR) or longitudinal diagnostic histories. All sensitive authentication tokens, password hashes, and idempotency digests configure `select: false`.
+
+## Core Public Endpoints & Web Routes
+- `/`: Interactive healthcare portal with urgent care action triggers, embedded provider onboarding, and directory navigation.
+- `/emergency`: Triage categories and emergency hospital bed availability discovery across Mumbai facilities.
+- `/hospitals`: Directory of acute care, municipal, trust, and private hospitals with verified capability filtering and geospatial distance ranking.
+- `/blood-banks`: Centralized blood banks directory, component availability, and blood donation drives.
+- `/urgent-blood`: Rapid 6-hour emergency blood requisition workflow with unique reference tracking.
+- `/ambulances`: 24x7 ALS (Advanced Life Support) and BLS ambulance listings with direct booking and dispatch coordination.
+- `/diagnostics`: Pathology laboratories, imaging centers (MRI, CT, X-Ray), and diagnostic facilities.
+- `/careers`: Healthcare job postings, medical recruitment board, Statement of Purpose (SOP) submissions, and candidate reference tracking.
+- `/map`: Geospatial discovery view with interactive coordinate mapping and accessible table fallbacks.
+- `/track`: Public request verification by unique reference token hash (zero PHI exposed).
+
+## Role-Based Access Control (RBAC)
+1. `system_admin`: Global platform governance, provider application reviews, account provisioning, emergency requisition monitoring, and audit log inspection (`/admin`).
+2. `provider_admin`: Organization-scoped workspace for verified hospitals, blood banks, or ambulance providers (`/provider`).
+3. `user`: Citizen account for managing personal profile, active request history, and blood donation pledges (`/dashboard`).
+
+## Technical Invariants
+- Emergency requests support coordination and do not guarantee physical bed availability or immediate ambulance dispatch. In life-threatening emergencies, citizens are directed to call 112 or 108.
+- Rate limiting, CSRF origin verification, and Helmet security headers are enforced across all HTTP handlers.
+- Multi-tenant organization isolation is strictly bound at the query level via `ProviderMembership`.
+
+## Developer & Documentation Resources
+- API Reference: `/docs/api.md`
+- Database Data Dictionary: `/docs/database-schema.md`
+- Visual Architecture & Workflow Diagrams: `/docs/diagrams/README.md`
+- Testing & Verification Protocols: `/docs/testing.md`

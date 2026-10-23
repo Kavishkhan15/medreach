@@ -34,8 +34,9 @@ test("System Admin retains the main dashboard and provisions a pending real prov
 });
 test("Regular users cannot access administrative dashboards and retired support route is absent", async ({ page }) => {
   await signIn(page, "support.e2e@medreach.test");
-  await page.goto("/user-admin");
-  await expect(page.getByRole("heading", { name: "404", exact: true })).toBeVisible();
+  const missing = await page.goto("/user-admin");
+  expect(missing.status()).toBe(404);
+  await expect(page.getByRole("heading", { name: /^(?:404|Page Not Found)$/ })).toBeVisible();
   for (const path of ["/admin/users", "/admin/provider-accounts", "/admin/security"]) {
     await page.goto(path); await expect(page.getByText(/Admin access required/)).toBeVisible();
   }
