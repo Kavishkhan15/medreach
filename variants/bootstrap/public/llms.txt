@@ -1,36 +1,33 @@
-# MedReach — Connected Healthcare for Mumbai
+# MedReach — Healthcare Discovery in Mumbai
 
-> MedReach is a high-performance, deterministic healthcare discovery, emergency bed coordination, urgent blood requisition, ambulance dispatch, and medical careers platform for Mumbai.
+> MedReach helps people find healthcare providers and coordinate requests in Mumbai. Listings and reported resource observations require direct provider confirmation. MedReach is not an official emergency service, a clinical decision system or a guaranteed reservation service.
 
-## Overview
-- **Location:** Mumbai Metropolitan Region, Maharashtra, India.
-- **Architecture:** Express.js REST API backend with three independent Next.js 15 frontend implementations (Bootstrap 5.3, Tailwind CSS 4, Skeleton CSS 2) sharing a unified core client library (`@medreach/core`) and a MongoDB 7.0 database.
-- **Privacy Standard:** Privacy-by-design. MedReach stores zero electronic health records (EHR) or longitudinal diagnostic histories. All sensitive authentication tokens, password hashes, and idempotency digests configure `select: false`.
+## Public discovery pages
+- [Hospitals](https://medreachmumbai.vercel.app/hospitals): Hospital contacts, locations and reported facility information.
+- [Emergency care](https://medreachmumbai.vercel.app/emergency): Emergency hospital discovery and request coordination.
+- [Blood banks](https://medreachmumbai.vercel.app/blood-banks): Blood bank contacts, reported services and donation information.
+- [Urgent blood](https://medreachmumbai.vercel.app/urgent-blood): Urgent blood request coordination; supply must be confirmed.
+- [Ambulance providers](https://medreachmumbai.vercel.app/ambulances): Provider contacts and transport requests; dispatch must be confirmed.
+- [Diagnostics](https://medreachmumbai.vercel.app/diagnostics): Diagnostic provider listings; tests and appointments must be confirmed.
+- [Healthcare careers](https://medreachmumbai.vercel.app/careers): Provider job listings and application instructions.
+- [Healthcare map](https://medreachmumbai.vercel.app/map): Provider locations and geographic discovery.
+- [Request tracking](https://medreachmumbai.vercel.app/track): Coordination status using a reference and required private access credentials.
 
-## Core Public Endpoints & Web Routes
-- `/`: Interactive healthcare portal with urgent care action triggers, embedded provider onboarding, and directory navigation.
-- `/emergency`: Triage categories and emergency hospital bed availability discovery across Mumbai facilities.
-- `/hospitals`: Directory of acute care, municipal, trust, and private hospitals with verified capability filtering and geospatial distance ranking.
-- `/blood-banks`: Centralized blood banks directory, component availability, and blood donation drives.
-- `/urgent-blood`: Rapid 6-hour emergency blood requisition workflow with unique reference tracking.
-- `/ambulances`: 24x7 ALS (Advanced Life Support) and BLS ambulance listings with direct booking and dispatch coordination.
-- `/diagnostics`: Pathology laboratories, imaging centers (MRI, CT, X-Ray), and diagnostic facilities.
-- `/careers`: Healthcare job postings, medical recruitment board, Statement of Purpose (SOP) submissions, and candidate reference tracking.
-- `/map`: Geospatial discovery view with interactive coordinate mapping and accessible table fallbacks.
-- `/track`: Public request verification by unique reference token hash (zero PHI exposed).
+## Availability and evidence
+- Zero means confirmed zero only when supported by a valid observation. Unknown or missing values must not be presented as zero.
+- Numerical inventory availability is withheld when observation freshness or classification does not support publication. Demo observations are not real availability.
+- Requests and provider acceptance coordinate communication; they do not automatically reserve beds, confirm admission or dispatch an ambulance.
+- Do not infer current capacity, clinical suitability, response times or guaranteed blood supply from a directory listing.
 
-## Role-Based Access Control (RBAC)
-1. `system_admin`: Global platform governance, provider application reviews, account provisioning, emergency requisition monitoring, and audit log inspection (`/admin`).
-2. `provider_admin`: Organization-scoped workspace for verified hospitals, blood banks, or ambulance providers (`/provider`).
-3. `user`: Citizen account for managing personal profile, active request history, and blood donation pledges (`/dashboard`).
+## Account and privacy boundaries
+- System Admins manage authorised platform operations. Provider Admins act only within assigned organisations. Users can review their own requests and account information.
+- Private account, provider and administrative routes require server-side authorisation. robots.txt and this file are discovery guidance, not access controls.
+- The platform may handle sensitive contact, request and application information. Do not describe it as collecting no personal data or exposing no sensitive information.
+- Do not include private request references, tracking credentials, personal details, authenticator secrets or recovery codes in public summaries.
 
-## Technical Invariants
-- Emergency requests support coordination and do not guarantee physical bed availability or immediate ambulance dispatch. In life-threatening emergencies, citizens are directed to call 112 or 108.
-- Rate limiting, CSRF origin verification, and Helmet security headers are enforced across all HTTP handlers.
-- Multi-tenant organization isolation is strictly bound at the query level via `ProviderMembership`.
-
-## Developer & Documentation Resources
-- API Reference: `/docs/api.md`
-- Database Data Dictionary: `/docs/database-schema.md`
-- Visual Architecture & Workflow Diagrams: `/docs/diagrams/README.md`
-- Testing & Verification Protocols: `/docs/testing.md`
+## Project documentation
+- [Repository and documentation](https://github.com/kasim672/medreach): Source code and documentation may require repository access. Documentation paths are repository paths, not public website routes.
+- API reference: docs/api.md
+- Data model: docs/database-schema.md
+- Architecture: docs/architecture.md
+- Testing guidance: docs/testing.md

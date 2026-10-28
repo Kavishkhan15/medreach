@@ -41,9 +41,9 @@ export default function HospitalWorkspace() {
   const saveCapability = () => act(() => post(`/api/hospital-admin/hospitals/${hospitalId}/facility-claims`, capability), "claim", facilityResource.reload, "Capability statement recorded for review.");
   const saveAvailability = () => act(() => post(`/api/hospitals/${hospitalId}/availability`, { ...availability, quantity: ["available", "limited"].includes(availability.status) && availability.quantity !== "" ? Number(availability.quantity) : undefined }), "observation", availabilityResource.reload, "Availability observation confirmed.");
   const saveOwnership = () => act(() => post("/api/hospital-admin/ownership-claims", ownership), "claim", ownershipResource.reload, "Hospital access request confirmed.");
-  if (!ready) return <p role="status">Loading workspace…</p>;
-  if (!user) return <p>Sign in to open your hospital workspace. <Link href="/login?returnTo=%2Fhospital">Sign in</Link></p>;
-  return <><div className="page-head mb-4"><span className="eyebrow">Hospital operations</span><h1>Hospital workspace</h1><p>Review requests, verify your contact information, and submit current availability for hospitals assigned to you.</p></div>
+  if (!ready) return <><h1>Hospital workspace</h1><p role="status">Loading workspace…</p></>;
+  if (!user) return <><h1>Hospital workspace</h1><p>Sign in to open your hospital workspace. <Link href="/login?returnTo=%2Fhospital">Sign in</Link></p></>;
+  return <><div className="page-head mb-4"><h1>Hospital workspace</h1><p>Review requests, verify your contact information, and submit current availability for hospitals assigned to you.</p></div>
     {!(action.target && requestResource.status === "success" && requestResource.data.some((r) => r._id === action.target && mine.some((h) => h._id === (r.hospital?._id || r.hospital)))) && <AdminActionFeedback action={action} refresh={action.target ? refresh : undefined} />}
     <div className="row g-3"><div className="col-lg-8"><section className="surface mb-3"><h2 className="h5">Bed requests</h2><p className="disclaimer">Emergency and standard requests for hospitals you administer. Acceptance requires direct confirmation; no bed is reserved.</p><button className="btn btn-outline-secondary mb-3" disabled={requestResource.status === "loading"} onClick={refresh}>Refresh requests</button>
       <AdminDataState resource={mineResource} label="hospital assignments" emptyMessage="A hospital assignment is required to view requests.">

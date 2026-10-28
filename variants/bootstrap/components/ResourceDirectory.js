@@ -33,20 +33,20 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
   };
 
   return (
-    <div>
+    <div className="resource-directory">
       <div className="page-head mb-4">
-        <span className="eyebrow">Mumbai care network</span>
         <h1>{title}</h1>
         <p>{intro}</p>
       </div>
-      <label className="form-label fw-semibold" htmlFor="resource-search">Search {label}</label>
+      <div className="surface directory-search mb-4"><label className="form-label fw-semibold" htmlFor="resource-search">Search {label}</label>
       <input
         id="resource-search"
-        className="form-control mb-4"
+        className="form-control"
         value={query}
         onChange={e => setQuery(e.target.value)}
         placeholder="Search name, service or locality"
       />
+      </div>
       {loading && <p role="status">Loading providers…</p>}
       {error && (
         <div className="alert alert-danger d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">

@@ -7,7 +7,7 @@ const fields = [["name", "Organisation name", 180], ["contactName", "Contact per
 export default function ProviderApplicationForm() {
   const state = useProviderApplication(submitApplication);
   return <section className="home-section" id="join-network" aria-labelledby="join-network-title"><div className="home-container">
-    <div className={styles.layout}><header><span className="home-label">For healthcare providers</span><h2 id="join-network-title">Join the MedReach Network</h2><p>Hospitals, blood banks, diagnostic centres and ambulance services can apply to join MedReach.</p><p>Applications are reviewed by the System Admin. Approval and account activation are required before provider access.</p></header>
+    <div className={styles.layout}><header><h2 id="join-network-title">Join the MedReach Network</h2><p>Hospitals, blood banks, diagnostic centres and ambulance services can apply to join MedReach.</p><p>Applications are reviewed by the System Admin. Approval and account activation are required before provider access.</p></header>
       <form className={styles.form} onSubmit={state.submit} noValidate aria-busy={state.busy}>
         {state.message ? <div role="status" className={styles.success}>{state.message}</div> : <>
         {state.error && <p role="alert" className={styles.error}>{state.error}</p>}

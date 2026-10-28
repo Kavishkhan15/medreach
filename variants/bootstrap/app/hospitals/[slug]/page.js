@@ -37,15 +37,15 @@ export default function HospitalPage() {
   }, [slug]);
 
   if (baseLoading) {
-    return <p className="text-secondary p-4">Loading hospital details…</p>;
+    return <><h1>Hospital details</h1><p className="text-secondary p-4" role="status">Loading hospital details…</p></>;
   }
 
   if (error) {
     return (
-      <div className="alert alert-danger d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
+      <div><h1>Hospital details</h1><div className="alert alert-danger d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
         <span>{error}</span>
         <button type="button" className="btn btn-sm btn-outline-danger" onClick={retry}>Retry</button>
-      </div>
+      </div></div>
     );
   }
 
@@ -54,7 +54,7 @@ export default function HospitalPage() {
   if (notFound || !hospital) {
     return (
       <div className="surface p-4 text-center">
-        <h2 className="h5 mb-2">Hospital not found</h2>
+        <h1 className="h3 mb-2">Hospital not found</h1>
         <p className="text-secondary mb-3">The requested hospital could not be located in the directory.</p>
         <Link href="/hospitals" className="btn btn-outline-primary">Back to directory</Link>
       </div>

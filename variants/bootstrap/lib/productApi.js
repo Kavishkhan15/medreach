@@ -45,6 +45,7 @@ export async function productApi(path, options = {}, retried = false) {
   if (!response.ok) {
     const error = new Error(data.error || `Request failed (${response.status})`);
     error.status = response.status;
+    error.code = data.code;
     throw error;
   }
   return data;

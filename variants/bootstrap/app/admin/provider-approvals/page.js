@@ -17,10 +17,9 @@ export default function ProviderApprovalsPage() {
     <AdminGuard title="Provider approvals" subtitle="System Admin review for all healthcare provider categories.">
       <AdminActionFeedback action={action} refresh={resource.reload} />
       <AdminDataState resource={resource} label="provider submissions" emptyMessage="No provider submissions found.">
-        {(rows) => rows.map((r) => (
-          <article className="surface mb-3" key={r._id}>
-            <h2>{r.name}</h2>
-            <p><span className="badge bg-secondary">{r.status}</span></p>
+        {(rows) => <div className="admin-review-list">{rows.map((r) => (
+          <article className="admin-review-card" key={r._id}>
+            <div className="d-flex flex-wrap justify-content-between align-items-start gap-2"><h2>{r.name}</h2><span className={`status-pill ${r.status === "approved" ? "tone-success" : r.status === "rejected" ? "tone-danger" : "tone-warning"}`}>{r.status}</span></div>
             {r.status === "pending" && (
               <div className="d-flex gap-2 mt-3">
                 <button type="button" className="btn btn-primary" aria-label={`Approve and provision ${r.name}`} disabled={action.disabled} onClick={() => review(r._id, "approve")}>Approve and provision</button>
@@ -28,7 +27,7 @@ export default function ProviderApprovalsPage() {
               </div>
             )}
           </article>
-        ))}
+        ))}</div>}
       </AdminDataState>
     </AdminGuard>
   );

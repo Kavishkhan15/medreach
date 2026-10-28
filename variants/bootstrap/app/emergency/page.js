@@ -18,7 +18,6 @@ export default function EmergencyPage() {
   return (
     <>
       <header className="page-head mb-4">
-        <span className="eyebrow">Critical care</span>
         <h1 className="d-flex align-items-center flex-wrap gap-2">
           <EmergencyIcon name="siren" size={32} className="text-danger flex-shrink-0" /> Emergency mode
         </h1>

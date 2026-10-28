@@ -141,8 +141,8 @@ export function useAuth() {
       document.removeEventListener("visibilitychange", visible);
     };
   }, []);
-  const login = useCallback(async (email, password) => {
-    const result = await api.login(email, password);
+  const login = useCallback(async (email, password, verification = {}) => {
+    const result = await api.login(email, password, verification);
     authSession.setUser(result.user);
     return result.user;
   }, []);

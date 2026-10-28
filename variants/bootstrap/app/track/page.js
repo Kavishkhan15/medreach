@@ -96,7 +96,6 @@ export default function TrackRequestPage() {
   return (
     <main className="container py-5">
       <div className="page-head mb-4">
-        <span className="eyebrow">Request lookup</span>
         <h1>Track a request</h1>
         <p>Enter your reference to check the current status.</p>
       </div>

@@ -28,29 +28,23 @@ export default function RequestDetail() {
       </div>
 
       <RequestRefresh model={model} />
+      {!request && <h1 className="h3">Healthcare request details</h1>}
       {!request && !error && <p role="status">Loading request…</p>}
 
       {request && (
         <div className="row g-3 mt-2">
           <div className="col-lg-8">
             <div className="surface p-4 shadow-sm border rounded">
-              <div className="d-flex align-items-center gap-2 mb-2">
-                <EmergencyIcon
-                  name={request.isEmergency ? "siren" : "shield"}
-                  size={18}
-                  className={request.isEmergency ? "text-danger" : "text-primary"}
-                />
-                <span className="eyebrow mb-0">
-                  {request.isEmergency ? "Emergency bed request" : "Hospital admission request"}
-                </span>
-              </div>
-
               <h1 className="h3 mb-2">{request.requestId}</h1>
               <p className="lead fs-6 text-muted mb-3">
                 <strong>{request.hospital?.name}</strong> · {request.requiredFacility} · {request.emergencyType}
               </p>
 
               <div className="d-flex flex-wrap gap-2 align-items-center mb-3">
+                <span className={`status-pill ${request.isEmergency ? "tone-danger" : "tone-info"}`}>
+                  <EmergencyIcon name={request.isEmergency ? "siren" : "shield"} size={16} className="me-1" />
+                  {request.isEmergency ? "Emergency bed request" : "Hospital admission request"}
+                </span>
                 <span className="status-pill tone-info">
                   {request.status.replaceAll("_", " ")}
                 </span>

@@ -1,0 +1,76 @@
+/* Bootstrap-wide visual language shared with the approved account workspace. */
+.medreach-theme { --bs-secondary-color: var(--color-muted); --bs-tertiary-bg: #f5f9fd; accent-color: var(--color-brand); }
+.medreach-theme ::selection { background: #cfe4ff; color: #111e40; }
+.medreach-theme :is(input, textarea) { caret-color: var(--color-brand); }
+.medreach-theme #main:not(:has(.landing-home)):not(:has(.account-shell--workspace)) { width: min(100%, 1320px); max-width: none; padding: 28px 24px 72px; }
+.medreach-theme :is(h1, h2, h3) { text-wrap: balance; }
+.medreach-theme .page-head { padding: 10px 0 12px; }
+.medreach-theme .page-head h1 { font-weight: 750; color: #11182d; }
+.medreach-theme .page-head p { font-size: 1rem; color: var(--color-muted); }
+.medreach-theme :is(.surface, .card) { border-color: var(--color-border); border-radius: 20px; box-shadow: 0 10px 24px rgba(41, 76, 121, .045); }
+.medreach-theme .surface { padding: clamp(20px, 2vw, 28px); }
+.medreach-theme :is(.surface, .card).rounded { border-radius: 20px !important; }
+.medreach-theme .hospital-card { transition: border-color .16s ease, box-shadow .16s ease; }
+.medreach-theme .hospital-card:hover { border-color: #afcbed; box-shadow: 0 12px 28px rgba(41, 76, 121, .08); }
+.medreach-theme :is(.hospital-card-title, .resource-directory article h2) { color: #111e40; font-size: 1.125rem; font-weight: 650; line-height: 1.45; }
+.medreach-theme .hospital-card-actions { gap: 8px; }
+.medreach-theme .directory-search { padding: 20px 24px; }
+.medreach-theme :is(.form-control, .form-select) { min-height: 44px; border: 1px solid #d5e2f1; border-radius: 10px; background-color: #fbfdff; color: var(--color-text); font-size: 1rem; }
+.medreach-theme textarea.form-control { min-height: 112px; }
+.medreach-theme .form-control::placeholder { color: #647793; opacity: 1; }
+.medreach-theme :is(.form-control, .form-select):focus { border-color: #77a7df; box-shadow: 0 0 0 3px rgba(20, 105, 205, .12); }
+.medreach-theme :is(.form-control, .form-select):disabled { background-color: #edf2f8; color: #526a8b; }
+.medreach-theme .form-control.is-invalid { border-color: var(--color-danger); }
+.medreach-theme .form-control.is-valid { border-color: var(--color-success); }
+.medreach-theme .form-label { font-weight: 650; color: #263c60; }
+.medreach-theme .form-check-input:checked { background-color: var(--color-brand); border-color: var(--color-brand); }
+.medreach-theme .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border-radius: 12px; font-weight: 650; line-height: 1.4; padding: 10px 16px; white-space: normal; }
+.medreach-theme .btn-sm { min-height: 40px; padding: 8px 12px; font-size: .875rem; }
+.medreach-theme .btn:disabled { cursor: not-allowed; }
+.medreach-theme .btn-outline-secondary { --bs-btn-color: #31537c; --bs-btn-border-color: #bdd0e8; --bs-btn-hover-bg: #edf5ff; --bs-btn-hover-color: #111e40; --bs-btn-hover-border-color: #9abbe2; --bs-btn-active-bg: #e1efff; --bs-btn-active-color: #111e40; --bs-btn-active-border-color: #9abbe2; }
+.medreach-theme .btn-outline-primary { --bs-btn-color: var(--color-brand); --bs-btn-border-color: #acc9ed; --bs-btn-hover-bg: var(--color-brand); --bs-btn-hover-border-color: var(--color-brand); }
+.medreach-theme .btn-link { text-decoration: underline; text-underline-offset: 3px; }
+.medreach-theme :is(a, button, input, select, textarea):focus-visible { outline: 3px solid #2c77d7; outline-offset: 3px; }
+.medreach-theme .alert { border-radius: 14px; line-height: 1.6; }
+.medreach-theme .alert-info { color: #194e89; background: #edf5ff; border-color: #d4e5fb; }
+.medreach-theme .text-secondary, .medreach-theme .text-muted { color: var(--color-muted) !important; }
+.medreach-theme .table { --bs-table-bg: transparent; --bs-table-color: #263c60; --bs-table-border-color: #e4edf8; }
+.medreach-theme .table thead th { background: #f5f9fd; color: #415d80; font-weight: 650; }
+.medreach-theme .table :is(th, td) { padding: 12px; vertical-align: middle; }
+.medreach-theme .table-responsive { scrollbar-width: thin; scrollbar-color: #adc9e8 transparent; }
+.medreach-theme .modal-content { border: 1px solid var(--color-border); border-radius: 20px; box-shadow: 0 20px 60px rgba(17, 30, 64, .16); }
+.medreach-theme :is(.modal-header, .modal-footer) { border-color: var(--color-border); padding: 20px 24px; }
+.medreach-theme .modal-body { padding: 24px; }
+.medreach-theme .app-footer { background: #0b2f4a; border-top: 1px solid #16415e; color: #c7d7ec; padding-block: 36px !important; }
+.medreach-theme .app-footer > .container { max-width: 1280px; }
+.medreach-theme .app-footer .disclaimer { color: #c7d7ec; }
+.medreach-theme .footer-brand { display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 12px; background: #fff; }
+.medreach-theme .landing-footer-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; padding-top: 28px; margin-top: 24px; border-top: 1px solid #31516d; }
+.medreach-theme .landing-footer-links h3 { color: #fff; font-size: 1.125rem; margin-bottom: 14px; }
+.medreach-theme .landing-footer-links a { display: block; width: fit-content; color: #d5e6fa; font-size: .9375rem; padding-block: 5px; text-decoration: none; }
+.medreach-theme .landing-footer-links a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.medreach-theme .app-footer a:focus-visible { outline-color: #9dccff; }
+.medreach-theme:has(.account-shell--workspace) .landing-footer-links { display: none; }
+.medreach-theme .landing-home { --home-blue: var(--color-brand); --home-ink: var(--color-text); --home-muted: var(--color-muted); --home-line: var(--color-border); }
+.medreach-theme .home-hero-wrap { background: var(--color-background); padding: 16px 24px 24px; }
+.medreach-theme .home-hero { border-radius: 24px; }
+.medreach-theme .home-section { padding-block: 64px; }
+.medreach-theme :is(.home-directory-layout, .home-jobs-panel, .home-blood-card, .home-service) { border-color: var(--color-border); border-radius: 20px; }
+.medreach-theme .home-service { background: #fff; }
+.medreach-theme :is(.home-service-icon, .home-provider-icon) { background: var(--color-brand-soft); color: var(--color-brand); }
+.medreach-theme .home-category-chips button.is-active { background: var(--color-brand-soft); color: #1058af; border-color: #9abbe2; }
+.medreach-theme :is(.home-text-link, .home-text-button) { color: var(--color-brand); }
+.medreach-theme .landing-home .btn-primary { --bs-btn-hover-bg: var(--color-brand-dark); --bs-btn-hover-border-color: var(--color-brand-dark); --bs-btn-active-bg: var(--color-brand-dark); --bs-btn-active-border-color: var(--color-brand-dark); }
+.medreach-theme .landing-home .btn-sm { font-size: .875rem; min-height: 40px; }
+.medreach-theme :is(.map-shell, .gmap-container, .map-fallback) { border-radius: 20px; border-color: var(--color-border); }
+.medreach-theme .map-result.selected { background: var(--color-brand-soft); }
+@media (max-width: 767.98px) {
+  .medreach-theme #main:not(:has(.landing-home)):not(:has(.account-shell--workspace)) { padding: 20px 16px 48px; }
+  .medreach-theme .page-head { padding-top: 4px; }
+  .medreach-theme .home-hero-wrap { padding: 8px 12px 20px; }
+  .medreach-theme .home-section { padding-block: 44px; }
+  .medreach-theme .landing-footer-links { grid-template-columns: 1fr; gap: 24px; }
+  .medreach-theme :is(.surface, .card) { border-radius: 18px; }
+  .medreach-theme :is(.modal-header, .modal-footer, .modal-body) { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .medreach-theme .hospital-card { transition: none; } }

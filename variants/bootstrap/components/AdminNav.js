@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@medreach/core";
+import AdminOverviewIcon from "./AdminOverviewIcon";
 
 const LINKS = [
   { href: "/admin", label: "Overview" },
@@ -14,18 +15,20 @@ const LINKS = [
   { href: "/admin/users", label: "Users" },
   { href: "/admin/security", label: "Security & auth" },
 ];
+const ICONS = ["home", "approval", "users", "siren", "hospital", "bell", "document", "users", "shield"];
 
 export default function AdminNav() {
   const path = usePathname();
   const { user } = useAuth();
   if (user?.role !== "system_admin") return null;
   return (
-    <nav aria-label="Admin sections" className="mb-4">
-      <ul className="nav nav-pills flex-wrap gap-1">
-        {LINKS.map((l) => (
-          <li className="nav-item" key={l.href}>
-            <Link className={`nav-link ${path === l.href ? "active" : ""}`} href={l.href}
+    <nav aria-label="Admin sections" className="admin-section-nav">
+      <ul className="admin-section-list">
+        {LINKS.map((l, index) => (
+          <li key={l.href}>
+            <Link className={`admin-section-link ${path === l.href ? "active" : ""}`} href={l.href}
               aria-current={path === l.href ? "page" : undefined}>
+              <AdminOverviewIcon name={ICONS[index]} size={20} />
               {l.label}
             </Link>
           </li>

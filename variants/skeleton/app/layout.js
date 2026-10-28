@@ -1,12 +1,21 @@
 import "skeleton-css/css/normalize.css";
 import "skeleton-css/css/skeleton.css";
 import "./globals.css";
+import localFont from "next/font/local";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import SystemBanner from "../components/SystemBanner";
 import SosButton from "../components/SosButton";
 import HealthcareAssistant from "../components/HealthcareAssistant";
+
+const medreachSans = localFont({
+  src: "../public/fonts/geist-variable.woff2",
+  variable: "--font-medreach",
+  weight: "100 900",
+  display: "swap",
+  fallback: ["Arial", "sans-serif"],
+});
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://medreachmumbai.vercel.app"),
@@ -107,7 +116,7 @@ import FooterWordmarkReveal from "../components/FooterWordmarkReveal";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={medreachSans.variable}>
       <head>
         <script
           type="application/ld+json"

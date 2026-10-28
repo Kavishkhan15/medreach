@@ -109,7 +109,6 @@ export default function UrgentBloodPage() {
           <EmergencyIcon name="blood" size={32} />
         </div>
         <div>
-          <span className="badge bg-danger text-uppercase fw-bold mb-1">Critical Clinical Response</span>
           <h1 className="h4 alert-heading mb-0 fw-bold">Urgent Blood Requirement</h1>
           <p className="small mb-0 opacity-90">
             Record an urgent requirement, then contact blood banks directly to confirm inventory and fulfillment.

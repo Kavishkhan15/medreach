@@ -248,10 +248,11 @@ export default function JobDetailPage() {
         </Link>
       </div>
 
-      {loadingJob && <p className="mt-3 text-secondary">Loading role details…</p>}
+      {loadingJob && <><h1>Healthcare job details</h1><p className="mt-3 text-secondary" role="status">Loading role details…</p></>}
 
       {!loadingJob && !job && (
         <div className="alert alert-warning mt-3" role="alert">
+          <h1 className="h3">Healthcare job details</h1>
           {status === "Authentication required" ? "Login required" : (status || "Job listing not found or is no longer active.")}
           {(status === "Login required" || status === "Authentication required") && (
             <> · <Link href={`/login?returnTo=${encodeURIComponent(`/jobs/${id}`)}`} className="alert-link">Sign in</Link></>
@@ -267,13 +268,13 @@ export default function JobDetailPage() {
           {/* Left Column: Job Description & Details */}
           <div className="col-lg-6 d-print-none">
             <article className="surface h-100">
-              <span className="eyebrow">{job.category}</span>
               <h1 className="h3 mt-1 mb-2">{job.title}</h1>
               <p className="text-secondary mb-3">
                 <strong>{orgName}</strong> · {orgLocation}
               </p>
 
               <div className="d-flex flex-wrap gap-2 mb-4">
+                {job.category && <span className="status-pill tone-neutral">{job.category}</span>}
                 <span className="status-pill tone-info">
                   {job.employmentType?.replaceAll("_", " ")}
                 </span>
@@ -281,10 +282,10 @@ export default function JobDetailPage() {
                 {job.demo && <span className="status-pill tone-warning">DEMO ROLE</span>}
               </div>
 
-              <h2 className="h6 text-uppercase text-muted fw-bold">Role Description</h2>
+              <h2 className="h5 fw-bold">Role description</h2>
               <p className="pre-line text-body mb-4">{job.description}</p>
 
-              <h2 className="h6 text-uppercase text-muted fw-bold">Requirements & Qualifications</h2>
+              <h2 className="h5 fw-bold">Requirements &amp; qualifications</h2>
               <p className="pre-line text-body mb-4">
                 {job.requirements || "Standard clinical registration and medical council clearance required."}
               </p>
@@ -330,7 +331,7 @@ export default function JobDetailPage() {
                 {/* Reference ID Card */}
                 <div className="p-3 bg-light rounded border text-center mb-3">
                   {submissionRecap.referenceId ? (
-                    <><span className="text-muted small text-uppercase fw-semibold d-block">Application Reference ID</span><code className="fs-5 fw-bold text-primary">{submissionRecap.referenceId}</code></>
+                    <><span className="text-muted fw-semibold d-block">Application reference</span><code className="fs-5 fw-bold text-primary">{submissionRecap.referenceId}</code></>
                   ) : (
                     <span className="text-muted small">Application recorded. No reference ID was returned.</span>
                   )}
@@ -341,7 +342,7 @@ export default function JobDetailPage() {
                 </div>
 
                 {/* Candidate Details Recap */}
-                <h3 className="h6 text-uppercase text-muted fw-bold mb-2">Candidate Details Recap</h3>
+                <h3 className="h5 fw-bold mb-2">Candidate details</h3>
                 <dl className="row small mb-3">
                   <dt className="col-sm-4 text-muted">Full Name</dt>
                   <dd className="col-sm-8 fw-semibold">{submissionRecap.candidateName}</dd>
@@ -367,7 +368,7 @@ export default function JobDetailPage() {
                 {/* Statement of Purpose Recap */}
                 <div className="mb-4">
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="small text-muted fw-bold text-uppercase">Statement of Purpose</span>
+                    <h4 className="h5 fw-bold mb-0">Statement of purpose</h4>
                     <span className="badge bg-secondary">{submissionRecap.wordCount} words</span>
                   </div>
                   <div className="p-3 bg-light rounded border small pre-line text-secondary" style={{ maxHeight: "180px", overflowY: "auto" }}>

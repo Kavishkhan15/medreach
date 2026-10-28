@@ -2,7 +2,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { authStatus, changePassword, logout, me, requestVerification, revokeSession,
+import LogoutButton from "../../components/LogoutButton";
+import MfaSecurityPanel from "../../components/MfaSecurityPanel";
+import { authStatus, changePassword, me, requestVerification, revokeSession,
   safeReturnTo, updateProfile } from "@medreach/core";
 
 const date = (value) => value ? new Date(value).toLocaleString() : "Unknown";
@@ -51,18 +53,17 @@ export default function Profile() {
     const saved = await action(() => updateProfile({ ...form, region }), "Profile saved.");
     if (saved && onboarding) router.replace(onboardingReturnTo);
   };
-  const signOut = async () => { await logout(); window.dispatchEvent(new Event("medreach:auth-changed")); router.push("/login"); };
-  if (!user) return <div className="surface"><h1 className="h3">Profile &amp; security</h1><p role="status">{status || "Loading account…"}</p></div>;
-  return <>
-    <div className="page-head mb-4"><span className="eyebrow">Account</span><h1>Profile &amp; security</h1>
-    <p className="text-muted">Manage your verified email, password, and active sessions.</p></div>
+  if (!user) return <div className="profile-workspace"><div className="profile-card"><h1>Profile &amp; security</h1><p role="status">{status || "Loading account…"}</p></div></div>;
+  return <div className="profile-workspace">
+    <header className="profile-page-header"><h1>Profile &amp; security</h1>
+    <p>Update your details, protect your account and review where you are signed in.</p></header>
     {onboarding && <div className="alert alert-warning" role="alert"><strong>Complete your account setup.</strong> Choose your region below. It is required so MedReach can prioritize relevant local healthcare services.</div>}
     {status && <div className="alert alert-info" role="status">{status}</div>}
-    <div className="d-flex flex-column gap-4">
+    <div className="profile-grid">
       {/* Your Profile Card */}
-      <div className="w-100">
-        <form className="surface p-4" onSubmit={saveProfile}>
-          <h2 className="h5 fw-bold text-dark mb-4">Your profile</h2>
+      <div className="profile-grid-details">
+        <form className="profile-card" onSubmit={saveProfile}>
+          <div className="profile-card-heading"><h2>Your profile</h2><p>Keep your information current for your MedReach account.</p></div>
           <div className="row g-3">
             {/* Left Column: Email and Name */}
             <div className="col-12 col-md-6 d-flex flex-column gap-3">
@@ -105,7 +106,7 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="d-flex justify-content-end mt-4">
+          <div className="profile-form-actions">
             <button className="btn btn-primary px-4 py-2" disabled={busy}>
               {busy ? "Saving…" : onboarding ? "Save and continue" : "Save profile"}
             </button>
@@ -114,9 +115,9 @@ export default function Profile() {
       </div>
 
       {/* Change Password Card */}
-      <div className="w-100">
+      <div className="profile-grid-password">
         <form
-          className="surface p-4"
+          className="profile-card"
           onSubmit={(event) => {
             event.preventDefault();
             action(async () => {
@@ -126,12 +127,12 @@ export default function Profile() {
             }, "Password changed. Sign in again.");
           }}
         >
-          <h2 className="h5 fw-bold text-dark mb-4">Change password</h2>
+          <div className="profile-card-heading"><h2>Change password</h2><p>Choose a strong password for this account.</p></div>
           {security.providers.password ? (
             <>
-              <div className="row g-3">
+              <div className="profile-password-fields">
                 {/* Left Column: Current password */}
-                <div className="col-12 col-md-6">
+                <div>
                   <label className="form-label fw-semibold text-secondary small mb-1" htmlFor="oldPassword">Current password</label>
                   <input
                     id="oldPassword"
@@ -145,7 +146,7 @@ export default function Profile() {
                 </div>
 
                 {/* Right Column: New password and validation guidance */}
-                <div className="col-12 col-md-6 d-flex flex-column gap-2">
+                <div>
                   <div>
                     <label className="form-label fw-semibold text-secondary small mb-1" htmlFor="newPassword">New password</label>
                     <input
@@ -166,7 +167,7 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div className="d-flex justify-content-end mt-4">
+              <div className="profile-form-actions">
                 <button className="btn btn-outline-primary px-4 py-2" disabled={busy}>
                   Change password
                 </button>
@@ -178,17 +179,18 @@ export default function Profile() {
         </form>
       </div>
 
+      <div className="profile-grid-sessions"><MfaSecurityPanel /></div>
       {/* Active Sessions */}
-      <div className="w-100">
-        <section className="surface p-4">
-          <div className="d-flex justify-content-between align-items-center">
+      <div className="profile-grid-sessions">
+        <section className="profile-card">
+          <div className="profile-session-heading">
             <div>
-              <h2 className="h5 fw-bold text-dark mb-1">Active sessions</h2>
-              <p className="disclaimer mb-0">Only hashed device and network fingerprints are stored.</p>
+              <h2>Active sessions</h2>
+              <p>Review recent sign-ins and revoke sessions you do not recognize.</p>
             </div>
-            <button className="btn btn-outline-danger" onClick={signOut}>Log out this browser</button>
+            <LogoutButton className="btn btn-outline-danger">Log out this browser</LogoutButton>
           </div>
-          <div className="table-responsive mt-3">
+          <div className="table-responsive profile-session-table">
             <table className="table">
               <thead>
                 <tr>
@@ -201,10 +203,10 @@ export default function Profile() {
               <tbody>
                 {security.sessions.map((session) => (
                   <tr key={session._id}>
-                    <td>{date(session.createdAt)}</td>
-                    <td>{date(session.expiresAt)}</td>
-                    <td><code>{session.userAgentHash?.slice(0, 10) || "unknown"}</code></td>
-                    <td className="text-end">
+                    <td data-label="Started">{date(session.createdAt)}</td>
+                    <td data-label="Expires">{date(session.expiresAt)}</td>
+                    <td data-label="Device"><code>{session.userAgentHash?.slice(0, 10) || "unknown"}</code></td>
+                    <td className="text-end profile-session-action">
                       <button className="btn btn-sm btn-outline-danger" disabled={busy} onClick={() => action(() => revokeSession(session._id), "Session revoked.")}>Revoke</button>
                     </td>
                   </tr>
@@ -216,5 +218,5 @@ export default function Profile() {
         </section>
       </div>
     </div>
-  </>;
+  </div>;
 }

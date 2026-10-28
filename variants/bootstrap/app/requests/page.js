@@ -39,7 +39,6 @@ export default function Requests() {
   return (
     <>
       <div className="page-head mb-4">
-        <span className="eyebrow">Your coordination history</span>
         <h1>Bed requests</h1>
         <p>Track hospital responses for emergency and standard requests. An accepted request does not guarantee a reserved bed.</p>
       </div>

@@ -11,6 +11,8 @@ export default function LoginPage() {
   const { login, register } = useAuth();
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ email: "", password: "", name: "" });
+  const [verification, setVerification] = useState({ code: "", recoveryCode: "" });
+  const [useRecovery, setUseRecovery] = useState(false);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [notice, setNotice] = useState("");
@@ -40,7 +42,9 @@ export default function LoginPage() {
     setBusy(true);
     try {
       if (mode === "login") {
-        const user = await login(form.email, form.password);
+        const user = await login(form.email, form.password, verification);
+        setVerification({ code: "", recoveryCode: "" });
+        setForm((current) => ({ ...current, password: "" }));
         router.push(profileDestination(user, returnTo));
       }
       else {
@@ -56,6 +60,8 @@ export default function LoginPage() {
       }
     } catch (err) {
       setServerError(err.message);
+      setForm((current) => ({ ...current, password: "" }));
+      setVerification({ code: "", recoveryCode: "" });
     } finally {
       submitting.current = false;
       setBusy(false);
@@ -88,10 +94,15 @@ export default function LoginPage() {
               <input id="password" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} className={`form-control ${errors.password ? "is-invalid" : ""}`} value={form.password} onChange={set("password")} />
               {errors.password && <div className="invalid-feedback">{errors.password}</div>}
             </div>
+            {mode === "login" && <fieldset><legend className="h6">Two-factor authentication</legend><p className="disclaimer">If enabled for your account, enter your authenticator code or a single-use recovery code.</p>
+              <label htmlFor="login-verification" className="form-label">{useRecovery ? "Recovery code" : "Authenticator code"}</label>
+              <input id="login-verification" className="form-control" autoComplete="one-time-code" inputMode={useRecovery ? "text" : "numeric"} maxLength={useRecovery ? 100 : 6} value={useRecovery ? verification.recoveryCode : verification.code} onChange={(e) => setVerification(useRecovery ? { code: "", recoveryCode: e.target.value } : { recoveryCode: "", code: e.target.value })} />
+              <button className="btn btn-link px-0" type="button" onClick={() => { setUseRecovery(!useRecovery); setVerification({ code: "", recoveryCode: "" }); }}>{useRecovery ? "Use authenticator code" : "Use a recovery code"}</button>
+            </fieldset>}
             <button className="btn btn-primary btn-lg" type="submit" disabled={busy}>{busy ? (mode === "login" ? "Signing in…" : "Creating account…") : (mode === "login" ? "Sign in" : "Create account")}</button>
           </form>
           <div className="text-center mt-3">
-            <button className="btn btn-link p-0" disabled={busy} onClick={() => { setMode(mode === "login" ? "register" : "login"); setErrors({}); }}>
+            <button className="btn btn-link p-0" disabled={busy} onClick={() => { setMode(mode === "login" ? "register" : "login"); setErrors({}); setVerification({ code: "", recoveryCode: "" }); }}>
               {mode === "login" ? "Need an account? Register here" : "Have an account? Sign in"}
             </button>
           </div>

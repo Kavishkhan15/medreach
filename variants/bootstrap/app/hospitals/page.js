@@ -18,10 +18,9 @@ export default function HospitalsPage() {
   return (
     <>
       <header className="page-head mb-4">
-        <span className="eyebrow">Mumbai care network</span>
         <h1>Hospital directory</h1>
         <p>
-          Information and discovery directory for {total || "listed"} hospitals in Mumbai.
+          Browse recorded locations, services and hours for {total || "listed"} hospitals in Mumbai. A bed request requires hospital confirmation.
         </p>
       </header>
 

@@ -20,7 +20,7 @@ const initialQuestions = [
   "Trauma centers near Dadar",
 ];
 
-export default function HealthcareAssistant({ initialOpen = false, onCloseModal }) {
+export default function HealthcareAssistant({ initialOpen = false, onCloseModal, onReady }) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -74,8 +74,9 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
       if (event?.detail?.query) send(event.detail.query, { locality: label, origin });
     };
     window.addEventListener("medreach:open-assistant", handleOpen);
+    onReady?.();
     return () => window.removeEventListener("medreach:open-assistant", handleOpen);
-  }, [label, origin, send]);
+  }, [label, origin, send, onReady]);
 
   const close = () => { setIsOpen(false); onCloseModal?.(); };
   const handleSend = (textToSend) => {
@@ -121,7 +122,6 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
               <Link className={styles.action} href="/map"><EmergencyIcon name="pin" size={14} />Open Interactive Care Map</Link>
             </nav>
             <div className={styles.followups}>
-              <p className={styles.sectionLabel}>You could ask</p>
               <div className={styles.chips}>{initialQuestions.map(question => <button type="button" className={styles.chip}
                 key={question} onClick={() => handleSend(question)} disabled={sending}>{question}</button>)}</div>
             </div>
@@ -131,7 +131,7 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
               className={message.role === "user" ? styles.userMessage : styles.assistantMessage} data-message={message.role}>
               <p className={styles.messageText}>{message.text}</p>
               {(message.intent === "emergency" || message.intent === "unavailable") && <div className={styles.emergency}>
-                <p className={styles.sectionLabel}><EmergencyIcon name="siren" size={14} />Immediate emergency contacts</p>
+                <h3 className={styles.sectionTitle}><EmergencyIcon name="siren" size={18} />Immediate emergency contacts</h3>
                 <div className={styles.actionRow}>
                   <a className={styles.primaryAction} href="tel:112"><EmergencyIcon name="phone" size={13} />Call 112 (Emergency)</a>
                   <a className={styles.action} href="tel:108"><EmergencyIcon name="ambulance" size={13} />Call 108 (Ambulance)</a>
@@ -139,23 +139,23 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                 </div>
               </div>}
               {message.hospitals?.length > 0 && <section className={styles.results} aria-label="Hospital matches">
-                <p className={styles.sectionLabel}>Hospital matches</p>
+                <h3 className={styles.sectionTitle}>Hospital matches</h3>
                 {message.hospitals.map(hospital => <AssistantHospitalCard key={hospital.id || hospital.slug} hospital={hospital} emergency={message.intent === "emergency"} />)}
               </section>}
               {message.bloodBanks?.length > 0 && <section className={styles.results} aria-label="Blood banks">
-                <p className={styles.sectionLabel}>Blood banks</p>
+                <h3 className={styles.sectionTitle}>Blood banks</h3>
                 {message.bloodBanks.map(bank => <AssistantBloodBankCard key={bank.id || bank.name} bloodBank={bank} onRequestBlood={openBloodModal} />)}
               </section>}
               {message.ambulances?.length > 0 && <section className={styles.results} aria-label="Ambulance providers">
-                <p className={styles.sectionLabel}>Ambulance providers</p>
+                <h3 className={styles.sectionTitle}>Ambulance providers</h3>
                 {message.ambulances.map(ambulance => <AssistantAmbulanceCard key={ambulance.id || ambulance.name} ambulance={ambulance} onBookAmbulance={openAmbulanceModal} />)}
               </section>}
               {message.diagnostics?.length > 0 && <section className={styles.results} aria-label="Diagnostics">
-                <p className={styles.sectionLabel}>Diagnostic & scan centers</p>
+                <h3 className={styles.sectionTitle}>Diagnostic & scan centers</h3>
                 {message.diagnostics.map(diagnostic => <AssistantDiagnosticCard key={diagnostic.id || diagnostic.name} diagnostic={diagnostic} />)}
               </section>}
               {message.jobs?.length > 0 && <section className={styles.results} aria-label="Healthcare jobs">
-                <p className={styles.sectionLabel}>Clinical openings</p>
+                <h3 className={styles.sectionTitle}>Clinical openings</h3>
                 {message.jobs.map(job => <AssistantJobCard key={job.id} job={job} />)}
               </section>}
               {message.suggestedActions?.length > 0 && <div className={styles.actionRow}>
@@ -164,7 +164,6 @@ export default function HealthcareAssistant({ initialOpen = false, onCloseModal 
                   : action.url ? <Link key={index} className={action.primary ? styles.primaryAction : styles.action} href={action.url}>{action.label}</Link> : null)}
               </div>}
               {message.suggestedPrompts?.length > 0 && <div className={styles.followups}>
-                <p className={styles.sectionLabel}>Suggested follow-ups</p>
                 <div className={styles.chips}>{message.suggestedPrompts.map(prompt => <button type="button" key={prompt} className={styles.chip}
                   onClick={() => handleSend(prompt)} disabled={sending}>{prompt}</button>)}</div>
               </div>}

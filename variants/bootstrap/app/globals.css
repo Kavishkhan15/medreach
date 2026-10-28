@@ -1,12 +1,15 @@
 /* ============================================================================
-   MedReach · Bootstrap variant — Emergency design system.
+   MedReach · Bootstrap variant — Healthcare design system.
    Shared SEMANTIC tokens (names identical across variants); only the Bootstrap
-   mapping/implementation lives here. Palette: emergency red used STRATEGICALLY,
+   mapping/implementation lives here. Palette: blue actions with emergency red reserved for urgent care,
    white/neutral surfaces, green=verified/available, amber=limited, grey=unknown.
    ============================================================================ */
 
 :root {
   /* Semantic tokens (names shared across all three variants) */
+  --color-brand: #1469cd;
+  --color-brand-dark: #1058af;
+  --color-brand-soft: #e3f1ff;
   --color-emergency: #d32029;
   --color-emergency-dark: #a51620;
   --color-critical: #b3001b;
@@ -18,29 +21,38 @@
   --color-danger-bg: #fdecee;
   --color-info: #1f5f8b;
   --color-info-bg: #e8f1f8;
-  --color-background: #f6f7f9;
+  --color-background: #f5f9fd;
   --color-surface: #ffffff;
-  --color-text: #1c2024;
-  --color-muted: #5b6570;
-  --color-border: #e3e6ea;
+  --color-text: #111e40;
+  --color-muted: #526a8b;
+  --color-border: #dfebf7;
 
-  --radius: 0.625rem;
-  --radius-lg: 1rem;
+  --radius: 1rem;
+  --radius-lg: 1.25rem;
   --radius-pill: 9999px;
   --shadow-sm: none;
   --shadow-md: 0 2px 6px rgba(16, 24, 40, 0.05);
   --shadow-lg: 0 6px 18px rgba(16, 24, 40, 0.1);
 
   /* Map onto Bootstrap */
-  --bs-primary: var(--color-emergency);
-  --bs-primary-rgb: 211, 32, 41;
+  --bs-primary: var(--color-brand);
+  --bs-primary-rgb: 20, 105, 205;
   --bs-body-color: var(--color-text);
   --bs-body-bg: var(--color-background);
   --bs-border-color: var(--color-border);
   --bs-border-radius: var(--radius);
-  --bs-link-color: var(--color-emergency-dark);
-  --bs-link-hover-color: var(--color-critical);
-  --bs-font-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --bs-link-color: var(--color-brand);
+  --bs-link-hover-color: var(--color-brand-dark);
+  --bs-font-sans-serif: var(--font-medreach), Arial, sans-serif;
+  /* Typography scale; Skeleton retains its native 10px rem base. */
+  --type-caption: 0.8125rem;
+  --type-small: 0.9375rem;
+  --type-body: 1rem;
+  --type-body-lg: 1.0625rem;
+  --type-card: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+  --type-section: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+  --type-page: clamp(2rem, 2.6vw, 2.625rem);
+  --type-hero: clamp(2.25rem, 1.3rem + 3vw, 3.75rem);
 }
 
 * { scroll-behavior: smooth; }
@@ -49,12 +61,14 @@ body {
   color: var(--color-text);
   background: var(--color-background);
   -webkit-font-smoothing: antialiased;
+  font-size: var(--type-body);
+  line-height: 1.6;
 }
 main { min-height: 68vh; }
-h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; font-weight: 700; color: #10151a; }
-h1 { font-size: clamp(2.25rem, 1.25rem + 4vw, 4.5rem); line-height: 1.08; letter-spacing: -0.03em; font-weight: 700; overflow-wrap: break-word; }
-h2 { font-size: clamp(1.75rem, 1.125rem + 1.8vw, 2.5rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; overflow-wrap: break-word; }
-h3 { font-size: clamp(1.35rem, 0.95rem + 1vw, 1.75rem); line-height: 1.3; letter-spacing: -0.015em; font-weight: 650; overflow-wrap: break-word; }
+h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; font-weight: 650; color: #11182d; }
+h1 { font-size: var(--type-page); line-height: 1.15; letter-spacing: -0.025em; font-weight: 650; overflow-wrap: break-word; }
+h2 { font-size: var(--type-section); line-height: 1.2; letter-spacing: -0.025em; font-weight: 650; overflow-wrap: break-word; }
+h3 { font-size: var(--type-card); line-height: 1.35; letter-spacing: -0.015em; font-weight: 650; overflow-wrap: break-word; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
@@ -62,73 +76,13 @@ h3 { font-size: clamp(1.35rem, 0.95rem + 1vw, 1.75rem); line-height: 1.3; letter
 
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
 .btn:focus-visible {
-  outline: 3px solid rgba(211, 32, 41, 0.45);
+  outline: 3px solid rgba(20, 105, 205, 0.45);
   outline-offset: 2px;
 }
 
-.app-navbar { background: #fff; border: 0; box-shadow: none; padding: 12px 20px; transition: padding 0.25s ease, box-shadow 0.25s ease; }
-.app-navbar.is-scrolled { padding: 4px 20px; box-shadow: 0 4px 20px rgba(24,65,104,.08); }
-.medreach-nav-shell { display: grid; grid-template-columns: 44px minmax(0,1fr) 44px; align-items: center; gap: 0 8px; width: 100%; max-width: 1380px; margin-inline: auto; padding: 12px 16px; background: #fff; border: 1px solid #e0eaf5; border-radius: 18px; box-shadow: 0 6px 24px rgba(24,65,104,.06); transition: all 0.25s ease; }
-.app-navbar .navbar-brand { grid-column: 2; grid-row: 1; display: flex; align-items: center; justify-content: center; min-width: 0; margin: 0; padding: 0; }
-.app-navbar .navbar-brand img { display: block; width: 112px; max-width: 100%; height: auto; transition: width 0.25s ease; }
-.app-navbar .navbar-toggler { grid-column: 3; grid-row: 1; width: 44px; height: 44px; padding: 8px; border: 1px solid #d6e3f0; border-radius: 12px; }
-.app-navbar .navbar-toggler-icon { width: 24px; height: 24px; }
-.app-navbar .navbar-collapse { grid-column: 1 / -1; min-width: 0; }
-.app-navbar .navbar-collapse.show { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px 14px; padding: 14px 0 65px; border-top: 1px solid #e4edf6; margin-top: 12px; max-height: calc(100dvh - 190px); overflow-y: auto; overscroll-behavior: contain; }
-.app-navbar .navbar-nav { min-width: 0; gap: 4px; }
-.app-navbar .nav-link { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 12px; border-radius: 14px; color: #172b49; font-weight: 650; font-size: 1.125rem; white-space: nowrap; transition: all 0.25s ease; }
-.app-navbar .nav-link svg { flex-shrink: 0; transition: all 0.25s ease; }
-.app-navbar .nav-link:hover { background: #f1f6fc; color: #075a9f; }
-.app-navbar .nav-link.active { background: #e7f0ff; color: #0967b9; }
-.app-navbar a:focus-visible, .app-navbar button:focus-visible { outline: 3px solid #0967b9; outline-offset: 3px; }
-.app-navbar .nav-login, .app-navbar .nav-logout { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; border-radius: 999px; padding: 10px 18px; font-size: 1.125rem; font-weight: 700; transition: all 0.25s ease; }
-.app-navbar .nav-login { --bs-btn-bg: #d32029; --bs-btn-border-color: #d32029; --bs-btn-hover-bg: #ae1821; --bs-btn-hover-border-color: #ae1821; font-size: 1.125rem; }
-.app-navbar .nav-login.is-scroll-hidden { visibility: hidden; pointer-events: none; }
-.app-navbar .nav-logout { color: #172b49; border-color: #d6e3f0; }
-.app-navbar .nav-logout:hover { color: #172b49; background: #f1f6fc; }
-.app-navbar .nav-logout > span { max-width: 125px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.app-navbar.is-scrolled .nav-link { font-size: 1rem; padding: 8px 10px; min-height: 40px; }
-.app-navbar.is-scrolled .nav-login, .app-navbar.is-scrolled .nav-logout { font-size: 1rem; min-height: 40px; padding: 8px 14px; }
-.app-navbar .medreach-account-nav { grid-column: 1 / -1; display: flex; flex-direction: row; flex-wrap: wrap; gap: 6px; padding-top: 10px; border-top: 1px solid #e4edf6; }
-@media (min-width: 1400px) {
-  .medreach-nav-shell { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 0 6px; padding: 8px 16px; min-height: 80px; }
-  .app-navbar.is-scrolled .medreach-nav-shell { min-height: 64px; padding: 4px 16px; }
-  .app-navbar .navbar-brand { grid-column: 2; grid-row: 1; align-self: stretch; padding-inline: 4px; border-inline: 1px solid #e4edf6; }
-  .app-navbar .navbar-brand img { width: 128px; }
-  .app-navbar.is-scrolled .navbar-brand img { width: 128px; }
-  .app-navbar .navbar-collapse, .app-navbar .navbar-collapse.show { display: contents !important; }
-  .app-navbar .medreach-nav-left { grid-column: 1; grid-row: 1; justify-content: flex-end; }
-  .app-navbar .medreach-nav-right { grid-column: 3; grid-row: 1; justify-content: flex-start; }
-  .app-navbar .navbar-nav { flex-direction: row; align-items: center; gap: 2px; }
-  .app-navbar .navbar-nav .nav-link { font-size: 1.125rem; padding: 8px 6px; gap: 6px; }
-  .app-navbar .nav-link svg { width: 22px; height: 22px; }
-  .app-navbar .nav-login, .app-navbar .nav-logout { font-size: 1.125rem; padding-inline: 16px; }
-  .app-navbar .nav-login { font-size: 1.125rem; }
-  .app-navbar .nav-logout { padding-inline: 6px; }
-  .app-navbar .nav-logout > span { max-width: 80px; }
-  .app-navbar .medreach-account-nav { grid-row: 2; justify-content: flex-end; margin-top: 10px; }
-  .app-navbar.is-scrolled .navbar-nav .nav-link { font-size: .9375rem; padding: 6px 4px; gap: 4px; }
-  .app-navbar.is-scrolled .nav-link svg { width: 20px; height: 20px; }
-  .app-navbar.is-scrolled .nav-login, .app-navbar.is-scrolled .nav-logout { font-size: .9375rem; padding-inline: 12px; }
-  .app-navbar.is-scrolled .nav-login { font-size: .9375rem; }
-  .app-navbar.is-scrolled .nav-logout { padding-inline: 4px; }
-  .app-navbar.is-scrolled .nav-logout > span { max-width: 64px; }
-  /* Keep the full-size logo while halving the visible frame around the links. */
-  .medreach-nav-shell { position: relative; isolation: isolate; background: transparent; border-color: transparent; box-shadow: none; }
-  .medreach-nav-shell::before { content: ""; position: absolute; z-index: -1; inset: 25% -1px; border: 1px solid #e0eaf5; border-radius: inherit; background: #fff; box-shadow: 0 6px 24px rgba(24,65,104,.06); transition: all 0.25s ease; }
-  .medreach-nav-shell:has(.medreach-account-nav)::before { top: 32px; bottom: -1px; }
-  .app-navbar .navbar-brand { position: relative; border-inline-color: transparent; }
-  .app-navbar .navbar-brand::before, .app-navbar .navbar-brand::after { content: ""; position: absolute; top: 25%; bottom: 25%; width: 1px; background: #e4edf6; }
-  .app-navbar .navbar-brand::before { left: -1px; }
-  .app-navbar .navbar-brand::after { right: -1px; }
-}
-@media (max-width: 575px) {
-  .app-navbar { padding: 8px; }
-  .medreach-nav-shell { padding: 10px; gap: 0 4px; border-radius: 18px; }
-  .app-navbar .navbar-collapse.show { grid-template-columns: 1fr; }
-}
-
-.system-banner { font-size: .85rem; font-weight: 600; padding: .4rem 0; text-align: center; }
+.system-banner { display: grid; align-items: center; font-size: .85rem; font-weight: 600; padding: .4rem .5rem; text-align: center; border-bottom: 1px solid transparent; }
+.system-banner-sizer, .system-banner-message { grid-area: 1 / 1; }
+.system-banner-sizer { visibility: hidden; pointer-events: none; }
 .system-banner.demo { background: var(--color-warning-bg); color: var(--color-warning); border-bottom: 1px solid #f0d9a8; }
 .system-banner.live { background: var(--color-success-bg); color: var(--color-success); border-bottom: 1px solid #b9e6c9; }
 
@@ -138,14 +92,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 .btn-emergency { background: #fff; color: var(--color-critical); font-weight: 800; border: none; border-radius: var(--radius); padding: .9rem 1.4rem; box-shadow: var(--shadow-md); }
 .btn-emergency:hover { background: #fff5f5; color: var(--color-critical); }
-.btn-primary { --bs-btn-bg: var(--color-emergency); --bs-btn-border-color: var(--color-emergency); --bs-btn-hover-bg: var(--color-emergency-dark); --bs-btn-hover-border-color: var(--color-emergency-dark); font-weight: 700; }
+.btn-primary { --bs-btn-bg: var(--color-brand); --bs-btn-border-color: var(--color-brand); --bs-btn-hover-bg: var(--color-brand-dark); --bs-btn-hover-border-color: var(--color-brand-dark); --bs-btn-active-bg: var(--color-brand-dark); --bs-btn-active-border-color: var(--color-brand-dark); --bs-btn-disabled-bg: var(--color-brand); --bs-btn-disabled-border-color: var(--color-brand); font-weight: 650; }
 
 .card, .surface { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .surface { padding: 1.25rem; }
 .hospital-card { transition: border-color .15s ease; }
 .hospital-card:hover { border-color: #ccd2da; }
+.hospital-card-title { font-size: 1.125rem; line-height: 1.4; overflow-wrap: anywhere; }
+.hospital-card :is(.hospital-card-address, .hospital-card-type, .hospital-card-services, .hospital-card-hours) { font-size: .9375rem; line-height: 1.6; overflow-wrap: anywhere; }
+.hospital-card-actions .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; white-space: normal; flex-basis: auto; }
 
-.status-pill { display: inline-flex; align-items: center; gap: .35rem; font-weight: 700; font-size: .8rem; padding: .2rem .6rem; border-radius: var(--radius-pill); }
+.status-pill { display: inline-flex; align-items: center; gap: .35rem; font-weight: 700; font-size: var(--type-caption); padding: .2rem .6rem; border-radius: var(--radius-pill); line-height: 1.5; }
 .tone-success { background: var(--color-success-bg); color: var(--color-success); }
 .tone-warning { background: var(--color-warning-bg); color: var(--color-warning); }
 .tone-danger  { background: var(--color-danger-bg);  color: var(--color-danger); }
@@ -153,7 +110,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .tone-neutral { background: #eef0f2; color: var(--color-muted); }
 .status-symbol { font-weight: 800; }
 
-.chip { display: inline-block; font-size: .78rem; font-weight: 600; color: var(--color-muted); background: #eef0f2; border-radius: var(--radius-pill); padding: .15rem .6rem; }
+.chip { display: inline-block; font-size: var(--type-caption); font-weight: 600; color: var(--color-muted); background: #eef0f2; border-radius: var(--radius-pill); padding: .15rem .6rem; line-height: 1.5; }
 
 .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
 @media (min-width: 576px) { .cat-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -177,24 +134,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 .map-canvas { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); min-height: 300px; display: flex; align-items: center; justify-content: center; color: var(--color-muted); }
 
-.disclaimer { font-size: .78rem; color: var(--color-muted); }
+.disclaimer { font-size: var(--type-caption); color: var(--color-muted); line-height: 1.5; }
 .page-head { max-width: 100%; padding: 2.25rem 0 .75rem; }
-.page-head .eyebrow {
-  display: block;
-  color: var(--color-emergency-dark);
-  font-size: clamp(1.25rem, 0.85rem + 1.8vw, 2.125rem);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.015em;
-  text-transform: uppercase;
-  margin-bottom: 0.35rem;
-  overflow-wrap: break-word;
-}
 .page-head h1, .page-head .h1, .page-head h1.h2, .page-head h1.h3 {
-  font-size: clamp(0.875rem, 0.75rem + 0.45vw, 1.3125rem);
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: -0.015em;
+  font-size: var(--type-page);
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   color: var(--color-text);
   margin-top: 0.2rem;
   margin-bottom: 0.6rem;
@@ -211,16 +157,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .careers-portal .badge {
   white-space: normal;
   text-align: left;
-}
-.eyebrow {
-  display: inline-block;
-  color: var(--color-emergency-dark);
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-weight: 700;
-  margin-bottom: 0.35rem;
-  line-height: 1.35;
 }
 .timeline-list { border-left: 2px solid var(--color-border); padding-left: 1.4rem; list-style: none; }
 .timeline-list li { position: relative; margin: 0 0 1.4rem; }
@@ -414,10 +350,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .section-head {
   margin-bottom: 1.75rem;
 }
-.section-head .eyebrow {
-  display: block;
-  margin-bottom: 0.35rem;
-}
 .section-head h2 {
   font-size: clamp(1.625rem, 1rem + 1.6vw, 2.375rem);
   font-weight: 700;
@@ -492,15 +424,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   padding: 1.5rem 0.75rem 2rem;
 }
 
-.account-sidebar-label {
-  display: block;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-  padding: 0 12px 8px;
-}
 
 .account-sidebar-list {
   list-style: none;
@@ -586,10 +509,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     -webkit-overflow-scrolling: touch;
   }
 
-  .account-sidebar-label {
-    display: none;
-  }
-
   .account-sidebar-list {
     flex-direction: row;
     gap: 6px;
@@ -639,67 +558,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   }
 }
 
-/* Keep the centered desktop brand and every navigation action inside its column. */
-@media (min-width: 1400px) {
-  .app-navbar .navbar-nav .nav-link { font-size: .875rem; padding-inline: 5px; gap: 4px; }
-  .app-navbar .navbar-nav .nav-link svg { width: 18px; height: 18px; }
-  .app-navbar .nav-login, .app-navbar .nav-logout { font-size: .875rem; padding-inline: 10px; }
-}
+/* Form controls inherit the same face; table numbers remain easy to scan. */
 
-/* Responsive dimensions change immediately; interaction feedback keeps motion. */
-.app-navbar .medreach-nav-shell, .app-navbar .nav-link, .app-navbar .nav-login, .app-navbar .nav-link svg { transition: color .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease; }
+button, input, select, textarea { font-family: inherit; }
 
-/* ============================================================================
-   MEDREACH Oversized Footer Reveal Animation (Bootstrap)
-   ============================================================================ */
-.medreach-footer-reveal {
-  width: 100%;
-  max-width: 100vw;
-  overflow: hidden;
-  background-color: #ffffff;
-  display: block;
-  position: relative;
-  box-sizing: border-box;
-  margin-top: 0;
-  border-top: 0;
-}
+small, .small { font-size: var(--type-caption); line-height: 1.5; }
 
-.medreach-footer-reveal-stage {
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: clamp(2rem, 5vw, 4rem) 0 max(1.5rem, env(safe-area-inset-bottom));
-  box-sizing: border-box;
-}
+table { font-size: var(--type-small); line-height: 1.5; font-variant-numeric: tabular-nums; }
 
-.medreach-footer-wordmark {
-  display: block;
-  font-family: var(--bs-font-sans-serif, "Inter", system-ui, -apple-system, sans-serif);
-  font-size: clamp(4.5rem, 20vw, 26rem);
-  font-weight: 900;
-  line-height: 0.82;
-  letter-spacing: -0.045em;
-  color: #0047ab;
-  text-transform: uppercase;
-  text-align: center;
-  white-space: nowrap;
-  user-select: none;
-  -webkit-user-select: none;
-  pointer-events: none;
-  margin: 0;
-  padding: 0;
-  will-change: transform, opacity;
-  transform-origin: center bottom;
-  transform: translate3d(0, 0, 0) scale(1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .medreach-footer-wordmark {
-    transform: none !important;
-    opacity: 1 !important;
-    transition: none !important;
-    animation: none !important;
-  }
+@media (max-width: 767px) {
+  #main :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="hidden"], [type="button"], [type="submit"]) { font-size: var(--type-body); }
 }

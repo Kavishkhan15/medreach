@@ -90,7 +90,6 @@ export default function MapPage() {
   return (
     <>
       <div className="page-head mb-4">
-        <span className="eyebrow">Mumbai care network</span>
         <h1>Explore nearby care</h1>
         <p>
           Filter hospitals, blood banks, diagnostic centres, and ambulance fleets on the map.

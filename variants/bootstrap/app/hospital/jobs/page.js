@@ -54,8 +54,8 @@ export default function HospitalJobs({ providerMode = false }) {
   const act = (fn, success = "Job update confirmed.") => action.run(fn, { validate: adminEntity("job"), success, refresh: jobsResource.reload });
   const loadApplications = (jobId) => setExpandedJobId((previous) => previous === jobId ? "" : jobId);
   const handleUpdateStatus = (appId, newStatus) => action.run(() => productApi(`/api/applications/${appId}`, { method: "PATCH", body: { status: newStatus } }), { validate: adminEntity("application"), success: `Applicant update to ${newStatus.replaceAll("_", " ")} confirmed.`, refresh: applicantResource.reload, target: appId });
-  if (!ready) return <p role="status">Loading hospital careers…</p>;
-  if (!user) return <p>Sign in to manage hospital careers. <Link href="/login?returnTo=%2Fhospital%2Fjobs">Sign in</Link></p>;
+  if (!ready) return <><h1>Job Listings &amp; Applications</h1><p role="status">Loading hospital careers…</p></>;
+  if (!user) return <><h1>Job Listings &amp; Applications</h1><p>Sign in to manage hospital careers. <Link href="/login?returnTo=%2Fhospital%2Fjobs">Sign in</Link></p></>;
   return (
     <>
       <Link href={providerMode ? "/provider" : "/hospital"} className="small text-decoration-none">
@@ -63,7 +63,6 @@ export default function HospitalJobs({ providerMode = false }) {
       </Link>
 
       <div className="page-head my-3">
-        <span className="eyebrow">{providerMode ? "Provider" : "Hospital"} Careers Management</span>
         <h1>Job Listings & Applications</h1>
         <p>Review incoming clinical candidates, qualifications, and manage active departmental drafts.</p>
       </div>

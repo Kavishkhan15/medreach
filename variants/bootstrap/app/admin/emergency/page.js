@@ -73,7 +73,7 @@ export default function EmergencyRequests() {
   ];
 
   return (
-    <AdminGuard title="Emergency Requests" subtitle="Centralized view of all hospital bed, blood, diagnostic-centre, and ambulance requests across MedReach, clearly labelled by type, urgency, and status.">
+    <AdminGuard title="Requests" subtitle="Hospital beds, blood, diagnostics and ambulance activity, grouped by service and urgency.">
       {groups.map((group) => (
         <section key={group.label} className="surface mb-4">
           <h2>{group.label}</h2>
@@ -82,18 +82,14 @@ export default function EmergencyRequests() {
             label={group.label.toLowerCase()}
             emptyMessage={group.emptyMessage}
           >
-            {(rows) => rows.map((r) => (
-              <article key={r._id} className="border rounded p-3 mb-2">
-                <h3>{group.getId(r)}</h3>
-                <p className="mb-1">
-                  <strong>Type:</strong> {group.getType ? group.getType(r) : group.type} ·{" "}
-                  <strong>Urgency:</strong> {group.getUrgency(r)} ·{" "}
-                  <strong>Status:</strong> {r.status}
-                </p>
-                <p className="mb-1 text-muted">{group.getName(r)}</p>
-                <p className="small text-muted mb-0">{r.createdAt ? new Date(r.createdAt).toLocaleString() : "Timestamp unavailable"}</p>
+            {(rows) => <div className="admin-request-list">{rows.map((r) => (
+              <article key={r._id} className="admin-request-card">
+                <div><h3>{group.getId(r)}</h3><p className="mb-2">{group.getName(r)}</p>
+                  <div className="admin-request-meta"><span>{group.getType ? group.getType(r) : group.type}</span><span>{group.getUrgency(r)}</span><span>Status: <strong>{r.status}</strong></span></div>
+                </div>
+                <time className="admin-request-date" dateTime={r.createdAt || undefined}>{r.createdAt ? new Date(r.createdAt).toLocaleString() : "Timestamp unavailable"}</time>
               </article>
-            ))}
+            ))}</div>}
           </AdminDataState>
         </section>
       ))}

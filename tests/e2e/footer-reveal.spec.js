@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * Footer Reveal & Oversized Wordmark E2E Verification
+ * Footer layout and variant-specific branding verification.
  * 
  * Tests across viewports:
  * - Mobile (375px)
@@ -9,8 +9,8 @@ import { test, expect } from "@playwright/test";
  * - Desktop (1440px)
  * 
  * Asserts:
- * 1. Wordmark presence, cobalt color (#0047AB / rgb(0, 71, 171)), white background (#FFFFFF / rgb(255, 255, 255)).
- * 2. aria-hidden="true" on decorative reveal.
+ * 1. Bootstrap omits the decorative wordmark; other variants retain their reveal.
+ * 2. Retained decorative reveals remain hidden from assistive technology.
  * 3. Zero horizontal overflow (document.documentElement.scrollWidth <= window.innerWidth).
  * 4. Existing footer links and disclaimers remain fully intact and clickable.
  */
@@ -21,9 +21,9 @@ const VIEWPORTS = [
   { name: "desktop", width: 1440, height: 900 },
 ];
 
-test.describe("MEDREACH Footer Reveal Animation & Layout Parity", () => {
+test.describe("MEDREACH Footer Layout and Branding", () => {
   for (const vp of VIEWPORTS) {
-    test(`[${vp.name}] Footer reveal wordmark renders, dominates bottom, and prevents horizontal overflow`, async ({ page }) => {
+    test(`[${vp.name}] Footer branding matches the variant without horizontal overflow`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto("/");
 
@@ -41,22 +41,19 @@ test.describe("MEDREACH Footer Reveal Animation & Layout Parity", () => {
       });
       await page.waitForTimeout(100);
 
-      // Verify reveal container and wordmark
       const revealContainer = page.locator(".medreach-footer-reveal");
-      await expect(revealContainer).toBeVisible();
-      await expect(revealContainer).toHaveAttribute("aria-hidden", "true");
-
       const wordmark = page.locator(".medreach-footer-wordmark");
-      await expect(wordmark).toBeVisible();
-      await expect(wordmark).toHaveText("MEDREACH");
-
-      // Verify color styling (Cobalt Blue: rgb(0, 71, 171))
-      const wordmarkColor = await wordmark.evaluate((el) => window.getComputedStyle(el).color);
-      expect(wordmarkColor).toBe("rgb(0, 71, 171)");
-
-      // Verify background of reveal container (Pure White: rgb(255, 255, 255))
-      const bgColor = await revealContainer.evaluate((el) => window.getComputedStyle(el).backgroundColor);
-      expect(bgColor).toBe("rgb(255, 255, 255)");
+      if (testInfo.project.name === "bootstrap") {
+        await expect(revealContainer).toHaveCount(0);
+        await expect(wordmark).toHaveCount(0);
+      } else {
+        await expect(revealContainer).toBeVisible();
+        await expect(revealContainer).toHaveAttribute("aria-hidden", "true");
+        await expect(wordmark).toBeVisible();
+        await expect(wordmark).toHaveText("MEDREACH");
+        await expect(wordmark).toHaveCSS("color", "rgb(0, 71, 171)");
+        await expect(revealContainer).toHaveCSS("background-color", "rgb(255, 255, 255)");
+      }
 
       // Verify zero horizontal overflow at bottom of document
       const hasOverflow = await page.evaluate(() => {

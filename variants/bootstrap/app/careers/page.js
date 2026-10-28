@@ -335,7 +335,6 @@ export default function Careers() {
     <div className="careers-portal">
       {/* Portal Header */}
       <header className="page-head mb-4 pb-2 border-bottom">
-        <span className="eyebrow d-block mb-1">MedReach Healthcare Network</span>
         <h1 className="fw-bold text-dark mb-2">
           Mumbai Healthcare Careers Portal — Opportunities Across Hospitals, Labs, Blood Banks & EMS
         </h1>
@@ -371,7 +370,7 @@ export default function Careers() {
         <div className="row g-3">
           {/* Keyword Search */}
           <div className="col-12 col-lg-7">
-            <label htmlFor="orgSearchInput" className="form-label fw-semibold small text-uppercase text-muted mb-1">
+            <label htmlFor="orgSearchInput" className="form-label fw-semibold mb-1">
               Search Facility Name or Locality
             </label>
             <div className="input-group">
@@ -399,7 +398,7 @@ export default function Careers() {
 
           {/* Organization Type Selector */}
           <div className="col-12 col-lg-3">
-            <label htmlFor="orgTypeSelect" className="form-label fw-semibold small text-uppercase text-muted mb-1">
+            <label htmlFor="orgTypeSelect" className="form-label fw-semibold mb-1">
               Organization Type
             </label>
             <select
@@ -594,7 +593,6 @@ export default function Careers() {
             <div className="modal-content border-0 shadow-lg rounded-3">
               <div className="modal-header bg-light border-bottom">
                 <div>
-                  <span className="eyebrow d-block mb-1">Direct Healthcare Application</span>
                   <h2 className="modal-title h5 fw-bold mb-0" id="applyModalLabel">
                     {selectedOrg.name}
                   </h2>

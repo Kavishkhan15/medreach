@@ -1,26 +1,15 @@
+import { absoluteUrl } from "../lib/seo.js";
+
+// Resource detail routes are not enumerated from an unbounded backend request.
+// Only add lastModified when an actual editorial/content update date is supplied.
 export default function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://medreachmumbai.vercel.app";
-  const now = new Date();
-
-  const routes = [
-    { path: "", changeFrequency: "daily", priority: 1.0 },
-    { path: "/emergency", changeFrequency: "daily", priority: 0.95 },
-    { path: "/hospitals", changeFrequency: "daily", priority: 0.9 },
-    { path: "/blood-banks", changeFrequency: "daily", priority: 0.85 },
-    { path: "/urgent-blood", changeFrequency: "daily", priority: 0.85 },
-    { path: "/ambulances", changeFrequency: "daily", priority: 0.8 },
-    { path: "/diagnostics", changeFrequency: "daily", priority: 0.8 },
-    { path: "/careers", changeFrequency: "weekly", priority: 0.75 },
-    { path: "/map", changeFrequency: "weekly", priority: 0.7 },
-    { path: "/track", changeFrequency: "weekly", priority: 0.6 },
-    { path: "/login", changeFrequency: "monthly", priority: 0.5 },
-    { path: "/register", changeFrequency: "monthly", priority: 0.5 },
-  ];
-
-  return routes.map((route) => ({
-    url: `${baseUrl}${route.path}`,
-    lastModified: now,
-    changeFrequency: route.changeFrequency,
-    priority: route.priority,
-  }));
+  const updated = process.env.NEXT_PUBLIC_CONTENT_UPDATED_AT;
+  const date = updated ? new Date(updated) : null;
+  const lastModified = date && Number.isFinite(date.getTime()) ? date : null;
+  return [
+    ["/", "daily", 1], ["/emergency", "daily", 0.95], ["/hospitals", "daily", 0.9],
+    ["/blood-banks", "daily", 0.85], ["/urgent-blood", "daily", 0.85], ["/ambulances", "daily", 0.8],
+    ["/diagnostics", "daily", 0.8], ["/careers", "weekly", 0.75], ["/map", "weekly", 0.7],
+    ["/track", "weekly", 0.6], ["/login", "monthly", 0.5], ["/register", "monthly", 0.5],
+  ].map(([path, changeFrequency, priority]) => ({ url: absoluteUrl(path), changeFrequency, priority, ...(lastModified ? { lastModified } : {}) }));
 }

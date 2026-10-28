@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-const API = process.env.MEDREACH_HOME_TEST_API_URL || "http://localhost:4000";
 const links = [
   ["Home", "/"], ["Hospitals", "/hospitals"], ["Emergency", "/emergency"],
   ["Blood Banks", "/blood-banks"], ["Diagnostics", "/diagnostics"],
@@ -17,10 +16,16 @@ async function assertShieldLogo(page) {
   expect(Math.abs(bounds.width - bounds.height)).toBeLessThan(1);
 }
 
-test.beforeEach(async ({ context }, testInfo) => {
+test.beforeEach(async ({ context, page }, testInfo) => {
   test.skip(testInfo.project.name !== "bootstrap", "The supplied navbar design is currently Bootstrap-only.");
   const client = [...testInfo.title].reduce((sum, char) => (sum + char.charCodeAt(0)) % 250, 1);
   await context.setExtraHTTPHeaders({ "X-Forwarded-For": `198.21.14.${client}` });
+  // Navbar journeys use isolated browser fixtures and never change live accounts.
+  await page.route((url) => url.pathname.startsWith("/api/") || url.pathname.startsWith("/health"), (route) => {
+    const path = new URL(route.request().url()).pathname;
+    const unauthenticated = ["/api/auth/me", "/api/auth/refresh"].includes(path);
+    return route.fulfill({ status: unauthenticated ? 401 : 200, json: unauthenticated ? { error: "Unauthenticated" } : { data: [], total: 0, ok: true } });
+  });
 });
 
 test("desktop navbar keeps the logo between icon links with no overlap", async ({ page }) => {
@@ -45,7 +50,7 @@ test("desktop navbar keeps the logo between icon links with no overlap", async (
     });
     expect(bounds.logoLeft).toBeGreaterThanOrEqual(bounds.left);
     expect(bounds.logoRight).toBeLessThanOrEqual(bounds.right);
-    expect(Math.abs((bounds.logoLeft + bounds.logoRight) / 2 - bounds.width / 2)).toBeLessThan(1);
+    expect(bounds.logoRight - bounds.logoLeft).toBe(80);
     expect(bounds.pageWidth).toBeLessThanOrEqual(bounds.width);
     await expect(nav(page).getByRole("link", { name: "Map", exact: true })).toHaveCount(0);
   }
@@ -124,44 +129,46 @@ test("landing Login stays available during scrolling and after navigation", asyn
   }
 });
 
-test("signed-in patient, hospital staff and admin keep their account links and logout", async ({ page }) => {
+test("signed-in accounts expose only their workspace links and confirm logout", async ({ page }) => {
+  let signedIn = true, role = "user", logoutRequests = 0;
+  await page.route("**/api/auth/me", (route) => route.fulfill({ status: signedIn ? 200 : 401,
+    json: signedIn ? { user: { _id: "111111111111111111111111", name: "Ada Example", email: "fixture@example.test", role } } : { error: "Unauthenticated" } }));
+  await page.route("**/api/auth/sessions", (route) => route.fulfill({ json: { sessions: [], providers: { password: true } } }));
+  await page.route("**/api/auth/mfa", (route) => route.fulfill({ json: { eligible: role !== "user", enabled: false } }));
+  await page.route("**/api/auth/logout", (route) => { signedIn = false; logoutRequests++; return route.fulfill({ json: { ok: true } }); });
   for (const width of [1440, 375]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const [email, roleLink] of [["bootstrap.e2e@medreach.test", null], ["staff.e2e@medreach.test", "Provider"], ["admin.e2e@medreach.test", "Admin"]]) {
-      const response = await page.request.post(`${API}/api/auth/login`, { data: { email, password: "E2E_SafePassword_123!" } });
-      expect(response.ok()).toBe(true);
+    for (const currentRole of ["user", "hospital_admin", "provider_admin", "system_admin"]) {
+      signedIn = true; role = currentRole;
       await page.goto("/");
       const toggle = nav(page).getByRole("button", { name: "Toggle navigation" });
       if (width < 1400) await toggle.click();
-      const profileLink = nav(page).getByRole("link", { name: /^Profile/ });
-      await expect(profileLink).toBeVisible();
-      expect(await profileLink.getAttribute("href")).toBe("/profile");
+      const profile = nav(page).locator("summary.nav-profile");
+      await expect(profile).toBeVisible();
       await expect(nav(page).getByRole("link", { name: "Dashboard", exact: true })).toHaveCount(0);
-      await expect(nav(page).getByRole("button", { name: "Log out", exact: true })).toHaveCount(0);
-      await expect(nav(page).getByRole("button", { name: "Logout", exact: true })).toHaveCount(0);
-      await expect(page.locator('[aria-label="Your account"]')).toHaveCount(0);
-      await profileLink.click();
+      await profile.click();
+      await expect(nav(page).getByRole("link", { name: "Dashboard", exact: true })).toBeVisible();
+      await expect(nav(page).getByRole("link", { name: "Admin workspace", exact: true })).toHaveCount(role === "system_admin" ? 1 : 0);
+      await expect(nav(page).getByRole("link", { name: "Provider workspace", exact: true })).toHaveCount(["provider_admin", "hospital_admin"].includes(role) ? 1 : 0);
+      await page.keyboard.press("Escape");
+      await expect(nav(page).locator("details")).not.toHaveAttribute("open", "");
+      await expect(profile).toBeFocused();
+      await profile.click();
+      await nav(page).getByRole("link", { name: "Profile & security", exact: true }).click();
       await expect(page).toHaveURL(/\/profile$/);
-      const sidebar = page.getByRole("navigation", { name: "Account" });
-      await expect(sidebar.getByRole("link", { name: "Dashboard", exact: true })).toBeVisible();
-      await expect(sidebar.getByRole("link", { name: "Profile", exact: true })).toBeVisible();
-      if (roleLink) {
-        await expect(sidebar.getByRole("link", { name: roleLink, exact: true })).toBeVisible();
-        const otherRole = roleLink === "Hospital" ? "Admin" : "Hospital";
-        await expect(sidebar.getByRole("link", { name: otherRole, exact: true })).toHaveCount(0);
-      } else {
-        await expect(sidebar.getByRole("link", { name: "Hospital", exact: true })).toHaveCount(0);
-        await expect(sidebar.getByRole("link", { name: "Admin", exact: true })).toHaveCount(0);
-      }
-      const logoutBtn = sidebar.getByRole("button", { name: "Log out", exact: true });
-      await expect(logoutBtn).toBeVisible();
-      await logoutBtn.click();
-      if (width < 1400) {
-        await expect(toggle).toHaveAttribute("aria-expanded", "false");
-        await toggle.click();
-      }
+      if (width < 1400) await toggle.click();
+      await profile.click();
+      await nav(page).getByRole("button", { name: "Log out", exact: true }).click();
+      const dialog = page.getByRole("dialog", { name: "Log out of MedReach?" });
+      const previous = logoutRequests;
+      await dialog.getByRole("button", { name: "Stay signed in" }).click();
+      expect(logoutRequests).toBe(previous);
+      await nav(page).getByRole("button", { name: "Log out", exact: true }).click();
+      await dialog.getByRole("button", { name: "Log out", exact: true }).click();
+      await expect(page).toHaveURL(/\/login$/);
+      expect(logoutRequests).toBe(previous + 1);
+      if (width < 1400) { await expect(toggle).toHaveAttribute("aria-expanded", "false"); await toggle.click(); }
       await expect(nav(page).getByRole("link", { name: "Login", exact: true })).toBeVisible();
-      expect((await page.request.get(`${API}/api/auth/me`)).status()).toBe(401);
     }
   }
 });
