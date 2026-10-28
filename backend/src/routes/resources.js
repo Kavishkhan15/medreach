@@ -8,6 +8,7 @@ import {
   getResource,
   createResource,
   updateResource,
+  archiveResource,
   bookAmbulance,
   getAmbulanceBooking,
   listAmbulanceBookings,
@@ -69,3 +70,5 @@ resourceAdminRouter.patch("/:id", requireAuth, requireRole("system_admin", "prov
   param("id").isMongoId(),
   body("email").optional({ checkFalsy: true }).trim().toLowerCase().isEmail(),
   validate, updateResource);
+
+resourceAdminRouter.delete("/:id", requireAuth, requireRole("system_admin"), param("id").isMongoId(), body("reason").isString().trim().isLength({ min: 3, max: 500 }), validate, archiveResource);

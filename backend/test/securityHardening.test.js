@@ -24,6 +24,15 @@ test("missing routes do not reflect a sensitive query token", async () => {
   assert.equal(JSON.stringify(res.body).includes("private-test-token"), false);
 });
 
+test("API responses deny framing and restrict unused browser capabilities", async () => {
+  const response = await request(app).get("/missing");
+  assert.equal(response.headers["x-frame-options"], "DENY");
+  assert.equal(response.headers["permissions-policy"], "camera=(), microphone=(), geolocation=(self)");
+  assert.equal(response.headers["x-content-type-options"], "nosniff");
+  assert.match(response.headers["content-security-policy"], /frame-ancestors 'none'/);
+  assert.equal(response.headers["x-powered-by"], undefined);
+});
+
 for (const url of ["javascript:alert(1)", "data:text/html;base64,PHNjcmlwdD4=", "data:image/svg+xml;base64,PHN2Zz4=", "file:///etc/passwd", "https://user:secret@example.test/cv.pdf", "data:application/pdf;base64,broken..."]) {
   test(`reject unsafe resume ${url.split(':')[0]} content`, () => {
     assert.equal(validateResume(url), false);

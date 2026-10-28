@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "automaticDeploymentEnabled": false,
+  "productionDataMutationsEnabled": false,
+  "migrationVersion": "2026-10-27-reliability-release-indexes-v4",
+  "roles": {
+    "api": {
+      "configuration": "api.railway.json",
+      "replicas": 2
+    },
+    "notification": {
+      "configuration": "notification.railway.json",
+      "replicas": 2
+    },
+    "expiry": {
+      "configuration": "expiry.railway.json",
+      "replicas": 1
+    },
+    "recovery": {
+      "configuration": "recovery.railway.json",
+      "replicas": 1
+    }
+  },
+  "observedProduction": {
+    "railwayRegion": "sfo",
+    "replicas": 1,
+    "atlasRegion": null,
+    "regionAlignmentVerified": false
+  },
+  "releaseRequirements": [
+    "pinned reviewed commit",
+    "isolated staging and rollback rehearsal",
+    "target-bound v4 migration dry-run and verified encrypted backup",
+    "explicit region and connection budget approval",
+    "independent signed alert receiver and test receipt",
+    "retained backup storage and separate key custody",
+    "named provider reporting owners and coverage",
+    "provider observations and contact ownership verified"
+  ],
+  "disabledUntilApproved": [
+    "hosted resource creation",
+    "production migration apply",
+    "automatic deployment",
+    "retention deletion",
+    "scheduled live backups and alert delivery"
+  ]
+}

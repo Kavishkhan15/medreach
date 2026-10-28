@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "environment": "isolated-local-staging",
+  "schedulerInstalled": false,
+  "automaticDeletionEnabled": false,
+  "backup": {
+    "enabled": false,
+    "draftIntervalHours": 24,
+    "draftRetentionDays": 30,
+    "enforceRetention": false,
+    "createCommand": "node backend/scripts/verifiedBackup.js create --source-quiesced",
+    "verifyCommand": "node backend/scripts/verifiedBackup.js verify",
+    "requiresVerifiedQuiescence": true,
+    "requiresEncryptionKeyOutsideBackupStorage": true,
+    "sourceDatabase": "OPERATOR_MUST_SELECT_AND_VERIFY",
+    "restoreDatabase": "medreach_backup_restore_test",
+    "restoreEmailEnabled": false,
+    "draftRestoreDrillIntervalDays": 30
+  },
+  "readinessProbe": {
+    "enabled": false,
+    "draftIntervalSeconds": 60,
+    "command": "node backend/scripts/probeHostedReadiness.js",
+    "requiresIndependentHostBeforeRelease": true,
+    "httpsReadinessUrl": null,
+    "httpsAlertReceiver": null,
+    "stateDirectory": "OPERATOR_MUST_SELECT_PRIVATE_PERSISTENT_DIRECTORY"
+  },
+  "draftRecoveryTargets": {
+    "recoverableDataAgeHours": 24,
+    "restoreTimeMinutes": 60,
+    "approved": false,
+    "demonstratedOnProductionData": false
+  }
+}

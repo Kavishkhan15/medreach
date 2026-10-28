@@ -1,3 +1,5 @@
+import { mfaRequiredForUser } from "../middleware/privilegedSecurity.js";
+import { verifyAndConsumeMfa } from "../services/privilegedMfaService.js";
 import { isolatedDemoEnabled, localManualCredentialsEnabled } from "../services/demoAccounts.js";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
@@ -42,7 +44,7 @@ function clearSessionCookies(res) {
 
 async function establishSession(req, res, user) {
   const [{ token: refreshToken, entry }] = await Promise.all([
-    issueSession(user, context(req)),
+    issueSession(user, { ...context(req), mfaAuthenticated: req.mfaAuthenticated === true }),
     user.save(),
   ]);
   setSessionCookies(res, signToken(user, entry.familyId), refreshToken);
@@ -83,6 +85,13 @@ export const login = asyncHandler(async (req, res) => {
   if (user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled()) || (user.credentialDelivery === "manual" && !localManualCredentialsEnabled())) {
     await audit(req, { user: user._id, action: "login_failed", entityType: "AuthSession" });
     return res.status(401).json({ error: "Invalid email or password" });
+  }
+  if (await mfaRequiredForUser(user)) {
+    if (!await verifyAndConsumeMfa(user._id, req.body)) {
+      await audit(req, { user: user._id, action: "login_failed", entityType: "AuthSession", after: { reason: "mfa_required" } });
+      return res.status(401).json({ error: "MFA verification required", code: "MFA_REQUIRED" });
+    }
+    req.mfaAuthenticated = true;
   }
   user.lastLogin = new Date();
   await establishSession(req, res, user);

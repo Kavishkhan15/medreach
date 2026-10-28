@@ -24,6 +24,11 @@ dist/
 .vercel/
 .migration-backups/
 
+# Locally generated verification artefacts and design-tool state.
+output/
+outputs/
+.impeccable/
+
 # Local MongoDB storage and personal data (never commit)
 /data/
 
@@ -62,6 +67,10 @@ PRIVATE.md
 !/docs/README.md
 !/docs/database-schema.md
 !/docs/testing.md
+!/docs/testing/
+/docs/testing/*
+!/docs/testing/backend-scalability-20261026.md
+!/docs/testing/backend-process-readiness.md
 !/docs/contracts/
 !/docs/diagrams/
 !/docs/diagrams/*

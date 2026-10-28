@@ -6,7 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { requestHospitalOwnership, reviewHospitalOwnership } from "../services/ownershipService.js";
 
 export const myHospitals = asyncHandler(async (req, res) => {
-  const data = await Hospital.find(req.user.role === "system_admin" ? {} : req.user.role === "hospital_admin" ? { admins: req.user.id } : { _id: { $in: req.user.hospitalIds || [] } }).select("name slug address phone emergencyPhone verificationStatus sourceIds").lean();
+  const data = await Hospital.find(req.user.role === "system_admin" ? {} : req.user.role === "hospital_admin" ? { archivedAt: null, admins: req.user.id } : { _id: { $in: req.user.hospitalIds || [] } }).select("name slug address phone emergencyPhone verificationStatus sourceIds").lean();
   res.json({ data });
 });
 export const myOwnershipClaims = asyncHandler(async (req, res) => {

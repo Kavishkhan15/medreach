@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { requestStatusEffectsSchema } from "./requestStatusEffectsSchema.js";
 
 export const AMBULANCE_BOOKING_STATES = [
   "REJECTED",
@@ -45,6 +46,9 @@ const deliverySchema = new mongoose.Schema({
 }, { _id: false });
 
 const schema = new mongoose.Schema({
+  statusEffects: { type: [requestStatusEffectsSchema], default: undefined, select: false },
+  coordinationVersion: Number,
+  coordinationRecordedAt: Date,
   notificationVersion: Number,
   notificationRoutedAt: Date,
   notificationRouting: { type: String, enum: ["recorded", "no_eligible_recipients"] },
@@ -66,6 +70,7 @@ const schema = new mongoose.Schema({
   timestamps: true,
   toJSON: {
     transform: (_document, result) => {
+      delete result.statusEffects;
       delete result.trackingTokenHash;
       delete result.idempotencyKeyHash;
       return result;
@@ -78,4 +83,6 @@ schema.index({ provider: 1, createdAt: -1 });
 schema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
 
 schema.index({ notificationVersion: 1, notificationRoutedAt: 1 });
+schema.index({ coordinationVersion: 1, coordinationRecordedAt: 1, createdAt: 1 });
+schema.index({ "statusEffects.exhausted": 1, "statusEffects.retryAt": 1 });
 export const AmbulanceBooking = mongoose.model("AmbulanceBooking", schema);

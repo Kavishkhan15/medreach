@@ -1,12 +1,12 @@
 import { EmailDelivery } from "../models/EmailDelivery.js";
 import { ProviderApplication } from "../models/ProviderApplication.js";
 import { notificationRecipients } from "./requestNotifications.js";
-import { sendEmailEvent } from "./emailService.js";
+import { sendEmailEvent, emailAttemptLimit } from "./emailService.js";
 
 // Only newly opted-in applications are recovered; historical contacts are untouched.
 async function deliver(event) {
   const previous = await EmailDelivery.findOne({ eventKey: event.eventKey });
-  if (previous?.status === "failed" && (previous.attempts >= 3 || (previous.lastAttemptAt && Date.now() - previous.lastAttemptAt.getTime() < 30000))) return previous;
+  if (previous?.status === "failed" && (previous.attempts >= emailAttemptLimit() || (previous.lastAttemptAt && Date.now() - previous.lastAttemptAt.getTime() < 30000))) return previous;
   return sendEmailEvent(event);
 }
 export async function notifyProviderApplicationSafely(application) {
@@ -18,6 +18,7 @@ export async function notifyProviderApplicationSafely(application) {
       const recipients = await notificationRecipients(null, null, true);
       for (const { user } of recipients) deliveries.push(await deliver({
         eventKey: `provider-application:${application._id}:admin:${user._id}`, to: user.notificationEmail,
+        recipientUser: user._id, recipientContactPolicy: "notification",
         template: "provider_application_review", data: { name: application.name, kind: application.kind },
       }));
     }

@@ -1,3 +1,4 @@
+import { requireRecentPrivilegedAuthentication } from "../middleware/privilegedSecurity.js";
 import { Router } from "express";
 import { body, param } from "express-validator";
 import { requireAuth, optionalAuth } from "../middleware/auth.js";
@@ -88,6 +89,7 @@ router.patch(
   "/:id",
   trackingLimiter,
   optionalAuth,
+  requireRecentPrivilegedAuthentication,
   param("id").isMongoId(),
   body("status").isIn(REQUEST_STATES),
   body("expectedStatus").optional().isIn(REQUEST_STATES),

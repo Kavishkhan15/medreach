@@ -1,3 +1,4 @@
+import { organizationIsAvailable } from "./providerLifecycle.js";
 import { routeRequestSafely, assignedProviderUsers } from "./requestNotifications.js";
 import { randomBytes } from "node:crypto";
 import { EmergencyRequest } from "../models/EmergencyRequest.js";
@@ -10,7 +11,7 @@ import { runEmailBatch } from "./emailBatch.js";
 import { generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, verifyTrackingToken } from "../utils/trackingToken.js";
 
 import { sendEmailEvent } from "./emailService.js";
-import { auditRequestUpdate, emailRequestUpdate } from "./bedRequestEmails.js";
+import { requestStatusEffect, drainRequestStatusEffects, STATUS_EFFECTS_CAPACITY } from "./requestStatusEffects.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 const transitions = {
@@ -40,13 +41,14 @@ export async function createEmergencyRequest(data, actor) {
   const previous = await replay();
   if (previous) return previous;
   const hospital = await Hospital.findById(data.hospitalId);
-  if (!hospital || ["pending", "rejected"].includes(hospital.approvalStatus)) return { error: "Hospital not found", status: 404 };
+  if (!hospital || !await organizationIsAvailable("hospital", hospital._id) || ["pending", "rejected"].includes(hospital.approvalStatus)) return { error: "Hospital not found", status: 404 };
   const userId = actor?.id || null;
   const isEmergency = data.isEmergency !== false;
   const trackingToken = userId ? undefined : (trackingTokenForIdempotency(data.idempotencyKeyHash) || generateTrackingToken());
   let request;
   try {
     request = await EmergencyRequest.create({
+    coordinationVersion: 1,
     notificationVersion: 1,
     requestId: `MR-${Date.now().toString(36).toUpperCase()}-${randomBytes(3).toString("hex").toUpperCase()}`,
     user: userId,
@@ -160,6 +162,7 @@ export async function changeEmergencyRequest({ requestId, actor, trackingToken, 
   const status = expired ? "EXPIRED" : nextStatus;
   const step = expired ? { status, at: now, actorRole: "system" }
     : { status, at: now, actor: actor?.id, actorRole, note, hospitalResponse: isStaff ? hospitalResponse : undefined };
+  const effect = requestStatusEffect({ previousStatus, status, actor, timelineLength: request.timeline.length + 1, now });
   const set = { status };
   if (!expired && isStaff) {
     set.respondedAt = now;
@@ -169,11 +172,12 @@ export async function changeEmergencyRequest({ requestId, actor, trackingToken, 
   // cannot overwrite each other's response or revive an expired request.
   const updated = await EmergencyRequest.findOneAndUpdate({ _id: request._id, status: previousStatus,
     [`timeline.${request.timeline.length}`]: { $exists: false },
+    [`statusEffects.${STATUS_EFFECTS_CAPACITY - 1}`]: { $exists: false },
     ...(!expired && active.includes(previousStatus) ? { expiresAt: { $gt: now } } : {}) },
-    { $set: set, $push: { timeline: step } }, { new: true, runValidators: true });
+    { $set: set, $push: { timeline: step, statusEffects: effect } }, { new: true, runValidators: true });
   if (!updated) return { error: "Request changed. Refresh its status before trying again.", status: 409 };
-  await auditRequestUpdate(updated, previousStatus, actor);
-  await emailRequestUpdate(updated, hospital);
+  try { await drainRequestStatusEffects("EmergencyRequest", updated._id, { effectId: effect._id }); }
+  catch { console.warn("[medreach] Request saved; durable status effects await recovery."); }
   return expired ? { error: "Request expired", status: 409 } : { request: updated };
 }
 

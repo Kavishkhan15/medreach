@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
+import { requestStatusEffectsSchema } from "./requestStatusEffectsSchema.js";
 
 const bloodRequestSchema = new mongoose.Schema(
   {
+  statusEffects: { type: [requestStatusEffectsSchema], default: undefined, select: false },
+  coordinationVersion: Number,
+  coordinationRecordedAt: Date,
   notificationVersion: Number,
   notificationRoutedAt: Date,
   notificationRouting: { type: String, enum: ["recorded", "no_eligible_recipients"] },
@@ -129,6 +133,7 @@ bloodRequestSchema.index({ type: 1, status: 1, createdAt: -1 });
 bloodRequestSchema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
 bloodRequestSchema.set("toJSON", {
   transform: (_doc, ret) => {
+    delete ret.statusEffects;
     delete ret.trackingTokenHash;
     delete ret.idempotencyKeyHash;
     delete ret.__v;
@@ -137,4 +142,6 @@ bloodRequestSchema.set("toJSON", {
 });
 
 bloodRequestSchema.index({ notificationVersion: 1, notificationRoutedAt: 1 });
+bloodRequestSchema.index({ coordinationVersion: 1, coordinationRecordedAt: 1, createdAt: 1 });
+bloodRequestSchema.index({ "statusEffects.exhausted": 1, "statusEffects.retryAt": 1 });
 export const BloodRequest = mongoose.model("BloodRequest", bloodRequestSchema);

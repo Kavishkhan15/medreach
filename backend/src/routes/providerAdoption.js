@@ -1,0 +1,18 @@
+import { Router } from "express";
+import { requireAuth, requireRole } from "../middleware/auth.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { listBranchGroups, putBranchGroup, readProviderOnboarding, putProviderOnboarding, providerQualityReport, requestProviderOffboarding, updateMembershipAccess } from "../services/providerAdoption.js";
+import { providerReportingReadiness } from "../services/providerReportingReadiness.js";
+const router = Router();
+router.use(requireAuth, requireRole("system_admin", "provider_admin"));
+router.use((_req, res, next) => { res.set("Cache-Control", "private, no-store"); next(); });
+const handle = fn => asyncHandler(async (req, res) => { try { res.json(await fn(req)); } catch (error) { if (error.status) return res.status(error.status).json({ error: error.message, code: error.code }); throw error; } });
+router.get("/groups", handle(req => listBranchGroups({ actor: req.user, limit: req.query.limit, before: req.query.before })));
+router.put("/groups/:id", requireRole("system_admin"), handle(req => putBranchGroup({ actor: req.user, id: req.params.id, input: req.body })));
+router.get("/:kind/:organizationId/quality", handle(req => providerQualityReport({ actor: req.user, ...req.params, days: req.query.days })));
+router.get("/:kind/:organizationId/reporting-readiness", handle(req => providerReportingReadiness({ actor: req.user, ...req.params })));
+router.get("/:kind/:organizationId/onboarding", handle(req => readProviderOnboarding({ actor: req.user, ...req.params })));
+router.put("/:kind/:organizationId/onboarding", requireRole("system_admin"), handle(req => putProviderOnboarding({ actor: req.user, ...req.params, input: req.body })));
+router.post("/memberships/:id/offboard", handle(req => requestProviderOffboarding({ actor: req.user, membershipId: req.params.id, reason: req.body.reason, idempotencyKey: req.body.idempotencyKey })));
+router.patch("/memberships/:id/access", handle(req => updateMembershipAccess({ actor: req.user, membershipId: req.params.id, input: req.body })));
+export default router;

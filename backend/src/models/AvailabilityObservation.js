@@ -29,6 +29,9 @@ const availabilityObservationSchema = new mongoose.Schema(
 
 // Fast "latest observation for this hospital+facility" lookups.
 availabilityObservationSchema.index({ hospital: 1, facility: 1, retrievedAt: -1 });
+// Explicit observed-time ordering and legacy retrieved-time fallback, with stable ties.
+availabilityObservationSchema.index({ hospital: 1, facility: 1, observedAt: -1, _id: -1 });
+availabilityObservationSchema.index({ hospital: 1, facility: 1, retrievedAt: -1, _id: -1 });
 availabilityObservationSchema.set("toJSON", { transform: (_d, r) => (delete r.__v, r) });
 
 export const AvailabilityObservation = mongoose.model(

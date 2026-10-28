@@ -12,7 +12,8 @@ const directoryKeys = ["blood-banks", "diagnostics", "ambulances"];
 const initial = value => Object.fromEntries(Object.keys(endpoints).map(key => [key, typeof value === "function" ? value() : value]));
 
 // Shared data orchestration; each variant retains its own markup and styles.
-export function useHomeResources(load) {
+export function useHomeResources(load, { prefetchDistance = 300 } = {}) {
+  const prefetchPixels = Number.isFinite(prefetchDistance) ? Math.max(0, Math.min(2000, prefetchDistance)) : 300;
   const [resources, setResources] = useState(() => initial(() => []));
   const [resourceLoading, setLoading] = useState(() => initial(true));
   const [resourceErrors, setErrors] = useState(() => initial(""));
@@ -62,14 +63,14 @@ export function useHomeResources(load) {
           retryResource(deferred.get(entry.target));
           observer.unobserve(entry.target);
         }
-      }), { rootMargin: "300px" });
+      }), { rootMargin: `${prefetchPixels}px` });
       for (const node of deferred.keys()) observer.observe(node);
     }
     return () => {
       observer?.disconnect();
       for (const [key, controller] of Object.entries(active)) { delete active[key]; controller.abort(); }
     };
-  }, [retryResource]);
+  }, [retryResource, prefetchPixels]);
   return { resources, resourceErrors, resourceLoading, retryResource, careersRef, campaignsRef,
     resourcesLoading: directoryKeys.some(key => resourceLoading[key]) };
 }

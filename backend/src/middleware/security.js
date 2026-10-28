@@ -8,7 +8,7 @@
 // Keep the policy BYTE-IDENTICAL across variants or the comparison is invalid.
 
 import helmet from "helmet";
-import rateLimit from "express-rate-limit";
+import { sharedLimiter } from "./sharedLimiter.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { env } from "../config/env.js";
@@ -26,11 +26,8 @@ function csrfOriginGuard(req, res, next) {
   return res.status(403).json({ error: "Request origin not allowed" });
 }
 
-const limiter = (max, windowMs = 15 * 60 * 1000) => rateLimit({ windowMs, max,
-  standardHeaders: true, legacyHeaders: false, skipSuccessfulRequests: false,
-  message: { error: "Too many requests. Please try again later." } });
-
-export function applySecurity(app) {
+export function applySecurity(app, { rateLimitStoreFactory } = {}) {
+  const limiter = (name, max, windowMs) => sharedLimiter(name, max, windowMs, { storeFactory: rateLimitStoreFactory });
   app.use(cookieParser());
 
   app.use(
@@ -50,15 +47,20 @@ export function applySecurity(app) {
         },
       },
       hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+      xFrameOptions: { action: "deny" },
       referrerPolicy: { policy: "no-referrer" },
     })
   );
+  app.use((_req, res, next) => {
+    res.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(self)");
+    next();
+  });
 
   app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
   app.use(csrfOriginGuard);
   // Filters in this API are scalars. Reject parsed Mongo operators and repeated/nested values.
   app.use((req, res, next) => {
-    if (Object.entries(req.query).some(([key, value]) => typeof value !== "string" || /[.$\[\]]/.test(key))) {
+    if (Object.entries(req.query).some(([key, value]) => typeof value !== "string" || /[.$[\]]/.test(key))) {
       return res.status(400).json({ error: "Query parameters must be plain values" });
     }
     if (req.headers.authorization || req.cookies?.token || req.get("X-MedReach-Tracking-Token") ||
@@ -71,14 +73,14 @@ export function applySecurity(app) {
 
 
   // Brute-force protection on auth endpoints (attach to /api/auth router).
-  app.locals.authLimiter = limiter(20);
-  app.locals.loginLimiter = limiter(10);
-  app.locals.registerLimiter = limiter(8, 60 * 60 * 1000);
-  app.locals.recoveryLimiter = limiter(6, 60 * 60 * 1000);
-  app.locals.trackingLimiter = limiter(60);
+  app.locals.authLimiter = limiter("auth", 20);
+  app.locals.loginLimiter = limiter("login", 10);
+  app.locals.registerLimiter = limiter("register", 8, 60 * 60 * 1000);
+  app.locals.recoveryLimiter = limiter("recovery", 6, 60 * 60 * 1000);
+  app.locals.trackingLimiter = limiter("tracking", 60);
   // The browser suite runs all three variants through one loopback IP. Keep
   // the production limit while allowing its controlled, isolated E2E fixture.
-  app.locals.publicSubmissionLimiter = limiter(
+  app.locals.publicSubmissionLimiter = limiter("public-submission",
     env.nodeEnv === "test" && process.env.MEDREACH_E2E_MONGO_URI ? 100 : 20
   );
 }

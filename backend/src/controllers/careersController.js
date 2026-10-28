@@ -1,3 +1,4 @@
+import { archivedOrganizationIds, organizationIsArchived } from "../services/providerLifecycle.js";
 import { Job } from "../models/Job.js";
 import { JobApplication } from "../models/JobApplication.js";
 import { OrganizationApplication } from "../models/OrganizationApplication.js";
@@ -40,7 +41,8 @@ export const listJobs = asyncHandler(async (req, res) => {
     return listOrganizationsWithJobs(req, res);
   }
 
-  const filter = { status: "published" };
+  const archived = await archivedOrganizationIds();
+  const filter = { status: "published", hospital: { $nin: archived.hospitals }, provider: { $nin: archived.providers } };
   if (req.query.category) filter.category = req.query.category;
   if (req.query.organizationType) filter.organizationType = req.query.organizationType;
 
@@ -72,7 +74,8 @@ export const listJobs = asyncHandler(async (req, res) => {
 });
 
 export const listOrganizationsWithJobs = asyncHandler(async (req, res) => {
-  const filter = { status: "published" };
+  const archived = await archivedOrganizationIds();
+  const filter = { status: "published", hospital: { $nin: archived.hospitals }, provider: { $nin: archived.providers } };
   if (req.query.category) filter.category = req.query.category;
   if (req.query.organizationType) filter.organizationType = req.query.organizationType;
 
@@ -165,6 +168,7 @@ export const getJob = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: "Job not found" });
   }
 
+  if ((job.hospital && await organizationIsArchived("hospital", job.hospital._id)) || (job.provider && await organizationIsArchived(job.provider.kind, job.provider._id))) return res.status(404).json({ error: "Job not found" });
   res.json({ job });
 });
 
@@ -322,6 +326,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
   }
   const job = await Job.findById(req.params.id);
   if (!job || job.status !== "published") return res.status(404).json({ error: "Job not found" });
+  if ((job.hospital && await organizationIsArchived("hospital", job.hospital)) || (job.provider && await organizationIsArchived(job.organizationType, job.provider))) return res.status(404).json({ error: "Job not found" });
   if (job.deadline && job.deadline < new Date()) {
     return res.status(409).json({ error: "Applications closed" });
   }

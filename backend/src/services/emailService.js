@@ -81,26 +81,39 @@ const leaseDurationMs = 60_000;
 let queueEnabled = false;
 export function setEmailQueueEnabled(enabled) { queueEnabled = Boolean(enabled); }
 
-function envelopeKey() {
-  return createHash("sha256").update(env.jwtSecret).digest();
+function envelopeKey(secret) {
+  return createHash("sha256").update(secret).digest();
 }
 
 function encryptEnvelope(value) {
   const iv = randomBytes(12);
-  const cipher = createCipheriv("aes-256-gcm", envelopeKey(), iv);
+  const dedicated = Boolean(env.emailEnvelopeKey);
+  const cipher = createCipheriv("aes-256-gcm", envelopeKey(env.emailEnvelopeKey || env.jwtSecret), iv);
   const encrypted = Buffer.concat([cipher.update(JSON.stringify(value), "utf8"), cipher.final()]);
-  return JSON.stringify({ iv: iv.toString("base64url"), tag: cipher.getAuthTag().toString("base64url"),
+  return JSON.stringify({ version: dedicated ? 2 : 1, iv: iv.toString("base64url"), tag: cipher.getAuthTag().toString("base64url"),
     data: encrypted.toString("base64url") });
 }
 
 function decryptEnvelope(value) {
   const parsed = JSON.parse(value);
-  const decipher = createDecipheriv("aes-256-gcm", envelopeKey(), Buffer.from(parsed.iv, "base64url"));
-  decipher.setAuthTag(Buffer.from(parsed.tag, "base64url"));
-  return JSON.parse(Buffer.concat([
-    decipher.update(Buffer.from(parsed.data, "base64url")),
-    decipher.final(),
-  ]).toString("utf8"));
+  // Versionless envelopes predate the dedicated key. Keep them recoverable
+  // during an explicit key rotation; never silently replace their content.
+  const keys = parsed.version === 2
+    ? [env.emailEnvelopeKey, env.emailEnvelopePreviousKey]
+    : [env.jwtSecret, env.emailEnvelopePreviousKey];
+  for (const key of keys.filter(Boolean)) {
+    try {
+      const decipher = createDecipheriv("aes-256-gcm", envelopeKey(key), Buffer.from(parsed.iv, "base64url"));
+      decipher.setAuthTag(Buffer.from(parsed.tag, "base64url"));
+      return JSON.parse(Buffer.concat([decipher.update(Buffer.from(parsed.data, "base64url")), decipher.final()]).toString("utf8"));
+    } catch { /* Try only explicitly configured previous key. */ }
+  }
+  throw new Error("Stored retry content is unavailable");
+}
+
+export function emailAttemptLimit() {
+  const configured = Number(env.emailMaxAttempts ?? 3);
+  return Number.isInteger(configured) && configured >= 1 && configured <= 10 ? configured : 3;
 }
 
 function getTransporter() {
@@ -115,16 +128,19 @@ async function claimDelivery(id, actorId) {
   const now = new Date();
   const expired = await EmailDelivery.findOneAndUpdate({ _id: id, status: "pending", attempts: { $gt: 0 },
     $or: [{ leaseUntil: { $exists: false } }, { leaseUntil: { $lte: now } }] },
-    { $set: { status: "uncertain", errorCode: "DELIVERY_OUTCOME_UNKNOWN", lastError: "Check the recipient inbox before sending again" },
+    { $set: { status: "uncertain", lifecycleStatus: "uncertain", queued: false, errorCode: "DELIVERY_OUTCOME_UNKNOWN", lastError: "Check the recipient inbox before sending again" },
       $unset: { leaseToken: 1, leaseUntil: 1 } }, { new: true });
   if (expired) return null;
   const leaseToken = randomUUID();
   const delivery = await EmailDelivery.findOneAndUpdate({
     _id: id,
     status: { $in: ["pending", "failed"] },
+    attempts: { $lt: emailAttemptLimit() },
+    lifecycleStatus: { $nin: ["submitted", "delivered", "bounced"] },
+    $nor: [{ lifecycleStatus: "failed", providerEventAt: { $type: "date" } }],
     $or: [{ leaseUntil: { $exists: false } }, { leaseUntil: { $lte: now } }],
   }, {
-    $set: { status: "pending", leaseToken, leaseUntil: new Date(now.getTime() + leaseDurationMs),
+    $set: { status: "pending", lifecycleStatus: "queued", leaseToken, leaseUntil: new Date(now.getTime() + leaseDurationMs),
       lastAttemptAt: now, ...(actorId ? { retriedBy: actorId, retriedAt: now } : {}) },
     $inc: { attempts: 1 },
   }, { new: true }).select("+leaseToken +retryEnvelope");
@@ -156,26 +172,40 @@ async function sendResend(delivery, message) {
     error.uncertain = true;
     throw error;
   }
+  return result.id;
 }
 
 async function finishDelivery({ delivery, leaseToken, message }) {
   let accepted = false;
   try {
-    if (env.emailProvider === "resend") await sendResend(delivery, message);
-    else await getTransporter().sendMail({ from: { name: env.smtpFromName, address: env.smtpFrom },
-      to: message.to, subject: message.subject, text: message.text });
+    let providerMessageId;
+    if (env.emailProvider === "resend") providerMessageId = await sendResend(delivery, message);
+    else {
+      const submission = await getTransporter().sendMail({ from: { name: env.smtpFromName, address: env.smtpFrom },
+        to: message.to, subject: message.subject, text: message.text });
+      if (submission?.rejected?.length) throw Object.assign(new Error("SMTP recipient was rejected"), { code: "SMTP_RECIPIENT_REJECTED" });
+    }
     accepted = true;
     const result = await EmailDelivery.findOneAndUpdate({ _id: delivery._id, leaseToken }, {
-      $set: { status: "sent", sentAt: new Date() },
+      $set: { status: "sent", lifecycleStatus: "submitted", sentAt: new Date(), providerAcceptedAt: new Date(),
+        provider: env.emailProvider === "resend" ? "resend" : "smtp", ...(providerMessageId ? { providerMessageId } : {}), ...(delivery.queued !== undefined ? { queued: false } : {}) },
       $unset: { lastError: 1, errorCode: 1, leaseToken: 1, leaseUntil: 1 },
     }, { new: true });
-    return result || { _id: delivery._id, status: "uncertain", errorCode: "DELIVERY_OUTCOME_UNKNOWN" };
+    if (result?.providerMessageId) {
+      // Reconcile signed events that arrived before the provider acceptance write.
+      try { const { reconcileWebhookEvents } = await import("./resendWebhook.js");
+        await reconcileWebhookEvents({ providerMessageId: result.providerMessageId });
+      } catch { /* The durable receipt is retried by the recovery worker. */ }
+      return await EmailDelivery.findById(result._id);
+    }
+    return result || { _id: delivery._id, status: "uncertain", lifecycleStatus: "uncertain", errorCode: "DELIVERY_OUTCOME_UNKNOWN" };
   } catch (error) {
     const code = String(error?.code || "SMTP_DELIVERY_FAILED").replace(/[^A-Z0-9_-]/gi, "_").slice(0, 80);
     const uncertain = accepted || error?.uncertain || (env.emailProvider === "resend" && !code.startsWith("RESEND_HTTP_"))
       || (error?.command === "DATA" && ["ETIMEDOUT", "ECONNRESET", "ESOCKET"].includes(code));
     try { const result = await EmailDelivery.findOneAndUpdate({ _id: delivery._id, leaseToken }, {
-      $set: { status: uncertain ? "uncertain" : "failed", errorCode: uncertain ? "DELIVERY_OUTCOME_UNKNOWN" : code,
+      $set: { status: uncertain ? "uncertain" : "failed", lifecycleStatus: uncertain ? "uncertain" : "failed", ...(uncertain && delivery.queued !== undefined ? { queued: false } : {}),
+        ...(!uncertain && delivery.attempts >= emailAttemptLimit() ? { exhaustedAt: new Date(), ...(delivery.retryable || delivery.queued !== undefined ? { queued: false } : {}) } : {}), errorCode: uncertain ? "DELIVERY_OUTCOME_UNKNOWN" : code,
         ...(uncertain ? { lastError: "Delivery may have completed. Check the recipient inbox before sending again" } : {
         lastError: env.emailProvider === "resend" ? "Resend rejected the email request" : code === "EAUTH" ? "SMTP authentication failed" :
           code.includes("TIME") ? "SMTP connection timed out" : "SMTP delivery failed" }) },
@@ -202,23 +232,27 @@ export function emailConfiguration() {
   return {
     enabled: env.emailEnabled,
     configured,
-    provider: isGoogle ? "google" : (Boolean(env.smtpHost && env.smtpFrom) ? "smtp" : "none"),
+    provider: isGoogle ? "google" : (env.smtpHost && env.smtpFrom ? "smtp" : "none"),
     mode: env.emailEnabled ? (isGoogle ? "google" : "smtp") : "disabled",
   };
 }
 
-export async function sendEmailEvent({ eventKey, to, template, data = {}, source }) {
+export async function sendEmailEvent({ eventKey, to, template, data = {}, source, recipientUser, recipientContactPolicy }) {
   try {
-    if (!eventKey || !to || !templates[template]) return { status: "failed", errorCode: "INVALID_EMAIL_EVENT" };
+    if (!eventKey || typeof to !== "string" || to.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || !templates[template]) return { status: "failed", errorCode: "INVALID_EMAIL_EVENT" };
+    if ((recipientUser || recipientContactPolicy) && (!recipientUser || !["notification", "account"].includes(recipientContactPolicy))) return { status: "failed", errorCode: "INVALID_RECIPIENT_BINDING" };
     const [subject, text] = templates[template](data);
     const retryable = !NON_REPLAYABLE_TEMPLATES.has(template);
     const retryEnvelope = retryable ? encryptEnvelope({ to, subject, text }) : undefined;
     let delivery = await EmailDelivery.findOne({ eventKey });
+    if (delivery && (delivery.recipient !== to.toLowerCase().trim() || delivery.template !== template || (recipientUser && delivery.recipientUser && String(delivery.recipientUser) !== String(recipientUser)))) return { status: "failed", errorCode: "EMAIL_EVENT_CONFLICT" };
     if (["sent", "uncertain"].includes(delivery?.status)) return delivery;
     if (!delivery) {
       try {
         delivery = await EmailDelivery.create({ eventKey, recipient: to, template, subject,
-          status: env.emailEnabled ? "pending" : "disabled", retryable, retryEnvelope,
+          ...(recipientUser ? { recipientUser, recipientContactPolicy } : {}),
+          status: env.emailEnabled ? "pending" : "disabled", lifecycleStatus: "queued",
+          provider: env.emailProvider === "resend" ? "resend" : "smtp", retryable, retryEnvelope,
           ...(queueEnabled && retryable ? { queued: true } : {}),
           ...(source?.model && source?.id && source?.channel ? {
             sourceModel: source.model,
@@ -230,9 +264,11 @@ export async function sendEmailEvent({ eventKey, to, template, data = {}, source
         delivery = await EmailDelivery.findOne({ eventKey });
       }
     }
+    if (delivery.recipient !== to.toLowerCase().trim() || delivery.template !== template || (recipientUser && delivery.recipientUser && String(delivery.recipientUser) !== String(recipientUser))) return { status: "failed", errorCode: "EMAIL_EVENT_CONFLICT" };
     if (!env.emailEnabled || delivery.status === "disabled") return delivery;
     if (!emailConfiguration().configured) {
       delivery.status = "failed";
+      delivery.lifecycleStatus = "failed";
       delivery.errorCode = env.emailProvider === "resend" ? "RESEND_CONFIG_INCOMPLETE" : "SMTP_CONFIG_INCOMPLETE";
       delivery.lastError = env.emailProvider === "resend" ? "Resend configuration incomplete" : "SMTP configuration incomplete";
       await delivery.save();
@@ -251,6 +287,7 @@ export async function sendEmailEvent({ eventKey, to, template, data = {}, source
       const delivery = await EmailDelivery.findOne({ eventKey });
       if (delivery && !["sent", "uncertain"].includes(delivery.status) && !delivery.leaseUntil && !(delivery.status === "pending" && delivery.attempts > 0)) {
         delivery.status = "failed";
+        delivery.lifecycleStatus = "failed";
         delivery.attempts += delivery.attempts ? 0 : 1;
         delivery.errorCode = code;
         delivery.lastError = env.emailProvider === "resend" ? "Resend delivery failed" : code === "EAUTH" ? "SMTP authentication failed" :
@@ -266,6 +303,19 @@ export async function sendEmailEvent({ eventKey, to, template, data = {}, source
 export async function retryEmailDelivery({ deliveryId, actorId }) {
   const existing = await EmailDelivery.findById(deliveryId).select("+retryEnvelope");
   if (!existing) return { error: "Email delivery not found", status: 404 };
+  if (existing.attempts >= emailAttemptLimit()) {
+    const now = new Date();
+    const available = { $or: [{ leaseUntil: { $exists: false } }, { leaseUntil: { $lte: now } }] };
+    await EmailDelivery.updateOne({ _id: existing._id, status: "failed", attempts: { $gte: emailAttemptLimit() }, ...available },
+      { $set: { exhaustedAt: existing.exhaustedAt || now, ...(existing.retryable || existing.queued !== undefined ? { queued: false } : {}) } });
+    // A final leased attempt may already have reached the provider. Preserve
+    // uncertainty after its lease expires, and leave active sends untouched.
+    await EmailDelivery.updateOne({ _id: existing._id, status: "pending", attempts: { $gte: emailAttemptLimit() }, ...available },
+      { $set: { status: "uncertain", lifecycleStatus: "uncertain", queued: false, errorCode: "DELIVERY_OUTCOME_UNKNOWN", lastError: "Check the recipient inbox before sending again" },
+        $unset: { leaseToken: 1, leaseUntil: 1 } });
+    return { error: "Email retry limit reached; an administrator must review the outcome", code: "RETRY_LIMIT_REACHED", status: 409 };
+  }
+  if (["submitted", "delivered", "bounced"].includes(existing.lifecycleStatus)) return { error: "The email was already accepted by the provider; review delivery events instead of resending", status: 409 };
   if (existing.status === "sent") return { error: "Email was already sent", status: 409 };
   if (existing.status === "uncertain") return { error: "Delivery may have completed. Check the recipient inbox before preparing another message", status: 409 };
   if (!existing.retryable || !existing.retryEnvelope) {
@@ -274,6 +324,23 @@ export async function retryEmailDelivery({ deliveryId, actorId }) {
   if (!env.emailEnabled || !emailConfiguration().configured) {
     return { error: "Email delivery is not configured", status: 409 };
   }
+  if (existing.recipientUser) {
+    const { User } = await import("../models/User.js");
+    const user = await User.findOne({ _id: existing.recipientUser, accountStatus: "active" })
+      .select("email emailVerifiedAt notificationEmail notificationEmailVerifiedAt notificationsEnabled").lean();
+    const eligible = user && (existing.recipientContactPolicy === "notification"
+      ? user.notificationsEnabled && user.notificationEmailVerifiedAt && user.notificationEmail === existing.recipient
+      : existing.recipientContactPolicy === "account" && user.emailVerifiedAt && user.email === existing.recipient);
+    if (!eligible) return { error: "Recipient contact is no longer verified or eligible", code: "RECIPIENT_NO_LONGER_ELIGIBLE", status: 409 };
+  }
+  if (existing.sourceModel === "EmergencyCoordination") {
+    try {
+      const { isCoordinationDeliveryEligible } = await import("./emergencyCoordination.js");
+      if (!await isCoordinationDeliveryEligible(existing.sourceId, existing.recipient, existing.recipientUser)) return { error: "Emergency notification is no longer awaiting an eligible response", code: "RECIPIENT_NO_LONGER_ELIGIBLE", status: 409 };
+    } catch {
+      return { error: "Emergency notification eligibility cannot currently be confirmed", code: "NOTIFICATION_SOURCE_NOT_READY", status: 409 };
+    }
+  }
   if (existing.sourceModel === "RequestNotification") {
     const intent = await RequestNotification.findById(existing.sourceId);
     const Model = (await import("mongoose")).default.model(intent?.sourceType || "EmergencyRequest");
@@ -281,7 +348,26 @@ export async function retryEmailDelivery({ deliveryId, actorId }) {
     const { notificationRecipients, requestRouting } = await import("./requestNotifications.js");
     const routing = record && requestRouting(record, intent.sourceType);
     const recipients = routing ? await notificationRecipients(routing.kind, routing.organizationId, routing.isEmergency) : [];
-    if (!intent || !recipients.some(({ user }) => String(user._id) === String(intent.recipient) && user.notificationEmail === intent.email)) return { error: "Recipient no longer has the required notification access", code: "RECIPIENT_NO_LONGER_ELIGIBLE", status: 409 };
+    if (!intent || intent.status === "cancelled" || existing.recipient !== intent.email || !recipients.some(({ user }) => String(user._id) === String(intent.recipient) && user.notificationEmail === intent.email)) return { error: "Recipient no longer has the required notification access", code: "RECIPIENT_NO_LONGER_ELIGIBLE", status: 409 };
+  }
+  if (existing.sourceModel === "AmbulanceBooking") {
+    const booking = await AmbulanceBooking.findById(existing.sourceId);
+    const channel = existing.sourceChannel;
+    if (!booking || !["user", "admin", "provider"].includes(channel)) return { error: "Notification source no longer exists", code: "RECIPIENT_NO_LONGER_ELIGIBLE", status: 409 };
+    if (String(booking.delivery?.[channel]?.emailDelivery || "") !== String(existing._id)) return { error: "Notification source is not ready for retry", code: "NOTIFICATION_SOURCE_NOT_READY", status: 409 };
+    if (channel === "user") {
+      if (booking.requestSnapshot.contactEmail !== existing.recipient) return { error: "Request contact changed", code: "RECIPIENT_NO_LONGER_ELIGIBLE", status: 409 };
+      if (booking.user) {
+        const { User } = await import("../models/User.js");
+        if (!await User.exists({ _id: booking.user, accountStatus: "active" })) return { error: "Request account is no longer active", code: "RECIPIENT_NO_LONGER_ELIGIBLE", status: 409 };
+      }
+    } else {
+      const { notificationRecipients, requestRouting } = await import("./requestNotifications.js");
+      const routing = requestRouting(booking, "AmbulanceBooking");
+      const recipients = await notificationRecipients(routing.kind, routing.organizationId, routing.isEmergency);
+      if (!recipients.some(({ channel: eligibleChannel, user }) => user.notificationEmail === existing.recipient
+          && (channel === "admin" ? eligibleChannel === "system" : eligibleChannel === "provider"))) return { error: "Recipient no longer has notification access", code: "RECIPIENT_NO_LONGER_ELIGIBLE", status: 409 };
+    }
   }
   const claim = await claimDelivery(existing._id, actorId);
   if (!claim) return { error: "Email delivery is already being processed", status: 409 };
@@ -290,12 +376,13 @@ export async function retryEmailDelivery({ deliveryId, actorId }) {
     message = decryptEnvelope(existing.retryEnvelope);
   } catch {
     await EmailDelivery.updateOne({ _id: existing._id, leaseToken: claim.leaseToken }, {
-      $set: { status: "failed", errorCode: "RETRY_ENVELOPE_INVALID", lastError: "Stored retry content is unavailable" },
+      $set: { status: "failed", lifecycleStatus: "failed", queued: false, errorCode: "RETRY_ENVELOPE_INVALID", lastError: "Stored retry content is unavailable" },
       $unset: { leaseToken: 1, leaseUntil: 1 },
     });
     return { error: "Stored retry content is unavailable", status: 409 };
   }
   const delivery = await finishDelivery({ ...claim, message });
+  try {
   if (delivery?.sourceModel === "RequestNotification") {
     const intent = await RequestNotification.findById(delivery.sourceId);
     if (intent) {
@@ -321,9 +408,10 @@ export async function retryEmailDelivery({ deliveryId, actorId }) {
       ...(delivery.status === "sent" ? { $unset: { [`${prefix}.errorCode`]: 1 } } : {}),
     });
   }
+  } catch { /* Source state is reconciled from durable delivery state by recovery. */ }
   await AuditLog.create({ user: actorId, action: "update", entityType: "EmailDelivery",
     entityId: existing._id, before: { status: existing.status },
-    after: { status: delivery.status, operation: "retry" } });
+    after: { status: delivery.status, lifecycleStatus: delivery.lifecycleStatus, operation: "retry" } }).catch(() => {});
   return { delivery };
 }
 
@@ -334,4 +422,31 @@ export function setEmailTransportFactoryForTests(factory) {
 
 export function setResendFetchForTests(factory) {
   resendFetch = factory || ((...args) => fetch(...args));
+}
+
+// Explicit System Admin review is required before replaying an ambiguous or
+// exhausted delivery. This service never sends or manufactures a new event.
+export async function resolveEmailDelivery({ deliveryId, actorId, resolution, reason }) {
+  const { User } = await import("../models/User.js");
+  const actor = actorId && await User.findOne({ _id: actorId, role: "system_admin", accountStatus: "active" }).select("_id");
+  if (!actor) return { error: "System Admin access is required", status: 403 };
+  if (!["confirmed_not_submitted", "confirmed_submitted", "cancelled"].includes(resolution)
+      || typeof reason !== "string" || reason.trim().length < 10 || reason.length > 500) return { error: "A resolution and review reason are required", status: 422 };
+  const existing = await EmailDelivery.findById(deliveryId);
+  if (!existing) return { error: "Email delivery not found", status: 404 };
+  if (!["uncertain", "failed"].includes(existing.status) || (existing.leaseUntil && existing.leaseUntil > new Date())) return { error: "Delivery is not available for outcome review", status: 409 };
+  if (resolution === "confirmed_not_submitted" && (!existing.retryable || existing.attempts >= emailAttemptLimit())) return { error: "Retry budget is exhausted or this email requires a fresh account action", status: 409 };
+  const now = new Date();
+  // Log the review intent before mutation. Record only the decision category;
+  // free-form reasons may contain private contact information.
+  await AuditLog.create({ user: actorId, action: "update", entityType: "EmailDelivery", entityId: existing._id,
+    before: { status: existing.status, attempts: existing.attempts }, after: { operation: "resolve_delivery", resolution, reasonProvided: true } });
+  const set = { recoveryResolution: resolution, resolvedBy: actorId, resolvedAt: now, queued: false,
+    status: resolution === "confirmed_submitted" ? "sent" : "failed",
+    lifecycleStatus: resolution === "confirmed_submitted" ? "submitted" : "failed",
+    ...(resolution === "cancelled" ? { retryable: false, errorCode: "DELIVERY_CANCELLED_BY_ADMIN" } : {}),
+    ...(resolution === "confirmed_submitted" ? { providerAcceptedAt: now } : {}) };
+  const delivery = await EmailDelivery.findOneAndUpdate({ _id: existing._id, status: existing.status, attempts: existing.attempts,
+    updatedAt: existing.updatedAt }, { $set: set }, { new: true });
+  return delivery ? { delivery } : { error: "Delivery changed during review; refresh before continuing", status: 409 };
 }

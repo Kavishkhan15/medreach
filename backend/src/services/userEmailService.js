@@ -5,7 +5,8 @@ export async function sendUserEmail({ recipient, eventKey, emailTemplate, emailD
   if (!emailTemplate) return null;
   const user = await User.findById(recipient).select("email").lean();
   if (!user?.email) return null;
-  return sendEmailEvent({ eventKey: `mail:${eventKey}`, to: user.email, template: emailTemplate, data: emailData });
+  return sendEmailEvent({ eventKey: `mail:${eventKey}`, to: user.email, recipientUser: user._id,
+    recipientContactPolicy: "account", template: emailTemplate, data: emailData });
 }
 
 // Email failures after a saved primary record must not encourage resubmission.

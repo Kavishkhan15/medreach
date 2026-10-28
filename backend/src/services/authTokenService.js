@@ -1,3 +1,4 @@
+import { mfaRequiredForUser } from "../middleware/privilegedSecurity.js";
 import { isolatedDemoEnabled, localManualCredentialsEnabled } from "./demoAccounts.js";
 import { randomBytes, randomUUID, createHash } from "node:crypto";
 import { AuthToken } from "../models/AuthToken.js";
@@ -33,13 +34,13 @@ export async function consumeAuthToken(token, purpose) {
     { $set: { usedAt: new Date() } }, { new: true }).select("+metadata");
 }
 
-export async function issueSession(user, { ip, userAgent, familyId = randomUUID() } = {}) {
+export async function issueSession(user, { ip, userAgent, familyId = randomUUID(), mfaAuthenticated = false } = {}) {
   const token = opaqueToken();
   const entry = await AuthToken.create({ user: user._id, purpose: "refresh_session",
     tokenHash: digestToken(token), familyId,
     expiresAt: new Date(Date.now() + env.refreshTokenExpiresDays * 86400000),
     ipHash: fingerprint(ip), userAgentHash: fingerprint(userAgent),
-    metadata: { authVersion: Number(user.authVersion || 0) } });
+    metadata: { authVersion: Number(user.authVersion || 0), mfaAuthenticated } });
   return { token, entry };
 }
 
@@ -63,12 +64,12 @@ export async function rotateSession(token, context = {}) {
     return { error: "replay", userId: existing.user };
   }
   const user = await User.findById(existing.user).select("+authVersion +passwordHash");
-  if (!user || user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled()) || (user.credentialDelivery === "manual" && !localManualCredentialsEnabled()) || Number(existing.metadata?.authVersion || 0) !== Number(user.authVersion || 0)) {
+  if (!user || (await mfaRequiredForUser(user) && !existing.metadata?.mfaAuthenticated) || user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled()) || (user.credentialDelivery === "manual" && !localManualCredentialsEnabled()) || Number(existing.metadata?.authVersion || 0) !== Number(user.authVersion || 0)) {
     await AuthToken.updateMany({ familyId: existing.familyId, purpose: "refresh_session" },
       { $set: { revokedAt: new Date(), revokeReason: "account_changed" } });
     return { error: "invalid" };
   }
-  const next = await issueSession(user, { ...context, familyId: existing.familyId });
+  const next = await issueSession(user, { ...context, familyId: existing.familyId, mfaAuthenticated: existing.metadata?.mfaAuthenticated === true });
   existing.replacedBy = next.entry._id;
   await existing.save();
   return { user, token: next.token, session: next.entry };

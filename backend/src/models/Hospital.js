@@ -14,6 +14,17 @@ const slugify = (s) =>
 
 const hospitalSchema = new mongoose.Schema(
   {
+    archivedAt: { type: Date, default: null, index: true },
+    archivedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    archiveReason: { type: String, trim: true, maxlength: 500 },
+    archiveOperation: { type: mongoose.Schema.Types.ObjectId },
+    archivePending: { type: Boolean, default: false },
+    archiveAttempts: { type: Number, default: 0, min: 0, max: 5 },
+    archiveLeaseToken: { type: String, select: false },
+    archiveLeaseUntil: Date,
+    archiveRetryAt: Date,
+    archiveExhaustedAt: Date,
+    archiveErrorCode: { type: String, maxlength: 80 },
     approvalStatus: { type: String, enum: ["pending", "approved", "rejected"] },
     name: { type: String, required: true, trim: true, maxlength: 200 },
     slug: { type: String, unique: true, index: true },
@@ -72,6 +83,7 @@ hospitalSchema.index({
   services: "text",
 });
 hospitalSchema.index({ location: "2dsphere" });
+hospitalSchema.index({ archivedAt: 1, name: 1, _id: 1 });
 
 hospitalSchema.pre("validate", function (next) {
   if (!this.slug && this.name) {

@@ -1,3 +1,4 @@
+import { organizationIsAvailable } from "./providerLifecycle.js";
 import { refreshAmbulanceDeliveryState } from "./ambulanceDeliveryState.js";
 import { User } from "../models/User.js";
 import { Hospital } from "../models/Hospital.js";
@@ -9,7 +10,8 @@ import { sendEmailEvent } from "./emailService.js";
 import { EmailDelivery } from "../models/EmailDelivery.js";
 const eligible = { accountStatus: "active", notificationsEnabled: true, notificationEmailVerifiedAt: { $type: "date" } };
 export async function assignedProviderUsers(kind, organizationId) {
-  const rows = organizationId ? await ProviderMembership.find({ kind, organization: organizationId, active: true }).lean() : [];
+  if (!organizationId || !await organizationIsAvailable(kind, organizationId)) return [];
+  const rows = organizationId ? await ProviderMembership.find({ kind, organization: organizationId, active: true, $or: [{ accessLevel: "admin" }, { accessLevel: { $exists: false } }] }).lean() : [];
   const ids = rows.map((r) => r.user);
   const provider = await User.find({ _id: { $in: ids }, accountStatus: "active", role: "provider_admin" }).lean();
   if (kind === "hospital" && organizationId) {
@@ -50,6 +52,7 @@ export async function routeRequestNotifications(record, sourceType, extraTasks =
       await intent.save();
     } else if (intent.status === "pending") {
       const delivery = await sendEmailEvent({ eventKey, to: intent.email,
+        recipientUser: user._id, recipientContactPolicy: "notification",
         template: channel === "system" ? "system_emergency" : "provider_request",
         data: { reference: routing.reference, organization: org?.name || "Unassigned organisation" },
         source: { model: "RequestNotification", id: intent._id, channel: channel === "system" ? "admin" : "provider" } });
@@ -73,5 +76,6 @@ export async function routeRequestSafely(record, sourceType, extraTasks = []) {
 
 export async function providerEmailTasks(kind, organizationId, eventKey, template, data) {
   const recipients = await notificationRecipients(kind, organizationId, false);
-  return recipients.map(({ user }) => () => sendEmailEvent({ eventKey: `${eventKey}:${user._id}`, to: user.notificationEmail, template, data }));
+  return recipients.map(({ user }) => () => sendEmailEvent({ eventKey: `${eventKey}:${user._id}`, to: user.notificationEmail,
+    recipientUser: user._id, recipientContactPolicy: "notification", template, data }));
 }

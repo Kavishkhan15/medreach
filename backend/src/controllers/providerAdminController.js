@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+import { organizationIsAvailable } from "../services/providerLifecycle.js";
 import { sendMutationResponse } from "../utils/sendMutationResponse.js";
 import { createHmac } from "node:crypto";
 import { env } from "../config/env.js";
@@ -9,7 +11,7 @@ import { Hospital } from "../models/Hospital.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
 import { ProviderMembership } from "../models/ProviderMembership.js";
 import { ProviderApplication } from "../models/ProviderApplication.js";
-import { accountView, accountViews, addAssignment, provisionProvider, revokeProviderAccess, validContact } from "../services/providerAccounts.js";
+import { accountView, accountViews, verifyAssignmentAfterWrite, addAssignment, provisionProvider, revokeProviderAccess, validContact } from "../services/providerAccounts.js";
 import { findOrganization } from "../services/providerAccess.js";
 import { issueProviderActivation } from "../services/providerInvitation.js";
 import { isolatedDemoEnabled, localManualCredentialsEnabled } from "../services/demoAccounts.js";
@@ -18,9 +20,41 @@ import { writeAudit } from "../utils/audit.js";
 import { issueAuthToken } from "../services/authTokenService.js";
 const account = async (id) => User.findOne({ _id: id, role: "provider_admin" }).select("+authVersion +passwordHash");
 const sameText = (value) => ({ $regex: `^\\s*${value.trim().split(/\s+/).map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+")}\\s*$`, $options: "i" });
-export const listAccounts = asyncHandler(async (_req, res) => {
-  const users = await User.find({ role: "provider_admin" }).select("+passwordHash +authVersion").sort({ createdAt: -1 });
-  res.json({ data: await accountViews(users), demoEnabled: isolatedDemoEnabled(), manualCredentialsEnabled: localManualCredentialsEnabled() });
+// Defaults keep existing small installations complete while bounding larger responses.
+function listingPage(query = {}) {
+  const page = query.page === undefined ? 1 : Number(query.page);
+  const requested = query.limit === undefined ? 100 : Number(query.limit);
+  if (!Number.isSafeInteger(page) || page < 1 || !Number.isSafeInteger(requested) || requested < 1
+    || (page - 1) > Math.floor(Number.MAX_SAFE_INTEGER / Math.min(requested, 100))) {
+    throw Object.assign(new Error("Page and limit must be positive integers"), { status: 400 });
+  }
+  const perPage = Math.min(requested, 100);
+  return { page, perPage, skip: (page - 1) * perPage };
+}
+const pageMetadata = ({ page, perPage }, total) => ({ page, perPage, total,
+  hasMore: page * perPage < total, nextPage: page * perPage < total ? page + 1 : null });
+async function organizationPage(query, fields) {
+  const pagination = listingPage(query);
+  const [hospitalCount, providerCount] = await Promise.all([Hospital.countDocuments(), ResourceProvider.countDocuments()]);
+  const hospitalLimit = Math.min(pagination.perPage, Math.max(0, hospitalCount - pagination.skip));
+  const providerLimit = pagination.perPage - hospitalLimit;
+  const [hospitals, providers] = await Promise.all([
+    hospitalLimit ? Hospital.find().select(fields).sort({ _id: 1 }).skip(pagination.skip).limit(hospitalLimit).lean() : [],
+    providerLimit ? ResourceProvider.find().select(`${fields} kind`).sort({ _id: 1 })
+      .skip(Math.max(0, pagination.skip - hospitalCount)).limit(providerLimit).lean() : [],
+  ]);
+  return { data: [...hospitals.map(row => ({ ...row, kind: "hospital" })), ...providers],
+    ...pageMetadata(pagination, hospitalCount + providerCount) };
+}
+export const listAccounts = asyncHandler(async (req, res) => {
+  const pagination = listingPage(req.query);
+  const filter = { role: "provider_admin" };
+  const [users, total] = await Promise.all([
+    User.find(filter).select("name email role accountStatus activationDeliveryStatus notificationEmail notificationsEnabled notificationEmailVerifiedAt credentialDelivery demoAccount credentialState +passwordHash +authVersion")
+      .sort({ createdAt: -1, _id: -1 }).skip(pagination.skip).limit(pagination.perPage).lean(),
+    User.countDocuments(filter),
+  ]);
+  res.json({ data: await accountViews(users), ...pageMetadata(pagination, total), demoEnabled: isolatedDemoEnabled(), manualCredentialsEnabled: localManualCredentialsEnabled() });
 });
 export const createAccount = asyncHandler(async (req, res) => sendMutationResponse(res, guardSystemAdminMutation(req.user.id, async () => ({ status: 201, body: { ok: true, ...await provisionProvider({ ...req.body, provisioningKey: req.idempotencyKeyHash }, req.user.id) } }))));
 export const accountAction = asyncHandler(async (req, res) => {
@@ -64,16 +98,20 @@ export const assignAccount = asyncHandler(async (req, res) => sendMutationRespon
 export const updateAssignment = asyncHandler(async (req, res) => sendMutationResponse(res, guardSystemAdminMutation(req.user.id, async () => {
   const user = await account(req.params.id);
   if (!user) return { status: 404, body: { error: "Provider account not found" } };
-  const membership = await ProviderMembership.findOneAndUpdate({ _id: req.params.membershipId, user: user._id },
-    { $set: { active: req.body.active } }, { new: true });
-  if (!membership) return { status: 404, body: { error: "Assignment not found" } };
+  const existingMembership = await ProviderMembership.findOne({ _id: req.params.membershipId, user: user._id });
+  if (existingMembership && req.body.active === true && (existingMembership.archivedByOperation || !await organizationIsAvailable(existingMembership.kind, existingMembership.organization))) return { status: 409, body: { error: "Archived or unavailable organisations cannot be reassigned" } };
+  const assignmentMutation = randomUUID();
+  const membership = await ProviderMembership.findOneAndUpdate({ _id: req.params.membershipId, user: user._id,
+    ...(req.body.active === true ? { archivedByOperation: null } : {}) },
+    { $set: { active: req.body.active, assignmentMutation } }, { new: true });
+  if (!membership) return { status: existingMembership ? 409 : 404, body: { error: existingMembership ? "Assignment changed during activation" : "Assignment not found" } };
+  if (req.body.active === true) await verifyAssignmentAfterWrite(membership, assignmentMutation);
   await revokeProviderAccess(user);
   await writeAudit({ user: req.user.id, action: "update", entityType: "ProviderMembership", entityId: membership._id, after: { active: membership.active } });
   return { body: { ok: true, account: await accountView(user) } };
 })));
-export const listOrganizations = asyncHandler(async (_req, res) => {
-  const [hospitals, providers] = await Promise.all([Hospital.find().select("name verificationStatus approvalStatus").lean(), ResourceProvider.find().select("name kind verificationStatus approvalStatus").lean()]);
-  res.json({ data: [...hospitals.map((r) => ({ ...r, kind: "hospital" })), ...providers] });
+export const listOrganizations = asyncHandler(async (req, res) => {
+  res.json(await organizationPage(req.query, "name verificationStatus approvalStatus"));
 });
 export const approveOrganization = asyncHandler(async (req, res) => {
   const org = await findOrganization(req.params.kind, req.params.id);
@@ -104,7 +142,14 @@ export const submitProvider = asyncHandler(async (req, res) => {
   const ownsApplication = req.user && String(application.requester) === String(req.user.id);
   res.status(ownsApplication ? 201 : 202).json({ ok: true, ...(ownsApplication ? { application } : {}), message: "Application recorded for System Admin review. This does not grant provider access. Email confirmation may be delayed; do not submit again." });
 });
-export const providerApplications = asyncHandler(async (_req, res) => res.json({ data: await ProviderApplication.find().sort({ createdAt: -1 }).lean() }));
+export const providerApplications = asyncHandler(async (req, res) => {
+  const pagination = listingPage(req.query);
+  const [data, total] = await Promise.all([
+    ProviderApplication.find().sort({ createdAt: -1, _id: -1 }).skip(pagination.skip).limit(pagination.perPage).lean(),
+    ProviderApplication.countDocuments(),
+  ]);
+  res.json({ data, ...pageMetadata(pagination, total) });
+});
 export const reviewProvider = asyncHandler(async (req, res) => {
   let result;
   await guardSystemAdminMutation(req.user.id, async () => {
@@ -157,17 +202,36 @@ export const reviewProvider = asyncHandler(async (req, res) => {
 });
 export const myOrganizations = asyncHandler(async (req, res) => {
   if (req.user.role === "system_admin") {
-    const [hospitals, providers] = await Promise.all([Hospital.find().select("name phone website address verificationStatus").lean(), ResourceProvider.find().select("name kind phone website address verificationStatus").lean()]);
-    return res.json({ data: [...hospitals.map((r) => ({ ...r, kind: "hospital" })), ...providers] });
+    return res.json(await organizationPage(req.query, "name phone website address verificationStatus"));
   }
-  const rows = await ProviderMembership.find({ user: req.user.id, active: true }).lean();
-  const data = await Promise.all(rows.map(async (r) => {
-    const org = await findOrganization(r.kind, r.organization);
-    return org ? { _id: String(org._id), name: org.name, kind: r.kind, phone: org.phone, website: org.website, address: org.address, verificationStatus: org.verificationStatus } : null;
-  }));
-  // Legacy hospital assignment display is read-only compatibility, not migration.
-  if (req.user.role === "hospital_admin") for (const h of await Hospital.find({ admins: req.user.id }).select("name phone website address verificationStatus").lean()) {
-    if (!data.some((r) => r?._id === String(h._id))) data.push({ ...h, _id: String(h._id), kind: "hospital" });
-  }
-  res.json({ data: data.filter(Boolean) });
+  const pagination = listingPage(req.query);
+  const userId = new mongoose.Types.ObjectId(req.user.id);
+  const projection = { _id: 1, name: 1, phone: 1, website: 1, address: 1, verificationStatus: 1 };
+  const pipeline = [
+    { $match: { user: userId, active: true } },
+    { $lookup: { from: Hospital.collection.name, let: { organization: "$organization", kind: "$kind" }, pipeline: [
+      { $match: { $expr: { $and: [{ $eq: ["$_id", "$$organization"] }, { $eq: ["$$kind", "hospital"] }] } } },
+      { $project: projection },
+    ], as: "hospital" } },
+    { $lookup: { from: ResourceProvider.collection.name, let: { organization: "$organization", kind: "$kind" }, pipeline: [
+      { $match: { $expr: { $and: [{ $eq: ["$_id", "$$organization"] }, { $eq: ["$kind", "$$kind"] }] } } },
+      { $project: projection },
+    ], as: "provider" } },
+    { $set: { organization: { $arrayElemAt: [{ $concatArrays: ["$hospital", "$provider"] }, 0] } } },
+    { $match: { "organization._id": { $exists: true } } },
+    { $replaceRoot: { newRoot: { $mergeObjects: ["$organization", { kind: "$kind" }] } } },
+  ];
+  // Legacy hospital assignment display stays scoped and does not migrate records.
+  if (req.user.role === "hospital_admin") pipeline.push({ $unionWith: { coll: Hospital.collection.name, pipeline: [
+    { $match: { admins: userId } }, { $project: projection }, { $set: { kind: "hospital" } },
+  ] } });
+  pipeline.push(
+    { $group: { _id: { kind: "$kind", organization: "$_id" }, organization: { $first: "$$ROOT" } } },
+    { $replaceRoot: { newRoot: "$organization" } },
+    { $sort: { kind: 1, _id: 1 } },
+    { $facet: { data: [{ $skip: pagination.skip }, { $limit: pagination.perPage }], counts: [{ $count: "total" }] } },
+  );
+  const [result] = await ProviderMembership.aggregate(pipeline);
+  const total = result?.counts[0]?.total || 0;
+  res.json({ data: (result?.data || []).map(row => ({ ...row, _id: String(row._id) })), ...pageMetadata(pagination, total) });
 });

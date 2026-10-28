@@ -1,3 +1,4 @@
+import { requireRecentPrivilegedAuthentication } from "../middleware/privilegedSecurity.js";
 import { Router } from "express";
 import { body, param } from "express-validator";
 import { FACILITY_TYPES } from "../config/constants.js";
@@ -9,7 +10,7 @@ import { myHospitals, myOwnershipClaims, submitOwnershipClaim } from "../control
 const router = Router();
 router.get("/hospitals", requireAuth, myHospitals);
 router.get("/hospitals/:id/facility-claims", requireAuth, param("id").isMongoId(), validate, listStaffFacilityClaims);
-router.post("/hospitals/:id/facility-claims", requireAuth, param("id").isMongoId(),
+router.post("/hospitals/:id/facility-claims", requireAuth, requireRecentPrivilegedAuthentication, param("id").isMongoId(),
   body("facility").isIn(FACILITY_TYPES), body("capability").isIn(["yes", "no", "unknown"]),
   body("evidenceText").isString().trim().isLength({ min: 8, max: 200 }), validate, submitStaffFacilityClaim);
 router.get("/ownership-claims", requireAuth, myOwnershipClaims);

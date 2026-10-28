@@ -1,5 +1,5 @@
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
+import { sharedLimiter } from "../middleware/sharedLimiter.js";
 import { body } from "express-validator";
 import { validate } from "../middleware/validate.js";
 import { sendMessage } from "../controllers/assistantController.js";
@@ -10,13 +10,7 @@ const router = Router();
 // Own limiter, separate from authLimiter (security.js) — a chat surface gets
 // more requests per session than login, but must still cap potential LLM-cost
 // abuse and basic flooding. Public endpoint, same trust tier as hospital search.
-const assistantLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Too many assistant requests. Please wait a moment and try again." },
-});
+const assistantLimiter = sharedLimiter("assistant", 20, 5 * 60 * 1000);
 
 router.post(
   "/message",

@@ -1,16 +1,23 @@
+import { safeErrorMetadata } from "../utils/logRedaction.js";
 // Central error handling. Normalizes Mongoose/JWT errors to clean JSON.
 
 export function notFound(req, res) {
   res.status(404).json({ error: "Not found" });
 }
 
-// eslint-disable-next-line no-unused-vars
 export function errorHandler(err, req, res, _next) {
+  if (err.status === 503 && err.code !== "RATE_LIMIT_UNAVAILABLE") {
+    return res.status(503).json({ error: "Service temporarily unavailable. Please retry." });
+  }
+  if (err.code === "RATE_LIMIT_UNAVAILABLE") {
+    res.set("Retry-After", "1");
+    return res.status(503).json({ error: "Request protection temporarily unavailable. Please retry." });
+  }
   if (err.name === "ValidationError") {
     return res.status(400).json({
       error: "Validation failed",
       details: Object.fromEntries(
-        Object.entries(err.errors).map(([k, v]) => [k, v.message])
+        Object.keys(err.errors).map((k) => [k, "Invalid value"])
       ),
     });
   }
@@ -29,7 +36,7 @@ export function errorHandler(err, req, res, _next) {
       fields: Object.keys(err.keyValue ?? {}),
     });
   }
-  console.error("[medreach] Unhandled error:", { name: err.name, code: err.code, requestId: req.id });
+  console.error("[medreach] Unhandled error:", safeErrorMetadata(err, req.id));
   const status = Number(err.status) >= 400 && Number(err.status) < 500 ? Number(err.status) : 500;
   res.status(status).json({ error: status === 500 ? "Internal server error" : "Request could not be completed" });
 }

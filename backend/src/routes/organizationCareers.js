@@ -1,3 +1,4 @@
+import { requireRecentPrivilegedAuthentication } from "../middleware/privilegedSecurity.js";
 import { Router } from 'express';
 import { body, param } from 'express-validator';
 import { requireAuth, requireRole } from '../middleware/auth.js';
@@ -51,6 +52,7 @@ export const orgApplicationsRouter = Router();
 orgApplicationsRouter.patch(
   '/:id',
   requireAuth,
+  requireRecentPrivilegedAuthentication,
   param('id').isMongoId(),
   body('status').isIn(['under_review', 'shortlisted', 'rejected']),
   validate,

@@ -1,3 +1,4 @@
+import { requireRecentPrivilegedAuthentication, mfaRequiredForUser } from "./privilegedSecurity.js";
 import { isolatedDemoEnabled, localManualCredentialsEnabled } from "../services/demoAccounts.js";
 import { verifyToken } from "../utils/token.js";
 import { assignedContext } from "../services/providerAccess.js";
@@ -27,6 +28,11 @@ async function resolveAccessContext(token) {
   ]);
   if (!current || current.accountStatus !== "active" || (current.demoAccount && !isolatedDemoEnabled()) || (current.credentialDelivery === "manual" && !localManualCredentialsEnabled()) || Number(current.authVersion || 0) !== Number(payload.av || 0)) {
     return { error: "Session is no longer valid" };
+  }
+  if (current && await mfaRequiredForUser(current) && !await AuthToken.exists({ familyId: payload.sid, user: payload.sub,
+    purpose: "refresh_session", usedAt: { $exists: false }, revokedAt: { $exists: false },
+    expiresAt: { $gt: new Date() }, "metadata.mfaAuthenticated": true })) {
+    return { error: "Sign in again with MFA", status: 401 };
   }
   if (!session) {
     return { error: "Session is no longer valid" };
@@ -63,6 +69,7 @@ export function requireRole(...roles) {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ error: "Insufficient permissions" });
     }
+    if (!["GET", "HEAD", "OPTIONS"].includes(req.method)) return requireRecentPrivilegedAuthentication(req, res, next);
     next();
   };
 }

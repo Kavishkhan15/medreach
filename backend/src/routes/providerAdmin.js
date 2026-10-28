@@ -23,9 +23,9 @@ providerAccountRouter.post("/:id/credentials", localTransport, param("id").isMon
 providerAccountRouter.get("/", controller.listAccounts);
 providerAccountRouter.post("/", captureIdempotencyKey("provider-account"), body("kind").isIn(PROVIDER_KINDS), body("organizationId").isMongoId(),
   body("loginEmail").optional({ checkFalsy: true }).isEmail(), body("notificationEmail").optional({ checkFalsy: true }).isEmail(),
-  body("demo").optional().isBoolean().toBoolean(), validate, controller.createAccount);
+  body("demo").optional().isBoolean().toBoolean(), body("accessLevel").optional().isIn(["admin", "inventory_reporter", "reviewer"]), validate, controller.createAccount);
 providerAccountRouter.post("/:id/actions", param("id").isMongoId(), body("action").isIn(["activate", "deactivate", "invite", "reset"]), validate, controller.accountAction);
-providerAccountRouter.post("/:id/assignments", param("id").isMongoId(), body("kind").isIn(PROVIDER_KINDS), body("organizationId").isMongoId(), validate, controller.assignAccount);
+providerAccountRouter.post("/:id/assignments", param("id").isMongoId(), body("kind").isIn(PROVIDER_KINDS), body("organizationId").isMongoId(), body("accessLevel").optional().isIn(["admin", "inventory_reporter", "reviewer"]), validate, controller.assignAccount);
 providerAccountRouter.patch("/:id/assignments/:membershipId", param("id").isMongoId(), param("membershipId").isMongoId(), body("active").isBoolean().toBoolean(), validate, controller.updateAssignment);
 export const providerRouter = Router();
 providerRouter.get("/mine", requireAuth, requireRole("provider_admin", "hospital_admin", "system_admin"), controller.myOrganizations);

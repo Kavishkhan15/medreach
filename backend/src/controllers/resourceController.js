@@ -1,3 +1,4 @@
+import { archivedHospitalIds, organizationIsAvailable, archiveProviderOrganization } from "../services/providerLifecycle.js";
 import { routeRequestSafely } from "../services/requestNotifications.js";
 import { canManageResource } from "../services/providerAccess.js";
 import { randomBytes } from "node:crypto";
@@ -16,7 +17,7 @@ import { sendEmailEvent } from "../services/emailService.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 export const listResources = (kind) => asyncHandler(async (req, res) => {
-  const filter = { kind, approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } };
+  const filter = { kind, archivedAt: null, hospital: { $nin: await archivedHospitalIds() }, approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } };
   if (req.query.q) filter.$or = ["name", "locality", "services", "coverageArea"].map((field) => ({ [field]: { $regex: String(req.query.q).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" } }));
   if (req.query.locality) filter.locality = { $regex: String(req.query.locality).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
   if (req.query.service) filter.services = String(req.query.service).slice(0, 80);
@@ -25,7 +26,7 @@ export const listResources = (kind) => asyncHandler(async (req, res) => {
   res.json({ data, currentInventory: "unknown", liveDispatch: false });
 });
 export const getResource = (kind) => asyncHandler(async (req, res) => {
-  const data = await ResourceProvider.findOne({ _id: req.params.id, kind, approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } }).select("-email").lean();
+  const data = await ResourceProvider.findOne({ _id: req.params.id, kind, archivedAt: null, hospital: { $nin: await archivedHospitalIds() }, approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } }).select("-email").lean();
   if (!data) return res.status(404).json({ error: "Provider not found" });
   res.json({ data, currentInventory: "unknown", liveDispatch: false });
 });
@@ -135,7 +136,7 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
       .select("+email")
       .lean()
     : null;
-  if (!provider) return res.status(404).json({ error: "Active ambulance provider not found" });
+  if (!provider || !await organizationIsAvailable("ambulance", provider._id)) return res.status(404).json({ error: "Active ambulance provider not found" });
 
   const userEmail = (contactEmail || req.user?.email || "").trim().toLowerCase();
   const reference = `AMB-${Date.now().toString(36).toUpperCase()}-${randomBytes(2).toString("hex").toUpperCase()}`;
@@ -157,6 +158,7 @@ export const bookAmbulance = asyncHandler(async (req, res) => {
   let booking;
   try {
     booking = await AmbulanceBooking.create({
+    coordinationVersion: 1,
     notificationVersion: 1,
     isEmergency: req.body.isEmergency === true,
     reference,
@@ -241,4 +243,11 @@ export const getAmbulanceBooking = asyncHandler(async (req, res) => {
   }
 
   res.json({ booking: publicBooking(booking), delivery: deliverySummary(booking.delivery) });
+});
+
+export const archiveResource = asyncHandler(async (req, res) => {
+  const provider = await ResourceProvider.findById(req.params.id).select("kind").lean();
+  if (!provider) return res.status(404).json({ error: "Provider not found" });
+  const result = await archiveProviderOrganization({ kind: provider.kind, id: provider._id, actor: req.user, reason: req.body?.reason });
+  res.json({ ok: true, archived: true, cleanupPending: result.cleanupPending });
 });

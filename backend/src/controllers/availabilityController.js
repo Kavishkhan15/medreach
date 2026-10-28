@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Hospital } from "../models/Hospital.js";
 import { AvailabilityObservation } from "../models/AvailabilityObservation.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -8,7 +9,8 @@ import { hashIp } from "../utils/audit.js";
 
 // GET /api/hospitals/:id/facilities — current facility statuses for a hospital.
 export const listFacilities = asyncHandler(async (req, res) => {
-  const hospital = await Hospital.findById(req.params.id).lean();
+  if (!mongoose.isValidObjectId(req.params.id)) return res.status(404).json({ error: "Hospital not found" });
+  const hospital = await Hospital.findOne({ _id: req.params.id, archivedAt: null, approvalStatus: { $nin: ["pending", "rejected"] } }).lean();
   if (!hospital) return res.status(404).json({ error: "Hospital not found" });
   const [view] = await withHospitalData([hospital]);
   res.json({ data: view.facilities });
@@ -16,7 +18,8 @@ export const listFacilities = asyncHandler(async (req, res) => {
 
 // GET /api/hospitals/:id/availability — safe current view + history count.
 export const getAvailability = asyncHandler(async (req, res) => {
-  const hospital = await Hospital.findById(req.params.id).lean();
+  if (!mongoose.isValidObjectId(req.params.id)) return res.status(404).json({ error: "Hospital not found" });
+  const hospital = await Hospital.findOne({ _id: req.params.id, archivedAt: null, approvalStatus: { $nin: ["pending", "rejected"] } }).lean();
   if (!hospital) return res.status(404).json({ error: "Hospital not found" });
   const [[view], observations] = await Promise.all([
     withHospitalData([hospital]),

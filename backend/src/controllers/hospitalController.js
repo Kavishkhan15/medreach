@@ -1,5 +1,7 @@
+import { decodeHospitalCursor, encodeHospitalCursor, hospitalCursorFilter } from "../services/hospitalPagination.js";
+import { archiveProviderOrganization } from "../services/providerLifecycle.js";
 import { Hospital } from "../models/Hospital.js";
-import { withHospitalData } from "../services/hospitalDataLoader.js";
+import { withHospitalData, withHospitalAvailability } from "../services/hospitalDataLoader.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
 import { DataSource } from "../models/DataSource.js";
 import { AuditLog } from "../models/AuditLog.js";
@@ -8,18 +10,42 @@ import { recordHospitalFieldClaims, normalizeFieldValue } from "../services/hosp
 import { enrichHospitalData } from "../services/hospitalEnrichmentService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+// Public listings do not need administrative lifecycle or lease metadata.
+const publicHospitalProjection = "-admins -archivedBy -archiveReason -archiveOperation -archivePending -archiveAttempts -archiveLeaseUntil -archiveRetryAt -archiveExhaustedAt -archiveErrorCode -__v";
+
+async function loadPublicEvidence(res, hospitals) {
+  const start = performance.now();
+  try { return await withHospitalData(hospitals); }
+  finally { res.locals.performance = { ...res.locals.performance, evidenceMs: +(performance.now() - start).toFixed(2) }; }
+}
+
 // GET /api/hospitals — public search + filter + pagination + optional geo "nearest".
 const hospitalListing = (includeUnapproved) => asyncHandler(async (req, res) => {
+  res.set("Cache-Control", "no-store");
   const { q, region, city, status, specialty, lat, lng, page = 1, limit = 12 } = req.query;
-  const filter = includeUnapproved ? {} : { approvalStatus: { $nin: ["pending", "rejected"] } };
+  const filter = includeUnapproved ? {} : { archivedAt: null, approvalStatus: { $nin: ["pending", "rejected"] } };
+  const projection = includeUnapproved ? "-admins" : publicHospitalProjection;
   if (region) filter.region = region;
   if (city) filter.city = city;
   if (specialty) filter.departments = specialty;
   if (q) filter.$text = { $search: q };
 
+  const cursorMode = req.query.pagination === "cursor" || req.query.cursor !== undefined;
+  if (req.query.includeTotal === "false" && !cursorMode) return res.status(400).json({ error: "Omitting totals requires cursor pagination" });
+  if (cursorMode && (q || lat || lng || status || Number(page) !== 1)) return res.status(400).json({ error: "Cursor pagination supports directory filters without search, distance or derived status" });
   const perPage = Math.min(Math.max(Number(limit) || 12, 1), 50);
   const skip = (Math.max(Number(page), 1) - 1) * perPage;
 
+  if (cursorMode) {
+    const cursor = req.query.cursor ? decodeHospitalCursor(req.query.cursor) : null;
+    const queryStart = performance.now();
+    const rows = await Hospital.find(cursor ? { $and: [filter, hospitalCursorFilter(cursor)] } : filter)
+      .select(projection).sort({ name: 1, _id: 1 }).limit(perPage + 1).lean();
+    res.locals.performance = { directoryQueryMs: +(performance.now() - queryStart).toFixed(2) };
+    const visible = rows.slice(0, perPage);
+    const [data, total] = await Promise.all([loadPublicEvidence(res, visible), req.query.includeTotal === "false" ? null : Hospital.countDocuments(filter)]);
+    return res.json({ data, page: 1, perPage, total, nextCursor: rows.length > perPage ? encodeHospitalCursor(visible[visible.length - 1]) : null });
+  }
   let query;
   // Geo "nearest" mode takes precedence when coords are supplied.
   if (lat && lng) {
@@ -30,23 +56,44 @@ const hospitalListing = (includeUnapproved) => asyncHandler(async (req, res) => 
           $geometry: { type: "Point", coordinates: [Number(lng), Number(lat)] },
         },
       },
-    }).select("-admins");
+    }).select(projection);
   } else {
-    query = Hospital.find(filter).select("-admins").sort(q ? { score: { $meta: "textScore" } } : { name: 1 });
+    query = Hospital.find(filter).select(projection).sort(q ? { score: { $meta: "textScore" } } : { name: 1, _id: 1 });
   }
 
   // A status filter must use verified observations, never the legacy stored
   // emergencyStatus default. Apply it after composing the public data view.
   if (status) {
-    const candidates = await withHospitalData(await query.lean());
-    const matching = candidates.filter((hospital) => hospital.emergencyStatus === status);
-    return res.json({ data: matching.slice(skip, skip + perPage), page: Number(page), perPage, total: matching.length });
+    const filterStart = performance.now();
+    // Exact derived-status totals require reading candidate evidence. Stream
+    // bounded batches instead of materialising every hospital and its history.
+    const data = [];
+    let total = 0;
+    const processBatch = async (batch) => {
+      const availability = await withHospitalAvailability(batch);
+      for (let index = 0; index < availability.length; index++) {
+        const hospital = availability[index];
+        if (hospital.emergencyStatus !== status) continue;
+        if (total >= skip && data.length < perPage) data.push(batch[index]);
+        total++;
+      }
+    };
+    let batch = [];
+    for await (const hospital of query.lean().cursor({ batchSize: 100 })) {
+      batch.push(hospital);
+      if (batch.length === 100) { await processBatch(batch); batch = []; }
+    }
+    if (batch.length) await processBatch(batch);
+    res.locals.performance = { availabilityFilterMs: +(performance.now() - filterStart).toFixed(2) };
+    return res.json({ data: await loadPublicEvidence(res, data), page: Number(page), perPage, total });
   }
+  const queryStart = performance.now();
   const [base, total] = await Promise.all([
     query.skip(skip).limit(perPage).lean(),
     Hospital.countDocuments(filter),
   ]);
-  const data = await withHospitalData(base);
+  res.locals.performance = { directoryQueryMs: +(performance.now() - queryStart).toFixed(2) };
+  const data = await loadPublicEvidence(res, base);
 
   res.json({ data, page: Number(page), perPage, total });
 });
@@ -54,9 +101,10 @@ export const listHospitals = hospitalListing(false);
 export const listAdminHospitals = hospitalListing(true);
 
 export const getHospital = asyncHandler(async (req, res) => {
-  const hospital = await Hospital.findOne({ slug: req.params.slug, approvalStatus: { $nin: ["pending", "rejected"] } }).select("-admins").lean();
+  res.set("Cache-Control", "no-store");
+  const hospital = await Hospital.findOne({ slug: req.params.slug, archivedAt: null, approvalStatus: { $nin: ["pending", "rejected"] } }).select(publicHospitalProjection).lean();
   if (!hospital) return res.status(404).json({ error: "Hospital not found" });
-  const [view] = await withHospitalData([hospital]);
+  const [view] = await loadPublicEvidence(res, [hospital]);
   res.json({ hospital: view });
 });
 
@@ -90,7 +138,7 @@ export const updateHospital = asyncHandler(async (req, res) => {
   const staffFields = ["description", "address", "locality", "pincode", "phone", "emergencyPhone", "website", "specialties", "departments", "operatingHours", "hours"];
   const patch = req.user.role !== "system_admin"
     ? Object.fromEntries(Object.entries(req.body).filter(([key]) => staffFields.includes(key)))
-    : req.body;
+    : Object.fromEntries(Object.entries(req.body).filter(([key]) => !["archivedAt", "archivedBy", "archiveReason", "archiveOperation", "archivePending", "archiveAttempts", "archiveLeaseToken", "archiveLeaseUntil", "archiveRetryAt", "archiveExhaustedAt", "archiveErrorCode"].includes(key)));
   const claimValues = { ...patch, specialties: patch.specialties ?? patch.departments };
   const before = hospital.toObject();
   Object.assign(hospital, Object.fromEntries(Object.entries(patch)
@@ -120,14 +168,6 @@ export const updateBeds = asyncHandler(async (req, res) => {
 });
 
 export const deleteHospital = asyncHandler(async (req, res) => {
-  const hospital = await Hospital.findByIdAndDelete(req.params.id);
-  if (!hospital) return res.status(404).json({ error: "Hospital not found" });
-  try {
-    await AuditLog.create({ user: req.user.id, action: "delete", entityType: "Hospital", entityId: hospital._id,
-      before: hospital.toObject(), requestId: req.id });
-  } catch (error) {
-    await Hospital.replaceOne({ _id: hospital._id }, hospital.toObject(), { upsert: true });
-    throw error;
-  }
-  res.json({ ok: true });
+  const result = await archiveProviderOrganization({ kind: "hospital", id: req.params.id, actor: req.user, reason: req.body?.reason });
+  res.json({ ok: true, archived: true, cleanupPending: result.cleanupPending });
 });

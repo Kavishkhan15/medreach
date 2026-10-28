@@ -1,3 +1,4 @@
+import { organizationIsAvailable, archivedHospitalIds } from "../services/providerLifecycle.js";
 import { OrganizationApplication } from "../models/OrganizationApplication.js";
 import { Hospital } from "../models/Hospital.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
@@ -16,7 +17,7 @@ export const listOrganizationsForCareers = asyncHandler(async (req, res) => {
   const q = req.query.q ? String(req.query.q) : "";
   const typeFilter = req.query.type ? String(req.query.type) : null;
 
-  let query = { approvalStatus: { $nin: ["pending", "rejected"] } };
+  let query = { archivedAt: null, approvalStatus: { $nin: ["pending", "rejected"] } };
   if (q) {
     const escaped = q
       .slice(0, 80)
@@ -42,7 +43,7 @@ export const listOrganizationsForCareers = asyncHandler(async (req, res) => {
 
   let providers = [];
   if (!typeFilter || ["blood_bank", "diagnostic", "ambulance"].includes(typeFilter)) {
-    let providerQuery = { active: { $ne: false }, ...query };
+    let providerQuery = { hospital: { $nin: await archivedHospitalIds() }, active: { $ne: false }, ...query };
     if (typeFilter) {
       providerQuery.kind = typeFilter;
     }
@@ -115,7 +116,7 @@ export const applyToOrganization = asyncHandler(async (req, res) => {
     }
   }
 
-  if (!organization || ["pending", "rejected"].includes(organization.approvalStatus)) {
+  if (!organization || !await organizationIsAvailable(organizationType, id) || ["pending", "rejected"].includes(organization.approvalStatus)) {
     return res.status(404).json({ error: "Organization not found" });
   }
 

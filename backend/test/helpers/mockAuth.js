@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { User } from "../../src/models/User.js";
+import { PrivilegedSecurity } from "../../src/models/PrivilegedSecurity.js";
 import { AuthToken } from "../../src/models/AuthToken.js";
 import { signToken } from "../../src/utils/token.js";
 
@@ -13,6 +14,7 @@ export function installAuthMocks(t) {
     else delete mongoose.connection.readyState;
   });
   t.mock.method(User, "findById", (id) => ({ select: () => ({ lean: async () => users.get(String(id)) }) }));
+  t.mock.method(PrivilegedSecurity, "exists", async () => null);
   t.mock.method(AuthToken, "exists", async (filter) => users.has(String(filter.user)) ? { _id: "unit-session" } : null);
 }
 export function signMockToken(user, sessionId = "unit-session") {

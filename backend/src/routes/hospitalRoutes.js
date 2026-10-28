@@ -17,6 +17,9 @@ const router = Router();
 // Public
 router.get("/",
   query(["page", "limit"]).optional().isInt({ min: 1, max: Number.MAX_SAFE_INTEGER }),
+  query("pagination").optional().isIn(["cursor"]),
+  query("includeTotal").optional().isIn(["true", "false"]),
+  query("cursor").optional().isString().isLength({ min: 1, max: 1500 }),
   query("lat").optional().isFloat({ min: -90, max: 90 }),
   query("lng").optional().isFloat({ min: -180, max: 180 }),
   validate, listHospitals);
@@ -42,6 +45,6 @@ router.patch(
   validate,
   updateBeds
 );
-router.delete("/:id", requireAuth, requireRole("system_admin"), deleteHospital);
+router.delete("/:id", requireAuth, requireRole("system_admin"), body("reason").isString().trim().isLength({ min: 3, max: 500 }), validate, deleteHospital);
 
 export default router;

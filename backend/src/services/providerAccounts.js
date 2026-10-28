@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+import { organizationIsAvailable } from "./providerLifecycle.js";
 import { User } from "../models/User.js";
 import { ProviderMembership, PROVIDER_KINDS } from "../models/ProviderMembership.js";
 import { Hospital } from "../models/Hospital.js";
@@ -35,28 +37,47 @@ export async function accountViews(users) {
     const key = String(row.user);
     if (!byUser.has(key)) byUser.set(key, []);
     byUser.get(key).push({ _id: String(row._id), organizationId: String(row.organization), kind: row.kind,
-      name: names.get(`${row.kind}:${row.organization}`) || "Organisation unavailable", active: row.active });
+      name: names.get(`${row.kind}:${row.organization}`) || "Organisation unavailable", active: row.active, accessLevel: row.accessLevel || "admin" });
   }
   return users.map(user => serializeAccount(user, byUser.get(String(user._id)) || []));
 }
 export async function accountView(user) {
   return (await accountViews([user]))[0];
 }
-export async function addAssignment(user, { kind, organizationId }, actor, allowPending = false) {
+// Post-write eligibility closes the gap where archive cleanup ran before a new
+// assignment was inserted. Only this write's token may be compensatively disabled.
+export async function verifyAssignmentAfterWrite(membership, mutationToken) {
+  let available;
+  try { available = await organizationIsAvailable(membership.kind, membership.organization); }
+  catch (error) {
+    try { await ProviderMembership.updateOne({ _id: membership._id, assignmentMutation: mutationToken, active: true }, { $set: { active: false } }); } catch { /* access resolution also fails closed */ }
+    throw Object.assign(new Error("Assignment verification unavailable", { cause: error }), { status: 503 });
+  }
+  if (!available) {
+    await ProviderMembership.updateOne({ _id: membership._id, assignmentMutation: mutationToken, active: true }, { $set: { active: false } });
+    fail("Organisation became archived or unavailable; assignment was not activated", 409);
+  }
+}
+export async function addAssignment(user, { kind, organizationId, accessLevel = "admin" }, actor, allowPending = false) {
+  if (!["admin", "inventory_reporter", "reviewer"].includes(accessLevel)) fail("Invalid staff access level");
   if (user.role !== "provider_admin" || !PROVIDER_KINDS.includes(kind)) fail("Invalid provider assignment");
   const org = await findOrganization(kind, organizationId);
-  if (!org || (org.verificationStatus !== "verified" || org.approvalStatus === "rejected" || (!allowPending && org.approvalStatus === "pending"))) fail("An approved organisation is required", 409);
+  if (!org || !await organizationIsAvailable(kind, organizationId) || (org.verificationStatus !== "verified" || org.approvalStatus === "rejected" || (!allowPending && org.approvalStatus === "pending"))) fail("An approved organisation is required", 409);
   // Adding an assignment never overwrites or reactivates an existing one.
+  const assignmentMutation = randomUUID();
   const membership = await ProviderMembership.findOneAndUpdate({ user: user._id, kind, organization: org._id },
-    { $setOnInsert: { active: true, assignedBy: actor } }, { upsert: true, new: true, runValidators: true });
+    { $setOnInsert: { active: true, assignedBy: actor, assignmentMutation, accessLevel } }, { upsert: true, new: true, runValidators: true });
+  if ((membership.accessLevel || "admin") !== accessLevel) fail("Existing staff access differs; use explicit access review", 409);
+  await verifyAssignmentAfterWrite(membership, assignmentMutation);
   await writeAudit({ user: actor, action: "create", entityType: "ProviderMembership", entityId: membership._id,
-    after: { user: user._id, kind, organization: org._id } });
+    after: { user: user._id, kind, organization: org._id, accessLevel } });
   return membership;
 }
-export async function provisionProvider({ kind, organizationId, loginEmail, notificationEmail, demo = false, provisioningKey }, actor, allowPending = false, { deferInvitation = false, manualLogin = false } = {}) {
+export async function provisionProvider({ kind, organizationId, loginEmail, notificationEmail, accessLevel = "admin", demo = false, provisioningKey }, actor, allowPending = false, { deferInvitation = false, manualLogin = false } = {}) {
   if (!PROVIDER_KINDS.includes(kind)) fail("Invalid provider type");
+  if (!["admin", "inventory_reporter", "reviewer"].includes(accessLevel)) fail("Invalid staff access level");
   const organization = await findOrganization(kind, organizationId);
-  if (!organization || (organization.verificationStatus !== "verified" || organization.approvalStatus === "rejected" || (!allowPending && organization.approvalStatus === "pending"))) fail("Approve the organisation before provisioning", 409);
+  if (!organization || !await organizationIsAvailable(kind, organizationId) || (organization.verificationStatus !== "verified" || organization.approvalStatus === "rejected" || (!allowPending && organization.approvalStatus === "pending"))) fail("Approve the organisation before provisioning", 409);
   if (demo && !isolatedDemoEnabled()) fail("Demo accounts require an isolated demo database with email disabled", 403);
   const email = (loginEmail || demoLoginEmail(organization, kind)).trim().toLowerCase();
   const manualIdentifier = manualLogin && deferInvitation && localManualCredentialsEnabled() && /^admin@[a-z0-9-]+-[a-f0-9]{24}\.example$/.test(email);
@@ -66,7 +87,7 @@ export async function provisionProvider({ kind, organizationId, loginEmail, noti
   const previous = provisioningKey && await User.findOne({ provisioningKey }).select("+provisioningOrganization +passwordHash +authVersion");
   if (previous) {
     if (previous.role !== "provider_admin" || previous.email !== email || previous.provisioningOrganization !== `${kind}:${organizationId}`) fail("Provisioning details changed; review the existing account", 409);
-    await addAssignment(previous, { kind, organizationId }, actor, allowPending);
+    await addAssignment(previous, { kind, organizationId, accessLevel }, actor, allowPending);
     let invitation = "check_delivery_status";
     if (!deferInvitation && !previous.demoAccount && previous.accountStatus === "pending" && previous.activationDeliveryStatus === "pending") {
       try { invitation = (await issueProviderActivation(previous)).status; } catch { invitation = "failed"; }
@@ -78,7 +99,7 @@ export async function provisionProvider({ kind, organizationId, loginEmail, noti
     notificationEmail: notificationEmail || (demo || deferInvitation ? undefined : email), notificationsEnabled: false });
   if (demo) await setDemoPassword(user);
   await user.save();
-  await addAssignment(user, { kind, organizationId }, actor, allowPending);
+  await addAssignment(user, { kind, organizationId, accessLevel }, actor, allowPending);
   await writeAudit({ user: actor, action: "create", entityType: "ProviderAccount", entityId: user._id,
     after: { role: user.role, organization: organization._id, demo: Boolean(demo) } });
   let invitation = "not_required";

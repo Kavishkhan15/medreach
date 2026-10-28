@@ -1,3 +1,4 @@
+import { organizationIsAvailable } from "./providerLifecycle.js";
 import mongoose from "mongoose";
 import { randomBytes } from "node:crypto";
 import { User } from "../models/User.js";
@@ -18,9 +19,10 @@ async function verifyLocalDatabase() {
     if (options.parsed?.storage?.dbPath !== "/home/anonymous/medreach/data") fail("The canonical local database could not be verified", 403);
   }
 }
-async function approvedAssignments(user) {
+export async function approvedAssignments(user) {
   const assignments = await ProviderMembership.find({ user: user._id, active: true }).lean();
   if (!assignments.length) return false;
+  if ((await Promise.all(assignments.map(a => organizationIsAvailable(a.kind, a.organization)))).some(available => !available)) return false;
   const orgs = await Promise.all(assignments.map(a => findOrganization(a.kind, a.organization)));
   return orgs.every(org => org && org.verificationStatus === "verified" && !["pending", "rejected"].includes(org.approvalStatus) && org.active !== false);
 }

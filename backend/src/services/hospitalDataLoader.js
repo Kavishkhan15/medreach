@@ -7,32 +7,102 @@ import { resolveHospitalField } from "./hospitalFieldFusion.js";
 import { FacilitySourceClaim } from "../models/FacilitySourceClaim.js";
 import { fuseFacilityClaims } from "./facilityClaimFusion.js";
 import { freshnessLabel } from "./freshnessService.js";
+import { DataSource } from "../models/DataSource.js";
 
-// Batch-load the latest evidence for a page of hospitals. A single aggregation
-// finds one latest observation per hospital/facility, avoiding N+1 reads.
+const facilityFields = "hospital facility capability capabilityConflict confidence lastUpdated source";
+const fieldClaimFields = "hospital field value source sourcePageUrl sourcePageUrls evidenceText evidenceKind observedAt parserVersion confidence verificationStatus";
+const facilityClaimFields = "hospital facility capability source sourcePageUrl evidenceText evidenceKind observedAt parserVersion confidence verificationStatus";
+
+// Keep both legacy retrieved-only rows and observed timestamps authoritative.
+// Separate indexed sorts avoid computing and sorting effectiveAt across every
+// historical row; each branch returns at most one row per hospital/facility.
+async function latestHospitalObservations(ids, now) {
+  const latestFor = (field, filter) => AvailabilityObservation.aggregate([
+    { $match: { hospital: { $in: ids }, ...filter } },
+    { $sort: { hospital: 1, facility: 1, [field]: -1, _id: -1 } },
+    { $group: { _id: { hospital: "$hospital", facility: "$facility" }, item: { $first: "$$ROOT" } } },
+    { $replaceRoot: { newRoot: "$item" } },
+    { $project: { hospital: 1, facility: 1, observedAt: 1, retrievedAt: 1, verificationStatus: 1, status: 1, quantity: 1, confidence: 1, source: 1, verifiedBy: 1 } },
+  ]);
+  // Match the public composer's valid-time rules before taking the first row;
+  // a future report must not displace an earlier legitimate observation.
+  const branches = await Promise.all([
+    latestFor("observedAt", { observedAt: { $gt: new Date(0), $lte: now } }),
+    latestFor("retrievedAt", { observedAt: null, retrievedAt: { $gt: new Date(0), $lte: now } }),
+  ]);
+  const latest = new Map();
+  for (const observation of branches.flat()) {
+    const key = `${observation.hospital}:${observation.facility}`;
+    const previous = latest.get(key);
+    const timestamp = row => new Date(row.observedAt || row.retrievedAt || 0).getTime();
+    if (!previous || timestamp(observation) > timestamp(previous)
+      || (timestamp(observation) === timestamp(previous) && String(observation._id) > String(previous._id))) latest.set(key, observation);
+  }
+  return [...latest.values()];
+}
+
+const byHospital = rows => {
+  const grouped = new Map();
+  for (const row of rows) {
+    const key = String(row.hospital);
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(row);
+  }
+  return grouped;
+};
+
+// Derived-status counts need current availability, not full provenance journals.
+export async function withHospitalAvailability(hospitals) {
+  if (!hospitals.length) return [];
+  const ids = hospitals.map(hospital => hospital._id), now = new Date();
+  const [facilities, observations] = await Promise.all([
+    HospitalFacility.find({ hospital: { $in: ids } }).select(facilityFields).lean(),
+    latestHospitalObservations(ids, now),
+  ]);
+  const facilitiesByHospital = byHospital(facilities), observationsByHospital = byHospital(observations);
+  return hospitals.map(hospital => composeHospitalDataView(hospital, facilitiesByHospital.get(String(hospital._id)) || [], observationsByHospital.get(String(hospital._id)) || [], now));
+}
+
+// Batch-load the latest evidence for a page of hospitals. Two timestamp queries
+// find the latest observation per hospital/facility, avoiding N+1 reads.
 export async function withHospitalData(hospitals) {
   if (!hospitals.length) return [];
   const ids = hospitals.map((hospital) => hospital._id);
+  const now = new Date();
   const [facilities, observations, fieldConflicts, fieldClaims, facilityClaims] = await Promise.all([
-    HospitalFacility.find({ hospital: { $in: ids } }).lean(),
-    AvailabilityObservation.aggregate([
+    HospitalFacility.find({ hospital: { $in: ids } }).select(facilityFields).lean(),
+    latestHospitalObservations(ids, now),
+    HospitalFieldConflict.aggregate([
       { $match: { hospital: { $in: ids } } },
-      { $addFields: { effectiveAt: { $ifNull: ["$observedAt", "$retrievedAt"] } } },
-      { $sort: { effectiveAt: -1, _id: -1 } },
-      { $group: { _id: { hospital: "$hospital", facility: "$facility" }, item: { $first: "$$ROOT" } } },
-      { $replaceRoot: { newRoot: "$item" } },
+      { $project: { hospital: 1, field: 1, status: 1, sourceCount: { $size: { $ifNull: ["$claims", []] } } } },
     ]),
-    HospitalFieldConflict.find({ hospital: { $in: ids } }).lean(),
     HospitalFieldClaim.find({ hospital: { $in: ids } })
-      .populate("source", "name type sourceKey url").lean(),
+      .select(fieldClaimFields).lean(),
     FacilitySourceClaim.find({ hospital: { $in: ids } })
-      .populate("source", "name type sourceKey url").lean(),
+      .select(facilityClaimFields).lean(),
   ]);
+  // Resolve shared sources once for both claim families. Review/audit history is
+  // deliberately excluded above; the public evidence contract stays unchanged.
+  const sourceIds = [...new Set([...fieldClaims, ...facilityClaims].filter(claim => claim.source).map(claim => String(claim.source)))];
+  const sources = sourceIds.length ? await DataSource.find({ _id: { $in: sourceIds } }).select("name type sourceKey url").lean() : [];
+  const sourcesById = new Map(sources.map(source => [String(source._id), source]));
+  for (const claim of [...fieldClaims, ...facilityClaims]) claim.source = sourcesById.get(String(claim.source)) || null;
+  const facilitiesByHospital = byHospital(facilities);
+  const observationsByHospital = byHospital(observations);
+  const conflictsByHospital = byHospital(fieldConflicts);
+  const fieldClaimsByHospital = byHospital(fieldClaims);
+  const facilityClaimsByHospital = byHospital(facilityClaims);
   return hospitals.map((hospital) => {
-    const hospitalClaims = fieldClaims.filter((claim) => String(claim.hospital) === String(hospital._id));
+    const key = String(hospital._id);
+    const hospitalClaims = fieldClaimsByHospital.get(key) || [];
     const fieldProvenance = {};
-    for (const field of new Set(hospitalClaims.map((claim) => claim.field))) {
-      const selected = resolveHospitalField(field, hospitalClaims.filter((claim) => claim.field === field));
+    const claimsByField = new Map();
+    for (const claim of hospitalClaims) {
+      if (!claimsByField.has(claim.field)) claimsByField.set(claim.field, []);
+      claimsByField.get(claim.field).push(claim);
+    }
+    for (const [field, claims] of claimsByField) {
+      const selected = resolveHospitalField(field, claims);
       const claim = selected.selectedClaim;
       fieldProvenance[field] = claim ? {
         source: claim.source ? { name: claim.source.name, type: claim.source.type,
@@ -49,9 +119,9 @@ export async function withHospitalData(hospitals) {
         conflict: selected.conflict,
       } : { source: null, confidence: "UNKNOWN", freshness: "UNKNOWN", conflict: selected.conflict };
     }
-    const view = composeHospitalDataView(hospital, facilities, observations);
+    const view = composeHospitalDataView(hospital, facilitiesByHospital.get(key) || [], observationsByHospital.get(key) || [], now);
     view.facilities = view.facilities.map((facility) => {
-      const matching = facilityClaims.filter((claim) => String(claim.hospital) === String(hospital._id) && claim.facility === facility.facility);
+      const matching = (facilityClaimsByHospital.get(key) || []).filter((claim) => claim.facility === facility.facility);
       const selected = fuseFacilityClaims(matching).selectedClaim;
       return { ...facility, capabilityProvenance: selected ? {
         source: selected.source ? { name: selected.source.name, type: selected.source.type,
@@ -65,8 +135,8 @@ export async function withHospitalData(hospitals) {
     return {
       ...view,
       fieldProvenance,
-      fieldConflicts: fieldConflicts.filter((conflict) => String(conflict.hospital) === String(hospital._id))
-        .map((conflict) => ({ field: conflict.field, status: conflict.status, sourceCount: conflict.claims.length })),
+      fieldConflicts: (conflictsByHospital.get(key) || [])
+        .map((conflict) => ({ field: conflict.field, status: conflict.status, sourceCount: conflict.sourceCount })),
     };
   });
 }

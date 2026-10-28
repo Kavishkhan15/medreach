@@ -30,25 +30,47 @@ import refinementRouter from "./routes/refinement.js";
 import bloodCampaignRoutes from "./routes/bloodCampaignRoutes.js";
 import bloodRequestRoutes from "./routes/bloodRequestRoutes.js";
 import trackingRouter from "./routes/tracking.js";
+import inventoryRouter from "./routes/inventory.js";
+import { resendWebhookRouter } from "./routes/resendWebhook.js";
+import emergencyCoordinationRouter from "./routes/emergencyCoordination.js";
+import backendOperationsRouter from "./routes/backendOperations.js";
+import inventoryImportsRouter from "./routes/inventoryImports.js";
+import privacyRouter from "./routes/privacy.js";
+import { validateMfaConfiguration } from "./config/mfaPolicy.js";
+import integrationsRouter from "./routes/integrations.js";
+import contractsRouter from "./routes/contracts.js";
+import providerAdoptionRouter from "./routes/providerAdoption.js";
+import hospitalEnrichmentRouter from "./routes/hospitalEnrichment.js";
+import backendMetricsRouter from "./routes/backendMetrics.js";
 
-export function createApp() {
+export function createApp(options = {}) {
+  validateMfaConfiguration();
   const app = express();
   app.set("trust proxy", env.trustProxy);
   app.use(requestId);
   app.use(requestLogger);
-  app.use(express.json({ limit: "6mb" }));
-
   // Shared, identical security posture for every variant (plan §4, §6).
-  applySecurity(app);
+  applySecurity(app, options);
   app.use(publicCompression());
+  // The signature covers the exact bytes; mount before the general JSON parser.
+  app.use("/api/webhooks/resend", resendWebhookRouter);
+  app.use(express.json({ limit: "6mb" }));
 
   // Health (both /health and /api/v1/health style).
   app.use("/health", healthRouter);
 
   app.use("/api/auth", authRoutes);
   app.use("/api/hospitals", hospitalRoutes);
+  app.use("/api/admin/hospital-enrichment", hospitalEnrichmentRouter);
+  app.use("/api/admin/backend-metrics", backendMetricsRouter);
   // Facilities + availability are nested under a hospital id.
   app.use("/api/hospitals", availabilityRoutes);
+  app.use("/api/inventory", inventoryRouter);
+  app.use("/api/provider-imports", inventoryImportsRouter);
+  app.use("/api/privacy", privacyRouter);
+  app.use("/api/integrations", integrationsRouter);
+  app.use("/api/contracts", contractsRouter);
+  app.use("/api/provider-adoption", providerAdoptionRouter);
   app.use("/api/admin/provider-accounts", providerAccountRouter);
   app.use("/api/admin/provider-approvals", providerApprovalRouter);
   app.use("/api/providers", providerRouter);
@@ -58,6 +80,8 @@ export function createApp() {
   app.use("/api/assistant", assistantRoutes);
   app.use("/api/hospital-admin", hospitalAdminRoutes);
   app.use("/api/emergency-requests", emergencyRequestRoutes);
+  app.use("/api/emergency-coordination", emergencyCoordinationRouter);
+  app.use("/api/admin/backend", backendOperationsRouter);
   app.use("/api/tracking", trackingRouter);
   app.use("/api/blood-banks/campaigns", bloodCampaignRoutes);
   app.use("/api/blood-campaigns", bloodCampaignRoutes);

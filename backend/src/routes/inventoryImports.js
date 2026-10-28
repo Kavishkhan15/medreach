@@ -1,0 +1,12 @@
+import { Router } from "express";
+import { requireAuth, requireRole } from "../middleware/auth.js";
+import { RESOURCE_CATALOGUE, previewInventoryImport, confirmInventoryImport, readInventoryImport } from "../services/inventoryImport.js";
+const router = Router();
+router.use(requireAuth, requireRole("provider_admin"));
+router.use((_req, res, next) => { res.set("Cache-Control", "private, no-store"); next(); });
+const handle = fn => async (req, res, next) => { try { res.json(await fn(req)); } catch (error) { if (Number.isInteger(error.status)) return res.status(error.status).json({ error: error.message, code: error.code }); next(error); } };
+router.get("/catalogue", (_req, res) => res.json({ data: RESOURCE_CATALOGUE }));
+router.post("/:kind/:organizationId/preview", handle(req => previewInventoryImport({ actor: req.user, ...req.params, csv: req.body.csv })));
+router.get("/:id", handle(req => readInventoryImport({ actor: req.user, id: req.params.id })));
+router.post("/:id/confirm", handle(req => confirmInventoryImport({ actor: req.user, id: req.params.id, digest: req.body.digest, attestProviderObserved: req.body.attestProviderObserved })));
+export default router;

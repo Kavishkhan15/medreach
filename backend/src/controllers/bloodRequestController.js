@@ -1,3 +1,4 @@
+import { organizationIsAvailable } from "../services/providerLifecycle.js";
 import { routeRequestSafely } from "../services/requestNotifications.js";
 import crypto from "crypto";
 import { BloodRequest } from "../models/BloodRequest.js";
@@ -60,7 +61,7 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
   let provider;
   if (providerId) {
     provider = await ResourceProvider.findOne({ _id: providerId, kind: "blood_bank", approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } });
-    if (!provider) return res.status(400).json({ error: "Active blood bank provider not found" });
+    if (!provider || !await organizationIsAvailable("blood_bank", provider._id)) return res.status(400).json({ error: "Active blood bank provider not found" });
   }
 
   const effectiveBloodBankName = provider?.name || bloodBankName?.trim() || (isUrgent ? "No specific blood bank selected" : "");
@@ -92,6 +93,7 @@ export const createBloodRequest = asyncHandler(async (req, res) => {
   let bloodRequest;
   try {
     bloodRequest = await BloodRequest.create({
+    coordinationVersion: 1,
     notificationVersion: 1,
     reference,
     type,

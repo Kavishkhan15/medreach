@@ -1,0 +1,42 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import mongoose from "mongoose";
+import { mkdtemp, writeFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { migrateAdoptionIndexes, adoptionMigrationVersion } from "../scripts/migrateAdoptionIndexes.js";
+import { productionMigrationVersion } from "../scripts/migrateProductionIndexes.js";
+import { fileSha256 } from "../scripts/verifiedBackup.js";
+import { verifyApiIndexes } from "../src/services/productionIndexes.js";
+import { migrateReliabilityReleaseIndexes, reliabilityReleaseMigrationVersion } from "../scripts/migrateReliabilityReleaseIndexes.js";
+const uri = process.env.MEDREACH_ADOPTION_INDEXES_TEST_MONGO_URI;
+const isolated = /^mongodb:\/\/(127\.0\.0\.1|localhost):\d+\/medreach_adoption_indexes_test$/.test(uri || "");
+test("adoption migration uses a new immutable version, preflights branch collisions and provisions startup prerequisites", { skip: !isolated, timeout: 90000 }, async () => {
+  await mongoose.connect(uri, { autoIndex: false, autoCreate: false }); await mongoose.connection.dropDatabase();
+  const directory = await mkdtemp(join(tmpdir(), "medreach-adoption-index-test-"));
+  try {
+    assert.notEqual(adoptionMigrationVersion, productionMigrationVersion);
+    const options = { uri, expectedDatabase: "medreach_adoption_indexes_test", log: () => {} };
+    const branch = { kind: "hospital", organization: new mongoose.Types.ObjectId() };
+    await mongoose.connection.db.collection("providergroups").insertMany([{ branches: [branch, { kind: "hospital", organization: new mongoose.Types.ObjectId() }] }, { branches: [branch] }]);
+    const duplicate = await migrateAdoptionIndexes(options);
+    assert.ok(duplicate.duplicateGroups > 0);
+    await assert.rejects(migrateAdoptionIndexes({ ...options, apply: true, approvedChecksum: duplicate.checksum, allowUniqueBootstrap: true, approveExpiryIndexes: true }), /UNIQUE_DUPLICATES_FOUND/);
+    assert.equal(await mongoose.connection.db.collection("productionmigrationledger").countDocuments(), 0);
+    await mongoose.connection.db.collection("providergroups").deleteMany({});
+    const report = await migrateAdoptionIndexes(options);
+    const archivePath = join(directory, "synthetic-receipt.enc"); await writeFile(archivePath, "Synthetic bytes for migration receipt validation; real restore tested separately");
+    const backup = { schemaVersion: 1, database: options.expectedDatabase, archivePath, archiveSha256: await fileSha256(archivePath), targetFingerprint: report.targetFingerprint, reportChecksum: report.checksum, restoreVerified: true, encrypted: true, verifiedAt: new Date().toISOString() };
+    await migrateAdoptionIndexes({ ...options, apply: true, approvedChecksum: report.checksum, allowUniqueBootstrap: true, approveExpiryIndexes: true, backup });
+    await assert.rejects(verifyApiIndexes({ nodeEnv: "production" }), error => error.code === "API_INDEX_MISSING");
+    const release = await migrateReliabilityReleaseIndexes(options);
+    assert.notEqual(reliabilityReleaseMigrationVersion, adoptionMigrationVersion);
+    assert.notEqual(release.checksum, report.checksum);
+    await migrateReliabilityReleaseIndexes({ ...options, apply: true, approvedChecksum: release.checksum, allowUniqueBootstrap: true, approveExpiryIndexes: true, backup: { ...backup, reportChecksum: release.checksum } });
+    await verifyApiIndexes({ nodeEnv: "production" });
+    assert.equal((await migrateReliabilityReleaseIndexes({ ...options, apply: true, approvedChecksum: release.checksum })).alreadyApplied, true);
+    const repeated = await migrateAdoptionIndexes({ ...options, apply: true, approvedChecksum: report.checksum });
+    assert.equal(repeated.alreadyApplied, true); assert.equal(repeated.plan.length, 0);
+    assert.equal((await mongoose.connection.db.collection("productionmigrationledger").findOne({ _id: adoptionMigrationVersion })).status, "completed");
+  } finally { await mongoose.connection.dropDatabase(); await mongoose.disconnect(); await rm(directory, { recursive: true, force: true }); }
+});

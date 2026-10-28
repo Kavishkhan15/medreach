@@ -15,6 +15,7 @@ import { EmailDelivery } from "../src/models/EmailDelivery.js";
 import { Job } from "../src/models/Job.js";
 import { JobApplication } from "../src/models/JobApplication.js";
 import { OrganizationApplication } from "../src/models/OrganizationApplication.js";
+import { ProviderMembership } from "../src/models/ProviderMembership.js";
 import { AuditLog } from "../src/models/AuditLog.js";
 import { HospitalFacility } from "../src/models/HospitalFacility.js";
 import { AvailabilityObservation } from "../src/models/AvailabilityObservation.js";
@@ -34,8 +35,12 @@ test("backend reliability contracts", async (t) => {
   let ambulance;
   let bloodBank;
   const originalEmail = { enabled: env.emailEnabled, host: env.smtpHost, from: env.smtpFrom };
+  const originalAiProvider = env.aiProvider;
 
   t.before(async () => {
+    // Contract assertions must not depend on an optional external language
+    // provider configured in a developer's local environment.
+    env.aiProvider = "rule_based";
     await connectDB(uri);
     await mongoose.connection.dropDatabase();
     user = await User.create({ name: "Reliability User", email: "reliability@example.test", role: "user" });
@@ -47,6 +52,7 @@ test("backend reliability contracts", async (t) => {
 
   t.after(async () => {
     setEmailTransportFactoryForTests();
+    env.aiProvider = originalAiProvider;
     Object.assign(env, { emailEnabled: originalEmail.enabled, smtpHost: originalEmail.host, smtpFrom: originalEmail.from });
     await mongoose.connection.dropDatabase();
     await disconnectDB();
@@ -379,8 +385,11 @@ test("backend reliability contracts", async (t) => {
       },
       trackingTokenHash: "test-only-tracking-hash",
     });
+    const recipient = await User.create({ name: "Assigned retry recipient", email: "recipient-account@example.test", role: "provider_admin",
+      notificationEmail: "recipient@example.test", notificationEmailVerifiedAt: new Date(), notificationsEnabled: true });
     const failed = await sendEmailEvent({
       eventKey: "reliability-admin-email",
+      recipientUser: recipient._id, recipientContactPolicy: "notification",
       to: "recipient@example.test",
       template: "admin_security",
       data: { message: "Review the saved request." },
@@ -398,6 +407,19 @@ test("backend reliability contracts", async (t) => {
       .set("Authorization", `Bearer ${await signSessionToken(user)}`);
     assert.equal(denied.status, 403);
 
+    const unassigned = await request(app).post(`/api/email/deliveries/${failed._id}/retry`)
+      .set("Authorization", `Bearer ${await signSessionToken(admin)}`);
+    assert.equal(unassigned.status, 409);
+    assert.match(unassigned.body.error, /notification access/);
+    const membership = await ProviderMembership.create({ user: recipient._id, organization: ambulance._id,
+      kind: "ambulance", active: true, assignedBy: admin._id });
+    await ProviderMembership.updateOne({ _id: membership._id }, { $set: { active: false } });
+    const revoked = await request(app).post(`/api/email/deliveries/${failed._id}/retry`)
+      .set("Authorization", `Bearer ${await signSessionToken(admin)}`);
+    assert.equal(revoked.status, 409);
+    assert.match(revoked.body.error, /notification access/);
+    assert.equal((await EmailDelivery.findById(failed._id)).attempts, 1);
+    await ProviderMembership.updateOne({ _id: membership._id }, { $set: { active: true } });
     const retried = await request(app)
       .post(`/api/email/deliveries/${failed._id}/retry`)
       .set("Authorization", `Bearer ${await signSessionToken(admin)}`);

@@ -6,6 +6,17 @@ const point = new mongoose.Schema({
   coordinates: { type: [Number], required: true },
 }, { _id: false });
 const schema = new mongoose.Schema({
+  archivedAt: { type: Date, default: null, index: true },
+  archivedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  archiveReason: { type: String, trim: true, maxlength: 500 },
+  archiveOperation: { type: mongoose.Schema.Types.ObjectId },
+  archivePending: { type: Boolean, default: false },
+    archiveAttempts: { type: Number, default: 0, min: 0, max: 5 },
+    archiveLeaseToken: { type: String, select: false },
+    archiveLeaseUntil: Date,
+    archiveRetryAt: Date,
+    archiveExhaustedAt: Date,
+    archiveErrorCode: { type: String, maxlength: 80 },
   approvalStatus: { type: String, enum: ["pending", "approved", "rejected"] },
   kind: { type: String, enum: RESOURCE_KINDS, required: true, index: true },
   active: { type: Boolean, default: true, index: true },

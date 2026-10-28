@@ -4,7 +4,7 @@ import { AmbulanceBooking } from "../models/AmbulanceBooking.js";
 import { routeRequestSafely } from "./requestNotifications.js";
 import { RequestNotification } from "../models/RequestNotification.js";
 import { EmailDelivery } from "../models/EmailDelivery.js";
-import { retryEmailDelivery } from "./emailService.js";
+import { retryEmailDelivery, emailAttemptLimit } from "./emailService.js";
 import { recoverProviderApplicationNotifications } from "./providerApplicationNotifications.js";
 let timer, running;
 export async function recoverRequestNotifications() {
@@ -28,12 +28,12 @@ export async function recoverRequestNotifications() {
       if (!delivery.leaseUntil || delivery.leaseUntil <= new Date()) {
         const result = await EmailDelivery.updateOne({ _id: delivery._id, status: "pending",
           $or: [{ leaseUntil: { $exists: false } }, { leaseUntil: { $lte: new Date() } }] },
-          { $set: { status: "uncertain", errorCode: "DELIVERY_OUTCOME_UNKNOWN", lastError: "Check the recipient inbox before sending again" }, $unset: { leaseToken: 1, leaseUntil: 1 } });
+          { $set: { status: "uncertain", lifecycleStatus: "uncertain", queued: false, errorCode: "DELIVERY_OUTCOME_UNKNOWN", lastError: "Check the recipient inbox before sending again" }, $unset: { leaseToken: 1, leaseUntil: 1 } });
         if (result.modifiedCount) { intent.status = "uncertain"; await intent.save(); await refreshBooking(intent); }
       }
       continue;
     }
-    if (delivery.attempts >= 3 || (delivery.lastAttemptAt && Date.now() - delivery.lastAttemptAt.getTime() < 30000)) continue;
+    if (delivery.attempts >= emailAttemptLimit() || (delivery.lastAttemptAt && Date.now() - delivery.lastAttemptAt.getTime() < 30000)) continue;
     const result = await retryEmailDelivery({ deliveryId: delivery._id });
     if (result.code === "RECIPIENT_NO_LONGER_ELIGIBLE") { intent.status = "cancelled"; await intent.save(); await refreshBooking(intent); }
   }

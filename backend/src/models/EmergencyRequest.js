@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { requestStatusEffectsSchema } from "./requestStatusEffectsSchema.js";
 import { FACILITY_TYPES } from "../config/constants.js";
 
 export const REQUEST_STATES = ["REQUESTED", "SENT", "UNDER_REVIEW", "INFORMATION_REQUESTED", "ACCEPTED", "REJECTED", "EXPIRED", "CANCELLED", "COMPLETED"];
@@ -12,7 +13,26 @@ const timeline = new mongoose.Schema({
   actorRole: { type: String, enum: ["patient", "hospital_staff", "system"] },
 }, { _id: false });
 
+const expiryEffects = new mongoose.Schema({
+  status: { type: String, enum: ["pending", "complete", "exhausted"], required: true },
+  auditId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  previousStatus: { type: String, enum: REQUEST_STATES, required: true },
+  timelineLength: { type: Number, required: true },
+  recordedAt: { type: Date, required: true },
+  completedAt: Date,
+  attempts: { type: Number, default: 0 },
+  retryAt: Date,
+  lastAttemptAt: Date,
+  errorCode: String,
+  leaseToken: String,
+  leaseUntil: Date,
+}, { _id: false });
+
 const schema = new mongoose.Schema({
+  statusEffects: { type: [requestStatusEffectsSchema], default: undefined, select: false },
+  expiryEffects: { type: expiryEffects, select: false },
+  coordinationVersion: Number,
+  coordinationRecordedAt: Date,
   notificationVersion: Number,
   notificationRoutedAt: Date,
   notificationRouting: { type: String, enum: ["recorded", "no_eligible_recipients"] },
@@ -40,14 +60,20 @@ const schema = new mongoose.Schema({
 }, { timestamps: true });
 
 schema.index({ hospital: 1, status: 1, createdAt: -1 });
+schema.index({ status: 1, expiresAt: 1 });
+schema.index({ "expiryEffects.status": 1, "expiryEffects.retryAt": 1, "expiryEffects.leaseUntil": 1 });
 schema.index({ idempotencyKeyHash: 1 }, { unique: true, sparse: true });
 schema.set("toJSON", {
   transform: (_doc, ret) => {
+    delete ret.statusEffects;
     delete ret.trackingTokenHash;
     delete ret.idempotencyKeyHash;
     delete ret.__v;
+    delete ret.expiryEffects;
     return ret;
   },
 });
 schema.index({ notificationVersion: 1, notificationRoutedAt: 1 });
+schema.index({ coordinationVersion: 1, coordinationRecordedAt: 1, createdAt: 1 });
+schema.index({ "statusEffects.exhausted": 1, "statusEffects.retryAt": 1 });
 export const EmergencyRequest = mongoose.model("EmergencyRequest", schema);

@@ -102,8 +102,8 @@ export const getResource = (kind, id) => req(`/api/${kind}/${id}`);
 // Auth
 export const register = (payload) =>
   req(`/api/auth/register`, { method: "POST", body: JSON.stringify(payload) });
-export const login = (email, password) =>
-  req(`/api/auth/login`, { method: "POST", body: JSON.stringify({ email, password }) });
+export const login = (email, password, verification = {}) =>
+  req(`/api/auth/login`, { method: "POST", body: JSON.stringify({ email, password, ...(verification.code ? { code: verification.code } : {}), ...(verification.recoveryCode ? { recoveryCode: verification.recoveryCode } : {}) }) });
 export const logout = () => req(`/api/auth/logout`, { method: "POST" });
 export const me = () => req(`/api/auth/me`);
 export const authStatus = () => req(`/api/auth/sessions`);

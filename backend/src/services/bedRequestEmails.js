@@ -1,7 +1,7 @@
 import { notificationRecipients } from "./requestNotifications.js";
 import { EmailDelivery } from "../models/EmailDelivery.js";
 import { AuditLog } from "../models/AuditLog.js";
-import { sendUserEmailSafely } from "./userEmailService.js";
+import { sendUserEmail, sendUserEmailSafely } from "./userEmailService.js";
 import { sendEmailEvent } from "./emailService.js";
 
 export async function auditRequestUpdate(request, previousStatus, actor) {
@@ -15,18 +15,21 @@ export async function auditRequestUpdate(request, previousStatus, actor) {
 
 // Status/timeline are the durable result. A secondary delivery failure must not
 // hide that result or encourage a repeated transition.
-export async function emailRequestUpdate(request, hospital) {
+export async function emailRequestUpdate(request, hospital, { strict = false } = {}) {
   const eventKey = `emergency:${request._id}:${request.timeline.length}`;
   const event = { eventKey,
     emailTemplate: request.status === "ACCEPTED" ? "emergency_accepted" : request.status === "REJECTED" ? "emergency_rejected" : "emergency_updated",
     emailData: { reference: request.requestId, hospital: hospital?.name || "the hospital", status: request.status, isEmergency: request.isEmergency } };
   if (request.user) {
-    await sendUserEmailSafely({ ...event, recipient: request.user });
+    const delivery = await (strict ? sendUserEmail : sendUserEmailSafely)({ ...event, recipient: request.user });
+    if (strict && delivery && !delivery._id) throw new Error("STATUS_OUTBOX_UNAVAILABLE");
   } else if (request.contactEmail) {
     try {
-      await sendEmailEvent({ eventKey: `mail:${eventKey}`, to: request.contactEmail,
+      const delivery = await sendEmailEvent({ eventKey: `mail:${eventKey}`, to: request.contactEmail,
         template: event.emailTemplate, data: event.emailData });
-    } catch {
+      if (strict && !delivery?._id) throw new Error("STATUS_OUTBOX_UNAVAILABLE");
+    } catch (error) {
+      if (strict) throw error;
       console.warn("[medreach] Request saved; guest status email unavailable.");
     }
   }
@@ -35,10 +38,13 @@ export async function emailRequestUpdate(request, hospital) {
     try {
       const staff = await notificationRecipients("hospital", hospital?._id, false);
       for (const { user } of staff) {
-        await sendEmailEvent({ eventKey: `mail:${eventKey}:hospital:${user._id}`, to: user.notificationEmail,
+        const delivery = await sendEmailEvent({ eventKey: `mail:${eventKey}:hospital:${user._id}`, to: user.notificationEmail,
+          recipientUser: user._id, recipientContactPolicy: "notification",
           template: "bed_request_staff_updated", data: event.emailData });
+        if (strict && !delivery?._id) throw new Error("STATUS_OUTBOX_UNAVAILABLE");
       }
-    } catch {
+    } catch (error) {
+      if (strict) throw error;
       console.warn("[medreach] Request saved; staff update email unavailable.");
     }
   }

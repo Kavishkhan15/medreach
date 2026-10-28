@@ -1,0 +1,24 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import mongoose from "mongoose";
+const uri = process.env.MEDREACH_ARCHIVAL_TEST_MONGO_URI;
+const isolated = Boolean(uri && /^mongodb:\/\/(127\.0\.0\.1|localhost):\d+\/medreach_archival_test$/.test(uri));
+test("hospital discovery index reduces document reads for first and cursor pages", { skip: !isolated, timeout: 30000 }, async t => {
+  const connection = await mongoose.createConnection(uri).asPromise();
+  const collection = connection.collection("hospital_query_profile_fixture");
+  t.after(async () => { await collection.drop(); await connection.close(); });
+  await collection.insertMany(Array.from({ length: 2000 }, (_, i) => ({ name: `Hospital ${String(i).padStart(4, "0")}`, archivedAt: null, approvalStatus: "approved" })));
+  const filter = { archivedAt: null, approvalStatus: { $nin: ["pending", "rejected"] } };
+  const run = query => collection.find(query).sort({ name: 1, _id: 1 }).limit(20).explain("executionStats");
+  const baseline = await run(filter);
+  await collection.createIndex({ archivedAt: 1, name: 1, _id: 1 });
+  const optimized = await run(filter);
+  assert.equal(baseline.executionStats.nReturned, 20);
+  assert.equal(optimized.executionStats.nReturned, 20);
+  assert.ok(optimized.executionStats.totalDocsExamined <= 21);
+  assert.ok(baseline.executionStats.totalDocsExamined >= optimized.executionStats.totalDocsExamined * 50);
+  const cursor = await run({ ...filter, name: { $gt: "Hospital 1899" } });
+  assert.equal(cursor.executionStats.nReturned, 20);
+  assert.ok(cursor.executionStats.totalDocsExamined <= 21);
+  t.diagnostic(JSON.stringify({ syntheticHospitals: 2000, baselineDocuments: baseline.executionStats.totalDocsExamined, indexedDocuments: optimized.executionStats.totalDocsExamined, cursorDocuments: cursor.executionStats.totalDocsExamined }));
+});

@@ -12,7 +12,7 @@ const groups = [
 ];
 
 export async function syncHospitalResources(hospitalId = null) {
-  const hospitals = await Hospital.find(hospitalId ? { _id: hospitalId } : {}).lean();
+  const hospitals = await Hospital.find({ archivedAt: null, ...(hospitalId ? { _id: hospitalId } : {}) }).lean();
   let updated = 0;
   for (const hospital of hospitals) {
     const [facilities, claims] = await Promise.all([

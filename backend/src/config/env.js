@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { parseTrustProxy } from "./trustProxy.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { boundedInteger } from "./runtimeOptions.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config();
@@ -52,6 +53,11 @@ export const env = {
   emailProvider: (process.env.EMAIL_PROVIDER || "").toLowerCase(),
   emailEnabled: process.env.EMAIL_ENABLED === "true",
   resendApiKey: process.env.RESEND_API_KEY || "",
+  resendWebhookSecret: process.env.RESEND_WEBHOOK_SECRET || "",
+  emailMaxAttempts: boundedInteger("EMAIL_MAX_ATTEMPTS", process.env.EMAIL_MAX_ATTEMPTS, 3, 1, 10),
+  emergencyAckTimeoutMs: boundedInteger("EMERGENCY_ACK_TIMEOUT_MS", process.env.EMERGENCY_ACK_TIMEOUT_MS, 300000, 60000, 3600000),
+  emailEnvelopeKey: process.env.EMAIL_ENVELOPE_KEY || "",
+  emailEnvelopePreviousKey: process.env.EMAIL_ENVELOPE_PREVIOUS_KEY || "",
   resendFrom: process.env.RESEND_FROM || process.env.EMAIL_FROM || process.env.SMTP_FROM || "",
   smtpHost:
     process.env.SMTP_HOST ||
@@ -88,4 +94,8 @@ export const env = {
 if (env.nodeEnv === "production" && (env.jwtSecret.length < 32 ||
     /^(?:dev-only-insecure-secret|change-me.*|changeme.*)$/i.test(env.jwtSecret))) {
   throw new Error("Production JWT_SECRET must be a unique random secret of at least 32 characters");
+}
+if (env.nodeEnv === "production" && env.emailEnabled && (env.emailEnvelopeKey.length < 32 ||
+    /(?:change.?me|example|demo|your.?key)/i.test(env.emailEnvelopeKey) || env.emailEnvelopeKey === env.jwtSecret)) {
+  throw new Error("Production EMAIL_ENVELOPE_KEY must be a distinct random secret of at least 32 characters");
 }

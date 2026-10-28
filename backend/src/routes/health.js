@@ -1,5 +1,6 @@
 import { Router } from "express";
 import mongoose from "mongoose";
+import { databaseReady } from "../services/backendOperations.js";
 
 const router = Router();
 const dbState = () =>
@@ -14,9 +15,9 @@ router.get("/live", (_req, res) => {
   res.json({ ok: true, service: "medreach-api", check: "liveness", ts: new Date().toISOString() });
 });
 
-router.get("/ready", (req, res) => {
+router.get("/ready", async (req, res) => {
   const mongodb = dbState();
-  const ready = mongodb === "connected" && !req.app.locals.shuttingDown;
+  const ready = mongodb === "connected" && !req.app.locals.shuttingDown && await databaseReady();
   res.status(ready ? 200 : 503).json({
     ok: ready,
     service: "medreach-api",
