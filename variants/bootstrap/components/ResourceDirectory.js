@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { productApi } from "../lib/productApi";
 import AmbulanceBookingModal from "./AmbulanceBookingModal";
+import Link from "next/link";
 
 export default function ResourceDirectory({ kind, title, intro, label, onSelectResource }) {
   const [items, setItems] = useState([]);
@@ -109,6 +110,9 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                   </>
                 ) : (
                   <>
+                    {kind === "diagnostics" && (item.approvalStatus === "approved"
+                      ? <Link className="btn btn-primary btn-sm" href={`/diagnostics/request?centre=${item._id}`}>Request tests</Link>
+                      : <span className="text-secondary align-self-center">Online requests pending centre approval</span>)}
                     {onSelectResource && kind === "blood-banks" && (
                       <button
                         type="button"
@@ -119,7 +123,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                       </button>
                     )}
                     {item.phone ? (
-                      <a className="btn btn-primary btn-sm" href={`tel:${item.phone}`}>Call provider</a>
+                      <a className={`btn btn-sm ${kind === "diagnostics" ? "btn-outline-secondary" : "btn-primary"}`} href={`tel:${item.phone}`}>Call provider</a>
                     ) : (
                       <span className="small text-secondary align-self-center">Phone unavailable</span>
                     )}

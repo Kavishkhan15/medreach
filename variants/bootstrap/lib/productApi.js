@@ -4,6 +4,7 @@ const GUEST_SUBMISSIONS = new Set([
   "/api/blood-requests/urgent",
   "/api/blood-requests/standard",
   "/api/ambulances/book",
+  "/api/diagnostics/requests",
 ]);
 
 function refreshState() {
@@ -36,7 +37,7 @@ export async function productApi(path, options = {}, retried = false) {
   if (response.status === 401 && !retried && path !== "/api/auth/refresh") {
     const refreshed = state.generation !== generation || await refreshOnce(state);
     const guestTracking = Boolean(optionHeaders?.["X-MedReach-Tracking-Token"])
-      && (/^\/api\/emergency-requests\/[^/]+$/.test(path) || /^\/api\/blood-requests\/[^/]+$/.test(path) || /^\/api\/ambulances\/bookings\/[^/]+$/.test(path));
+      && (/^\/api\/emergency-requests\/[^/]+$/.test(path) || /^\/api\/blood-requests\/[^/]+$/.test(path) || /^\/api\/ambulances\/bookings\/[^/]+$/.test(path) || /^\/api\/diagnostics\/requests\/[^/]+(?:\/cancel)?$/.test(path));
     if (refreshed) return productApi(path, options, true);
     if ((options.method === "POST" && GUEST_SUBMISSIONS.has(path)) || guestTracking) {
       return productApi(path, { ...options, credentials: "omit" }, true);
@@ -46,6 +47,7 @@ export async function productApi(path, options = {}, retried = false) {
     const error = new Error(data.error || `Request failed (${response.status})`);
     error.status = response.status;
     error.code = data.code;
+    error.details = data.details;
     throw error;
   }
   return data;

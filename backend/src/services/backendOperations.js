@@ -15,6 +15,7 @@ import { EmailWebhookEvent } from "../models/EmailWebhookEvent.js";
 import { EmergencyRequest } from "../models/EmergencyRequest.js";
 import { BloodRequest } from "../models/BloodRequest.js";
 import { AmbulanceBooking } from "../models/AmbulanceBooking.js";
+import { DiagnosticRequest } from "../models/DiagnosticRequest.js";
 
 export async function databaseReady({timeoutMs=1500}={}) {
  if(mongoose.connection.readyState!==1||!mongoose.connection.db)return false;
@@ -35,7 +36,7 @@ export async function collectBackendStatus({now=new Date()}={}) {
   EmergencyCoordination.countDocuments({$or:[{status:"exhausted"},{manualAttention:true}]}),
   ResourceInventory.countDocuments({"pendingEvents.exhaustedAt":{$type:"date"}}),
   EmailWebhookEvent.countDocuments({status:"exhausted"}),
-  Promise.all([EmergencyRequest,BloodRequest,AmbulanceBooking].map(Model=>Model.countDocuments({"statusEffects.exhausted":true}))).then(values=>values.reduce((sum,value)=>sum+value,0)),
+  Promise.all([EmergencyRequest,BloodRequest,AmbulanceBooking,DiagnosticRequest].map(Model=>Model.countDocuments({"statusEffects.exhausted":true}))).then(values=>values.reduce((sum,value)=>sum+value,0)),
  ]);
  const [oldestJob,alertFailures,archiveRecovery,coverage,alertBacklog,importRecovery]=await Promise.all([
   BackgroundJob.findOne({status:"queued"}).sort({createdAt:1}).select("createdAt").lean(),

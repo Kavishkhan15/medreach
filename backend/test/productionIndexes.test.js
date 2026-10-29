@@ -18,13 +18,18 @@ import { OrganizationUsage } from "../src/models/OrganizationUsage.js";
 import { ProviderGroup, ProviderOnboarding, ProviderOffboarding } from "../src/models/providerAdoptionModels.js";
 import { HospitalEnrichment } from "../src/models/HospitalEnrichment.js";
 import { BackendLatencyBucket } from "../src/models/BackendLatencyBucket.js";
+import { DiagnosticRequest } from "../src/models/DiagnosticRequest.js";
 
 test("production startup requires existing reviewed uniqueness indexes without creating them", async()=>{
- const models=[ResourceInventory,InventoryObservation,EmailDelivery,EmailWebhookEvent,EmergencyCoordination,RateLimitBucket,PrivilegedSecurity,PrivilegedReauthentication,DataExport,EmergencyCoverage,OperationalAlertReceipt,OrganizationUsage,ProviderGroup,ProviderOnboarding,ProviderOffboarding,HospitalEnrichment,BackendLatencyBucket];
+ const models=[ResourceInventory,InventoryObservation,EmailDelivery,EmailWebhookEvent,EmergencyCoordination,RateLimitBucket,PrivilegedSecurity,PrivilegedReauthentication,DataExport,EmergencyCoverage,OperationalAlertReceipt,OrganizationUsage,ProviderGroup,ProviderOnboarding,ProviderOffboarding,HospitalEnrichment,BackendLatencyBucket,DiagnosticRequest];
  const originals=models.map(Model=>Model.collection.indexes);
  try{
   for(const Model of models)Model.collection.indexes=async()=>Model===OperationalAlertReceipt?[{name:"_id_",key:{_id:1}}]:Model.schema.indexes().filter(([,options])=>options.unique||options.expireAfterSeconds!==undefined).map(([key,options])=>({key,...options}));
   await verifyApiIndexes({nodeEnv:"production"});
+  const diagnosticIndexes = DiagnosticRequest.collection.indexes;
+  DiagnosticRequest.collection.indexes = async () => [];
+  await assert.rejects(() => verifyApiIndexes({ nodeEnv: "production" }), error => error.code === "API_INDEX_MISSING");
+  DiagnosticRequest.collection.indexes = diagnosticIndexes;
   const receiptIndexes=OperationalAlertReceipt.collection.indexes;
   OperationalAlertReceipt.collection.indexes=async()=>[];
   await assert.rejects(()=>verifyApiIndexes({nodeEnv:"production"}),error=>error.code==="API_INDEX_MISSING");

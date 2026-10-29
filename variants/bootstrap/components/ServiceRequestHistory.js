@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useAdminResource, adminList } from "@medreach/core";
 import AdminDataState from "./AdminDataState";
 import { productApi } from "../lib/productApi";
+import DiagnosticRequests from "./DiagnosticRequests";
 
 const loadBlood = (signal) => productApi("/api/blood-requests", { signal });
 const loadAmbulance = (signal) => productApi("/api/ambulances/bookings", { signal });
@@ -16,6 +17,7 @@ export default function ServiceRequestHistory({ enabled = true }) {
 
   return (
     <>
+      <DiagnosticRequests enabled={enabled} />
       <section className="surface mb-4">
         <h2>Blood requests and donation pledges</h2>
         <AdminDataState resource={blood} label="blood request history" emptyMessage="No blood requests or donation pledges recorded.">

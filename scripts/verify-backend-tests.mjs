@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 
 const databaseConfig = [
+  ["MEDREACH_DIAGNOSTIC_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_diagnostic_requests_test", "medreach_diagnostic_requests_test"],
   ["MEDREACH_ENRICHMENT_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_enrichment_test", "medreach_enrichment_test"],
   ["MEDREACH_METRICS_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_metrics_test", "medreach_metrics_test"],
   ["MEDREACH_ADOPTION_TEST_MONGO_URI", "mongodb://127.0.0.1:27017/medreach_adoption_test", "medreach_adoption_test"],

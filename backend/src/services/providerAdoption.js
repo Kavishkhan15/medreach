@@ -13,6 +13,7 @@ import { InventoryImport } from "../models/InventoryImport.js";
 import { EmergencyRequest } from "../models/EmergencyRequest.js";
 import { BloodRequest } from "../models/BloodRequest.js";
 import { AmbulanceBooking } from "../models/AmbulanceBooking.js";
+import { DiagnosticRequest } from "../models/DiagnosticRequest.js";
 import { AuthToken } from "../models/AuthToken.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { organizationIsAvailable } from "./providerLifecycle.js";
@@ -104,7 +105,7 @@ export async function providerQualityReport({ actor, kind, organizationId, days 
   await scoped(actor, kind, organizationId); const windowDays = Number(days);
   if (!Number.isSafeInteger(windowDays) || windowDays < 1 || windowDays > 90) throw fail(400, "INVALID_REPORT_WINDOW");
   const since = new Date(now.getTime() - windowDays * 86400000), organization = new mongoose.Types.ObjectId(organizationId);
-  const Model = kind === "hospital" ? EmergencyRequest : kind === "blood_bank" ? BloodRequest : kind === "ambulance" ? AmbulanceBooking : null;
+  const Model = kind === "hospital" ? EmergencyRequest : kind === "blood_bank" ? BloodRequest : kind === "ambulance" ? AmbulanceBooking : kind === "diagnostic" ? DiagnosticRequest : null;
   const [requests, imports, inventory, reportingDays, notificationStates] = await Promise.all([
     Model ? Model.aggregate([{ $match: { [kind === "hospital" ? "hospital" : "provider"]: organization, createdAt: { $gte: since, $lte: now } } }, { $group: { _id: "$status", count: { $sum: 1 } } }]).option({ maxTimeMS: 5000 }) : [],
     InventoryImport.aggregate([{ $match: { kind, organization, createdAt: { $gte: since, $lte: now } } }, { $group: { _id: "$status", count: { $sum: 1 } } }]).option({ maxTimeMS: 5000 }),

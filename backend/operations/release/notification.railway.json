@@ -5,7 +5,7 @@
   },
   "deploy": {
     "startCommand": "node backend/src/workers/notification.js",
-    "numReplicas": 2,
+    "numReplicas": 1,
     "sleepApplication": false,
     "drainingSeconds": 35,
     "restartPolicyType": "ON_FAILURE",

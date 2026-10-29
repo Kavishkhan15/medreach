@@ -28,6 +28,7 @@ export async function notificationRecipients(kind, organizationId, isEmergency) 
     .filter(({ user }) => { if (!user.notificationEmail || seen.has(user.notificationEmail)) return false; seen.add(user.notificationEmail); return true; });
 }
 export function requestRouting(record, type) {
+  if (type === "DiagnosticRequest") return { kind: "diagnostic", organizationId: record.provider, reference: record.reference, isEmergency: false };
   if (type === "EmergencyRequest") return { kind: "hospital", organizationId: record.hospital, reference: record.requestId, isEmergency: record.isEmergency === true };
   if (type === "BloodRequest") return { kind: "blood_bank", organizationId: record.provider, reference: record.reference, isEmergency: record.type === "REQUEST" && record.isUrgent === true };
   return { kind: "ambulance", organizationId: record.provider, reference: record.reference, isEmergency: record.isEmergency === true };

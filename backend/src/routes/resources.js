@@ -15,6 +15,7 @@ import {
 } from "../controllers/resourceController.js";
 import { captureIdempotencyKey } from "../middleware/idempotency.js";
 import { PHONE_PATTERN } from "../validation/healthcare.js";
+import diagnosticRequestRouter from "./diagnosticRequests.js";
 
 const trackingLimiter = (req, res, next) =>
   (req.app.locals.trackingLimiter ?? ((_request, _response, done) => done()))(req, res, next);
@@ -24,6 +25,7 @@ const publicSubmissionLimiter = (req, res, next) =>
 export const resourceRouter = (kind) => {
   const router = Router();
   router.get("/", listResources(kind));
+  if (kind === "diagnostic") router.use("/requests", diagnosticRequestRouter);
   if (kind === "ambulance") {
     router.post(
       "/book",

@@ -65,7 +65,8 @@ export function applySecurity(app, { rateLimitStoreFactory } = {}) {
     }
     if (req.headers.authorization || req.cookies?.token || req.get("X-MedReach-Tracking-Token") ||
         req.path.startsWith("/api/auth/") || /^\/api\/(emergency-requests|blood-requests|tracking)(?:\/|$)/.test(req.path) ||
-        /^\/api\/ambulances\/(?:book|bookings)(?:\/|$)/.test(req.path)) {
+        /^\/api\/ambulances\/(?:book|bookings)(?:\/|$)/.test(req.path) ||
+        /^\/api\/diagnostics\/requests(?:\/|$)/.test(req.path)) {
       res.set("Cache-Control", "no-store");
     }
     next();

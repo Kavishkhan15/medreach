@@ -562,6 +562,22 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 button, input, select, textarea { font-family: inherit; }
 
+.diagnostic-request-page { max-width: 800px; }
+.diagnostic-test-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  min-height: 68px;
+  height: 100%;
+  border: 1px solid var(--bs-border-color, #d9e5f0);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.diagnostic-test-option:has(input:checked) { border-color: #1769c8; background: #f0f7ff; }
+.diagnostic-test-option:focus-within { outline: 2px solid #1769c8; outline-offset: 3px; }
+.diagnostic-request-notice { padding: 1rem; border-radius: 12px; background: #f0f7ff; color: #173b63; }
+
 small, .small { font-size: var(--type-caption); line-height: 1.5; }
 
 table { font-size: var(--type-small); line-height: 1.5; font-variant-numeric: tabular-nums; }

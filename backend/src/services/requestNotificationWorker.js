@@ -1,6 +1,7 @@
 import { EmergencyRequest } from "../models/EmergencyRequest.js";
 import { BloodRequest } from "../models/BloodRequest.js";
 import { AmbulanceBooking } from "../models/AmbulanceBooking.js";
+import { DiagnosticRequest } from "../models/DiagnosticRequest.js";
 import { routeRequestSafely } from "./requestNotifications.js";
 import { RequestNotification } from "../models/RequestNotification.js";
 import { EmailDelivery } from "../models/EmailDelivery.js";
@@ -9,7 +10,7 @@ import { recoverProviderApplicationNotifications } from "./providerApplicationNo
 let timer, running;
 export async function recoverRequestNotifications() {
   await recoverProviderApplicationNotifications();
-  for (const Model of [EmergencyRequest, BloodRequest, AmbulanceBooking]) {
+  for (const Model of [EmergencyRequest, BloodRequest, AmbulanceBooking, DiagnosticRequest]) {
     // Only new-version requests opt in. Historical data is never rebroadcast.
     const records = await Model.find({ notificationVersion: 1, notificationRoutedAt: { $exists: false } }).limit(50);
     for (const record of records) await routeRequestSafely(record, Model.modelName);

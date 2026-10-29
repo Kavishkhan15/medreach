@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@medreach/core";
 import { productApi } from "../../lib/productApi";
+import { diagnosticTestLabel, diagnosticStatusLabel, diagnosticAppointment } from "../../lib/diagnostics";
 
-const tokenKey = (kind, reference) => kind === "ambulance"
+const tokenKey = (kind, reference) => kind === "diagnostic" ? `medreach:diagnostic-request-token:${reference}` : kind === "ambulance"
   ? `medreach:ambulance-booking-token:${reference}`
   : `medreach:blood-request-token:${reference}`;
 
@@ -45,11 +46,12 @@ export default function TrackRequestPage() {
       if (token || user) {
         const path = kind === "ambulance"
           ? `/api/ambulances/bookings/${encodeURIComponent(cleanReference)}`
+          : kind === "diagnostic" ? `/api/diagnostics/requests/${encodeURIComponent(cleanReference)}`
           : `/api/blood-requests/${encodeURIComponent(cleanReference)}`;
         try {
           const data = await productApi(path, { headers: token ? { "X-MedReach-Tracking-Token": token } : {} });
           if (check !== sequence.current) return;
-          setRecord(kind === "ambulance" ? data.booking : data.bloodRequest);
+          setRecord(kind === "ambulance" ? data.booking : kind === "diagnostic" ? { ...data.request, privateDetails: true } : data.bloodRequest);
           setDelivery(data.delivery || null);
         } catch (err) {
           if (check !== sequence.current) return;
@@ -68,7 +70,7 @@ export default function TrackRequestPage() {
       initialized.current = true;
       const params = new URLSearchParams(window.location.search);
       const requestedType = params.get("type");
-      const kind = ["blood", "bed", "career", "ambulance"].includes(requestedType) ? requestedType : "blood";
+      const kind = ["blood", "bed", "career", "ambulance", "diagnostic"].includes(requestedType) ? requestedType : "blood";
       const ref = (params.get("reference") || "").trim().toUpperCase();
       const token = new URLSearchParams(window.location.hash.slice(1)).get("token");
       if (token) {
@@ -93,6 +95,18 @@ export default function TrackRequestPage() {
     setRecord(null); setDelivery(null); setError(""); setLoading(false);
   };
 
+  async function cancelDiagnostic() {
+    if (loading || !window.confirm("Cancel this diagnostic test request?")) return;
+    setLoading(true); setError("");
+    try {
+      let token = linkCredentials.current.get(tokenKey("diagnostic", record.reference));
+      try { token ||= window.sessionStorage.getItem(tokenKey("diagnostic", record.reference)); } catch { /* Use link credentials. */ }
+      await productApi(`/api/diagnostics/requests/${record.reference}/cancel`, { method: "PATCH", body: { expectedVersion: record.version }, headers: token ? { "X-MedReach-Tracking-Token": token } : {} });
+      await load("diagnostic", record.reference);
+    } catch (error) { setError(error.status === 409 ? "This request changed. Check its latest status before cancelling." : error.message); }
+    finally { setLoading(false); }
+  }
+
   return (
     <main className="container py-5">
       <div className="page-head mb-4">
@@ -107,6 +121,7 @@ export default function TrackRequestPage() {
             <option value="bed">Bed request</option>
             <option value="career">Career request</option>
             <option value="ambulance">Ambulance booking</option>
+            <option value="diagnostic">Diagnostic test request</option>
           </select>
         </div>
         <div className="mb-3">
@@ -118,7 +133,7 @@ export default function TrackRequestPage() {
       {error && <div role="alert" className="alert alert-danger">{error}</div>}
       {record && <section className="surface" aria-label="Request status">
         <h2 className="h5">{record.reference}</h2>
-        <p><strong>Status:</strong> {record.status}</p>
+        <p><strong>Status:</strong> {type === "diagnostic" ? diagnosticStatusLabel(record.status) : record.status}</p>
         {record.updatedAt && <p className="small text-muted">Last updated {new Date(record.updatedAt).toLocaleString()}</p>}
         {type === "blood" ? <>
           {record.bloodBankName && <p><strong>Blood bank:</strong> {record.bloodBankName}</p>}
@@ -131,6 +146,19 @@ export default function TrackRequestPage() {
         </> : type === "career" ? <>
           <p>Check here for updates to your career application.</p>
           <Link href="/careers">Healthcare careers</Link>
+        </> : type === "diagnostic" ? <>
+          {record.providerName && <p><strong>Centre:</strong> {record.providerName}</p>}
+          {record.tests && <p><strong>Requested tests:</strong> {record.tests.map(diagnosticTestLabel).join(" · ")}</p>}
+          {record.preferredDate && <p><strong>Preferred visit:</strong> {record.preferredDate} · {record.preferredTime.toLowerCase()}</p>}
+          {record.appointmentAt && <><p><strong>Appointment:</strong> {diagnosticAppointment(record.appointmentAt)} IST</p><p><strong>Accepted tests:</strong> {record.acceptedTests.map(diagnosticTestLabel).join(" · ")}</p>
+            {record.tests.some(test => !record.acceptedTests.includes(test)) && <p><strong>Tests not available in this appointment:</strong> {record.tests.filter(test => !record.acceptedTests.includes(test)).map(diagnosticTestLabel).join(" · ")}</p>}</>}
+          {record.providerResponse && <p><strong>Centre response:</strong> {record.providerResponse}</p>}
+          {record.notificationRouting === "no_eligible_recipients" && <p>Administrator follow-up is needed because the centre has no eligible notification contact. Contact the centre directly for updates.</p>}
+          {["REQUESTED", "UNDER_REVIEW"].includes(record.status) && <p>Test availability and your appointment must be confirmed by the diagnostic centre.</p>}
+          {!record.privateDetails && <p>Open your private tracking link or sign in to see appointment details.</p>}
+          {record.history && <><h3 className="h6 mt-3">Request history</h3><ol>{record.history.map((event, index) => <li key={`${event.at}-${index}`}>{diagnosticStatusLabel(event.status)} · {diagnosticAppointment(event.at)} IST</li>)}</ol></>}
+          <div className="d-flex flex-wrap gap-3"><Link href="/diagnostics">Diagnostic centre directory</Link>
+          {record.privateDetails && ["REQUESTED", "UNDER_REVIEW", "CONFIRMED"].includes(record.status) && <button type="button" className="btn btn-outline-danger" disabled={loading} onClick={cancelDiagnostic}>Cancel test request</button>}</div>
         </> : <>
           {record.providerSnapshot?.name && <p><strong>Provider:</strong> {record.providerSnapshot.name}</p>}
           {delivery && <p><strong>Provider email:</strong> {delivery.provider?.sent ? "Notification email sent" : "Notification email not confirmed"}</p>}

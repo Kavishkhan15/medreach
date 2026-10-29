@@ -6,6 +6,9 @@ export function notFound(req, res) {
 }
 
 export function errorHandler(err, req, res, _next) {
+  if (err.code === "DIAGNOSTIC_REQUEST_REJECTED" && [400, 403, 404, 409].includes(err.status)) {
+    return res.status(err.status).json({ error: err.message, code: err.code });
+  }
   if (err.status === 503 && err.code !== "RATE_LIMIT_UNAVAILABLE") {
     return res.status(503).json({ error: "Service temporarily unavailable. Please retry." });
   }

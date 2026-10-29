@@ -7,13 +7,14 @@ const endpoints = {
   requests: "/api/emergency-requests",
   blood: "/api/blood-requests",
   ambulance: "/api/ambulances/bookings",
+  diagnostic: "/api/diagnostics/requests",
   applications: "/api/applications/mine",
 };
 const initialSection = () => ({ data: null, loading: true, error: "", status: null });
 
 export function useDashboard() {
   const [sections, setSections] = useState(() => Object.fromEntries(Object.keys(endpoints).map((key) => [key, initialSection()])));
-  const generations = useRef({ profile: 0, requests: 0, blood: 0, ambulance: 0, applications: 0 });
+  const generations = useRef(Object.fromEntries(Object.keys(endpoints).map(key => [key, 0])));
   const retry = useCallback(async (key) => {
     const generation = ++generations.current[key];
     setSections((previous) => ({ ...previous, [key]: { ...previous[key], loading: true, error: "", status: null } }));

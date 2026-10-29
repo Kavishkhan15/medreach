@@ -9,6 +9,7 @@ import { productionMigrationVersion } from "../scripts/migrateProductionIndexes.
 import { fileSha256 } from "../scripts/verifiedBackup.js";
 import { verifyApiIndexes } from "../src/services/productionIndexes.js";
 import { migrateReliabilityReleaseIndexes, reliabilityReleaseMigrationVersion } from "../scripts/migrateReliabilityReleaseIndexes.js";
+import { migrateDiagnosticIndexes, diagnosticMigrationVersion } from "../scripts/migrateDiagnosticIndexes.js";
 const uri = process.env.MEDREACH_ADOPTION_INDEXES_TEST_MONGO_URI;
 const isolated = /^mongodb:\/\/(127\.0\.0\.1|localhost):\d+\/medreach_adoption_indexes_test$/.test(uri || "");
 test("adoption migration uses a new immutable version, preflights branch collisions and provisions startup prerequisites", { skip: !isolated, timeout: 90000 }, async () => {
@@ -33,7 +34,14 @@ test("adoption migration uses a new immutable version, preflights branch collisi
     assert.notEqual(reliabilityReleaseMigrationVersion, adoptionMigrationVersion);
     assert.notEqual(release.checksum, report.checksum);
     await migrateReliabilityReleaseIndexes({ ...options, apply: true, approvedChecksum: release.checksum, allowUniqueBootstrap: true, approveExpiryIndexes: true, backup: { ...backup, reportChecksum: release.checksum } });
+    await assert.rejects(verifyApiIndexes({ nodeEnv: "production" }), error => error.code === "API_INDEX_MISSING");
+    const diagnostics = await migrateDiagnosticIndexes(options);
+    assert.notEqual(diagnosticMigrationVersion, reliabilityReleaseMigrationVersion);
+    assert.ok(diagnostics.plan.length > 0);
+    assert.ok(diagnostics.plan.every(item => item.collection === "diagnosticrequests"));
+    await migrateDiagnosticIndexes({ ...options, apply: true, approvedChecksum: diagnostics.checksum, allowUniqueBootstrap: true, backup: { ...backup, reportChecksum: diagnostics.checksum } });
     await verifyApiIndexes({ nodeEnv: "production" });
+    assert.equal((await migrateDiagnosticIndexes({ ...options, apply: true, approvedChecksum: diagnostics.checksum })).alreadyApplied, true);
     assert.equal((await migrateReliabilityReleaseIndexes({ ...options, apply: true, approvedChecksum: release.checksum })).alreadyApplied, true);
     const repeated = await migrateAdoptionIndexes({ ...options, apply: true, approvedChecksum: report.checksum });
     assert.equal(repeated.alreadyApplied, true); assert.equal(repeated.plan.length, 0);

@@ -2,6 +2,7 @@
 import { useAdminAccess, useAdminResource, adminList } from "@medreach/core";
 import AdminGuard from "../../../components/AdminGuard";
 import AdminDataState from "../../../components/AdminDataState";
+import DiagnosticRequests from "../../../components/DiagnosticRequests";
 import { productApi } from "../../../lib/productApi";
 
 const loadBeds = (signal) => productApi("/api/emergency-requests", { signal });
@@ -74,6 +75,7 @@ export default function EmergencyRequests() {
 
   return (
     <AdminGuard title="Requests" subtitle="Hospital beds, blood, diagnostics and ambulance activity, grouped by service and urgency.">
+      <DiagnosticRequests manage enabled={allowed} />
       {groups.map((group) => (
         <section key={group.label} className="surface mb-4">
           <h2>{group.label}</h2>

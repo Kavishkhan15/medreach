@@ -3,13 +3,14 @@ import { randomUUID } from "node:crypto";
 import { EmergencyRequest } from "../models/EmergencyRequest.js";
 import { BloodRequest } from "../models/BloodRequest.js";
 import { AmbulanceBooking } from "../models/AmbulanceBooking.js";
+import { DiagnosticRequest } from "../models/DiagnosticRequest.js";
 import { AuditLog } from "../models/AuditLog.js";
 import { Hospital } from "../models/Hospital.js";
 import { emailRequestUpdate } from "./bedRequestEmails.js";
 import { sendEmailEvent } from "./emailService.js";
 
 export const STATUS_EFFECTS_CAPACITY = 32;
-const models = { EmergencyRequest, BloodRequest, AmbulanceBooking };
+const models = { EmergencyRequest, BloodRequest, AmbulanceBooking, DiagnosticRequest };
 const ATTEMPT_LIMIT = 5;
 export function requestStatusEffect({ previousStatus, status, actor, timelineLength, now = new Date() }) {
   return { _id: new mongoose.Types.ObjectId(), auditId: new mongoose.Types.ObjectId(),
@@ -36,7 +37,7 @@ export async function drainRequestStatusEffects(sourceType, sourceId, { effectId
   const owned = { _id: sourceId, statusEffects: { $elemMatch: { _id: effect._id, leaseToken } } };
   try {
     await AuditLog.updateOne({ _id: effect.auditId }, { $setOnInsert: {
-      createdAt: effect.recordedAt, user: effect.actor, action: "update", entityType: sourceType, entityId: source._id,
+      createdAt: effect.recordedAt, user: effect.actor, action: effect.previousStatus === "NONE" ? "create" : "update", entityType: sourceType, entityId: source._id,
       before: { status: effect.previousStatus },
       after: { status: effect.status, ...(effect.timelineLength ? { timelineLength: effect.timelineLength } : {}) },
     } }, { upsert: true });

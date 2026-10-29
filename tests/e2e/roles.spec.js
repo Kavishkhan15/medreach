@@ -28,15 +28,20 @@ test("System Admin retains the main dashboard and provisions a pending real prov
   await page.getByRole("button", { name: "Create Provider Admin account", exact: true }).click();
   await expect(page.getByText(/Account provisioning confirmed/)).toBeVisible();
   const card = page.locator("article").filter({ hasText: email });
-  await expect(card.getByText(/[Ss]tatus: pending/)).toBeVisible();
-  await expect(card.getByText(/Activation email(?: status)?: disabled/)).toBeVisible();
+  if (info.project.name === "bootstrap") {
+    await expect(card.locator(".status-pill")).toHaveText("pending");
+    await expect(card.getByText("Invitation: disabled", { exact: true })).toBeVisible();
+  } else {
+    await expect(card.getByText(/[Ss]tatus: pending/)).toBeVisible();
+    await expect(card.getByText(/Activation email(?: status)?: disabled/)).toBeVisible();
+  }
   await expect(card.getByText(/Demo default:/)).toHaveCount(0);
 });
 test("Regular users cannot access administrative dashboards and retired support route is absent", async ({ page }) => {
   await signIn(page, "support.e2e@medreach.test");
   const missing = await page.goto("/user-admin");
   expect(missing.status()).toBe(404);
-  await expect(page.getByRole("heading", { name: /^(?:404|Page Not Found)$/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^(?:404(?: — Page not found)?|Page Not Found)$/i })).toBeVisible();
   for (const path of ["/admin/users", "/admin/provider-accounts", "/admin/security"]) {
     await page.goto(path); await expect(page.getByText(/Admin access required/)).toBeVisible();
   }

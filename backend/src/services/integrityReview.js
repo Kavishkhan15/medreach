@@ -4,13 +4,14 @@ import { mongo } from "mongoose";
 import { classifyDataRecord } from "./dataQualityAudit.js";
 
 const org = { hospital: "hospitals", blood_bank: "resourceproviders", diagnostic: "resourceproviders", ambulance: "resourceproviders" };
-const sources = { EmergencyRequest: "emergencyrequests", BloodRequest: "bloodrequests", AmbulanceBooking: "ambulancebookings", RequestNotification: "requestnotifications", EmergencyCoordination: "emergencycoordinations", bed: "emergencyrequests", blood: "bloodrequests", ambulance: "ambulancebookings" };
+const sources = { DiagnosticRequest: "diagnosticrequests", EmergencyRequest: "emergencyrequests", BloodRequest: "bloodrequests", AmbulanceBooking: "ambulancebookings", RequestNotification: "requestnotifications", EmergencyCoordination: "emergencycoordinations", bed: "emergencyrequests", blood: "bloodrequests", ambulance: "ambulancebookings" };
 const ref = (field, target, required = false, kind) => ({ field, target, required, kind });
 export const RELATIONSHIP_CHECKS = {
   providermemberships: [ref("user", "users", true), ref("assignedBy", "users", true), ref("organization", row => org[row.kind], true, row => row.kind)],
   resourceproviders: [ref("hospital", "hospitals")],
   emergencyrequests: [ref("hospital", "hospitals", true), ref("user", "users")],
   bloodrequests: [ref("provider", "resourceproviders", false, () => "blood_bank"), ref("user", "users")],
+  diagnosticrequests: [ref("provider", "resourceproviders", true, () => "diagnostic"), ref("user", "users")],
   ambulancebookings: [ref("provider", "resourceproviders", true, () => "ambulance"), ref("user", "users"), ref("emailDelivery", "emaildeliveries")],
   jobs: [ref("hospital", "hospitals"), ref("provider", "resourceproviders"), ref("createdBy", "users", true), ref("reviewedBy", "users")],
   jobapplications: [ref("job", "jobs", true), ref("applicant", "users", true), ref("reviewedBy", "users")],

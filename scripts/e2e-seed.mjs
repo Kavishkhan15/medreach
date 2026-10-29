@@ -85,6 +85,7 @@ try {
     {
       kind: "diagnostic",
       name: "MedReach E2E Diagnostics",
+      approvalStatus: "approved",
       sourceName: "E2E controlled fixture",
       locality: "Bandra West",
       phone: "+91 22 4000 3000",
@@ -108,12 +109,16 @@ try {
   const support = new User({ name: "E2E Regular User", email: "support.e2e@medreach.test", role: "user", region: "Mumbai", emailVerifiedAt: new Date() });
   await support.setPassword(password); await support.save();
   const bloodBank = await ResourceProvider.findOne({ kind: "blood_bank" });
+  const diagnostic = await ResourceProvider.findOne({ kind: "diagnostic" });
   for (const variant of variants) {
     const provider = new User({ name: `E2E ${variant} Provider`, email: `${variant}.provider.e2e@medreach.test`, role: "provider_admin", region: "Mumbai", emailVerifiedAt: new Date() });
     await provider.setPassword(password); await provider.save();
     await ProviderMembership.create([{ user: provider._id, kind: "hospital", organization: hospital._id, assignedBy: admin._id },
       { user: provider._id, kind: "blood_bank", organization: bloodBank._id, assignedBy: admin._id }]);
   }
+  const diagnosticAdmin = new User({ name: "E2E Diagnostic Admin", email: "diagnostic.provider.e2e@medreach.test", role: "provider_admin", region: "Mumbai", emailVerifiedAt: new Date() });
+  await diagnosticAdmin.setPassword(password); await diagnosticAdmin.save();
+  await ProviderMembership.create({ user: diagnosticAdmin._id, kind: "diagnostic", organization: diagnostic._id, assignedBy: admin._id });
   await Job.create({
     hospital: hospital._id,
     organizationType: "hospital",

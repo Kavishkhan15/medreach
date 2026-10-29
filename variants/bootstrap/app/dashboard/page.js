@@ -38,7 +38,7 @@ function RequestGroup({ section, title, onRetry, emptyMessage, children }) {
 }
 
 export default function Dashboard() {
-  const { profile, requests, blood, ambulance, applications, retry } = useDashboard();
+  const { profile, requests, blood, ambulance, diagnostic, applications, retry } = useDashboard();
   const user = profile.data;
 
   return <div className="member-dashboard">
@@ -64,6 +64,9 @@ export default function Dashboard() {
         </RequestGroup>
         <RequestGroup section={blood} title="Blood requests and donations" onRetry={() => retry("blood")} emptyMessage="No blood requests or donation pledges recorded.">
           {blood.data?.slice(0, 2).map((request) => <RequestRow key={request._id} href={`/track?type=blood&reference=${encodeURIComponent(request.reference)}`} reference={request.reference} type={request.isUrgent ? "Urgent blood" : request.type === "DONATION" ? "Donation" : "Blood request"} status={request.status} provider={request.bloodBankName || "Blood bank not selected"} urgent={request.isUrgent} />)}
+        </RequestGroup>
+        <RequestGroup section={diagnostic} title="Diagnostic test requests" onRetry={() => retry("diagnostic")} emptyMessage="No diagnostic test requests recorded.">
+          {diagnostic.data?.slice(0, 2).map(request => <RequestRow key={request._id} href={`/track?type=diagnostic&reference=${request.reference}`} reference={request.reference} type="Diagnostic tests" status={request.status} provider={request.providerName} />)}
         </RequestGroup>
         <RequestGroup section={ambulance} title="Ambulance bookings" onRetry={() => retry("ambulance")} emptyMessage="No ambulance bookings recorded.">
           {ambulance.data?.slice(0, 2).map((request) => <RequestRow key={request._id} href={`/track?type=ambulance&reference=${encodeURIComponent(request.reference)}`} reference={request.reference} type={request.isEmergency ? "Emergency ambulance" : "Ambulance booking"} status={request.status} provider={request.providerSnapshot?.name || "Provider record unavailable"} urgent={request.isEmergency} />)}
