@@ -154,7 +154,7 @@ export default function TrackRequestPage() {
             {record.tests.some(test => !record.acceptedTests.includes(test)) && <p><strong>Tests not available in this appointment:</strong> {record.tests.filter(test => !record.acceptedTests.includes(test)).map(diagnosticTestLabel).join(" · ")}</p>}</>}
           {record.providerResponse && <p><strong>Centre response:</strong> {record.providerResponse}</p>}
           {record.notificationRouting === "no_eligible_recipients" && <p>Administrator follow-up is needed because the centre has no eligible notification contact. Contact the centre directly for updates.</p>}
-          {["REQUESTED", "UNDER_REVIEW"].includes(record.status) && <p>Test availability and your appointment must be confirmed by the diagnostic centre.</p>}
+          {["REQUESTED", "UNDER_REVIEW"].includes(record.status) && <p>{record.centreApprovalPending ? "Your request is awaiting MedReach review and centre approval. No appointment is booked." : "Test availability and your appointment must be confirmed by the diagnostic centre."}</p>}
           {!record.privateDetails && <p>Open your private tracking link or sign in to see appointment details.</p>}
           {record.history && <><h3 className="h6 mt-3">Request history</h3><ol>{record.history.map((event, index) => <li key={`${event.at}-${index}`}>{diagnosticStatusLabel(event.status)} · {diagnosticAppointment(event.at)} IST</li>)}</ol></>}
           <div className="d-flex flex-wrap gap-3"><Link href="/diagnostics">Diagnostic centre directory</Link>

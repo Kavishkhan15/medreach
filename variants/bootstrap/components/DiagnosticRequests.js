@@ -19,7 +19,7 @@ function DiagnosticReview({ row, reload }) {
       await patch(`/api/diagnostics/requests/${row._id}/status`, { expectedVersion: row.version, status, providerResponse: response.trim(),
         ...(status === "CONFIRMED" ? { acceptedTests: accepted, appointmentAt: new Date(`${appointment}:00+05:30`).toISOString() } : {}) });
       await reload();
-    } catch (error) { setError(error.status === 409 ? "This request changed. Refresh requests before trying again." : error.message); }
+    } catch (error) { setError(error.message || "Unable to update this request. Refresh and try again."); }
     finally { setBusy(false); }
   }
   return <div className="pt-3 mt-3 border-top">
@@ -28,7 +28,13 @@ function DiagnosticReview({ row, reload }) {
       <label className="form-label" htmlFor={`diagnostic-response-${row._id}`}>Message to patient</label>
       <textarea id={`diagnostic-response-${row._id}`} className="form-control mb-3" value={response} maxLength={500} disabled={busy} onChange={event => setResponse(event.target.value)} placeholder="Confirm charges, preparation instructions or a reason for declining" />
     </>}
-    {open && <form onSubmit={event => { event.preventDefault(); update("CONFIRMED"); }}>
+    {open && row.centreApprovalPending && <div className="alert alert-info">
+      <p>MedReach review: approve and onboard this centre before handing over the request. An appointment cannot be confirmed yet.</p>
+      <div className="d-flex flex-wrap gap-2"><Link className="btn btn-outline-primary" href="/admin/provider-accounts">Review centre approval</Link>
+        <button type="button" disabled={busy} className="btn btn-primary" onClick={() => update("UNDER_REVIEW")}>{row.status === "REQUESTED" ? "Review request" : "Send to centre after approval"}</button>
+        <button type="button" disabled={busy} className="btn btn-outline-danger" onClick={() => update("DECLINED")}>Decline request</button></div>
+    </div>}
+    {open && !row.centreApprovalPending && <form onSubmit={event => { event.preventDefault(); update("CONFIRMED"); }}>
       <fieldset disabled={busy}>
         <legend className="h6">Tests you can provide</legend>
         <div className="d-flex flex-wrap gap-3 mb-3">{row.tests.map(test => <label key={test} className="d-flex align-items-center gap-2"><input type="checkbox" className="form-check-input m-0" checked={accepted.includes(test)} onChange={event => setAccepted(previous => event.target.checked ? [...previous, test] : previous.filter(value => value !== test))} />{diagnosticTestLabel(test)}</label>)}</div>
@@ -73,7 +79,7 @@ export default function DiagnosticRequests({ providerId, manage = false, enabled
   if (!enabled) return null;
   return <section className="surface mb-4" aria-labelledby="diagnostic-requests-heading">
     <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3"><h2 id="diagnostic-requests-heading" className="h4 mb-0">Diagnostic test requests</h2><button type="button" className="btn btn-outline-secondary btn-sm" disabled={busy} onClick={() => load()}>Refresh requests</button></div>
-    {manage && !providerId && <label className="d-flex align-items-center gap-2 mb-3"><input type="checkbox" checked={followup} onChange={event => setFollowup(event.target.checked)} />Show requests needing notification contact follow-up</label>}
+    {manage && !providerId && <label className="d-flex align-items-center gap-2 mb-3"><input type="checkbox" checked={followup} onChange={event => setFollowup(event.target.checked)} />Show requests needing centre approval or contact follow-up</label>}
     {busy && <p role="status">Loading diagnostic requests…</p>}
     {error && <p className="alert alert-danger" role="alert">{error}</p>}
     {!busy && !error && !rows.length && <p>No diagnostic test requests recorded.</p>}
@@ -85,7 +91,7 @@ export default function DiagnosticRequests({ providerId, manage = false, enabled
       {row.appointmentAt && <p><strong>Appointment:</strong> {diagnosticAppointment(row.appointmentAt)} IST<br /><strong>Accepted tests:</strong> {row.acceptedTests.map(diagnosticTestLabel).join(" · ")}</p>}
       {row.providerResponse && <p>Centre response: {row.providerResponse}</p>}
       {manage && <><p>{row.requestSnapshot.patientName} · <a href={`tel:${row.requestSnapshot.contactPhone}`}>{row.requestSnapshot.contactPhone}</a></p>{row.requestSnapshot.notes && <p style={{ whiteSpace: "pre-wrap" }}>{row.requestSnapshot.notes}</p>}
-        {row.notificationRouting === "no_eligible_recipients" && <p className="alert alert-warning">No eligible notification contact. Assign an active Diagnostic Centre Admin and verify their notification email; contact the patient directly to coordinate this request.</p>}
+        {!row.centreApprovalPending && row.notificationRouting === "no_eligible_recipients" && <p className="alert alert-warning">No eligible notification contact. Assign an active Diagnostic Centre Admin and verify their notification email; contact the patient directly to coordinate this request.</p>}
         <DiagnosticReview row={row} reload={() => load()} /></>}
       {!manage && <Link className="btn btn-outline-primary" href={`/track?type=diagnostic&reference=${row.reference}`}>Track request</Link>}
     </article>)}</div>

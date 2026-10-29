@@ -54,7 +54,7 @@ export default function DiagnosticRequestForm() {
   const maxDate = diagnosticDate(new Date(Date.now() + 180 * 86400000));
   return <div className="diagnostic-request-page mx-auto">
     <Link href="/diagnostics" className="d-inline-block mb-4">← Diagnostic centres</Link>
-    <header className="page-head mb-4"><h1>Request diagnostic tests</h1><p>Choose your tests and preferred visit. The centre will review your request.</p></header>
+    <header className="page-head mb-4"><h1>Request diagnostic tests</h1><p>Choose your tests and preferred visit. Every appointment requires confirmation.</p></header>
     {loading && <p role="status">Loading your selected centre…</p>}
     {error && <div className="alert alert-danger" role="alert" tabIndex={-1} ref={errorMessage}>{error}</div>}
     {result ? <section className="surface p-4 p-md-5" aria-labelledby="diagnostic-success">
@@ -62,14 +62,15 @@ export default function DiagnosticRequestForm() {
       <p className="mt-3"><strong>{result.reference}</strong></p><p>{provider.name}</p>
       <ul>{result.request.tests.map(test => <li key={test}>{diagnosticTestLabel(test)}</li>)}</ul>
       <p>Test availability and your appointment must be confirmed by the diagnostic centre.</p>
-      {result.request.notificationRouting === "no_eligible_recipients" && <p role="status">This centre has no eligible notification contact yet. Your request is saved for administrator follow-up. Contact the centre directly if you need an update.</p>}
+      {result.request.centreApprovalPending ? <p className="alert alert-info" role="status">Your request is saved for MedReach review. This centre has not enabled online appointments yet. MedReach must approve the centre before your request can be handed to it; no appointment is booked.</p>
+        : result.request.notificationRouting === "no_eligible_recipients" && <p role="status">This centre has no eligible notification contact yet. Your request is saved for administrator follow-up. Contact the centre directly if you need an update.</p>}
       <Link className="btn btn-primary" href={`/track?type=diagnostic&reference=${result.reference}#token=${encodeURIComponent(result.trackingToken)}`}>Track test request</Link>
       <p className="text-secondary mt-3 mb-0">Keep your private tracking link safe. It gives access to your request details.</p>
     </section> : provider && <form className="surface p-4 p-md-5" onSubmit={submit} onChange={() => { if (error) setError(""); }}>
-      <fieldset disabled={busy || provider.approvalStatus !== "approved"}>
+      <fieldset disabled={busy}>
         <div className="mb-4"><label htmlFor="diagnostic-centre" className="form-label fw-semibold">Diagnostic centre</label>
           <input id="diagnostic-centre" className="form-control" value={provider.name} readOnly /></div>
-        {provider.approvalStatus !== "approved" && <p className="alert alert-warning">This centre must be approved before it can receive online requests.</p>}
+        {provider.approvalStatus !== "approved" && <p className="alert alert-info">You can send a request for MedReach to review. This centre has not enabled online appointments yet. Centre approval and appointment confirmation are required before a visit is booked.</p>}
         <fieldset className="mb-4"><legend className="h5">Select tests</legend>
           <p className="text-secondary" id="diagnostic-test-help">Select one or more. The centre will confirm which tests it offers.</p>
           <div className="row g-3" aria-describedby="diagnostic-test-help">{DIAGNOSTIC_TESTS.map(([key, label]) => <div className="col-sm-6" key={key}>
@@ -85,7 +86,7 @@ export default function DiagnosticRequestForm() {
           <div className="col-12"><label htmlFor="diagnostic-notes" className="form-label fw-semibold">Additional notes <span className="fw-normal text-secondary">(optional)</span></label><textarea id="diagnostic-notes" name="notes" className="form-control" rows={3} maxLength={1000} placeholder="Anything the centre should know about your request" /></div>
         </div>
         <p className="diagnostic-request-notice">Your appointment is not confirmed until the diagnostic centre accepts your request. The centre will confirm preparation instructions and charges.</p>
-        <div className="form-check mb-4"><input className="form-check-input" type="checkbox" id="diagnostic-consent" name="consent" required /><label className="form-check-label" htmlFor="diagnostic-consent">I agree to share these details with the selected centre to coordinate my test request.</label></div>
+        <div className="form-check mb-4"><input className="form-check-input" type="checkbox" id="diagnostic-consent" name="consent" required /><label className="form-check-label" htmlFor="diagnostic-consent">I agree to share these details with MedReach and, once approved, the selected centre to coordinate my test request.</label></div>
         <button className="btn btn-primary px-4" type="submit">{busy ? "Sending request…" : "Send Test Request"}</button>
       </fieldset>
     </form>}

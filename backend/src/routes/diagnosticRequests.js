@@ -39,7 +39,7 @@ router.get("/", requireAuth,
   query("followup").optional().isIn(["true"]), query("providerId").optional().isMongoId(), validate,
   asyncHandler(async (req, res) => {
     const filter = req.user.role === "system_admin" ? {} : req.user.role === "provider_admin"
-      ? { provider: { $in: req.user.providerIds || [] } } : { user: req.user.id };
+      ? { provider: { $in: req.user.providerIds || [] }, centreApprovalPending: { $ne: true } } : { user: req.user.id };
     if (req.query.providerId) {
       if (req.user.role !== "system_admin" && !(req.user.role === "provider_admin" && req.user.providerIds?.includes(req.query.providerId))) return res.status(403).json({ error: "Assigned centre access required" });
       filter.provider = req.query.providerId;

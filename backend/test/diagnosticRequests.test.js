@@ -93,17 +93,79 @@ test("diagnostic request workflow with isolated MongoDB", { skip: !uri }, async 
     const count = await DiagnosticRequest.countDocuments();
     for (const invalid of [{ tests: [] }, { tests: ["CBC", "CBC"] }, { tests: ["INVENTED_TEST"] }, { consent: false },
       { preferredDate: "2026-02-30" }, { preferredDate: indiaDate() }, { patientName: { $ne: "" } },
-      { contactPhone: "abc" }, { notes: "x".repeat(1001) }, { status: "CONFIRMED" }, { user: String(system._id) }]) {
+      { contactPhone: "abc" }, { notes: "x".repeat(1001) }, { status: "CONFIRMED" }, { user: String(system._id) }, { centreApprovalPending: false }]) {
       await submit({ ...body(), ...invalid }).expect(400);
     }
     assert.equal(await DiagnosticRequest.countDocuments(), count);
   });
-  await t.test("inactive, pending, legacy-unapproved and archived centres cannot receive requests", async () => {
-    for (const changes of [{ approvalStatus: "pending" }, { active: false }, { archivedAt: new Date() }, { approvalStatus: null }]) {
+  await t.test("inactive, pending, rejected and archived centres cannot receive requests", async () => {
+    for (const changes of [{ approvalStatus: "pending" }, { approvalStatus: "rejected" }, { active: false }, { archivedAt: new Date() }]) {
       await ResourceProvider.updateOne({ _id: otherCentre._id }, { $set: { active: true, archivedAt: null, approvalStatus: "approved", ...changes } });
       await submit({ ...body(), providerId: String(otherCentre._id) }).expect(409);
     }
     await ResourceProvider.updateOne({ _id: otherCentre._id }, { $set: { active: true, archivedAt: null, approvalStatus: "approved" } });
+  });
+  await t.test("legacy listing accepts a review request without approving the centre or disclosing it to assigned staff", async () => {
+    const legacy = await ResourceProvider.create({ name: "Legacy listed diagnostics", kind: "diagnostic", sourceName: "Synthetic test fixture" });
+    await ProviderMembership.create({ user: admin._id, organization: legacy._id, kind: "diagnostic", active: true, assignedBy: system._id });
+    const { body: saved } = await submit({ ...body(), providerId: legacy.id }).expect(201);
+    assert.equal(saved.request.centreApprovalPending, true);
+    assert.equal(saved.request.status, "REQUESTED");
+    assert.equal(saved.request.notificationRouting, "no_eligible_recipients");
+    assert.equal(await RequestNotification.countDocuments({ source: saved.request._id }), 0);
+    assert.equal((await ResourceProvider.findById(legacy._id)).approvalStatus, undefined);
+    await recoverRequestNotifications();
+    assert.equal(await RequestNotification.countDocuments({ source: saved.request._id }), 0);
+    const providerList = await request(app).get("/api/diagnostics/requests").set("Authorization", `Bearer ${adminToken}`).expect(200);
+    assert.ok(!providerList.body.data.some(row => row.reference === saved.reference));
+    await request(app).get(`/api/diagnostics/requests/${saved.reference}`).set("Authorization", `Bearer ${adminToken}`).expect(403);
+    await update(saved.request, { status: "UNDER_REVIEW" }).expect(403);
+    const followup = await request(app).get("/api/diagnostics/requests?followup=true").set("Authorization", `Bearer ${systemToken}`).expect(200);
+    assert.ok(followup.body.data.some(row => row.reference === saved.reference && row.centreApprovalPending));
+    const privateView = await request(app).get(`/api/diagnostics/requests/${saved.reference}`).set("X-MedReach-Tracking-Token", saved.trackingToken).expect(200);
+    assert.equal(privateView.body.request.centreApprovalPending, true);
+    await update(saved.request, { status: "CONFIRMED", acceptedTests: ["CBC"], appointmentAt: new Date(Date.now() + 86400000).toISOString() }, systemToken).expect(409);
+    const reviewed = await update(saved.request, { status: "UNDER_REVIEW" }, systemToken).expect(200);
+    assert.equal(reviewed.body.data.centreApprovalPending, true);
+    await update(reviewed.body.data, { status: "UNDER_REVIEW" }, systemToken).expect(409);
+    await ResourceProvider.updateOne({ _id: legacy._id }, { $set: { approvalStatus: "approved" } });
+    const handoffs = await Promise.all([update(reviewed.body.data, { status: "UNDER_REVIEW" }, systemToken), update(reviewed.body.data, { status: "UNDER_REVIEW" }, systemToken)]);
+    assert.deepEqual(handoffs.map(response => response.status).sort(), [200, 409]);
+    const handed = handoffs.find(response => response.status === 200).body.data;
+    assert.equal(handed.centreApprovalPending, false);
+    assert.equal(handed.notificationRouting, "recorded");
+    assert.equal(await RequestNotification.countDocuments({ source: saved.request._id }), 1);
+    await recoverRequestNotifications();
+    assert.equal(await RequestNotification.countDocuments({ source: saved.request._id }), 1);
+    await request(app).get(`/api/diagnostics/requests/${saved.reference}`).set("Authorization", `Bearer ${adminToken}`).expect(200);
+    await update(handed, { status: "CONFIRMED", acceptedTests: ["CBC"], appointmentAt: new Date(Date.now() + 86400000).toISOString() }).expect(200);
+  });
+  await t.test("legacy review requests retain guest cancellation and duplicate protection", async () => {
+    const legacy = await ResourceProvider.create({ name: "Legacy request cancellation", kind: "diagnostic", sourceName: "Synthetic test fixture", approvalStatus: null });
+    const payload = { ...body(), providerId: legacy.id };
+    const first = await submit(payload, "legacy-review-duplicate-001").expect(201);
+    const replay = await submit(payload, "legacy-review-duplicate-001").expect(200);
+    assert.equal(first.body.reference, replay.body.reference);
+    assert.equal(first.body.trackingToken, replay.body.trackingToken);
+    assert.equal(first.body.request.centreApprovalPending, true);
+    await request(app).patch(`/api/diagnostics/requests/${first.body.reference}/cancel`).set("X-MedReach-Tracking-Token", first.body.trackingToken).send({ expectedVersion: 0 }).expect(200);
+    assert.equal(await RequestNotification.countDocuments({ source: first.body.request._id }), 0);
+  });
+  await t.test("interrupted approved-centre handoff recovers provider notification once", async () => {
+    const legacy = await ResourceProvider.create({ name: "Legacy handoff recovery", kind: "diagnostic", sourceName: "Synthetic test fixture" });
+    await ProviderMembership.create({ user: admin._id, organization: legacy._id, kind: "diagnostic", active: true, assignedBy: system._id });
+    const { body: saved } = await submit({ ...body(), providerId: legacy.id }).expect(201);
+    await ResourceProvider.updateOne({ _id: legacy._id }, { $set: { approvalStatus: "approved" } });
+    const original = RequestNotification.findOneAndUpdate;
+    RequestNotification.findOneAndUpdate = async () => { throw new Error("Synthetic outbox interruption"); };
+    try {
+      const handoff = await update(saved.request, { status: "UNDER_REVIEW" }, systemToken).expect(200);
+      assert.equal(handoff.body.data.centreApprovalPending, false);
+      assert.equal(handoff.body.data.notificationRoutedAt, undefined);
+    } finally { RequestNotification.findOneAndUpdate = original; }
+    await recoverRequestNotifications(); await recoverRequestNotifications();
+    assert.equal(await RequestNotification.countDocuments({ source: saved.request._id }), 1);
+    assert.ok((await DiagnosticRequest.findById(saved.request._id)).notificationRoutedAt);
   });
   await t.test("simultaneous duplicate submissions create one record and recover the same private link", async () => {
     const count = await DiagnosticRequest.countDocuments();
@@ -187,6 +249,9 @@ test("diagnostic request workflow with isolated MongoDB", { skip: !uri }, async 
     const { body: saved } = await submit().expect(201);
     const delivery = await EmailDelivery.findOne({ eventKey: `request-routing:DiagnosticRequest:${saved.request._id}:${admin._id}` });
     assert.equal(delivery.status, "failed");
+    await ResourceProvider.updateOne({ _id: centre._id }, { $set: { approvalStatus: "pending" } });
+    assert.equal((await retryEmailDelivery({ deliveryId: delivery._id })).code, "RECIPIENT_NO_LONGER_ELIGIBLE");
+    await ResourceProvider.updateOne({ _id: centre._id }, { $set: { approvalStatus: "approved" } });
     await ProviderMembership.updateOne({ user: admin._id, organization: centre._id }, { $set: { active: false } });
     const retried = await retryEmailDelivery({ deliveryId: delivery._id });
     assert.equal(retried.code, "RECIPIENT_NO_LONGER_ELIGIBLE");

@@ -94,6 +94,14 @@ try {
       location: { type: "Point", coordinates: [72.832, 19.062] },
     },
     {
+      kind: "diagnostic",
+      name: "MedReach E2E Legacy Diagnostics",
+      sourceName: "E2E controlled legacy fixture",
+      locality: "Dadar",
+      phone: "+91 22 4000 3001",
+      services: ["Pathology"],
+    },
+    {
       kind: "ambulance",
       name: "MedReach E2E Ambulance",
       sourceName: "E2E controlled fixture",
@@ -109,7 +117,7 @@ try {
   const support = new User({ name: "E2E Regular User", email: "support.e2e@medreach.test", role: "user", region: "Mumbai", emailVerifiedAt: new Date() });
   await support.setPassword(password); await support.save();
   const bloodBank = await ResourceProvider.findOne({ kind: "blood_bank" });
-  const diagnostic = await ResourceProvider.findOne({ kind: "diagnostic" });
+  const diagnostic = await ResourceProvider.findOne({ kind: "diagnostic", name: "MedReach E2E Diagnostics" });
   for (const variant of variants) {
     const provider = new User({ name: `E2E ${variant} Provider`, email: `${variant}.provider.e2e@medreach.test`, role: "provider_admin", region: "Mumbai", emailVerifiedAt: new Date() });
     await provider.setPassword(password); await provider.save();

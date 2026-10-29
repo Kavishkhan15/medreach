@@ -110,9 +110,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                   </>
                 ) : (
                   <>
-                    {kind === "diagnostics" && (item.approvalStatus === "approved"
-                      ? <Link className="btn btn-primary btn-sm" href={`/diagnostics/request?centre=${item._id}`}>Request tests</Link>
-                      : <span className="text-secondary align-self-center">Online requests pending centre approval</span>)}
+                    {kind === "diagnostics" && <Link className="btn btn-primary btn-sm" href={`/diagnostics/request?centre=${item._id}`}>Request tests</Link>}
                     {onSelectResource && kind === "blood-banks" && (
                       <button
                         type="button"

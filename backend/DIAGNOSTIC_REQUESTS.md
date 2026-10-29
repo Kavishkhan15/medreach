@@ -2,7 +2,7 @@
 
 The Bootstrap diagnostic directory links to `/diagnostics/request?centre=<id>`. Patients can request one to four tests: CBC, blood glucose, lipid profile and thyroid profile. These are request options; their presence does not assert that a centre offers them.
 
-Only an explicitly approved, active, unarchived diagnostic centre with an unarchived parent hospital can receive a new request. Imported records without an approval status need an administrator's approval first. This feature never approves or modifies existing provider records automatically.
+Every public Bootstrap diagnostic listing offers **Request tests** and opens a usable form. Approved centres receive the normal coordination request. Imported listings without explicit approval can collect a request for MedReach review, marked `centreApprovalPending=true`. Explicitly pending/rejected, inactive and archived centres remain ineligible, and a linked parent hospital must exist and be unarchived. This feature never approves or modifies existing provider records automatically.
 
 ## API
 
@@ -19,7 +19,33 @@ Creation fields are `providerId`, `tests`, `patientName`, `contactPhone`, option
 
 The Bootstrap client supplies an opaque `Idempotency-Key`. A unique actor-scoped hash prevents simultaneous duplicate submissions. Replaying the same payload returns the original reference and private tracking credential; reusing its key for a different payload returns 409. Only token hashes are stored. References use a cryptographically random `DX-` prefix and 20 hex characters. Private tracking uses `X-MedReach-Tracking-Token`; links carry the credential in their fragment and remove it from the address bar after loading.
 
-List queries accept `limit` (1–100; default 30), `before` (the previous `nextCursor`), and an authorised `providerId`. System Admins can use `followup=true` to find open requests without an eligible notification contact. Providers cannot select another centre through query parameters. Responses containing request details use `Cache-Control: no-store`.
+List queries accept `limit` (1–100; default 30), `before` (the previous `nextCursor`), and an authorised `providerId`. System Admins can use `followup=true` to find open requests awaiting centre approval or an eligible notification contact. Providers cannot select another centre through query parameters. Responses containing request details use `Cache-Control: no-store`.
+
+## MedReach review and centre handoff
+
+Requests marked `centreApprovalPending=true` are saved as Requested and held in the
+System Admin review queue under **Admin → Emergency Requests → Diagnostic test
+requests**. Patients can track and cancel using their account/private link.
+Assigned provider staff cannot list, read or mutate these requests, and provider
+notification intents are withheld even during recovery. The form explains this
+review step and obtains consent to coordinate through MedReach and the centre.
+
+System Admins can review or decline a request. Centre approval and account/contact
+onboarding use the existing Provider Accounts workflow. After approval, the review
+action sends the request to the centre; an already-under-review request supports
+this explicit handoff without a false appointment confirmation. A version-checked
+atomic update clears the pending marker and reopens notification routing. Recovery
+finishes a handoff interrupted after the save, and stable notification keys prevent
+duplicate intents. Centre approval is rechecked for notification recipients/retries
+and before appointment confirmation. Normal provider processing starts after
+handoff. Approval itself does not confirm an appointment.
+
+The Boolean marker defaults to false for existing requests. It adds no index or
+backfill requirement to an installation that already has diagnostic request
+indexes. The status names and existing response fields remain compatible.
+Retain this disclosure guard during rollback: an older API/worker that ignores the
+pending marker must not process newly held review requests. Preserve the records
+and use a compatible release or suspend intake while arranging recovery.
 
 ## Lifecycle and confirmation
 
@@ -52,3 +78,11 @@ No production data changes, approvals, account assignments, notifications or mig
 ## Verification
 
 `MEDREACH_DIAGNOSTIC_TEST_MONGO_URI=mongodb://127.0.0.1:27017/medreach_diagnostic_requests_test NODE_ENV=test EMAIL_ENABLED=false node --test backend/test/diagnosticRequests.test.js` runs the isolated integration suite. It refuses non-loopback or differently named database targets. The standard `npm run backend:test:db` runner includes this gate. Browser journeys are in `tests/e2e/diagnostic-requests.spec.js` and cover guest submission, mobile layout, tracking/cancellation, provider review and partial confirmation. SMTP failure tests inject a synthetic transport and do not send external email.
+
+Additional regression coverage includes legacy/null approvals, withheld provider access, confirmation blocking, concurrent handoff, interrupted handoff recovery, revoked-approval retries, and the visible legacy listing → enabled form → saved review request → private tracking → cancellation browser journey. Tailwind and Skeleton frontend code is unchanged.
+
+Release validation: 650 backend checks passed with zero failures or skips; 21
+Bootstrap browser journeys passed. The Bootstrap production build passed. Backend
+and Bootstrap lint report zero errors, with seven and four existing warnings
+respectively. Browser submissions and provider confirmation used isolated synthetic
+fixtures, not live patient requests or external notification delivery.

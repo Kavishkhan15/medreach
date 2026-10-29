@@ -21,6 +21,9 @@ export async function assignedProviderUsers(kind, organizationId) {
   return provider;
 }
 export async function notificationRecipients(kind, organizationId, isEmergency) {
+  // Public legacy listings may collect requests for administrator review, but
+  // unapproved diagnostic centres must never receive notification disclosures.
+  if (kind === "diagnostic" && (!organizationId || !await ResourceProvider.exists({ _id: organizationId, kind, approvalStatus: "approved", active: { $ne: false }, archivedAt: null }))) return [];
   const provider = (await assignedProviderUsers(kind, organizationId)).filter((u) => u.notificationsEnabled && u.notificationEmailVerifiedAt && u.notificationEmail);
   const system = isEmergency ? await User.find({ ...eligible, role: "system_admin" }).select("notificationEmail role").lean() : [];
   const seen = new Set();
@@ -28,7 +31,7 @@ export async function notificationRecipients(kind, organizationId, isEmergency) 
     .filter(({ user }) => { if (!user.notificationEmail || seen.has(user.notificationEmail)) return false; seen.add(user.notificationEmail); return true; });
 }
 export function requestRouting(record, type) {
-  if (type === "DiagnosticRequest") return { kind: "diagnostic", organizationId: record.provider, reference: record.reference, isEmergency: false };
+  if (type === "DiagnosticRequest") return { kind: "diagnostic", organizationId: record.centreApprovalPending ? null : record.provider, reference: record.reference, isEmergency: false };
   if (type === "EmergencyRequest") return { kind: "hospital", organizationId: record.hospital, reference: record.requestId, isEmergency: record.isEmergency === true };
   if (type === "BloodRequest") return { kind: "blood_bank", organizationId: record.provider, reference: record.reference, isEmergency: record.type === "REQUEST" && record.isUrgent === true };
   return { kind: "ambulance", organizationId: record.provider, reference: record.reference, isEmergency: record.isEmergency === true };

@@ -31,7 +31,8 @@ export function privateDiagnosticRequest(record) {
   return value;
 }
 export function canReadDiagnostic(req, record) {
-  return Boolean(canManageResource(req.user, { _id: record.provider })
+  return Boolean((canManageResource(req.user, { _id: record.provider })
+      && (!record.centreApprovalPending || req.user?.role === "system_admin"))
     || (record.user && String(record.user) === String(req.user?.id))
     || verifyTrackingToken(req.get(TRACKING_TOKEN_HEADER), record.trackingTokenHash));
 }
@@ -58,13 +59,16 @@ export async function createDiagnosticRequest(req) {
     return { record: previous, token, replayed: true };
   };
   if (idempotencyKeyHash && await DiagnosticRequest.exists({ idempotencyKeyHash })) return replay();
-  const provider = await ResourceProvider.findOne({ _id: body.providerId, kind: "diagnostic", approvalStatus: "approved", active: true, archivedAt: null }).select("name");
-  if (!provider || !await organizationIsAvailable("diagnostic", body.providerId)) throw fail(409, "This centre is not currently approved to receive test requests.");
+  const provider = await ResourceProvider.findOne({ _id: body.providerId, kind: "diagnostic", approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false }, archivedAt: null }).select("name approvalStatus");
+  if (!provider || !await organizationIsAvailable("diagnostic", body.providerId)) throw fail(409, "This centre is not currently accepting test requests.");
+  // Legacy directory listings collect coordination requests for MedReach review;
+  // they are never silently approved or allowed to confirm appointments.
+  const centreApprovalPending = provider.approvalStatus !== "approved";
   const effect = requestStatusEffect({ previousStatus: "NONE", status: "REQUESTED", actor: req.user });
   let record;
   try {
     record = await DiagnosticRequest.create({ reference: `DX-${randomBytes(10).toString("hex").toUpperCase()}`,
-      provider: provider._id, providerName: provider.name, user: req.user?.id, tests: payload.tests,
+      provider: provider._id, providerName: provider.name, user: req.user?.id, tests: payload.tests, centreApprovalPending,
       requestSnapshot: { patientName: payload.patientName, contactPhone: payload.contactPhone,
         contactEmail: payload.contactEmail || undefined, notes: payload.notes || undefined },
       preferredDate: payload.preferredDate, preferredTime: payload.preferredTime, consentAt: new Date(),
@@ -83,10 +87,20 @@ export async function transitionDiagnosticRequest(req, { cancel = false } = {}) 
   const row = await DiagnosticRequest.findOne(cancel ? { reference: req.params.reference } : { _id: req.params.id }).select("+trackingTokenHash");
   if (!row) throw fail(404, "Diagnostic request not found");
   if (cancel ? !canCancelDiagnostic(req, row) : !canManageResource(req.user, { _id: row.provider })) throw fail(403, "Access to this request is required");
+  if (!cancel && row.centreApprovalPending && req.user.role !== "system_admin") throw fail(403, "MedReach must review this request before handing it to the centre");
   if (!cancel && !await organizationIsAvailable("diagnostic", row.provider)) throw fail(409, "This centre is no longer active");
   const status = cancel ? "CANCELLED" : req.body.status;
-  if (row.version !== req.body.expectedVersion || !DIAGNOSTIC_TRANSITIONS[row.status]?.includes(status)) throw fail(409, "This request changed. Refresh before trying again.");
+  const reviewHandoff = row.centreApprovalPending && row.status === "UNDER_REVIEW" && status === "UNDER_REVIEW";
+  if (row.version !== req.body.expectedVersion || (!DIAGNOSTIC_TRANSITIONS[row.status]?.includes(status) && !reviewHandoff)) throw fail(409, "This request changed. Refresh before trying again.");
   const changes = { status };
+  let releaseToCentre = false;
+  if (!cancel) {
+    const provider = await ResourceProvider.findById(row.provider).select("approvalStatus").lean();
+    const approved = provider?.approvalStatus === "approved";
+    if ((["CONFIRMED", "COMPLETED"].includes(status) || reviewHandoff) && !approved) throw fail(409, "The centre must be approved before an appointment can be confirmed or handed to it");
+    releaseToCentre = Boolean(row.centreApprovalPending && approved && ["UNDER_REVIEW", "CONFIRMED"].includes(status));
+    if (releaseToCentre) changes.centreApprovalPending = false;
+  }
   if (status === "CONFIRMED") {
     const tests = req.body.acceptedTests;
     const at = new Date(req.body.appointmentAt);
@@ -100,11 +114,12 @@ export async function transitionDiagnosticRequest(req, { cancel = false } = {}) 
   const effect = requestStatusEffect({ previousStatus: row.status, status, actor: req.user });
   const updated = await DiagnosticRequest.findOneAndUpdate({ _id: row._id, version: req.body.expectedVersion, status: row.status,
     [`statusEffects.${STATUS_EFFECTS_CAPACITY - 1}`]: { $exists: false } }, {
-    $set: changes, $inc: { version: 1 }, $push: { statusEffects: effect,
+    $set: changes, $inc: { version: 1 }, ...(releaseToCentre ? { $unset: { notificationRoutedAt: 1, notificationRouting: 1 } } : {}), $push: { statusEffects: effect,
       history: { status, at: effect.recordedAt, actor: req.user?.id,
         acceptedTests: changes.acceptedTests, appointmentAt: changes.appointmentAt } },
   }, { new: true, runValidators: true });
   if (!updated) throw fail(409, "Another administrator updated this request. Refresh before trying again.");
+  if (releaseToCentre) await routeRequestSafely(updated, "DiagnosticRequest");
   await drainRequestStatusEffects("DiagnosticRequest", updated._id).catch(() => {});
   return updated;
 }

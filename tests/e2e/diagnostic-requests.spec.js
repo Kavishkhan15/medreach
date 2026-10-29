@@ -68,6 +68,33 @@ test("guest selects multiple tests, tracks a private request, and cancels it", a
   await expect(status.getByText("Status: Cancelled", { exact: true })).toBeVisible();
 });
 
+test("legacy listed centre opens a usable form and records a trackable MedReach review request", async ({ page }, info) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/diagnostics");
+  const card = page.getByRole("article").filter({ hasText: "MedReach E2E Legacy Diagnostics" });
+  await expect(card.getByRole("link", { name: "Request tests", exact: true })).toBeVisible();
+  await page.screenshot({ path: info.outputPath("diagnostics-directory-with-request-actions.png"), fullPage: true });
+  await card.getByRole("link", { name: "Request tests", exact: true }).click();
+  await expect(page.getByLabel("Diagnostic centre", { exact: true })).toHaveValue("MedReach E2E Legacy Diagnostics");
+  await expect(page.getByText("You can send a request for MedReach to review.", { exact: false })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Send Test Request", exact: true })).toBeEnabled();
+  await fillRequest(page);
+  await page.getByLabel("Complete Blood Count (CBC)", { exact: true }).check();
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  await page.screenshot({ path: info.outputPath("legacy-diagnostic-request-mobile.png"), fullPage: true });
+  await page.getByRole("button", { name: "Send Test Request", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Your test request is recorded" })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "Your request is saved for MedReach review" })).toBeVisible();
+  await page.getByRole("link", { name: "Track test request", exact: true }).click();
+  const detail = page.getByRole("region", { name: "Request status", exact: true });
+  await expect(detail.getByText("Your request is awaiting MedReach review and centre approval. No appointment is booked.")).toBeVisible();
+  page.once("dialog", dialog => dialog.accept());
+  await detail.getByRole("button", { name: "Cancel test request" }).click();
+  await expect(detail.getByText("Status: Cancelled", { exact: true })).toBeVisible();
+});
+
 test("form remains usable on a small screen and handles missing centre selection", async ({ page }, info) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/diagnostics/request");

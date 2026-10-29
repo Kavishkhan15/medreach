@@ -20,6 +20,7 @@ const schema = new mongoose.Schema({
   preferredTime: { type: String, enum: ["MORNING", "AFTERNOON", "EVENING"], required: true },
   consentAt: { type: Date, required: true },
   status: { type: String, enum: DIAGNOSTIC_STATES, default: "REQUESTED" },
+  centreApprovalPending: { type: Boolean, default: false },
   version: { type: Number, default: 0, min: 0 },
   acceptedTests: [{ type: String, enum: DIAGNOSTIC_TESTS }],
   appointmentAt: Date,
