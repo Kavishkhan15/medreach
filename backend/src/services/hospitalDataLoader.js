@@ -87,6 +87,12 @@ export async function withHospitalData(hospitals) {
   const sources = sourceIds.length ? await DataSource.find({ _id: { $in: sourceIds } }).select("name type sourceKey url").lean() : [];
   const sourcesById = new Map(sources.map(source => [String(source._id), source]));
   for (const claim of [...fieldClaims, ...facilityClaims]) claim.source = sourcesById.get(String(claim.source)) || null;
+  return composeHospitalEvidence(hospitals, { facilities, observations, fieldConflicts, fieldClaims, facilityClaims }, now);
+}
+
+// Both batched evidence reads and joined directory reads use the same public
+// composer. The query strategy must never change the availability policy.
+export function composeHospitalEvidence(hospitals, { facilities, observations, fieldConflicts, fieldClaims, facilityClaims }, now = new Date()) {
   const facilitiesByHospital = byHospital(facilities);
   const observationsByHospital = byHospital(observations);
   const conflictsByHospital = byHospital(fieldConflicts);
@@ -115,7 +121,7 @@ export async function withHospitalData(hospitals) {
         parserVersion: claim.parserVersion,
         confidence: claim.confidence,
         verificationStatus: claim.verificationStatus,
-        freshness: freshnessLabel(claim.observedAt),
+        freshness: freshnessLabel(claim.observedAt, now.getTime()),
         conflict: selected.conflict,
       } : { source: null, confidence: "UNKNOWN", freshness: "UNKNOWN", conflict: selected.conflict };
     }

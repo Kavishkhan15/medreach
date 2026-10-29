@@ -1,4 +1,6 @@
-import { archivedHospitalIds, organizationIsAvailable, archiveProviderOrganization } from "../services/providerLifecycle.js";
+import { organizationIsAvailable, archiveProviderOrganization } from "../services/providerLifecycle.js";
+import { readPublicResources } from "../services/publicResourceRead.js";
+import mongoose from "mongoose";
 import { routeRequestSafely } from "../services/requestNotifications.js";
 import { canManageResource } from "../services/providerAccess.js";
 import { randomBytes } from "node:crypto";
@@ -17,16 +19,17 @@ import { sendEmailEvent } from "../services/emailService.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 export const listResources = (kind) => asyncHandler(async (req, res) => {
-  const filter = { kind, archivedAt: null, hospital: { $nin: await archivedHospitalIds() }, approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } };
+  const filter = { kind };
   if (req.query.q) filter.$or = ["name", "locality", "services", "coverageArea"].map((field) => ({ [field]: { $regex: String(req.query.q).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" } }));
   if (req.query.locality) filter.locality = { $regex: String(req.query.locality).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
   if (req.query.service) filter.services = String(req.query.service).slice(0, 80);
   if (req.query.bloodGroup && kind === "blood_bank") filter.listedBloodGroups = String(req.query.bloodGroup).slice(0, 10);
-  const data = await ResourceProvider.find(filter).select("-email").sort({ verificationStatus: 1, name: 1 }).limit(100).lean();
+  const data = await readPublicResources(filter);
   res.json({ data, currentInventory: "unknown", liveDispatch: false });
 });
 export const getResource = (kind) => asyncHandler(async (req, res) => {
-  const data = await ResourceProvider.findOne({ _id: req.params.id, kind, archivedAt: null, hospital: { $nin: await archivedHospitalIds() }, approvalStatus: { $nin: ["pending", "rejected"] }, active: { $ne: false } }).select("-email").lean();
+  if (!mongoose.isObjectIdOrHexString(req.params.id)) return res.status(400).json({ error: "Invalid provider id" });
+  const [data] = await readPublicResources({ _id: new mongoose.Types.ObjectId(req.params.id), kind }, { limit: 1 });
   if (!data) return res.status(404).json({ error: "Provider not found" });
   res.json({ data, currentInventory: "unknown", liveDispatch: false });
 });

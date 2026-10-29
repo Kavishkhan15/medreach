@@ -2,6 +2,7 @@ import { decodeHospitalCursor, encodeHospitalCursor, hospitalCursorFilter } from
 import { archiveProviderOrganization } from "../services/providerLifecycle.js";
 import { Hospital } from "../models/Hospital.js";
 import { withHospitalData, withHospitalAvailability } from "../services/hospitalDataLoader.js";
+import { readHospitalPage } from "../services/hospitalReadPipeline.js";
 import { canManageHospital } from "../services/hospitalAccess.js";
 import { DataSource } from "../models/DataSource.js";
 import { AuditLog } from "../models/AuditLog.js";
@@ -39,12 +40,21 @@ const hospitalListing = (includeUnapproved) => asyncHandler(async (req, res) => 
   if (cursorMode) {
     const cursor = req.query.cursor ? decodeHospitalCursor(req.query.cursor) : null;
     const queryStart = performance.now();
-    const rows = await Hospital.find(cursor ? { $and: [filter, hospitalCursorFilter(cursor)] } : filter)
-      .select(projection).sort({ name: 1, _id: 1 }).limit(perPage + 1).lean();
-    res.locals.performance = { directoryQueryMs: +(performance.now() - queryStart).toFixed(2) };
-    const visible = rows.slice(0, perPage);
-    const [data, total] = await Promise.all([loadPublicEvidence(res, visible), req.query.includeTotal === "false" ? null : Hospital.countDocuments(filter)]);
-    return res.json({ data, page: 1, perPage, total, nextCursor: rows.length > perPage ? encodeHospitalCursor(visible[visible.length - 1]) : null });
+    const { data: rows, total } = await readHospitalPage({
+      filter: cursor ? { $and: [filter, hospitalCursorFilter(cursor)] } : filter,
+      countFilter: filter, projection, limit: perPage + 1, includeTotal: req.query.includeTotal !== "false",
+    });
+    res.locals.performance = { joinedReadMs: +(performance.now() - queryStart).toFixed(2) };
+    const data = rows.slice(0, perPage);
+    return res.json({ data, page: 1, perPage, total, nextCursor: rows.length > perPage ? encodeHospitalCursor(data[data.length - 1]) : null });
+  }
+  // Preserve specialized geo/text/derived-status paths; ordinary directory
+  // pages can compose records and evidence in one indexed database command.
+  if (!q && !lat && !lng && !status) {
+    const queryStart = performance.now();
+    const { data, total } = await readHospitalPage({ filter, projection, skip, limit: perPage });
+    res.locals.performance = { joinedReadMs: +(performance.now() - queryStart).toFixed(2) };
+    return res.json({ data, page: Number(page), perPage, total });
   }
   let query;
   // Geo "nearest" mode takes precedence when coords are supplied.
@@ -102,10 +112,10 @@ export const listAdminHospitals = hospitalListing(true);
 
 export const getHospital = asyncHandler(async (req, res) => {
   res.set("Cache-Control", "no-store");
-  const hospital = await Hospital.findOne({ slug: req.params.slug, archivedAt: null, approvalStatus: { $nin: ["pending", "rejected"] } }).select(publicHospitalProjection).lean();
+  const { data: [hospital] } = await readHospitalPage({ filter: { slug: req.params.slug, archivedAt: null, approvalStatus: { $nin: ["pending", "rejected"] } },
+    projection: publicHospitalProjection, limit: 1, includeTotal: false });
   if (!hospital) return res.status(404).json({ error: "Hospital not found" });
-  const [view] = await loadPublicEvidence(res, [hospital]);
-  res.json({ hospital: view });
+  res.json({ hospital });
 });
 
 export const getEnrichedHospital = asyncHandler(async (req, res) => {

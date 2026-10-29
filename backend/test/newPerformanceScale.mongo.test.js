@@ -13,6 +13,8 @@ import { listFacilities, getAvailability } from "../src/controllers/availability
 import { listHospitals } from "../src/controllers/hospitalController.js";
 import { listAccounts, listOrganizations, providerApplications, myOrganizations } from "../src/controllers/providerAdminController.js";
 import { withHospitalData } from "../src/services/hospitalDataLoader.js";
+import { readHospitalPage, hospitalPagePipeline } from "../src/services/hospitalReadPipeline.js";
+import { readPublicResources } from "../src/services/publicResourceRead.js";
 import { HospitalFieldClaim } from "../src/models/HospitalFieldClaim.js";
 import { HospitalFieldConflict } from "../src/models/HospitalFieldConflict.js";
 import { FacilitySourceClaim } from "../src/models/FacilitySourceClaim.js";
@@ -130,15 +132,81 @@ test("bounded provider lists and public availability integrity", { skip: !isolat
     try { response = await request(app).get("/hospitals?pagination=cursor&includeTotal=false&limit=2"); }
     finally { client.off("commandStarted", listener); }
     assert.equal(response.status, 200); assert.equal(response.body.total, null);
-    assert.equal(response.body.data.length, 2); assert.ok(response.body.nextCursor); assert.equal(commands.length, 0);
+    assert.equal(response.body.data.length, 2); assert.ok(response.body.nextCursor);
+    assert.equal(commands.length, 1, "the page and evidence use one command");
+    assert.equal(commands[0].command.pipeline.some(stage => stage.$unionWith), false, "includeTotal=false must omit the count branch");
     assert.equal((await request(app).get("/hospitals?pagination=cursor&limit=2")).body.total, 105);
     assert.equal((await request(app).get("/hospitals?includeTotal=false")).status, 400);
   });
   await t.test("public hospital responses exclude administrative lifecycle fields and cannot cache availability", async () => {
-    await Hospital.updateOne({ _id: hospitals[0]._id }, { $set: { archiveReason: "Internal administrative context", archivedBy: system._id } });
+    await Hospital.updateOne({ _id: hospitals[0]._id }, { $set: { archiveReason: "Internal administrative context", archivedBy: system._id, archiveLeaseToken: "PRIVATE_HOSPITAL_LEASE" } });
     const response = await request(app).get("/hospitals?limit=1");
     assert.equal(response.status, 200); assert.equal(response.headers["cache-control"], "no-store");
-    for (const field of ["admins", "archiveReason", "archivedBy", "archiveAttempts", "archivePending", "__v"]) assert.equal(Object.hasOwn(response.body.data[0], field), false, field);
+    for (const field of ["admins", "archiveReason", "archivedBy", "archiveAttempts", "archivePending", "archiveLeaseToken", "__v"]) assert.equal(Object.hasOwn(response.body.data[0], field), false, field);
     assert.equal(response.body.data[0].bedsAvailable, null);
+  });
+  await t.test("joined reads match the batch composer for both timestamp branches, conflicts and source evidence", async () => {
+    const filter = { _id: { $in: hospitals.slice(0, 3).map(h => h._id) } };
+    const baseline = await Hospital.find(filter).select("-admins").sort({ name: 1, _id: 1 }).lean();
+    const expected = await withHospitalData(baseline);
+    const result = await readHospitalPage({ filter, projection: "-admins", limit: 3 });
+    assert.deepEqual(result.data, expected);
+    assert.equal(result.total, 3);
+    assert.ok(result.data.every(row => ["__facilities", "__observed", "__retrieved", "__conflicts", "__claims", "__facilityClaims"].every(key => !Object.hasOwn(row, key))));
+    const replies = [], client = mongoose.connection.getClient();
+    const listener = event => { if (event.commandName === "aggregate") replies.push(JSON.stringify(event.reply)); };
+    client.on("commandSucceeded", listener);
+    try { await readHospitalPage({ filter, projection: "-admins", limit: 3 }); }
+    finally { client.off("commandSucceeded", listener); }
+    assert.ok(replies.every(reply => !reply.includes("INTERNAL_REVIEW_SHOULD_NOT_BE_FETCHED")));
+  });
+  await t.test("joined hospital page uses the directory index and limits rows before looking up evidence", async () => {
+    await Hospital.init();
+    const pipeline = hospitalPagePipeline({ filter: { archivedAt: null, approvalStatus: { $nin: ["pending", "rejected"] } },
+      projection: "-admins", limit: 2, includeTotal: false });
+    const plan = await Hospital.aggregate(pipeline).explain("executionStats");
+    const stats = plan.stages[0].$cursor.executionStats;
+    assert.equal(stats.nReturned, 2);
+    assert.ok(stats.totalDocsExamined <= 4, JSON.stringify(stats));
+    assert.ok(pipeline.findIndex(stage => stage.$limit) < pipeline.findIndex(stage => stage.$lookup));
+  });
+  await t.test("joined reads never revive expired or unverified availability or trust future observations", async () => {
+    const now = Date.now();
+    await AvailabilityObservation.create([
+      { hospital: hospitals[3]._id, facility: "ICU", status: "available", quantity: 15, verificationStatus: "verified", observedAt: new Date(now - 31 * 60000) },
+      { hospital: hospitals[4]._id, facility: "ICU", status: "available", quantity: 12, verificationStatus: "verified", observedAt: new Date(now - 60000) },
+      { hospital: hospitals[4]._id, facility: "ICU", status: "available", quantity: 8, verificationStatus: "unverified", observedAt: new Date(now - 1000) },
+      { hospital: hospitals[5]._id, facility: "ICU", status: "available", quantity: 7, verificationStatus: "verified", observedAt: new Date(now + 60000) },
+    ]);
+    const filter = { _id: { $in: hospitals.slice(3, 6).map(h => h._id) } };
+    const base = await Hospital.find(filter).select("-admins").sort({ name: 1, _id: 1 }).lean();
+    const result = await readHospitalPage({ filter, projection: "-admins", includeTotal: false });
+    assert.deepEqual(result.data, await withHospitalData(base));
+    assert.ok(result.data.every(row => row.bedsAvailable === null && row.emergencyStatus === "unknown"));
+    for (const row of result.data) for (const facility of row.facilities) {
+      assert.equal(facility.status, "unknown"); assert.equal(facility.count, null);
+    }
+  });
+  await t.test("joined provider reads exclude archived parents, private fields and unapproved/inactive providers in one command", async () => {
+    const parent = await Hospital.create({ name: "Hidden parent", archivedAt: new Date() });
+    const rows = await ResourceProvider.create([
+      { name: "Visible diagnostic", kind: "diagnostic", sourceName: "Fixture", approvalStatus: "approved", email: "private@example.test", archiveLeaseToken: "PRIVATE_LEASE" },
+      { name: "Legacy diagnostic", kind: "diagnostic", sourceName: "Fixture" },
+      { name: "Archived child", kind: "diagnostic", sourceName: "Fixture", hospital: parent._id },
+      { name: "Pending diagnostic", kind: "diagnostic", sourceName: "Fixture", approvalStatus: "pending" },
+      { name: "Rejected diagnostic", kind: "diagnostic", sourceName: "Fixture", approvalStatus: "rejected" },
+      { name: "Inactive diagnostic", kind: "diagnostic", sourceName: "Fixture", active: false },
+    ]);
+    const client = mongoose.connection.getClient(), commands = [];
+    const listener = event => { if (["find", "aggregate", "distinct"].includes(event.commandName)) commands.push(event); };
+    client.on("commandStarted", listener);
+    let actual;
+    try { actual = await readPublicResources({ kind: "diagnostic" }); }
+    finally { client.off("commandStarted", listener); }
+    assert.equal(commands.length, 1);
+    assert.deepEqual(actual.map(row => String(row._id)).sort(), rows.slice(0, 2).map(row => row.id).sort());
+    assert.ok(actual.every(row => !Object.hasOwn(row, "email") && !Object.hasOwn(row, "archiveLeaseToken") && !Object.hasOwn(row, "__archivedParent")));
+    await Hospital.updateOne({ _id: parent._id }, { $set: { archivedAt: null } });
+    assert.equal((await readPublicResources({ kind: "diagnostic" })).length, 3, "parent lifecycle changes are reflected immediately");
   });
 });

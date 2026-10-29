@@ -417,7 +417,7 @@ test("map and directory keep recovery and direct contact actions usable", async 
   clean();
 });
 
-test("application sign-in preserves its destination and system admin reaches the dashboard", async ({ page, request }) => {
+test("application sign-in preserves its destination and system admin reaches the dashboard", async ({ page, request }, testInfo) => {
   const clean = attachRuntimeGuard(page);
   const jobsResponse = await request.get(`${API}/api/jobs`);
   expect(jobsResponse.ok()).toBeTruthy();
@@ -435,7 +435,7 @@ test("application sign-in preserves its destination and system admin reaches the
   await expect(signIn).toHaveAttribute("href", `/login?returnTo=${encodeURIComponent(`/jobs/${job._id}`)}`);
 
   await login(page, "admin.e2e@medreach.test", "/admin");
-  await expect(page.getByRole("heading", { name: "Admin dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: testInfo.project.name === "bootstrap" ? "Platform overview" : "Admin dashboard" })).toBeVisible();
   await expect(page.getByText("Hospitals tracked", { exact: true })).toBeVisible();
   await page.goto("/admin/users");
   await expect(page.getByRole("heading", { name: "User management" })).toBeVisible();
@@ -498,6 +498,7 @@ test("tracking needs only a reference and public results exclude personal detail
   await page.goto("/track");
   await expect(page.locator("#tracking-type option")).toHaveText([
     "Blood request or donation pledge", "Bed request", "Career request", "Ambulance booking",
+    ...(testInfo.project.name === "bootstrap" ? ["Diagnostic test request"] : []),
   ]);
   await expect(page.locator("#tracking-token")).toHaveCount(0);
   await expect(page.getByText(/Private tracking token|Guest tokens are included/)).toHaveCount(0);

@@ -7,7 +7,7 @@ const namespaces=new Set(['auth','hospitals','availability','inventory','emergen
 // Only these code-owned mount names may distinguish nested routers. Match the
 // longest fixed name first, never copy dynamic segments from the request URL.
 const nestedMounts=Object.freeze(['/api/admin/hospital-enrichment','/api/admin/backend-metrics','/api/admin/provider-accounts','/api/admin/provider-approvals','/api/admin/backend','/api/admin/resources','/api/admin/refinement','/api/blood-banks/campaigns','/api/webhooks/resend'].sort((left,right)=>right.length-left.length));
-const stageNames=new Set(['directoryQueryMs','evidenceMs','availabilityFilterMs']);
+const stageNames=new Set(['directoryQueryMs','evidenceMs','availabilityFilterMs','joinedReadMs']);
 const dbCommands=new Set(['find','aggregate','getMore','insert','update','delete','findAndModify','count','distinct']);
 const methods=new Set(['GET','POST','PUT','PATCH','DELETE','HEAD','OPTIONS']);
 export const backendMetricsEnabled=()=>process.env.BACKEND_METRICS_ENABLED==='true';
