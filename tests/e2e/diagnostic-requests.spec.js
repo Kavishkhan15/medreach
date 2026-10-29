@@ -17,6 +17,32 @@ async function fillRequest(page) {
   await page.getByLabel(/I agree to share/).check();
 }
 
+test("legacy diagnostic listing requires explicit approval before provisioning", async ({ page }) => {
+  const id = "111111111111111111111111";
+  let approved = false;
+  let approvalCalls = 0;
+  await page.route(url => url.pathname.startsWith("/api/"), async route => {
+    const path = new URL(route.request().url()).pathname;
+    let body = { data: [] };
+    if (path === "/api/auth/me") body = { user: { _id: id, name: "Test Admin", role: "system_admin", email: "admin@example.test", region: "Mumbai" } };
+    if (path === "/api/admin/provider-accounts") body = { data: [], manualCredentialsEnabled: false };
+    if (path === "/api/admin/provider-approvals/organizations") body = { data: [{ _id: id, name: "Legacy Diagnostic Centre", kind: "diagnostic", verificationStatus: "verified", ...(approved ? { approvalStatus: "approved" } : {}) }] };
+    if (path === `/api/admin/provider-approvals/organizations/diagnostic/${id}/approve`) {
+      expect(route.request().method()).toBe("POST");
+      approved = true; approvalCalls += 1; body = { ok: true };
+    }
+    await route.fulfill({ json: body });
+  });
+  await page.goto("/admin/provider-accounts");
+  await page.getByLabel("Organisation", { exact: true }).selectOption(id);
+  await page.getByLabel("Credential delivery", { exact: true }).selectOption("invitation");
+  await expect(page.getByRole("button", { name: "Create Provider Admin account", exact: true })).toBeDisabled();
+  await page.getByRole("button", { name: "Approve selected organisation", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Approve selected organisation", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Create Provider Admin account", exact: true })).toBeEnabled();
+  expect(approvalCalls).toBe(1);
+});
+
 test("guest selects multiple tests, tracks a private request, and cancels it", async ({ page }, info) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/diagnostics");

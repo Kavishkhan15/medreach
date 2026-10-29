@@ -27,6 +27,10 @@ export default function ProviderAccountsPage() {
   const manualEnabled = accounts.status === "success" && accounts.data?.manualEnabled;
   const [target, setTarget] = useState("");
   const current = organizations.data?.find((r) => r._id === organizationId);
+  // A legacy source-verification badge does not approve a centre to receive test requests.
+  const needsApproval = current && (current.verificationStatus !== "verified"
+    || ["pending", "rejected"].includes(current.approvalStatus)
+    || (current.kind === "diagnostic" && current.approvalStatus !== "approved"));
   const run = (perform, success = "Action confirmed. Check the account and delivery status.") => action.run(perform, { validate: adminAcknowledgement, success, refresh: accounts.reload });
   const prepare = (selection = {}) => run(async () => {
     const result = await post("/api/admin/provider-accounts/manual-provision", selection);
@@ -85,10 +89,10 @@ export default function ProviderAccountsPage() {
       {delivery === "invitation" && <><div className="col-md-6"><label htmlFor="provider-login">Login email</label><input id="provider-login" type="email" className="form-control" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required /></div>
       <div className="col-md-6"><label htmlFor="provider-contact">Real notification / invitation email</label><input id="provider-contact" type="email" className="form-control" value={notificationEmail} onChange={(e) => setNotificationEmail(e.target.value)} required /></div></>}</div>
       <p className="text-secondary">Approval, account activation and email delivery are separate. Existing credentials are never overwritten.</p>
-      {current && (current.verificationStatus !== "verified" || ["pending", "rejected"].includes(current.approvalStatus)) && <button type="button" className="btn btn-outline-primary" disabled={action.disabled} onClick={() => action.run(() => post(`/api/admin/provider-approvals/organizations/${current.kind}/${current._id}/approve`, {}), { validate: adminAcknowledgement, success: "Organisation approval confirmed. Provision its administrator account next.", refresh: organizations.reload })}>Approve selected organisation</button>}
-      <button className="btn btn-primary" disabled={action.disabled || (delivery === "manual" && !manualEnabled) || !current || (current.verificationStatus !== "verified" || ["pending", "rejected"].includes(current.approvalStatus))}>Create Provider Admin account</button>
+      {needsApproval && <button type="button" className="btn btn-outline-primary" disabled={action.disabled} onClick={() => action.run(() => post(`/api/admin/provider-approvals/organizations/${current.kind}/${current._id}/approve`, {}), { validate: adminAcknowledgement, success: "Organisation approval confirmed. Provision its administrator account next.", refresh: organizations.reload })}>Approve selected organisation</button>}
+      <button className="btn btn-primary" disabled={action.disabled || (delivery === "manual" && !manualEnabled) || !current || needsApproval}>Create Provider Admin account</button>
       <label htmlFor="assignment-account">Existing Provider Admin account</label><select id="assignment-account" className="form-control" value={target} onChange={(e) => setTarget(e.target.value)}><option value="">Select account for additional assignment</option>{accountRows.map((a) => <option key={a._id} value={a._id}>{a.email}</option>)}</select>
-      <button type="button" className="btn btn-outline-primary" disabled={action.disabled || !target || !current || (current.verificationStatus !== "verified" || ["pending", "rejected"].includes(current.approvalStatus))} onClick={() => run(() => post(`/api/admin/provider-accounts/${target}/assignments`, { kind: current.kind, organizationId }), "Assignment recorded. Existing assignments were preserved.")}>Assign selected organisation</button>
+      <button type="button" className="btn btn-outline-primary" disabled={action.disabled || !target || !current || needsApproval} onClick={() => run(() => post(`/api/admin/provider-accounts/${target}/assignments`, { kind: current.kind, organizationId }), "Assignment recorded. Existing assignments were preserved.")}>Assign selected organisation</button>
     </form>}</AdminDataState></section>
     <section className="surface mb-3"><h2>Organisation account coverage</h2>
       <AdminDataState resource={organizations} label="organisation coverage" emptyMessage="No organisations available.">{rows => <AdminDataState resource={{ ...accounts, data: accounts.data?.rows }} label="account coverage" empty={false}>{() => <div className="table-responsive"><table className="table"><thead><tr><th>Organisation</th><th>Login ID</th><th>Account status</th><th>Password status</th></tr></thead><tbody>{rows.map(org => {
