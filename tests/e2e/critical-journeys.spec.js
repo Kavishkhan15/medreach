@@ -203,8 +203,9 @@ test("guest emergency request stays public while tracking and cancellation stay 
   });
 
   await page.goto("/requests/new?flow=emergency");
-  await page.locator("#hospital").selectOption({ label: "MedReach E2E Hospital (Bandra West)" });
+  const [hospitalId] = await page.locator("#hospital").selectOption({ label: "MedReach E2E Hospital (Bandra West)" });
   await page.locator("#phone").fill("+91 98765 40101");
+  await expect(page.locator("#hospital")).toHaveValue(hospitalId);
   await page.getByRole("button", { name: "Submit Emergency Bed Request" }).dblclick();
   await expect(page).toHaveURL(/\/requests\/[a-f0-9]{24}$/);
   await expect(page.getByText(/Emergency Bed Request/i).first()).toBeVisible();
@@ -434,7 +435,7 @@ test("application sign-in preserves its destination and system admin reaches the
   const signIn = page.getByRole("main").getByRole("link", { name: "Sign in", exact: true });
   await expect(signIn).toHaveAttribute("href", `/login?returnTo=${encodeURIComponent(`/jobs/${job._id}`)}`);
 
-  await login(page, "admin.e2e@medreach.test", "/admin");
+  await login(page, `${testInfo.project.name}.admin.e2e@medreach.test`, "/admin");
   await expect(page.getByRole("heading", { name: testInfo.project.name === "bootstrap" ? "Platform overview" : "Admin dashboard" })).toBeVisible();
   await expect(page.getByText("Hospitals tracked", { exact: true })).toBeVisible();
   await page.goto("/admin/users");

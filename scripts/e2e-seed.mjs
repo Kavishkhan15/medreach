@@ -41,6 +41,7 @@ try {
   await staff.setPassword(password);
   await staff.save();
 
+  const staffIds = [staff._id];
   for (const variant of variants) {
     const user = new User({
       name: `E2E ${variant} User`,
@@ -52,6 +53,13 @@ try {
     });
     await user.setPassword(password);
     await user.save();
+    // Account throttling spans IPs: unrelated variant journeys need distinct
+    // privileged fixtures while retaining the real production attempt budgets.
+    const variantAdmin = new User({ name: `E2E ${variant} System Admin`, email: `${variant}.admin.e2e@medreach.test`, role: "system_admin", region: "Mumbai", emailVerifiedAt: new Date() });
+    await variantAdmin.setPassword(password); await variantAdmin.save();
+    const variantStaff = new User({ name: `E2E ${variant} Hospital Staff`, email: `${variant}.staff.e2e@medreach.test`, role: "hospital_admin", region: "Mumbai", emailVerifiedAt: new Date() });
+    await variantStaff.setPassword(password); await variantStaff.save();
+    staffIds.push(variantStaff._id);
   }
 
   const hospital = await Hospital.create({
@@ -67,7 +75,7 @@ try {
     specialties: ["Emergency Medicine", "Critical Care"],
     services: ["Emergency Department", "ICU"],
     location: { type: "Point", coordinates: [72.8295, 19.0596] },
-    admins: [staff._id],
+    admins: staffIds,
   });
 
   await ResourceProvider.create([

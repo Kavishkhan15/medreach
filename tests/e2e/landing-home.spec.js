@@ -12,7 +12,7 @@ test.beforeEach(async ({ context }, testInfo) => {
 
 async function openHome(page) {
   await page.goto("/");
-  await expect(directory(page).getByRole("button", { name: /Hospital MedReach E2E Hospital/ })).toBeVisible();
+  await expect(directory(page).getByRole("button", { name: /MedReach E2E Hospital/ })).toBeVisible();
 }
 
 test("landing actions resolve to existing pages and hero actions navigate", async ({ page }) => {
@@ -42,7 +42,7 @@ test("directory categories, search, locality and services filter real API record
   const search = panel.getByRole("searchbox", { name: "Search healthcare providers" });
   for (const [label, name] of [["Hospitals", "MedReach E2E Hospital"], ["Blood Banks", "MedReach E2E Blood Bank"], ["Diagnostics", "MedReach E2E Diagnostics"], ["Ambulances", "MedReach E2E Ambulance"]]) {
     await panel.getByRole("button", { name: label, exact: true }).click();
-    await expect(panel.locator(".home-provider-card")).toHaveCount(1);
+    await expect(panel.locator(".home-provider-card")).toHaveCount(label === "Diagnostics" ? 2 : 1);
     await expect(panel.getByRole("button", { name: new RegExp(name) })).toBeVisible();
     await expect(panel.getByRole("button", { name: label, exact: true })).toHaveAttribute("aria-pressed", "true");
   }
@@ -63,7 +63,7 @@ test("directory categories, search, locality and services filter real API record
   await panel.getByLabel("Listed emergency capabilities").check();
   await expect(panel.getByText("MedReach E2E Hospital", { exact: true })).toBeVisible();
   await panel.getByRole("button", { name: "Reset filters", exact: true }).click();
-  await expect(panel.locator(".home-provider-card")).toHaveCount(4);
+  await expect(panel.locator(".home-provider-card")).toHaveCount(5);
 });
 
 test("provider selection preserves contact, directions and standard bed route", async ({ page, request }) => {
@@ -123,20 +123,20 @@ test("partial failure retains directory results and targeted retries recover job
   await page.locator("#careers").scrollIntoViewIfNeeded();
   const jobs = page.locator(".home-jobs-panel");
   await expect(jobs.getByText("Job listings could not be loaded.", { exact: true })).toBeVisible();
-  await expect(directory(page).locator(".home-provider-card")).toHaveCount(4);
+  await expect(directory(page).locator(".home-provider-card")).toHaveCount(5);
   await page.unroute(`${API}/api/jobs*`);
   await jobs.getByRole("button", { name: "Retry jobs", exact: true }).click();
   await expect(jobs.getByRole("link").filter({ hasText: "E2E Emergency Nurse" })).toBeVisible();
   await page.route(`${API}/api/hospitals*`, (route) => route.abort("failed"));
   await page.goto("/");
   await expect(directory(page).getByRole("alert")).toContainText("Hospitals could not be loaded");
-  await expect(directory(page).locator(".home-provider-card")).toHaveCount(3);
+  await expect(directory(page).locator(".home-provider-card")).toHaveCount(4);
   await page.unroute(`${API}/api/hospitals*`);
   await directory(page).getByRole("button", { name: "Retry directory", exact: true }).click();
   await expect(directory(page).getByText("MedReach E2E Hospital", { exact: true })).toBeVisible();
 });
 
-test("homepage fits mobile and desktop and its theme does not affect other routes", async ({ page }) => {
+test("homepage fits mobile and desktop and shared navigation and footer remain usable on other routes", async ({ page }) => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   for (const width of [320, 375, 768, 1440]) {
@@ -145,6 +145,7 @@ test("homepage fits mobile and desktop and its theme does not affect other route
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     const order = await page.locator(".landing-home").evaluate((node) => [...node.children].slice(0, 2).map((child) => child.className));
     expect(order).toEqual(["home-hero-wrap", "home-section home-directory"]);
+    await page.locator(".home-directory-map").scrollIntoViewIfNeeded();
     await expect(page.getByRole("region", { name: /^(Map|Map unavailable)$/ }).first()).toBeVisible();
     if (width < 1200) {
       const nav = page.getByRole("navigation", { name: "Primary" });
@@ -153,9 +154,11 @@ test("homepage fits mobile and desktop and its theme does not affect other route
       await nav.getByRole("button", { name: "Toggle navigation", exact: true }).press("Enter");
     }
   }
+  const sharedLoginColour = await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Login", exact: true }).evaluate((node) => getComputedStyle(node).backgroundColor);
   await page.goto("/track");
   await expect(page.getByRole("heading", { name: "Track a request", exact: true })).toBeVisible();
-  await expect(page.locator(".landing-footer-links")).toBeHidden();
-  expect(await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Login", exact: true }).evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(211, 32, 41)");
+  await expect(page.locator(".landing-footer-links")).toBeVisible();
+  await expect(page.locator(".landing-footer-links").getByRole("link", { name: "Healthcare map", exact: true })).toHaveAttribute("href", "/map");
+  expect(await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Login", exact: true }).evaluate((node) => getComputedStyle(node).backgroundColor)).toBe(sharedLoginColour);
   expect(errors).toEqual([]);
 });

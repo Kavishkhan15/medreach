@@ -12,7 +12,7 @@ test("dashboard failures stay in their section and retries target only that sect
   await page.locator("#password").fill("E2E_SafePassword_123!");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
-  const titles = { "/api/auth/me": "Saved hospitals", "/api/emergency-requests": "Emergency requests", "/api/applications/mine": "Applications" };
+  const titles = { "/api/auth/me": "Saved hospitals", "/api/emergency-requests": testInfo.project.name === "bootstrap" ? "Hospital bed requests" : "Emergency requests", "/api/applications/mine": "Applications" };
   const counts = Object.fromEntries(Object.keys(titles).map((path) => [path, 0]));
   let failed;
   await page.route(`${API}/api/**`, (route) => {

@@ -86,6 +86,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Expose MongoDB backup tools from service container
+        env:
+          MONGODB_SERVICE_ID: ${{ job.services.mongodb.id }}
+        run: |
+          tools_dir="$RUNNER_TEMP/medreach-mongodb-tools"
+          mkdir -p "$tools_dir"
+          for tool in mongodump mongorestore; do
+            docker cp "$MONGODB_SERVICE_ID:/usr/bin/$tool" "$tools_dir/$tool"
+            chmod +x "$tools_dir/$tool"
+            "$tools_dir/$tool" --version
+          done
+          echo "$tools_dir" >> "$GITHUB_PATH"
+
       - name: Run backend tests with all MongoDB gates enabled
         env:
           MEDREACH_BASE_TEST_MONGO_URI: mongodb://localhost:27017/medreach_test

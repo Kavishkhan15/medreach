@@ -10,7 +10,7 @@ test.afterEach(async ({ page }) => expect(page.__roleRuntimeErrors).toEqual([]))
 const password = "E2E_SafePassword_123!";
 async function signIn(page, email) {
   await page.goto("/login");
-  await page.getByLabel("Email", { exact: true }).fill(email);
+  await page.getByLabel("Email", { exact: true }).fill(email === "admin.e2e@medreach.test" ? `${test.info().project.name}.${email}` : email);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: /Sign in/i }).click();
   await expect(page).not.toHaveURL(/\/login/);

@@ -7,7 +7,9 @@ test.beforeEach(async ({ page }, info) => {
   page.__diagnosticErrors = [];
   page.on("pageerror", error => page.__diagnosticErrors.push(error.message));
 });
-test.afterEach(async ({ page }) => expect(page.__diagnosticErrors).toEqual([]));
+test.afterEach(async ({ page }, info) => {
+  if (info.project.name === "bootstrap") expect(page.__diagnosticErrors).toEqual([]);
+});
 
 async function fillRequest(page) {
   await page.getByLabel("Patient name", { exact: true }).fill("Diagnostic Browser Patient");

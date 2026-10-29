@@ -29,6 +29,7 @@ async function fixtures(page, options = {}) {
     return json(route, { ok: true, account: state.row, credentials: { accountId: id, email, password } });
   });
   await page.goto("/admin/provider-accounts");
+  if (!options.empty && (!options.role || options.role === "system_admin")) await page.locator("summary").filter({ hasText: "Manage credentials, assignments and notifications" }).click();
   return state;
 }
 
@@ -50,6 +51,7 @@ test("manual credentials reveal, hide and copy only newly generated passwords wi
   expect(await page.evaluate(async p => (await navigator.clipboard.readText()).includes(p), password)).toBe(true);
   expect(await page.evaluate(p => !JSON.stringify({ ...localStorage, ...sessionStorage }).includes(p), password)).toBe(true);
   await page.reload();
+  await page.locator("summary").filter({ hasText: "Manage credentials, assignments and notifications" }).click();
   await expect(page.getByRole("button", { name: "Show Password", exact: true })).toBeDisabled();
   await expect(page.getByLabel("Newly generated password")).toHaveCount(0);
   expect(state.writes).toBe(1); expect(state.errors).toEqual([]);

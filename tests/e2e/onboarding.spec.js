@@ -27,7 +27,7 @@ test("public landing application persists, prevents duplicate clicks and is appr
   await expect(section.getByRole("status")).toContainText("Application recorded");
   await expect(section.getByRole("button", { name: "Submit Application" })).toHaveCount(0);
   await page.goto("/login");
-  await page.getByLabel("Email", { exact: true }).fill("admin.e2e@medreach.test");
+  await page.getByLabel("Email", { exact: true }).fill(`${info.project.name}.admin.e2e@medreach.test`);
   await page.getByLabel("Password", { exact: true }).fill("E2E_SafePassword_123!");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/admin$/);
@@ -38,9 +38,10 @@ test("public landing application persists, prevents duplicate clicks and is appr
   await expect(card).toContainText("approved");
   await page.goto("/admin/provider-accounts");
   const account = page.locator("article").filter({ hasText: name });
-  await expect(account).toContainText(/[Ss]tatus: pending/);
+  if (info.project.name === "bootstrap") await expect(account.locator(".status-pill")).toHaveText("pending");
+  else await expect(account).toContainText(/[Ss]tatus: pending/);
   await expect(account).toContainText(".example");
-  await expect(account).toContainText(/Activation email(?: status)?: disabled/);
+  await expect(account).toContainText(info.project.name === "bootstrap" ? "Invitation: disabled" : /Activation email(?: status)?: disabled/);
 });
 
 test("landing form, login and Careers fit mobile and desktop viewports", async ({ page }) => {

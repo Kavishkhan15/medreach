@@ -111,7 +111,10 @@ export default function NewRequest() {
     }));
   }, [user]);
 
-  const change = (key) => (event) => setForm((old) => ({ ...old, [key]: event.target.value }));
+  const change = (key) => (event) => {
+    const value = event.target.value;
+    setForm((old) => ({ ...old, [key]: value }));
+  };
 
   const submit = async (event) => {
     event.preventDefault();

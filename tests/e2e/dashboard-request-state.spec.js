@@ -5,6 +5,9 @@ const resources = {
   blood: { path: "/api/blood-requests", title: "Blood requests", empty: "No blood requests or donation pledges recorded.", reference: "BR-ISOLATED-TEST", rows: [{ _id: "222222222222222222222222", reference: "BR-ISOLATED-TEST", type: "REQUEST", status: "REQUESTED", bloodBankName: "Test bank", isUrgent: false }] },
   ambulance: { path: "/api/ambulances/bookings", title: "Ambulance requests", empty: "No ambulance requests recorded.", reference: "AMB-ISOLATED-TEST", rows: [{ _id: "333333333333333333333333", reference: "AMB-ISOLATED-TEST", status: "RECORDED", providerSnapshot: { name: "Test ambulance" }, isEmergency: true }] },
 };
+const bootstrapTitles = { requests: "Hospital bed requests", blood: "Blood requests and donations", ambulance: "Ambulance bookings" };
+const emptyMessage = (key, bootstrap) => bootstrap && key === "requests" ? "No hospital bed requests yet."
+  : bootstrap && key === "ambulance" ? "No ambulance bookings recorded." : resources[key].empty;
 
 async function mockApi(page, handler) {
   await page.route("**/api/**", route => {
@@ -22,7 +25,8 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }) => expect(page.__dashboardErrors).toEqual([]));
 
 for (const [failedKey, resource] of Object.entries(resources)) {
-  test(`${resource.title} failures and malformed responses retain other history and retry only the failed resource`, async ({ page }) => {
+  test(`${resource.title} failures and malformed responses retain other history and retry only the failed resource`, async ({ page }, info) => {
+    const bootstrap = info.project.name === "bootstrap";
     let mode = "failed";
     const calls = { requests: 0, blood: 0, ambulance: 0 };
     await mockApi(page, (route, key) => {
@@ -34,10 +38,10 @@ for (const [failedKey, resource] of Object.entries(resources)) {
     for (const failureMode of ["failed", "malformed"]) {
       mode = failureMode;
       await page.goto("/dashboard");
-      const panel = page.getByRole("region", { name: "Emergency requests", exact: true });
-      const retry = panel.getByRole("button", { name: `Retry ${resource.title.toLowerCase()}`, exact: true });
+      const panel = page.getByRole("region", { name: bootstrap ? "My requests" : "Emergency requests", exact: true });
+      const retry = panel.getByRole("button", { name: `Retry ${(bootstrap ? bootstrapTitles[failedKey] : resource.title).toLowerCase()}`, exact: true });
       await expect(retry).toBeVisible();
-      await expect(panel).not.toContainText(resource.empty);
+      await expect(panel).not.toContainText(emptyMessage(failedKey, bootstrap));
       for (const [key, healthy] of Object.entries(resources)) if (key !== failedKey) await expect(panel).toContainText(healthy.reference);
       const before = { ...calls };
       mode = "success";
@@ -49,7 +53,8 @@ for (const [failedKey, resource] of Object.entries(resources)) {
   });
 }
 
-test("pending blood history is loading, then a successful empty response becomes a genuine empty state", async ({ page }) => {
+test("pending blood history is loading, then a successful empty response becomes a genuine empty state", async ({ page }, info) => {
+  const bootstrap = info.project.name === "bootstrap";
   let release;
   const gate = new Promise(resolve => { release = resolve; });
   await mockApi(page, async (route, key) => {
@@ -57,10 +62,10 @@ test("pending blood history is loading, then a successful empty response becomes
     return route.fulfill({ json: { data: [] } });
   });
   await page.goto("/dashboard");
-  const panel = page.getByRole("region", { name: "Emergency requests", exact: true });
+  const panel = page.getByRole("region", { name: bootstrap ? "My requests" : "Emergency requests", exact: true });
   await expect(panel.getByRole("status").filter({ hasText: "Loading blood requests" })).toBeVisible();
   await expect(panel).not.toContainText(resources.blood.empty);
   release();
-  for (const resource of Object.values(resources)) await expect(panel).toContainText(resource.empty);
+  for (const key of Object.keys(resources)) await expect(panel).toContainText(emptyMessage(key, bootstrap));
   await expect(panel.getByRole("status")).toHaveCount(0);
 });

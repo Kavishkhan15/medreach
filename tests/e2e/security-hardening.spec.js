@@ -21,7 +21,7 @@ test("frontend pages enforce framing and MIME protections without blocking their
 
 test("staff cannot open unsafe legacy resume links while PDF downloads remain available", async ({ page }) => {
   await page.goto("/login?returnTo=%2Fhospital%2Fjobs");
-  await page.locator("#email").fill("staff.e2e@medreach.test");
+  await page.locator("#email").fill(`${test.info().project.name}.staff.e2e@medreach.test`);
   await page.locator("#password").fill("E2E_SafePassword_123!");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/hospital\/jobs$/);

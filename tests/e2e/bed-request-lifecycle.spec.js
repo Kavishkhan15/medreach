@@ -56,7 +56,7 @@ async function refresh(page, label) {
 async function staffPage(browser, origin) {
   const context = await browser.newContext({ baseURL: origin, extraHTTPHeaders: clientHeaders(randomUUID()) });
   const page = await context.newPage();
-  await login(page, "staff.e2e@medreach.test", "/hospital");
+  await login(page, `${test.info().project.name}.staff.e2e@medreach.test`, "/hospital");
   return { context, page };
 }
 async function staffAction(page, reference, label, response) {
