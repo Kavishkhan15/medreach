@@ -27,7 +27,7 @@ function csrfOriginGuard(req, res, next) {
 }
 
 export function applySecurity(app, { rateLimitStoreFactory } = {}) {
-  const limiter = (name, max, windowMs) => sharedLimiter(name, max, windowMs, { storeFactory: rateLimitStoreFactory });
+  const limiter = (name, max, windowMs, keyGenerator) => sharedLimiter(name, max, windowMs, { storeFactory: rateLimitStoreFactory, keyGenerator });
   app.use(cookieParser());
 
   app.use(
@@ -60,7 +60,8 @@ export function applySecurity(app, { rateLimitStoreFactory } = {}) {
   app.use(csrfOriginGuard);
   // Filters in this API are scalars. Reject parsed Mongo operators and repeated/nested values.
   app.use((req, res, next) => {
-    if (Object.entries(req.query).some(([key, value]) => typeof value !== "string" || /[.$[\]]/.test(key))) {
+    if (Object.entries(req.query).some(([key, value]) => typeof value !== "string" || /[.$[\]]/.test(key)
+      || ["__proto__", "prototype", "constructor"].includes(key))) {
       return res.status(400).json({ error: "Query parameters must be plain values" });
     }
     if (req.headers.authorization || req.cookies?.token || req.get("X-MedReach-Tracking-Token") ||
@@ -76,6 +77,12 @@ export function applySecurity(app, { rateLimitStoreFactory } = {}) {
   // Brute-force protection on auth endpoints (attach to /api/auth router).
   app.locals.authLimiter = limiter("auth", 20);
   app.locals.loginLimiter = limiter("login", 10);
+  // The identity limiter runs after scalar validation; all replicas share the
+  // same HMAC-protected key, including attempts for nonexistent accounts.
+  const emailKey = req => req.body.email.trim().toLowerCase();
+  app.locals.loginAccountLimiter = limiter("login-account", 10, 15 * 60 * 1000, emailKey);
+  app.locals.recoveryAccountLimiter = limiter("recovery-account", 3, 60 * 60 * 1000, emailKey);
+  app.locals.credentialAccountLimiter = limiter("credential-account", 10, 15 * 60 * 1000, req => req.user.id);
   app.locals.registerLimiter = limiter("register", 8, 60 * 60 * 1000);
   app.locals.recoveryLimiter = limiter("recovery", 6, 60 * 60 * 1000);
   app.locals.trackingLimiter = limiter("tracking", 60);

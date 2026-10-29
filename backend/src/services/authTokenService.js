@@ -64,7 +64,7 @@ export async function rotateSession(token, context = {}) {
     return { error: "replay", userId: existing.user };
   }
   const user = await User.findById(existing.user).select("+authVersion +passwordHash");
-  if (!user || (await mfaRequiredForUser(user) && !existing.metadata?.mfaAuthenticated) || user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled()) || (user.credentialDelivery === "manual" && !localManualCredentialsEnabled()) || Number(existing.metadata?.authVersion || 0) !== Number(user.authVersion || 0)) {
+  if (!user || (await mfaRequiredForUser(user) && !existing.metadata?.mfaAuthenticated) || user.accountStatus !== "active" || ((user.demoAccount || user.credentialState === "demo_default") && !isolatedDemoEnabled()) || (user.credentialDelivery === "manual" && !localManualCredentialsEnabled()) || Number(existing.metadata?.authVersion || 0) !== Number(user.authVersion || 0)) {
     await AuthToken.updateMany({ familyId: existing.familyId, purpose: "refresh_session" },
       { $set: { revokedAt: new Date(), revokeReason: "account_changed" } });
     return { error: "invalid" };

@@ -8,6 +8,7 @@ import { notFound, errorHandler } from "./middleware/error.js";
 import { requestId } from "./middleware/requestId.js";
 import { requestLogger } from "./middleware/logging.js";
 import { publicCompression } from "./middleware/publicCompression.js";
+import { rejectUnsafeBodyKeys } from "./middleware/inputShape.js";
 
 import { providerAccountRouter, providerRouter, providerApprovalRouter } from "./routes/providerAdmin.js";
 import healthRouter from "./routes/health.js";
@@ -54,7 +55,10 @@ export function createApp(options = {}) {
   app.use(publicCompression());
   // The signature covers the exact bytes; mount before the general JSON parser.
   app.use("/api/webhooks/resend", resendWebhookRouter);
+  // Credentials and MFA payloads are small; do not parse upload-sized bodies on auth routes.
+  app.use("/api/auth", express.json({ limit: "16kb" }));
   app.use(express.json({ limit: "6mb" }));
+  app.use(rejectUnsafeBodyKeys);
 
   // Health (both /health and /api/v1/health style).
   app.use("/health", healthRouter);

@@ -26,7 +26,7 @@ async function resolveAccessContext(token) {
       purpose: "refresh_session", usedAt: { $exists: false }, revokedAt: { $exists: false },
       expiresAt: { $gt: new Date() } }),
   ]);
-  if (!current || current.accountStatus !== "active" || (current.demoAccount && !isolatedDemoEnabled()) || (current.credentialDelivery === "manual" && !localManualCredentialsEnabled()) || Number(current.authVersion || 0) !== Number(payload.av || 0)) {
+  if (!current || current.accountStatus !== "active" || ((current.demoAccount || current.credentialState === "demo_default") && !isolatedDemoEnabled()) || (current.credentialDelivery === "manual" && !localManualCredentialsEnabled()) || Number(current.authVersion || 0) !== Number(payload.av || 0)) {
     return { error: "Session is no longer valid" };
   }
   if (current && await mfaRequiredForUser(current) && !await AuthToken.exists({ familyId: payload.sid, user: payload.sub,

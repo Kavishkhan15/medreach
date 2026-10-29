@@ -82,7 +82,7 @@ export const login = asyncHandler(async (req, res) => {
     await audit(req, { user: user?._id, action: "login_failed", entityType: "AuthSession" });
     return res.status(401).json({ error: "Invalid email or password" });
   }
-  if (user.accountStatus !== "active" || (user.demoAccount && !isolatedDemoEnabled()) || (user.credentialDelivery === "manual" && !localManualCredentialsEnabled())) {
+  if (user.accountStatus !== "active" || ((user.demoAccount || user.credentialState === "demo_default") && !isolatedDemoEnabled()) || (user.credentialDelivery === "manual" && !localManualCredentialsEnabled())) {
     await audit(req, { user: user._id, action: "login_failed", entityType: "AuthSession" });
     return res.status(401).json({ error: "Invalid email or password" });
   }
