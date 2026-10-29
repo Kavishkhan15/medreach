@@ -9,6 +9,11 @@ existing MongoDB service image, verifies their versions and exposes their direct
 through `GITHUB_PATH`. Keep the restore tests enabled; a missing tool is an
 environment failure, not a reason to skip backup verification.
 
+Worker lease fixtures use a single scheduling slot so wall-clock minute boundaries
+cannot introduce unrelated work into a duplicate-execution assertion. Their waits
+are bounded and release held handlers on failure. The backend job also has a
+15-minute deadline so an unexpected open handle cannot consume hours of CI time.
+
 The browser job builds and tests Bootstrap, Tailwind and Skeleton. Run the complete
 `npm run test:e2e` matrix when checking this job; a selected file/project run does
 not establish that the release suite passes. Bootstrap-only features are explicitly
