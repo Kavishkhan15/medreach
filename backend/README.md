@@ -21,6 +21,7 @@ on a new installation use `backend/.env.example` as a template.
 - [Security](../docs/security.md)
 - [Login throttling, injection guards and password handling](SECURITY_HARDENING.md)
 - [Measured directory fetch optimisation](../docs/testing/backend-fetch-performance-20261029.md)
+- [Inventory read safety and reduced lookup work](INVENTORY_READ_SAFETY.md)
 - [Deployment and email](../docs/deployment.md)
 - [Tests and current results](../docs/release-qa.md)
 - [Inventory, recovery and scaling verification](../docs/testing/backend-scalability-20261026.md)

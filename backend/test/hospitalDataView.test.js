@@ -53,3 +53,15 @@ test("latest observation wins; an unknown update cannot expose an older availabl
   assert.equal(view.facilities[0].status, "unknown");
   assert.equal(view.facilities[0].lastObservedAt, "2026-09-14T11:59:00.000Z");
 });
+
+test("legacy malformed quantities are withheld while verified status and confirmed zero remain usable", () => {
+  const observation = { hospital: "h1", facility: "Emergency Department", status: "limited", verificationStatus: "verified", observedAt: "2026-09-14T11:59:00Z" };
+  for (const quantity of [-1, 0.5, "2", Number.MAX_SAFE_INTEGER + 1, null]) {
+    const view = composeHospitalDataView(hospital, [facility], [{ ...observation, quantity }], now);
+    assert.equal(view.facilities[0].count, null);
+    assert.equal(view.facilities[0].status, "limited");
+  }
+  const view = composeHospitalDataView(hospital, [facility], [{ ...observation, status: "unavailable", quantity: 0 }], now);
+  assert.equal(view.facilities[0].count, 0);
+  assert.equal(view.facilities[0].status, "unavailable");
+});

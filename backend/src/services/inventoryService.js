@@ -1,5 +1,4 @@
 import { assertProviderPermission } from "./providerPermissions.js";
-import { organizationIsAvailable } from "./providerLifecycle.js";
 import mongoose from "mongoose";
 import { randomUUID } from "node:crypto";
 import { ResourceInventory, INVENTORY_JOURNAL_LIMIT, INVENTORY_RECOVERY_MAX_ATTEMPTS } from "../models/ResourceInventory.js";
@@ -38,14 +37,19 @@ export function normalizeInventoryInput(input, now = new Date()) {
 }
 
 export function publicInventorySnapshot(record, now = new Date()) {
-  const observedAt = record.observedAt ? new Date(record.observedAt) : null;
-  const fresh = observedAt && Number.isFinite(observedAt.getTime()) && now >= observedAt && now - observedAt <= INVENTORY_FRESHNESS_MS;
+  const timestamp = record.observedAt ? new Date(record.observedAt).getTime() : NaN;
+  const observedAt = Number.isFinite(timestamp) && timestamp > 0 ? new Date(timestamp) : null;
+  const validTime = observedAt !== null && Number.isFinite(now.getTime()) && now >= observedAt;
+  const fresh = validTime && now - observedAt <= INVENTORY_FRESHNESS_MS;
   const publish = Boolean(fresh && record.classification === "provider_confirmed");
-  const available = publish && Number.isSafeInteger(record.available) && record.available >= 0 ? record.available : null;
-  return { resourceKey: record.resourceKey, unit: record.unit, capacity: publish ? record.capacity ?? null : null,
-    available, observedAt, expiresAt: observedAt ? new Date(observedAt.getTime() + INVENTORY_FRESHNESS_MS) : null,
+  // Reads must also fail safely for legacy/imported rows that bypassed write validation.
+  const capacity = publish && Number.isSafeInteger(record.capacity) && record.capacity >= 0 ? record.capacity : null;
+  const available = capacity !== null && Number.isSafeInteger(record.available) && record.available >= 0 && record.available <= capacity ? record.available : null;
+  const expiresAt = observedAt ? new Date(timestamp + INVENTORY_FRESHNESS_MS) : null;
+  return { resourceKey: record.resourceKey, unit: record.unit, capacity,
+    available, observedAt, expiresAt: expiresAt && Number.isFinite(expiresAt.getTime()) ? expiresAt : null,
     version: record.version ?? 0, classification: record.classification ?? "unknown", reportingMethod: record.reportingMethod ?? null,
-    freshness: fresh ? "recent" : observedAt ? "outdated" : "unknown", status: available === null ? "unknown" : available === 0 ? "unavailable" : "available" };
+    freshness: fresh ? "recent" : validTime ? "outdated" : "unknown", status: available === null ? "unknown" : available === 0 ? "unavailable" : "available" };
 }
 
 function validateTarget(kind, organizationId, resourceKey) {
@@ -54,10 +58,13 @@ function validateTarget(kind, organizationId, resourceKey) {
 }
 async function organization(kind, id, publicRead = false, historical = false) {
   const Model = kind === "hospital" ? Hospital : ResourceProvider;
-  const query = { _id: id, ...(kind === "hospital" ? {} : historical ? { kind } : { kind, active: true }) };
+  const query = { _id: id, ...(!historical ? { archivedAt: null } : {}),
+    ...(kind === "hospital" ? {} : historical ? { kind } : { kind, active: true }) };
   if (publicRead) query.approvalStatus = { $nin: ["pending", "rejected"] };
-  const org = await Model.findOne(query).select("_id approvalStatus").lean();
-  if (!org || (!historical && !await organizationIsAvailable(kind, id))) throw fail(404, "ORGANIZATION_NOT_FOUND", "Organisation not found");
+  const org = await Model.findOne(query).select("_id approvalStatus hospital").lean();
+  // Check lifecycle in the initial lookup rather than reading this organisation twice.
+  // Child providers still require an existing, unarchived parent for current access.
+  if (!org || (!historical && org.hospital && !await Hospital.exists({ _id: org.hospital, archivedAt: null }))) throw fail(404, "ORGANIZATION_NOT_FOUND", "Organisation not found");
   return org;
 }
 async function assertAccess(actor, kind, organizationId, write = false) {
@@ -68,12 +75,15 @@ async function assertAccess(actor, kind, organizationId, write = false) {
   if (current.role !== "provider_admin") throw fail(403, "INSUFFICIENT_PERMISSIONS", "An assigned Provider Admin is required");
   await assertProviderPermission({ actor, kind, organizationId, permission: write ? "inventory:write" : "inventory:read" });
 }
-export async function getPublicInventory({ kind, organizationId, now = new Date() }) {
+export async function getPublicInventory({ kind, organizationId, now }) {
   validateTarget(kind, organizationId);
   await organization(kind, organizationId, true);
   const rows = await ResourceInventory.find({ kind, organization: organizationId }).select("resourceKey unit capacity available observedAt version classification reportingMethod").sort({ resourceKey: 1 }).limit(100).lean();
-  const data = rows.map((row) => publicInventorySnapshot(row, now));
-  if (kind === "hospital") for (const resourceKey of ["general_beds", "icu_beds"]) if (!data.some((row) => row.resourceKey === resourceKey)) data.push(publicInventorySnapshot({ resourceKey, unit: "beds", classification: "unknown" }, now));
+  // Evaluate after all database I/O so a slow read cannot extend availability.
+  // Explicit times are reserved for deterministic service tests/replays, not route input.
+  const evaluatedAt = now ?? new Date();
+  const data = rows.map((row) => publicInventorySnapshot(row, evaluatedAt));
+  if (kind === "hospital") for (const resourceKey of ["general_beds", "icu_beds"]) if (!data.some((row) => row.resourceKey === resourceKey)) data.push(publicInventorySnapshot({ resourceKey, unit: "beds", classification: "unknown" }, evaluatedAt));
   return { data };
 }
 

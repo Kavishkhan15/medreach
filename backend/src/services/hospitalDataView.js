@@ -38,7 +38,7 @@ export function composeHospitalDataView(hospital, facilities = [], observations 
       capabilityConfidence: facility?.confidence || "UNKNOWN",
       capabilityFreshness: freshnessLabel(facility?.lastUpdated, now.getTime()),
       status: current ? observation.status : "unknown",
-      count: current && Number.isInteger(observation.quantity) ? observation.quantity : null,
+      count: current && Number.isSafeInteger(observation.quantity) && observation.quantity >= 0 ? observation.quantity : null,
       confidence: current ? observation.confidence || "UNKNOWN" : facility?.confidence || "UNKNOWN",
       capabilitySource: facility?.source ?? null,
       availabilitySource: current ? observation.source ?? null : null,

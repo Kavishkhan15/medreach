@@ -94,6 +94,53 @@ test("inventory API, isolation, concurrency, failure and recovery", { skip: !iso
     assert.equal((await getPublicInventory(target)).data[0].unit, "units");
     assert.equal((await getPublicInventory(target)).data[0].available, 20);
   });
+  await t.test("availability expiring during the database read is withheld at response time", async (t) => {
+    const startedAt = Date.now();
+    const target = { ...base, resourceKey: "slow_read" };
+    const created = await updateInventory({ ...target, input: data(0, { unit: "beds", observedAt: new Date(startedAt - 1800000 + 1000).toISOString() }) });
+    t.mock.timers.enable({ apis: ["Date"], now: startedAt });
+    const originalFind = ResourceInventory.find;
+    t.mock.method(ResourceInventory, "find", function (...args) {
+      const query = originalFind.apply(this, args), originalLean = query.lean;
+      query.lean = async function (...leanArgs) {
+        const result = await originalLean.apply(this, leanArgs);
+        t.mock.timers.tick(2000);
+        return result;
+      };
+      return query;
+    });
+    const result = (await getPublicInventory(target)).data.find(row => row.resourceKey === target.resourceKey);
+    assert.equal(result.available, null);
+    assert.equal(result.capacity, null);
+    assert.equal(result.freshness, "outdated");
+    const stored = await ResourceInventory.findById(created.inventory._id).lean();
+    assert.equal(stored.available, 40, "read protection does not mutate the underlying record");
+  });
+  await t.test("public hospital inventory performs one organisation lookup", async (t) => {
+    let lookups = 0;
+    const original = Hospital.findOne;
+    t.mock.method(Hospital, "findOne", function (...args) { lookups++; return original.apply(this, args); });
+    const result = await getPublicInventory(base);
+    assert.ok(result.data.length >= 2);
+    assert.equal(lookups, 1, "avoid reading the same hospital twice before fetching inventory");
+  });
+  await t.test("inventory lifecycle checks exclude archived, inactive and missing-parent providers while retaining history", async () => {
+    const parent = await Hospital.create({ name: "Isolated lifecycle parent", approvalStatus: "approved" });
+    const child = await ResourceProvider.create({ name: "Isolated lifecycle diagnostic", kind: "diagnostic", hospital: parent._id, active: true, sourceName: "Isolated test", approvalStatus: "approved" });
+    const target = { kind: "diagnostic", organizationId: child.id };
+    assert.deepEqual((await getPublicInventory(target)).data, []);
+    await Hospital.updateOne({ _id: parent._id }, { $set: { archivedAt: new Date() } });
+    await assert.rejects(getPublicInventory(target), error => error.status === 404);
+    assert.deepEqual((await getInventoryHistory({ ...target, resourceKey: "appointments", actor: { id: system.id } })).data, []);
+    await ResourceProvider.updateOne({ _id: child._id }, { $set: { hospital: new mongoose.Types.ObjectId() } });
+    await assert.rejects(getPublicInventory(target), error => error.status === 404);
+    await ResourceProvider.updateOne({ _id: child._id }, { $unset: { hospital: 1 }, $set: { active: false } });
+    await assert.rejects(getPublicInventory(target), error => error.status === 404);
+    await ResourceProvider.updateOne({ _id: child._id }, { $set: { active: true, archivedAt: new Date() } });
+    await assert.rejects(getPublicInventory(target), error => error.status === 404);
+    assert.deepEqual((await getInventoryHistory({ ...target, resourceKey: "appointments", actor: { id: system.id } })).data, []);
+    await assert.rejects(getPublicInventory({ kind: "hospital", organizationId: parent.id }), error => error.status === 404);
+  });
   await t.test("full durable recovery backlog rejects further writes without discarding history", async () => {
     const current = await ResourceInventory.findOne({ organization: hospital._id }).select("+pendingEvents").lean();
     const journal = Array.from({ length: 100 }, (_, i) => ({ _id: new mongoose.Types.ObjectId(), actor: provider._id, version: i + 100, occurredAt: new Date(), before: null, after: { version: i + 100, classification: "provider_confirmed", reportingMethod: "manual_inventory" } }));

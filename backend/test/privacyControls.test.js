@@ -16,6 +16,8 @@ test("export allowlist removes private journals and recomputes freshness", () =>
   const stale = exportInventoryRow(record, new Date(now.getTime() + 1800001));
   assert.equal(stale.available, null); assert.equal(stale.capacity, null); assert.equal(stale.status, "unknown");
   assert.equal(exportInventoryRow({ ...record, classification: "demo" }, now).available, null);
+  assert.equal(exportInventoryRow({ ...record, available: 16 }, now).available, null);
+  assert.equal(exportInventoryRow({ ...record, capacity: -1 }, now).capacity, null);
 });
 test("operational redaction removes nested MFA credentials and error payloads", () => {
   const fields = ["password", "token", "authorization", "cookie", "secret", "recoveryCode", "recoveryCodes", "provisioningUri", "encryptedSecret", "pendingSecret", "recoveryHashes", "code", "email", "phone", "patient", "body"];

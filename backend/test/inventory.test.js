@@ -33,3 +33,30 @@ test("public inventory withholds demo, stale, unknown and future counts without 
   assert.equal("updatedBy" in publicInventorySnapshot(record, now), false);
   assert.equal("pendingEvents" in publicInventorySnapshot(record, now), false);
 });
+
+test("public inventory withholds malformed counts and counts exceeding capacity", () => {
+  const record = { resourceKey: "icu_beds", unit: "beds", capacity: 15, available: 5, classification: "provider_confirmed", observedAt: now };
+  for (const available of [-1, 0.5, "5", Number.MAX_SAFE_INTEGER + 1, 16]) {
+    const result = publicInventorySnapshot({ ...record, available }, now);
+    assert.equal(result.available, null);
+    assert.equal(result.status, "unknown");
+  }
+  for (const capacity of [-1, 0.5, "15", Number.MAX_SAFE_INTEGER + 1, null]) {
+    const result = publicInventorySnapshot({ ...record, capacity }, now);
+    assert.equal(result.capacity, null);
+    assert.equal(result.available, null);
+  }
+  assert.equal(publicInventorySnapshot({ ...record, capacity: 0, available: 0 }, now).status, "unavailable");
+});
+
+test("public inventory returns valid timestamp fields and unknown freshness for invalid or future evidence", () => {
+  const record = { capacity: 15, available: 5, classification: "provider_confirmed" };
+  for (const observedAt of ["invalid", new Date(NaN), new Date(0), new Date(now.getTime() + 1), new Date(8640000000000000)]) {
+    const result = publicInventorySnapshot({ ...record, observedAt }, now);
+    assert.equal(result.available, null);
+    assert.equal(result.freshness, "unknown");
+    for (const field of ["observedAt", "expiresAt"]) {
+      assert.ok(result[field] === null || Number.isFinite(result[field].getTime()), field);
+    }
+  }
+});
