@@ -71,6 +71,7 @@ PRIVATE.md
 /docs/testing/*
 !/docs/testing/backend-scalability-20261026.md
 !/docs/testing/backend-process-readiness.md
+!/docs/testing/backend-fetch-performance-20261029.md
 !/docs/contracts/
 !/docs/diagrams/
 !/docs/diagrams/*
