@@ -42,6 +42,8 @@ export default function NewRequest() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [hospitals, setHospitals] = useState([]);
+  const [hospitalPage, setHospitalPage] = useState(null);
+  const [loadingHospitals, setLoadingHospitals] = useState(false);
   const [isEmergency, setIsEmergency] = useState(false);
   const [form, setForm] = useState({
     hospitalId: "",
@@ -89,18 +91,34 @@ export default function NewRequest() {
 
   // Fetch hospital listings once on mount and resolve any slug match to MongoDB _id
   useEffect(() => {
-    productApi("/api/hospitals?limit=50")
+    const controller = new AbortController();
+    const params = new URLSearchParams(window.location.search);
+    const selected = params.get("hospital");
+    productApi(`/api/hospitals?view=options&limit=12${selected ? `&id=${encodeURIComponent(selected)}` : ""}`, { signal: controller.signal })
       .then((r) => {
         const list = r.data || [];
         setHospitals(list);
+        setHospitalPage(selected ? 1 : r.nextPage);
         setForm((old) => {
           if (!old.hospitalId) return old;
           const match = list.find((h) => h._id === old.hospitalId || h.slug === old.hospitalId);
           return match && match._id !== old.hospitalId ? { ...old, hospitalId: match._id } : old;
         });
       })
-      .catch((e) => setError(e.message));
+      .catch((e) => { if (!controller.signal.aborted) setError(e.message); });
+    return () => controller.abort();
   }, []);
+
+  async function loadMoreHospitals() {
+    if (!hospitalPage || loadingHospitals) return;
+    setLoadingHospitals(true);
+    try {
+      const response = await productApi(`/api/hospitals?view=options&limit=12&page=${hospitalPage}`);
+      setHospitals(old => Array.from(new Map([...old, ...(response.data || [])].map(row => [row._id, row])).values()));
+      setHospitalPage(response.nextPage);
+    } catch (error) { setError(error.message); }
+    finally { setLoadingHospitals(false); }
+  }
 
   // Prefill contact details from active user session if fields are untouched
   useEffect(() => {
@@ -252,6 +270,7 @@ export default function NewRequest() {
                 </option>
               ))}
             </select>
+            {hospitalPage && <button type="button" className="btn btn-link px-0" disabled={loadingHospitals} onClick={loadMoreHospitals}>{loadingHospitals ? "Loading hospitals…" : "Show more hospitals"}</button>}
             {selectedHospital && (
               <div className="form-text small">
                 Selected: <strong>{selectedHospital.name}</strong> · {selectedHospital.locality || "Mumbai"}

@@ -30,6 +30,17 @@ const hospitalListing = (includeUnapproved) => asyncHandler(async (req, res) => 
   if (city) filter.city = city;
   if (specialty) filter.departments = specialty;
   if (q) filter.$text = { $search: q };
+  // Form selectors need identity and labels, never availability history or evidence.
+  if (!includeUnapproved && req.query.view === "options") {
+    if (req.query.id) {
+      if (/^[a-f0-9]{24}$/i.test(req.query.id)) filter._id = req.query.id;
+      else filter.slug = req.query.id;
+    }
+    const count = Math.min(Number(limit), 50);
+    const offset = (Number(page) - 1) * count;
+    const rows = await Hospital.find(filter).select("_id name slug locality").sort({ name: 1, _id: 1 }).skip(offset).limit(count + 1).lean();
+    return res.json({ data: rows.slice(0, count), page: Number(page), perPage: count, nextPage: rows.length > count ? Number(page) + 1 : null });
+  }
 
   const cursorMode = req.query.pagination === "cursor" || req.query.cursor !== undefined;
   if (req.query.includeTotal === "false" && !cursorMode) return res.status(400).json({ error: "Omitting totals requires cursor pagination" });

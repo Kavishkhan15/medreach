@@ -51,7 +51,7 @@ export default function DiagnosticRequestForm() {
       .then(value => { if (!controller.signal.aborted) setDailyCapacity(value.data); })
       .catch(() => { if (!controller.signal.aborted) setCapacityError(true); });
     return () => controller.abort();
-  }, [provider?._id, preferredDate]);
+  }, [provider?._id, preferredDate, result]);
 
   async function submit(event) {
     event.preventDefault();
@@ -87,6 +87,7 @@ export default function DiagnosticRequestForm() {
       <ul>{result.request.tests.map(test => <li key={test}>{diagnosticTestLabel(test)}</li>)}</ul>
       <p>Test availability and your appointment must be confirmed by the diagnostic centre.</p>
       <CapacityNotice record={result.request} resource="test appointment" />
+      {dailyCapacity && <ul aria-label="Remaining slots after your request">{dailyCapacity.filter(row => result.request.tests.includes(row.test)).map(row => <li key={row.test}>{diagnosticTestLabel(row.test)}: {row.routineRemaining === null ? "Availability unknown" : `${row.routineRemaining} routine slots remaining`}</li>)}</ul>}
       {result.request.centreApprovalPending ? <p className="alert alert-info" role="status">Your request is saved for MedReach review. This centre has not enabled online appointments yet. MedReach must approve the centre before your request can be handed to it; no appointment is booked.</p>
         : result.request.notificationRouting === "no_eligible_recipients" && <p role="status">This centre has no eligible notification contact yet. Your request is saved for administrator follow-up. Contact the centre directly if you need an update.</p>}
       <Link className="btn btn-primary" href={`/track?type=diagnostic&reference=${result.reference}#token=${encodeURIComponent(result.trackingToken)}`}>Track test request</Link>

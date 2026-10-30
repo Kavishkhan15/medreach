@@ -65,7 +65,7 @@ export default function DiagnosticAvailability({ centres, urgency = "ROUTINE" })
             const known = row?.configured === true && [row.capacity, row.urgentCapacity, row.routineRemaining].every(value => Number.isSafeInteger(value) && value >= 0)
               && row.capacity <= 30 && row.urgentCapacity <= row.capacity && row.routineRemaining <= row.capacity - row.urgentCapacity;
             const limit = known ? row.capacity - row.urgentCapacity : null;
-            return <tr key={test}><th scope="row">{label}</th><td>{limit ?? "Not established"}</td><td>{known ? limit - row.routineRemaining : "Unknown"}</td><td><strong>{known ? row.routineRemaining === 0 ? "0 — Fully booked" : `${row.routineRemaining} available` : "Availability unknown"}</strong></td></tr>;
+            return <tr key={test}><th scope="row">{label}</th><td>{limit ?? "Not established"}</td><td>{known ? limit - row.routineRemaining : "Unknown"}</td><td><strong>{known ? row.routineRemaining === 0 ? "0 — Fully booked" : `${row.routineRemaining} available out of ${limit} routine slots` : "Availability unknown"}</strong></td></tr>;
           })}</tbody>
         </table>
       </div>

@@ -18,10 +18,10 @@ const limiter = (req, res, next) => (req.app.locals.authLimiter ?? ((_q, _s, n) 
 const namedLimiter = (name) => (req, res, next) => (req.app.locals[name] ?? limiter)(req, res, next);
 const strongPassword = (field = "password") => body(field).custom(validateNewPassword);
 const credentialLimiter = namedLimiter("credentialAccountLimiter");
-router.use(["/mfa", "/reauthenticate"], (req, res, next) => {
-  if (req.method === "GET" || mfaEnabled()) return next();
+const requireMfaEnabled = (req, res, next) => {
+  if (mfaEnabled()) return next();
   return res.status(410).json({ error: "Two-factor authentication is disabled" });
-});
+};
 
 router.post(
   "/register",
@@ -46,10 +46,10 @@ router.post(
 );
 
 router.get("/mfa", requireAuth, mfaStatus);
-router.post("/mfa/enroll", namedLimiter("recoveryLimiter"), requireAuth, credentialLimiter, body("password").isString().bail().isLength({ min: 1, max: 128 }), validate, beginMfaEnrollment);
-router.post("/mfa/confirm", namedLimiter("recoveryLimiter"), requireAuth, credentialLimiter, body("password").isString().bail().isLength({ min: 1, max: 128 }), body("code").isString().bail().matches(/^\d{6}$/), validate, confirmMfaEnrollment);
-router.post("/mfa/recovery-codes", namedLimiter("recoveryLimiter"), requireAuth, credentialLimiter, body("password").isString().bail().isLength({ min: 1, max: 128 }), validate, rotateRecoveryCodes);
-router.post("/reauthenticate", namedLimiter("loginLimiter"), requireAuth, credentialLimiter, body("password").isString().bail().isLength({ min: 1, max: 128 }), validate, reauthenticate);
+router.post("/mfa/enroll", namedLimiter("recoveryLimiter"), requireAuth, credentialLimiter, requireMfaEnabled, body("password").isString().bail().isLength({ min: 1, max: 128 }), validate, beginMfaEnrollment);
+router.post("/mfa/confirm", namedLimiter("recoveryLimiter"), requireAuth, credentialLimiter, requireMfaEnabled, body("password").isString().bail().isLength({ min: 1, max: 128 }), body("code").isString().bail().matches(/^\d{6}$/), validate, confirmMfaEnrollment);
+router.post("/mfa/recovery-codes", namedLimiter("recoveryLimiter"), requireAuth, credentialLimiter, requireMfaEnabled, body("password").isString().bail().isLength({ min: 1, max: 128 }), validate, rotateRecoveryCodes);
+router.post("/reauthenticate", namedLimiter("loginLimiter"), requireAuth, credentialLimiter, requireMfaEnabled, body("password").isString().bail().isLength({ min: 1, max: 128 }), validate, reauthenticate);
 router.post("/refresh", namedLimiter("authLimiter"), refresh);
 router.post("/logout", logout);
 router.get("/me", requireAuth, me);

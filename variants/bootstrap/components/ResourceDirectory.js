@@ -8,6 +8,8 @@ import DiagnosticAvailability from "./DiagnosticAvailability";
 export default function ResourceDirectory({ kind, title, intro, label, onSelectResource }) {
   const [items, setItems] = useState([]);
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [revision, setRevision] = useState(0);
@@ -16,19 +18,22 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
   const [diagnosticUrgency, setDiagnosticUrgency] = useState("ROUTINE");
 
   useEffect(() => {
-    let live = true;
+    const controller = new AbortController();
     setLoading(true);
-    productApi(`/api/${kind}?q=${encodeURIComponent(query)}`)
-      .then(r => {
-        if (live) {
-          setItems(r.data || []);
-          setError("");
-        }
-      })
-      .catch(e => { if (live) { setItems([]); setError(e.message); } })
-      .finally(() => { if (live) setLoading(false); });
-    return () => { live = false; };
-  }, [kind, query, revision]);
+    const timer = setTimeout(() => {
+      productApi(`/api/${kind}?q=${encodeURIComponent(query)}&page=${page}&limit=12&view=summary`, { signal: controller.signal })
+        .then(r => {
+          if (!controller.signal.aborted) {
+            setItems(r.data || []);
+            setHasMore(r.pagination?.hasMore === true);
+            setError("");
+          }
+        })
+        .catch(e => { if (!controller.signal.aborted) { setItems([]); setError(e.message); } })
+        .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    }, query ? 200 : 0);
+    return () => { clearTimeout(timer); controller.abort(); };
+  }, [kind, query, page, revision]);
 
   const handleBook = (item) => {
     setSelectedProvider(item);
@@ -51,7 +56,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
         id="resource-search"
         className="form-control"
         value={query}
-        onChange={e => setQuery(e.target.value)}
+        onChange={e => { setQuery(e.target.value); setPage(1); }}
         placeholder="Search name, service or locality"
       />
       </div>
@@ -67,7 +72,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
         <div className="surface">No listed providers match this search. Try another locality or service.</div>
       )}
       <div className="row g-3">
-        {items.map(item => (
+        {!loading && !error && items.map(item => (
           <div className="col-md-6 col-xl-4" key={item._id}>
             <article className="surface h-100 d-flex flex-column">
               <div className="d-flex justify-content-between gap-2">
@@ -150,6 +155,11 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
           </div>
         ))}
       </div>
+      {!loading && !error && (page > 1 || hasMore) && <nav className="d-flex align-items-center gap-3 mt-4" aria-label="Provider result pages">
+        <button className="btn btn-outline-primary" disabled={page === 1} onClick={() => setPage(value => value - 1)}>Previous providers</button>
+        <span>Page {page}</span>
+        <button className="btn btn-outline-primary" disabled={!hasMore} onClick={() => setPage(value => value + 1)}>Next providers</button>
+      </nav>}
       {showBooking && selectedProvider && (
         <AmbulanceBookingModal
           provider={selectedProvider}

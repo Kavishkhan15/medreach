@@ -9,6 +9,7 @@ import { ResourceProvider } from "../src/models/ResourceProvider.js";
 import { ProviderMembership } from "../src/models/ProviderMembership.js";
 import { ProviderApplication } from "../src/models/ProviderApplication.js";
 import { AvailabilityObservation } from "../src/models/AvailabilityObservation.js";
+import { listResources } from "../src/controllers/resourceController.js";
 import { listFacilities, getAvailability } from "../src/controllers/availabilityController.js";
 import { listHospitals } from "../src/controllers/hospitalController.js";
 import { listAccounts, listOrganizations, providerApplications, myOrganizations } from "../src/controllers/providerAdminController.js";
@@ -39,11 +40,37 @@ test("bounded provider lists and public availability integrity", { skip: !isolat
   const app = express();
   let actor = { id: provider.id, role: provider.role };
   app.use((req, _res, next) => { req.user = actor; next(); });
+  app.get("/resources", listResources("diagnostic"));
   app.get("/facilities/:id", listFacilities); app.get("/availability/:id", getAvailability);
   app.get("/accounts", listAccounts); app.get("/organizations", listOrganizations);
   app.get("/applications", providerApplications); app.get("/mine", myOrganizations); app.get("/hospitals", listHospitals);
   app.use((error, _req, res, _next) => res.status(error.status || 500).json({ error: error.message }));
 
+  await t.test("form options read only identities and selected hospital, without evidence joins", async () => {
+    const reads = []; const client = mongoose.connection.getClient();
+    const listener = event => { if (["find", "aggregate"].includes(event.commandName)) reads.push(event); };
+    client.on("commandStarted", listener);
+    const response = await request(app).get(`/hospitals?view=options&id=${hospitals[0].id}`);
+    client.off("commandStarted", listener);
+    assert.equal(response.status, 200); assert.equal(response.body.data.length, 1);
+    assert.equal(response.body.data[0]._id, hospitals[0].id);
+    assert.ok(Object.keys(response.body.data[0]).every(key => ["_id", "name", "slug", "locality"].includes(key)));
+    assert.equal(reads.length, 1); assert.equal(reads[0].commandName, "find");
+    assert.equal((await request(app).get(`/hospitals?view=options&id=${privateHospitals[0].id}`)).body.data.length, 0);
+  });
+  await t.test("resource pages remain service-scoped, bounded and omit evidence in summary mode", async () => {
+    await ResourceProvider.create(Array.from({ length: 15 }, (_, i) => ({ kind: "diagnostic", name: `Page clinic ${String(i).padStart(2, "0")}`, sourceName: "fixture" })));
+    const first = await request(app).get("/resources?view=summary&limit=12");
+    const second = await request(app).get("/resources?view=summary&limit=12&page=2");
+    assert.equal(first.status, 200); assert.equal(first.body.data.length, 12); assert.equal(first.body.pagination.hasMore, true);
+    assert.equal(second.body.data.length, 3); assert.equal(second.body.pagination.hasMore, false);
+    const rows = [...first.body.data, ...second.body.data];
+    assert.equal(new Set(rows.map(row => row._id)).size, 15);
+    assert.ok(rows.every(row => row.kind === "diagnostic" && !("sourceName" in row) && !("serviceEvidence" in row) && !("email" in row)));
+    assert.equal((await request(app).get("/resources?limit=10000")).status, 400);
+    assert.equal((await request(app).get("/resources?page=0")).status, 400);
+    await ResourceProvider.deleteMany({ name: /^Page clinic / });
+  });
   await t.test("pending/rejected hospitals cannot leak public facilities or history counts", async () => {
     for (const h of privateHospitals) for (const path of ["facilities", "availability"]) assert.equal((await request(app).get(`/${path}/${h.id}`)).status, 404);
     assert.equal((await request(app).get(`/facilities/${hospitals[0].id}`)).status, 200);

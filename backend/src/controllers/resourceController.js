@@ -19,13 +19,18 @@ import { sendEmailEvent } from "../services/emailService.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 
 export const listResources = (kind) => asyncHandler(async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  const page = req.query.page === undefined ? 1 : Number(req.query.page);
+  const limit = req.query.limit === undefined ? 100 : Number(req.query.limit);
+  if (!Number.isSafeInteger(page) || page < 1 || page > 10000 || !Number.isSafeInteger(limit) || limit < 1 || limit > 100
+    || req.query.view !== undefined && req.query.view !== "summary") return res.status(400).json({ error: "Invalid directory page, limit or view" });
   const filter = { kind };
   if (req.query.q) filter.$or = ["name", "locality", "services", "coverageArea"].map((field) => ({ [field]: { $regex: String(req.query.q).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" } }));
   if (req.query.locality) filter.locality = { $regex: String(req.query.locality).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
   if (req.query.service) filter.services = String(req.query.service).slice(0, 80);
   if (req.query.bloodGroup && kind === "blood_bank") filter.listedBloodGroups = String(req.query.bloodGroup).slice(0, 10);
-  const data = await readPublicResources(filter);
-  res.json({ data, currentInventory: "unknown", liveDispatch: false });
+  const rows = await readPublicResources(filter, { limit: limit + 1, skip: (page - 1) * limit, summary: req.query.view === "summary" });
+  res.json({ data: rows.slice(0, limit), pagination: { page, limit, hasMore: rows.length > limit }, currentInventory: "unknown", liveDispatch: false });
 });
 export const getResource = (kind) => asyncHandler(async (req, res) => {
   if (!mongoose.isObjectIdOrHexString(req.params.id)) return res.status(400).json({ error: "Invalid provider id" });

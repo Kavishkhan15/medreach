@@ -22,7 +22,7 @@ test.afterEach(async ({page})=>expect(page.__runtimeErrors).toEqual([]));
 test('public directories retain providers and care actions without scraping verification indicators', async ({page}, testInfo) => {
   for(const [path,name] of [['/','Indicator Hospital'],['/hospitals','Indicator Hospital'],['/hospitals/indicator-hospital','Indicator Hospital'],['/blood-banks','Indicator Blood Bank'],['/diagnostics','Indicator Diagnostics'],['/ambulances','Indicator Ambulance'],['/map','Indicator Hospital'],['/careers','Indicator Hospital']]) {
     await page.goto(path); const main=page.locator('main').first();
-    await expect(main.getByText(name,{exact:true}).first()).toBeVisible();
+    await expect(main.getByText(name,{exact:true}).filter({ visible: true }).first()).toBeVisible();
     await expect(main).not.toContainText(/verified|unverified|verification|freshness|last scraped|high confidence|Scraping source sentinel|Source:/i);
     await expect(main.locator('option').filter({hasText:'Recently updated'})).toHaveCount(0);
     if(path === '/') {

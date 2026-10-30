@@ -127,7 +127,7 @@ test("assigned centre admin confirms a subset of tests and a patient sees the ac
   await page.getByLabel("Password", { exact: true }).fill("E2E_SafePassword_123!");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/provider$/);
-  await page.getByLabel("Organisation", { exact: true }).selectOption(centre._id);
+  await page.getByLabel("Assigned organisation", { exact: true }).selectOption(centre._id);
   const card = page.getByRole("article").filter({ hasText: saved.reference });
   await expect(card.getByText("Diagnostic Review Patient", { exact: false })).toBeVisible();
   await card.getByLabel("Thyroid Profile", { exact: true }).uncheck();

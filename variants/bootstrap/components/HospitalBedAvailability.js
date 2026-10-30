@@ -18,6 +18,12 @@ export default function HospitalBedAvailability({ hospitalId }) {
     return () => controller.abort();
   }, [hospitalId, revision]);
   useEffect(() => {
+    const refresh = () => { if (document.visibilityState === "visible") setRevision(value => value + 1); };
+    const timer = setInterval(refresh, 30000);
+    window.addEventListener("focus", refresh);
+    return () => { clearInterval(timer); window.removeEventListener("focus", refresh); };
+  }, [hospitalId]);
+  useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 15000);
     return () => clearInterval(timer);
   }, []);
