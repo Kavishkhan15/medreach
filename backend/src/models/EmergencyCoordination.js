@@ -22,9 +22,9 @@ const event = new mongoose.Schema({
   leaseUntil: Date,
 }, { _id: false });
 const schema = new mongoose.Schema({
-  sourceType: { type: String, enum: ["bed", "blood", "ambulance"], required: true },
+  sourceType: { type: String, enum: ["bed", "blood", "ambulance", "diagnostic"], required: true },
   source: { type: mongoose.Schema.Types.ObjectId, required: true },
-  kind: { type: String, enum: ["hospital", "blood_bank", "ambulance"], required: true },
+  kind: { type: String, enum: ["hospital", "blood_bank", "ambulance", "diagnostic"], required: true },
   organization: mongoose.Schema.Types.ObjectId,
   reference: { type: String, required: true },
   status: { type: String, enum: ["awaiting_acknowledgement", "escalated", "acknowledged", "resolved", "exhausted"], default: "awaiting_acknowledgement" },

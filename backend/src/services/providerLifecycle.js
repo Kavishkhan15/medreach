@@ -53,10 +53,11 @@ export async function archiveProviderOrganization({ kind, id, actor, reason }) {
   if (!actor?.id || !await User.exists({ _id: actor.id, role: "system_admin", accountStatus: "active" })) throw fail(403, "ARCHIVE_FORBIDDEN", "Active System Admin required");
   if (typeof reason !== "string" || reason.trim().length < 3 || reason.trim().length > 500) throw fail(400, "ARCHIVE_REASON_REQUIRED", "An archive reason of 3–500 characters is required");
   const Model = kind === "hospital" ? Hospital : ResourceProvider;
-  let org = await Model.findOneAndUpdate({ _id: id, archivedAt: null, ...(kind === "hospital" ? {} : { kind }) },
+  let org = await Model.findOneAndUpdate({ _id: id, archivedAt: null, capacityReservationCount: { $not: { $gt: 0 } }, ...(kind === "hospital" ? {} : { kind }) },
     { $set: { archivedAt: new Date(), archivedBy: actor.id, archiveReason: reason.trim(), archiveOperation: new mongoose.Types.ObjectId(), archivePending: true, archiveAttempts: 0, archiveExhaustedAt: null } }, { new: true });
   if (!org) org = await Model.findOne({ _id: id, ...(kind === "hospital" ? {} : { kind }) });
   if (!org) throw fail(404, "ORGANIZATION_NOT_FOUND", "Organisation not found");
+  if (!org.archivedAt) throw fail(409, "ACTIVE_CAPACITY_ALLOCATIONS", "Resolve active reservations or admissions before archiving this organisation");
   try { await reconcileProviderArchive(kind, id); } catch { /* Durable state remains fail-closed until recovery. */ }
   const cleanupPending = Boolean(await Model.exists({ _id: id, archivePending: true }));
   return { organization: org, archived: true, cleanupPending };

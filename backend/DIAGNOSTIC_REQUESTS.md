@@ -51,9 +51,21 @@ and use a compatible release or suspend intake while arranging recovery.
 
 `REQUESTED → UNDER_REVIEW → CONFIRMED → COMPLETED`, with `DECLINED` and `CANCELLED` alternatives. A centre may confirm or decline directly from Requested. Patients may cancel Requested, Under Review or Confirmed requests. Terminal states cannot be reopened.
 
+Temporary unconfirmed holds may also become `EXPIRED`; confirmed appointments do
+not expire through this mechanism. A held multi-test request must be confirmed for
+all held tests on the selected date, or declined and replaced. The subset rule below
+continues to apply to legacy coordination requests.
+
 Every mutation requires `expectedVersion`. Status, version increment, history and pending audit/notification effects are saved atomically in one document. Concurrent or stale updates return 409. Confirmation requires a nonempty, distinct subset of the originally requested tests and a future ISO appointment timestamp within 180 days. The Bootstrap review form explicitly labels its appointment input as India time and converts it to UTC for storage. Tracking displays accepted tests and any requested tests excluded from the appointment.
 
-Requests and provider acceptance do not consume inventory, reserve slots, confirm payment or imply test completion. No report uploads or payments are part of this release.
+Configured diagnostic daily capacity now supports transactional temporary holds,
+with a maximum of 30 routine patients per test/date, date selection from today and
+Routine/Emergency priority. All selected tests allocate together. Full routine dates
+reject extra routine allocations; emergencies can request provider review without
+displacing a confirmed appointment. Confirmation does not deduct a second slot,
+and completing a test still consumes that day's capacity. Unconfigured or unapproved
+listings retain coordination/review handling. No report uploads or payments are
+part of this release. See [capacity setup and rollout](CAPACITY_RESERVATIONS.md).
 
 ## Notifications and recovery
 

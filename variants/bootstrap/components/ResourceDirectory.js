@@ -12,6 +12,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
   const [revision, setRevision] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(null);
+  const [diagnosticUrgency, setDiagnosticUrgency] = useState("ROUTINE");
 
   useEffect(() => {
     let live = true;
@@ -38,6 +39,11 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
       <div className="page-head mb-4">
         <h1>{title}</h1>
         <p>{intro}</p>
+        {kind === "diagnostics" && <div className="d-flex flex-wrap gap-2 mt-3" role="group" aria-label="Diagnostic request priority">
+          <button className={`btn ${diagnosticUrgency === "ROUTINE" ? "btn-primary" : "btn-outline-primary"}`} aria-pressed={diagnosticUrgency === "ROUTINE"} onClick={() => setDiagnosticUrgency("ROUTINE")}>Routine tests</button>
+          <button className={`btn ${diagnosticUrgency === "URGENT" ? "btn-danger" : "btn-outline-danger"}`} aria-pressed={diagnosticUrgency === "URGENT"} onClick={() => setDiagnosticUrgency("URGENT")}>Emergency tests</button>
+          <p className="w-100 mb-0 text-secondary">{diagnosticUrgency === "URGENT" ? "Ask a centre to review urgent testing, including dates where routine bookings are full. The centre must confirm a time." : "Choose a centre, test and date. Routine bookings are limited to 30 patients per test per day once daily capacity is enabled."}</p>
+        </div>}
       </div>
       <div className="surface directory-search mb-4"><label className="form-label fw-semibold" htmlFor="resource-search">Search {label}</label>
       <input
@@ -110,7 +116,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
                   </>
                 ) : (
                   <>
-                    {kind === "diagnostics" && <Link className="btn btn-primary btn-sm" href={`/diagnostics/request?centre=${item._id}`}>Request tests</Link>}
+                    {kind === "diagnostics" && <Link className="btn btn-primary btn-sm" href={`/diagnostics/request?centre=${item._id}&urgency=${diagnosticUrgency}`}>{diagnosticUrgency === "URGENT" ? "Request emergency tests" : "Request tests"}</Link>}
                     {onSelectResource && kind === "blood-banks" && (
                       <button
                         type="button"

@@ -44,6 +44,7 @@ async function submit(page, guest, variant) {
   if (guest) await page.locator("#email").fill(`guest.${variant}@medreach.test`);
   await page.getByRole("button", { name: guest ? "Submit Emergency Bed Request" : "Submit Hospital Bed Request" }).click();
   await expect(page).toHaveURL(/\/requests\/[a-f0-9]{24}$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(/^MR-/);
   const reference = await page.getByRole("heading", { level: 1 }).innerText();
   const id = new URL(page.url()).pathname.split("/").at(-1);
   await expect(page.getByRole("heading", { name: "Available to hospital staff", exact: true })).toBeVisible();
@@ -64,7 +65,7 @@ async function staffAction(page, reference, label, response) {
   await expect(card).toBeVisible();
   await card.getByLabel("Message to patient").fill(response);
   await card.getByRole("button", { name: label, exact: true }).click();
-  await expect(card.getByRole("status")).toHaveText("Response recorded. Check email delivery history for delivery status.");
+  await expect(card.getByRole("status").filter({ hasText: "Response recorded." })).toHaveText("Response recorded. Check email delivery history for delivery status.");
 }
 
 for (const guest of [false, true]) {

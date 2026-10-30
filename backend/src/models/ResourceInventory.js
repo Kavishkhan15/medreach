@@ -33,6 +33,8 @@ const schema = new mongoose.Schema({
   version: { type: Number, required: true, min: 1, validate: Number.isSafeInteger },
   reportingMethod: { type: String, enum: INVENTORY_REPORTING_METHODS, required: true },
   classification: { type: String, enum: INVENTORY_CLASSIFICATIONS, required: true },
+  reservationsEnabled: { type: Boolean, default: false },
+  stockExpiresAt: { type: Date, default: null },
   pendingEvents: { type: [pendingEvent], default: [], select: false, validate: { validator: (rows) => rows.length <= INVENTORY_JOURNAL_LIMIT, message: "Inventory recovery backlog is full" } },
 }, { timestamps: true, strict: "throw" });
 schema.index({ kind: 1, organization: 1, resourceKey: 1 }, { unique: true });

@@ -6,6 +6,7 @@ const point = new mongoose.Schema({
   coordinates: { type: [Number], required: true },
 }, { _id: false });
 const schema = new mongoose.Schema({
+  capacityReservationCount: { type: Number, default: 0, min: 0, select: false },
   archivedAt: { type: Date, default: null, index: true },
   archivedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   archiveReason: { type: String, trim: true, maxlength: 500 },

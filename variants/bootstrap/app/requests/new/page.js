@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@medreach/core";
 import { productApi, post } from "../../../lib/productApi";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
+import HospitalBedAvailability from "../../../components/HospitalBedAvailability";
 
 const FACILITIES = [
   "Emergency Department",
@@ -184,7 +185,7 @@ export default function NewRequest() {
               </div>
               <h1 className="h2 mb-1">Request emergency bed &amp; care</h1>
               <p className="lead fs-6 text-muted mb-0">
-                Records a time-sensitive triage request. Call the hospital directly; no bed is reserved.
+                Records a time-sensitive triage request. A temporary bed hold is created only when the hospital has enabled verified inventory. Check the allocation status after submission and contact the hospital directly.
                 For immediate life-threatening danger, always call <a href="tel:112" className="fw-bold text-danger">112</a>.
               </p>
             </>
@@ -257,6 +258,8 @@ export default function NewRequest() {
               </div>
             )}
           </div>
+
+          {!isEmergency && selectedHospital && <HospitalBedAvailability key={selectedHospital._id} hospitalId={selectedHospital._id} />}
 
           {/* Emergency Type & Required Facility */}
           <div className="row g-3">

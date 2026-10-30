@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { productApi, patch } from "../lib/productApi";
 import { diagnosticTestLabel, diagnosticStatusLabel, diagnosticAppointment } from "../lib/diagnostics";
+import CapacityNotice from "./CapacityNotice";
 
 function DiagnosticReview({ row, reload }) {
   const [accepted, setAccepted] = useState(row.tests);
@@ -11,6 +12,7 @@ function DiagnosticReview({ row, reload }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const open = ["REQUESTED", "UNDER_REVIEW"].includes(row.status);
+  const capacityHeld = row.capacityAllocation?.mode === "held";
   async function update(status) {
     if (busy) return;
     if (status === "CONFIRMED" && (!accepted.length || !appointment)) { setError("Select the tests you can provide and an appointment time."); return; }
@@ -37,10 +39,10 @@ function DiagnosticReview({ row, reload }) {
     {open && !row.centreApprovalPending && <form onSubmit={event => { event.preventDefault(); update("CONFIRMED"); }}>
       <fieldset disabled={busy}>
         <legend className="h6">Tests you can provide</legend>
-        <div className="d-flex flex-wrap gap-3 mb-3">{row.tests.map(test => <label key={test} className="d-flex align-items-center gap-2"><input type="checkbox" className="form-check-input m-0" checked={accepted.includes(test)} onChange={event => setAccepted(previous => event.target.checked ? [...previous, test] : previous.filter(value => value !== test))} />{diagnosticTestLabel(test)}</label>)}</div>
+        <div className="d-flex flex-wrap gap-3 mb-3">{row.tests.map(test => <label key={test} className="d-flex align-items-center gap-2"><input type="checkbox" className="form-check-input m-0" checked={accepted.includes(test)} disabled={capacityHeld} onChange={event => setAccepted(previous => event.target.checked ? [...previous, test] : previous.filter(value => value !== test))} />{diagnosticTestLabel(test)}</label>)}</div>
         <label className="form-label" htmlFor={`diagnostic-appointment-${row._id}`}>Appointment date and time (India time)</label>
-        <input id={`diagnostic-appointment-${row._id}`} type="datetime-local" className="form-control mb-3" value={appointment} onChange={event => setAppointment(event.target.value)} required />
-        <p className="text-secondary">Confirm only tests this centre can provide. Other requested tests will be shown as unavailable.</p>
+        <input id={`diagnostic-appointment-${row._id}`} type="datetime-local" className="form-control mb-3" value={appointment} min={capacityHeld ? `${row.preferredDate}T00:00` : undefined} max={capacityHeld ? `${row.preferredDate}T23:59` : undefined} onChange={event => setAppointment(event.target.value)} required />
+        <p className="text-secondary">{capacityHeld ? "This request holds all selected tests for its preferred date. Confirm every requested test on that date before the hold expires, or decline to release the capacity." : "Confirm only tests this centre can provide. Other requested tests will be shown as unavailable."}</p>
         <div className="d-flex flex-wrap gap-2">
           <button type="submit" className="btn btn-primary">Confirm appointment</button>
           {row.status === "REQUESTED" && <button type="button" className="btn btn-outline-secondary" onClick={() => update("UNDER_REVIEW")}>Mark under review</button>}
@@ -87,6 +89,8 @@ export default function DiagnosticRequests({ providerId, manage = false, enabled
       <div className="d-flex flex-wrap justify-content-between gap-2 mb-2"><h3 className="h5 mb-0">{row.providerName}</h3><span className="status-pill tone-info">{diagnosticStatusLabel(row.status)}</span></div>
       <p className="text-secondary">{row.reference}</p>
       <p>{row.tests.map(diagnosticTestLabel).join(" · ")}</p>
+      <p><strong>Priority:</strong> {row.urgency === "URGENT" ? "Urgent / emergency review requested" : "Routine"}</p>
+      <CapacityNotice record={row} resource="test appointment" />
       <p>Preferred visit: {row.preferredDate} · {row.preferredTime.toLowerCase()}</p>
       {row.appointmentAt && <p><strong>Appointment:</strong> {diagnosticAppointment(row.appointmentAt)} IST<br /><strong>Accepted tests:</strong> {row.acceptedTests.map(diagnosticTestLabel).join(" · ")}</p>}
       {row.providerResponse && <p>Centre response: {row.providerResponse}</p>}

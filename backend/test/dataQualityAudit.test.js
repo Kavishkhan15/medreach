@@ -35,7 +35,7 @@ test("six synthetic scenarios preserve demo classification, zero versus unknown 
   assert.equal(fixtures.length, 6);
   for (const row of fixtures) {
     assert.match(row.hospital.name, /^DEMO Synthetic/); assert.equal(row.hospital.classification, "demo");
-    assert.deepEqual(row.inventories.map((r) => r.capacity), [50, 15]);
+    assert.deepEqual(row.inventories.map((r) => r.capacity), [30, 10]);
     for (const inv of row.inventories) {
       assert.equal(inv.classification, "demo"); assert.equal(inv.reportingMethod, "demo_fixture");
       assert.equal(inv.available, [inv.occupied, inv.blocked, inv.held].some((v) => v === null) ? null : inv.capacity - inv.occupied - inv.blocked - inv.held);

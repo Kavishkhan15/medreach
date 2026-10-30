@@ -14,12 +14,15 @@ import { ProviderGroup, ProviderOnboarding, ProviderOffboarding } from "../model
 import { HospitalEnrichment } from "../models/HospitalEnrichment.js";
 import { BackendLatencyBucket } from "../models/BackendLatencyBucket.js";
 import { DiagnosticRequest } from "../models/DiagnosticRequest.js";
+import { ResourceReservation } from "../models/ResourceReservation.js";
+import { DiagnosticDailyCapacity } from "../models/DiagnosticDailyCapacity.js";
 
 // Startup verifies reviewed schema prerequisites; it never creates production
 // collections or indexes. Uniqueness is part of the concurrency contract.
 export async function verifyApiIndexes({ nodeEnv = env.nodeEnv } = {}) {
   if (nodeEnv !== "production") return;
-  for (const Model of [ResourceInventory, InventoryObservation, EmailDelivery, EmailWebhookEvent, EmergencyCoordination, RateLimitBucket, PrivilegedSecurity, PrivilegedReauthentication, DataExport, EmergencyCoverage, OperationalAlertReceipt, OrganizationUsage, ProviderGroup, ProviderOnboarding, ProviderOffboarding, HospitalEnrichment, BackendLatencyBucket, DiagnosticRequest]) {
+  for (const Model of [ResourceInventory, InventoryObservation, EmailDelivery, EmailWebhookEvent, EmergencyCoordination, RateLimitBucket, PrivilegedSecurity, PrivilegedReauthentication, DataExport, EmergencyCoverage, OperationalAlertReceipt, OrganizationUsage, ProviderGroup, ProviderOnboarding, ProviderOffboarding, HospitalEnrichment, BackendLatencyBucket, DiagnosticRequest,
+    ...(process.env.DIAGNOSTIC_CAPACITY_ENABLED === "true" ? [ResourceReservation, DiagnosticDailyCapacity] : [])]) {
     const existing = await Model.collection.indexes().catch(error => {
       if (error.code === 26) return [];
       throw error;

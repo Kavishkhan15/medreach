@@ -20,14 +20,16 @@ test("isolated native-driver demo fixtures and read-only data audit", { skip: !a
     assert.equal(await db.collection("users").countDocuments(), 0);
     assert.equal(await db.collection("providermemberships").countDocuments(), 0);
     assert.equal(await db.collection("resourceinventories").countDocuments({ classification: "demo", reportingMethod: "demo_fixture" }), 12);
+    assert.equal(await db.collection("resourceinventories").countDocuments({ resourceKey: "general_beds", capacity: 30 }), 6);
+    assert.equal(await db.collection("resourceinventories").countDocuments({ resourceKey: "icu_beds", capacity: 10 }), 6);
   });
   await t.test("rerun preserves identifiers, changes to existing values and observation timestamps", async () => {
     const before = await db.collection("resourceinventories").findOne({ resourceKey: "general_beds" });
-    await db.collection("resourceinventories").updateOne({ _id: before._id }, { $set: { occupied: 3, available: 47, version: 2 } });
+    await db.collection("resourceinventories").updateOne({ _id: before._id }, { $set: { occupied: 3, available: 27, version: 2 } });
     const again = await createInventoryDemo(db, { uri, config, now: new Date(Date.now() + 60000) });
     assert.deepEqual(again.created, { hospitals: 0, inventories: 0, capabilities: 0 });
     const after = await db.collection("resourceinventories").findOne({ _id: before._id });
-    assert.equal(after.version, 2); assert.equal(after.available, 47); assert.deepEqual(after.observedAt, before.observedAt);
+    assert.equal(after.version, 2); assert.equal(after.available, 27); assert.deepEqual(after.observedAt, before.observedAt);
   });
   await t.test("parallel fixture invocations converge without duplicate organisations", async () => {
     await Promise.all([createInventoryDemo(db, { uri, config }), createInventoryDemo(db, { uri, config })]);

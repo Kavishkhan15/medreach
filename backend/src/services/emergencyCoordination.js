@@ -7,6 +7,7 @@ import { EmergencyCoordination } from "../models/EmergencyCoordination.js";
 import { EmergencyRequest } from "../models/EmergencyRequest.js";
 import { BloodRequest } from "../models/BloodRequest.js";
 import { AmbulanceBooking } from "../models/AmbulanceBooking.js";
+import { DiagnosticRequest } from "../models/DiagnosticRequest.js";
 import { User } from "../models/User.js";
 import { ProviderMembership } from "../models/ProviderMembership.js";
 import { Hospital } from "../models/Hospital.js";
@@ -20,6 +21,7 @@ const sources = {
   bed: { Model: EmergencyRequest, type: "EmergencyRequest", query: { isEmergency: true, status: { $in: ["REQUESTED", "SENT", "UNDER_REVIEW", "INFORMATION_REQUESTED"] } } },
   blood: { Model: BloodRequest, type: "BloodRequest", query: { type: "REQUEST", isUrgent: true, status: "REQUESTED" } },
   ambulance: { Model: AmbulanceBooking, type: "AmbulanceBooking", query: { isEmergency: true, status: { $in: ["RECORDED", "UNDER_REVIEW"] } } },
+  diagnostic: { Model: DiagnosticRequest, type: "DiagnosticRequest", query: { urgency: "URGENT", status: { $in: ["REQUESTED", "UNDER_REVIEW"] } } },
 };
 const waiting = ["awaiting_acknowledgement", "escalated"];
 const fail = (status, code, message) => Object.assign(new Error(message), { status, code });
@@ -42,6 +44,7 @@ function isOpen(record, sourceType, now) {
   if (!routing.isEmergency) return false;
   if (sourceType === "bed") return sources.bed.query.status.$in.includes(record.status) && record.expiresAt > now;
   if (sourceType === "blood") return record.type === "REQUEST" && record.status === "REQUESTED";
+  if (sourceType === "diagnostic") return sources.diagnostic.query.status.$in.includes(record.status);
   return sources.ambulance.query.status.$in.includes(record.status);
 }
 async function providerOrganizationExists(kind, organization) {

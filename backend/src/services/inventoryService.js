@@ -8,6 +8,7 @@ import { User } from "../models/User.js";
 import { PROVIDER_KINDS } from "../models/ProviderMembership.js";
 import { Hospital } from "../models/Hospital.js";
 import { ResourceProvider } from "../models/ResourceProvider.js";
+import { ResourceReservation } from "../models/ResourceReservation.js";
 
 export const INVENTORY_FRESHNESS_MS = 30 * 60 * 1000;
 const counts = ["capacity", "occupied", "blocked", "held"];
@@ -15,7 +16,7 @@ const fields = ["unit", ...counts, "available", "observedAt", "updatedBy", "vers
 const fail = (status, code, message) => Object.assign(new Error(message), { status, code });
 const snapshot = (record) => Object.fromEntries(fields.map((key) => [key, record[key] ?? null]));
 
-export function normalizeInventoryInput(input, now = new Date()) {
+export function normalizeInventoryInput(input, now = new Date(), { managedHolds = false } = {}) {
   const allowed = new Set(["expectedVersion", "capacity", "occupied", "blocked", "held", "observedAt", "reportingMethod", "unit"]);
   if (!input || typeof input !== "object" || Array.isArray(input) || Object.keys(input).some((key) => !allowed.has(key))) throw fail(400, "INVALID_INVENTORY", "Unexpected inventory fields");
   if (!Number.isSafeInteger(input.expectedVersion) || input.expectedVersion < 0 || input.expectedVersion >= Number.MAX_SAFE_INTEGER) throw fail(400, "INVALID_VERSION", "expectedVersion must be a non-negative integer");
@@ -25,7 +26,7 @@ export function normalizeInventoryInput(input, now = new Date()) {
     if (value !== null && (!Number.isSafeInteger(value) || value < 0)) throw fail(400, "INVALID_INVENTORY", "Counts must be non-negative safe integers or null");
     normalized[key] = value;
   }
-  if (normalized.held !== null && normalized.held !== 0) throw fail(400, "HOLDS_DISABLED", "Inventory reservations are not enabled");
+  if (!managedHolds && normalized.held !== null && normalized.held !== 0) throw fail(400, "HOLDS_DISABLED", "Inventory reservations are not enabled");
   const knownUsed = [normalized.occupied, normalized.blocked, normalized.held].filter((v) => v !== null).reduce((sum, v) => sum + BigInt(v), 0n);
   if (normalized.capacity !== null && knownUsed > BigInt(normalized.capacity)) throw fail(400, "INVALID_INVENTORY", "Used and blocked counts exceed operational capacity");
   normalized.available = counts.every((key) => normalized[key] !== null) ? normalized.capacity - normalized.occupied - normalized.blocked - normalized.held : null;
@@ -47,7 +48,8 @@ export function publicInventorySnapshot(record, now = new Date()) {
   const available = capacity !== null && Number.isSafeInteger(record.available) && record.available >= 0 && record.available <= capacity ? record.available : null;
   const expiresAt = observedAt ? new Date(timestamp + INVENTORY_FRESHNESS_MS) : null;
   return { resourceKey: record.resourceKey, unit: record.unit, capacity,
-    available, observedAt, expiresAt: expiresAt && Number.isFinite(expiresAt.getTime()) ? expiresAt : null,
+    available, held: publish ? record.held ?? null : null, reservationsEnabled: record.reservationsEnabled === true,
+    observedAt, expiresAt: expiresAt && Number.isFinite(expiresAt.getTime()) ? expiresAt : null,
     version: record.version ?? 0, classification: record.classification ?? "unknown", reportingMethod: record.reportingMethod ?? null,
     freshness: fresh ? "recent" : validTime ? "outdated" : "unknown", status: available === null ? "unknown" : available === 0 ? "unavailable" : "available" };
 }
@@ -78,7 +80,7 @@ async function assertAccess(actor, kind, organizationId, write = false) {
 export async function getPublicInventory({ kind, organizationId, now }) {
   validateTarget(kind, organizationId);
   await organization(kind, organizationId, true);
-  const rows = await ResourceInventory.find({ kind, organization: organizationId }).select("resourceKey unit capacity available observedAt version classification reportingMethod").sort({ resourceKey: 1 }).limit(100).lean();
+  const rows = await ResourceInventory.find({ kind, organization: organizationId }).select("resourceKey unit capacity available held reservationsEnabled observedAt version classification reportingMethod").sort({ resourceKey: 1 }).limit(100).lean();
   // Evaluate after all database I/O so a slow read cannot extend availability.
   // Explicit times are reserved for deterministic service tests/replays, not route input.
   const evaluatedAt = now ?? new Date();
@@ -168,12 +170,17 @@ export async function reconcileInventoryJournal({ limit = 25, now = new Date(), 
 }
 export async function updateInventory({ kind, organizationId, resourceKey, input, actor, requestId, ipHash }) {
   validateTarget(kind, organizationId, resourceKey);
-  const normalized = normalizeInventoryInput(input);
   await assertAccess(actor, kind, organizationId, true);
   const org = await organization(kind, organizationId);
   if (["pending", "rejected"].includes(org.approvalStatus)) throw fail(409, "ORGANIZATION_NOT_APPROVED", "Organisation approval is required");
   const key = { kind, organization: organizationId, resourceKey };
   const before = await ResourceInventory.findOne(key).select("+pendingEvents").lean();
+  const normalized = normalizeInventoryInput(input, new Date(), { managedHolds: before?.reservationsEnabled === true });
+  if (before?.reservationsEnabled) {
+    if (normalized.held !== before.held) throw fail(409, "MANAGED_HOLDS", "Active holds are managed by request allocations; refresh inventory before saving");
+    const admitted = await ResourceReservation.aggregate([{ $match: { inventory: before._id, state: "admitted" } }, { $group: { _id: null, quantity: { $sum: "$quantity" } } }]);
+    if (normalized.occupied === null || normalized.occupied < (admitted[0]?.quantity || 0)) throw fail(409, "MANAGED_OCCUPANCY", "Occupied beds cannot be lower than recorded admissions");
+  }
   if ((before?.version ?? 0) !== normalized.expectedVersion) throw fail(409, "INVENTORY_CONFLICT", "Inventory changed; refresh before submitting again");
   if (before?.observedAt && normalized.observedAt < new Date(before.observedAt)) throw fail(409, "STALE_OBSERVATION", "A newer observation already exists");
   if ((before?.pendingEvents?.length ?? 0) >= INVENTORY_JOURNAL_LIMIT) throw fail(503, "INVENTORY_RECOVERY_BACKLOG", "Inventory history recovery is required before further updates");

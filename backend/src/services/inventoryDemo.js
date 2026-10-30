@@ -17,10 +17,10 @@ export function inventoryDemoFixtures(now = new Date()) {
   if (!(now instanceof Date) || !Number.isFinite(now.getTime())) throw new Error("A valid fixture time is required.");
   const states = {
     fully_available: [[0, 0, 0], [0, 0, 0]],
-    partially_occupied: [[26, 2, 0], [8, 1, 0]],
-    icu_nearly_full: [[20, 0, 0], [14, 0, 0]],
-    general_full: [[50, 0, 0], [9, 0, 0]],
-    blocked_beds: [[30, 10, 0], [8, 4, 0]],
+    partially_occupied: [[16, 2, 0], [5, 1, 0]],
+    icu_nearly_full: [[20, 0, 0], [9, 0, 0]],
+    general_full: [[30, 0, 0], [6, 0, 0]],
+    blocked_beds: [[15, 5, 0], [4, 3, 0]],
     stale_unknown: [[22, 0, 0], [null, null, null]],
   };
   return scenarios.map((scenario) => {
@@ -28,10 +28,10 @@ export function inventoryDemoFixtures(now = new Date()) {
     const hospital = { _id: organization, name: `DEMO Synthetic ${scenario.replaceAll("_", " ")}`, slug: `demo-inventory-${scenario.replaceAll("_", "-")}`,
       description: "Synthetic inventory demonstration. This is not a real healthcare organisation and must not be used for patient coordination.",
       demo: true, classification: "demo", demoFixtureKey: `${fixtureNamespace}:${scenario}`, approvalStatus: "approved", city: "Synthetic demo city", admins: [],
-      emergencyDepartmentStatus: "unknown", ambulanceStatus: "unknown", bedsTotal: 65, bedsAvailable: null,
+      emergencyDepartmentStatus: "unknown", ambulanceStatus: "unknown", bedsTotal: 40, bedsAvailable: null,
       createdAt: now, updatedAt: now };
     const inventories = ["general_beds", "icu_beds"].map((resourceKey, index) => {
-      const capacity = index === 0 ? 50 : 15;
+      const capacity = index === 0 ? 30 : 10;
       const [occupied, blocked, held] = states[scenario][index];
       return { _id: fixtureId(`${scenario}:${resourceKey}`), kind: "hospital", organization, resourceKey, unit: "beds", capacity, occupied, blocked, held,
         available: [occupied, blocked, held].some((v) => v === null) ? null : capacity - occupied - blocked - held,

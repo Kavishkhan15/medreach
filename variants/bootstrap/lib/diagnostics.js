@@ -6,7 +6,7 @@ export const DIAGNOSTIC_TESTS = [
 ];
 export const diagnosticTestLabel = key => DIAGNOSTIC_TESTS.find(([value]) => value === key)?.[1] || key;
 export const diagnosticStatusLabel = value => ({ REQUESTED: "Requested", UNDER_REVIEW: "Under review", CONFIRMED: "Confirmed",
-  COMPLETED: "Completed", DECLINED: "Declined", CANCELLED: "Cancelled" }[value] || value);
+  COMPLETED: "Completed", DECLINED: "Declined", CANCELLED: "Cancelled", EXPIRED: "Hold expired" }[value] || value);
 export const diagnosticDate = date => new Intl.DateTimeFormat("en-CA", {
   timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit",
 }).format(date);

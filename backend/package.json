@@ -31,6 +31,7 @@
     "migrate:adoption-indexes": "node scripts/migrateAdoptionIndexes.js",
     "migrate:reliability-release": "node scripts/migrateReliabilityReleaseIndexes.js",
     "migrate:diagnostics": "node scripts/migrateDiagnosticIndexes.js",
+    "migrate:capacity": "node scripts/migrateCapacityIndexes.js",
     "rehearse:sustained": "node scripts/rehearseSustainedReliability.js",
     "staging:local": "node scripts/runLocalStaging.js",
     "audit:evidence": "node scripts/inventoryEvidenceArtifacts.js",

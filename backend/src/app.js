@@ -32,6 +32,7 @@ import bloodCampaignRoutes from "./routes/bloodCampaignRoutes.js";
 import bloodRequestRoutes from "./routes/bloodRequestRoutes.js";
 import trackingRouter from "./routes/tracking.js";
 import inventoryRouter from "./routes/inventory.js";
+import capacityRouter from "./routes/capacity.js";
 import { resendWebhookRouter } from "./routes/resendWebhook.js";
 import emergencyCoordinationRouter from "./routes/emergencyCoordination.js";
 import backendOperationsRouter from "./routes/backendOperations.js";
@@ -70,6 +71,7 @@ export function createApp(options = {}) {
   // Facilities + availability are nested under a hospital id.
   app.use("/api/hospitals", availabilityRoutes);
   app.use("/api/inventory", inventoryRouter);
+  app.use("/api/capacity", capacityRouter);
   app.use("/api/provider-imports", inventoryImportsRouter);
   app.use("/api/privacy", privacyRouter);
   app.use("/api/integrations", integrationsRouter);

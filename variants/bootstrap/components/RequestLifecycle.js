@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { bedRequestLabel } from "@medreach/core";
+import CapacityNotice from "./CapacityNotice";
 
 const emailLabels = { disabled: "Email delivery disabled", pending: "Email queued", failed: "Email delivery failed", sent: "Email accepted by mail server" };
 export default function RequestLifecycle({ model }) {
@@ -17,8 +18,9 @@ export default function RequestLifecycle({ model }) {
     {request.status === "REQUESTED" && <p>Your request is recorded. Hospital receipt has not been confirmed. Call the hospital directly.</p>}
     {request.status === "SENT" && <p>Your request is available in the connected hospital staff inbox. Staff have not started review yet.</p>}
     {request.status === "INFORMATION_REQUESTED" && <p>The hospital needs more information. Read its message and reply below.</p>}
-    {request.status === "ACCEPTED" && <p>The hospital accepted the request. Contact staff to confirm the next steps. This is not a bed reservation.</p>}
+    {request.status === "ACCEPTED" && <p>The hospital accepted the request. Contact staff to confirm the next steps and review the allocation status below.</p>}
     {request.status === "EXPIRED" && <p>The response deadline passed. Call the hospital directly; this request is closed.</p>}
+    <CapacityNotice record={request} resource="bed" />
     <p className="small text-secondary">Submitted {new Date(request.createdAt).toLocaleString()} · Response deadline {new Date(request.expiresAt).toLocaleString()}</p>
     <div className="d-flex flex-wrap align-items-center gap-3 my-3">
       {phone && <a style={{ minHeight: 44 }} className="btn btn-outline-secondary py-2" href={`tel:${phone}`}>Call hospital</a>}

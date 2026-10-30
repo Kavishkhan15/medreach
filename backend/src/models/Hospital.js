@@ -14,6 +14,7 @@ const slugify = (s) =>
 
 const hospitalSchema = new mongoose.Schema(
   {
+    capacityReservationCount: { type: Number, default: 0, min: 0, select: false },
     archivedAt: { type: Date, default: null, index: true },
     archivedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     archiveReason: { type: String, trim: true, maxlength: 500 },

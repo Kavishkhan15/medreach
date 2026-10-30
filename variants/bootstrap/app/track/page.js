@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@medreach/core";
 import { productApi } from "../../lib/productApi";
 import { diagnosticTestLabel, diagnosticStatusLabel, diagnosticAppointment } from "../../lib/diagnostics";
+import CapacityNotice from "../../components/CapacityNotice";
 
 const tokenKey = (kind, reference) => kind === "diagnostic" ? `medreach:diagnostic-request-token:${reference}` : kind === "ambulance"
   ? `medreach:ambulance-booking-token:${reference}`
@@ -149,6 +150,8 @@ export default function TrackRequestPage() {
         </> : type === "diagnostic" ? <>
           {record.providerName && <p><strong>Centre:</strong> {record.providerName}</p>}
           {record.tests && <p><strong>Requested tests:</strong> {record.tests.map(diagnosticTestLabel).join(" · ")}</p>}
+          <p><strong>Priority:</strong> {record.urgency === "URGENT" ? "Urgent / emergency review requested" : "Routine"}</p>
+          <CapacityNotice record={record} resource="test appointment" />
           {record.preferredDate && <p><strong>Preferred visit:</strong> {record.preferredDate} · {record.preferredTime.toLowerCase()}</p>}
           {record.appointmentAt && <><p><strong>Appointment:</strong> {diagnosticAppointment(record.appointmentAt)} IST</p><p><strong>Accepted tests:</strong> {record.acceptedTests.map(diagnosticTestLabel).join(" · ")}</p>
             {record.tests.some(test => !record.acceptedTests.includes(test)) && <p><strong>Tests not available in this appointment:</strong> {record.tests.filter(test => !record.acceptedTests.includes(test)).map(diagnosticTestLabel).join(" · ")}</p>}</>}

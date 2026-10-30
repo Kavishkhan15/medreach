@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { bedRequestLabel, BED_REQUEST_STAFF_ACTIONS, adminEntity } from "@medreach/core";
+import { bedRequestLabel, BED_REQUEST_STAFF_ACTIONS, adminEntity, useAuth } from "@medreach/core";
 import AdminActionFeedback from "./AdminActionFeedback";
-import { patch } from "../lib/productApi";
+import { patch, productApi } from "../lib/productApi";
+import CapacityNotice from "./CapacityNotice";
 
 export default function StaffBedRequest({ request, refresh, action }) {
+  const { user } = useAuth();
   const [response, setResponse] = useState("");
   const [error, setError] = useState("");
   const busy = action.busy;
@@ -25,6 +27,7 @@ export default function StaffBedRequest({ request, refresh, action }) {
     <p><strong>{request.isEmergency ? "Emergency bed request" : "Standard bed request"}</strong> · {bedRequestLabel(request.status)}</p>
     <p>{request.emergencyType} · {request.requiredFacility} · <a href={`tel:${request.contactPhone}`}>Call patient</a></p>
     <p className="small text-secondary">Submitted {new Date(request.createdAt).toLocaleString()} · Response deadline {new Date(request.expiresAt).toLocaleString()}</p>
+    <CapacityNotice record={request} resource="bed" />
     {request.patientSummary && <p style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{request.patientSummary}</p>}
     {request.hospitalResponse && <p style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>Last hospital response: {request.hospitalResponse}</p>}
     {request.timeline?.at(-1)?.actorRole === "patient" && request.timeline.at(-1).note && <p style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>Patient: {request.timeline.at(-1).note}</p>}
@@ -34,6 +37,10 @@ export default function StaffBedRequest({ request, refresh, action }) {
       <textarea style={{ fontSize: 16 }} id={`response-${request._id}`} className="form-control mb-3" rows={3} maxLength={500} value={response} disabled={disabled} onChange={(e) => setResponse(e.target.value)} />
       <div className="d-flex flex-wrap align-items-center gap-3 my-3">{actions.map(([status, label]) => <button style={{ minHeight: 44 }} className="btn btn-outline-secondary py-2" key={status} disabled={disabled} onClick={() => act(status)}>{busy ? "Saving…" : label}</button>)}</div>
     </>}
+    {user?.role === "provider_admin" && ["confirmed", "admitted"].includes(request.capacityAllocation?.mode) && <div className="mt-3">
+      <p>Record the actual admission or discharge. Admission converts the existing hold to occupancy; it does not deduct another bed.</p>
+      <button type="button" className="btn btn-primary" disabled={disabled} onClick={() => action.run(() => productApi(`/api/capacity/requests/EmergencyRequest/${request._id}/${request.capacityAllocation.mode === "admitted" ? "discharge" : "admit"}`, { method: "POST", body: { expectedStatus: request.status } }), { target: request._id, success: "Bed allocation updated.", refresh })}>{request.capacityAllocation.mode === "admitted" ? "Record discharge" : "Record admission"}</button>
+    </div>}
     {action.target === request._id && <AdminActionFeedback action={action} refresh={refresh} />}
     {expired && <p>The response deadline passed. Refresh to check expiry.</p>}
     {error && <div className="alert alert-danger my-3" role="alert">{error}<div><button style={{ minHeight: 44 }} className="btn btn-outline-secondary py-2" disabled={disabled} onClick={refresh}>Refresh requests</button></div></div>}

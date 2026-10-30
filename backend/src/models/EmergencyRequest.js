@@ -29,6 +29,7 @@ const expiryEffects = new mongoose.Schema({
 }, { _id: false });
 
 const schema = new mongoose.Schema({
+  capacityAllocation: { type: mongoose.Schema.Types.Mixed },
   statusEffects: { type: [requestStatusEffectsSchema], default: undefined, select: false },
   expiryEffects: { type: expiryEffects, select: false },
   coordinationVersion: Number,

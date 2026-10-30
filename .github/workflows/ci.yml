@@ -100,6 +100,24 @@ jobs:
           done
           echo "$tools_dir" >> "$GITHUB_PATH"
 
+      - name: Start isolated replica set for capacity transaction tests
+        run: |
+          docker run --detach --name medreach-capacity-test --network host mongo:6.0 mongod --replSet medreach-capacity-test --port 27018 --bind_ip 127.0.0.1
+          for attempt in $(seq 1 60); do
+            if docker exec medreach-capacity-test mongosh 'mongodb://127.0.0.1:27018/admin?directConnection=true' --quiet --eval 'db.adminCommand({ping:1}).ok' >/dev/null 2>&1; then
+              break
+            fi
+            sleep 1
+          done
+          docker exec medreach-capacity-test mongosh 'mongodb://127.0.0.1:27018/admin?directConnection=true' --quiet --eval 'rs.initiate({_id:"medreach-capacity-test",members:[{_id:0,host:"127.0.0.1:27018"}]})'
+          for attempt in $(seq 1 60); do
+            if docker exec medreach-capacity-test mongosh 'mongodb://127.0.0.1:27018/admin?directConnection=true' --quiet --eval 'if (!db.hello().isWritablePrimary) quit(1)' >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 1
+          done
+          exit 1
+
       - name: Run backend tests with all MongoDB gates enabled
         env:
           MEDREACH_BASE_TEST_MONGO_URI: mongodb://localhost:27017/medreach_test
@@ -107,6 +125,10 @@ jobs:
           MEDREACH_PRODUCT_TEST_MONGO_URI: mongodb://localhost:27017/medreach_product_integration
           MEDREACH_TEST_MONGO_URI: mongodb://localhost:27017/medreach_fusion_integration
         run: npm run backend:test:db
+
+      - name: Stop isolated capacity replica set
+        if: always()
+        run: docker rm --force medreach-capacity-test || true
 
   browser-tests:
     name: Critical Browser Journeys

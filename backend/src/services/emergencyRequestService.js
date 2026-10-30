@@ -13,6 +13,7 @@ import { generateTrackingToken, hashTrackingToken, trackingTokenForIdempotency, 
 import { sendEmailEvent } from "./emailService.js";
 import { requestStatusEffect, drainRequestStatusEffects, STATUS_EFFECTS_CAPACITY } from "./requestStatusEffects.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
+import { createRequestWithInventory, updateRequestWithInventory, bedResourceKey } from "./capacityRequestFlows.js";
 
 const transitions = {
   REQUESTED: ["SENT", "UNDER_REVIEW", "REJECTED", "CANCELLED", "EXPIRED"],
@@ -47,7 +48,7 @@ export async function createEmergencyRequest(data, actor) {
   const trackingToken = userId ? undefined : (trackingTokenForIdempotency(data.idempotencyKeyHash) || generateTrackingToken());
   let request;
   try {
-    request = await EmergencyRequest.create({
+    request = await createRequestWithInventory(EmergencyRequest, {
     coordinationVersion: 1,
     notificationVersion: 1,
     requestId: `MR-${Date.now().toString(36).toUpperCase()}-${randomBytes(3).toString("hex").toUpperCase()}`,
@@ -68,7 +69,7 @@ export async function createEmergencyRequest(data, actor) {
     locality: data.locality,
     expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000),
     timeline: [{ status: "REQUESTED", actor: userId, actorRole: "patient", note: userId ? undefined : "Guest emergency request" }],
-    });
+    }, isEmergency ? null : { kind: "hospital", organizationId: hospital._id, resourceKey: bedResourceKey(data.requiredFacility), quantity: 1, actorId: actor?.id });
   } catch (error) {
     if (error?.code === 11000) {
       const existing = await replay();
@@ -170,11 +171,11 @@ export async function changeEmergencyRequest({ requestId, actor, trackingToken, 
   }
   // Compare both state and history length: concurrent staff/patient actions
   // cannot overwrite each other's response or revive an expired request.
-  const updated = await EmergencyRequest.findOneAndUpdate({ _id: request._id, status: previousStatus,
+  const updated = await updateRequestWithInventory({ Model: EmergencyRequest, row: request, status, actorId: actor?.id, filter: { _id: request._id, status: previousStatus,
     [`timeline.${request.timeline.length}`]: { $exists: false },
     [`statusEffects.${STATUS_EFFECTS_CAPACITY - 1}`]: { $exists: false },
     ...(!expired && active.includes(previousStatus) ? { expiresAt: { $gt: now } } : {}) },
-    { $set: set, $push: { timeline: step, statusEffects: effect } }, { new: true, runValidators: true });
+    update: { $set: set, $push: { timeline: step, statusEffects: effect } } });
   if (!updated) return { error: "Request changed. Refresh its status before trying again.", status: 409 };
   try { await drainRequestStatusEffects("EmergencyRequest", updated._id, { effectId: effect._id }); }
   catch { console.warn("[medreach] Request saved; durable status effects await recovery."); }

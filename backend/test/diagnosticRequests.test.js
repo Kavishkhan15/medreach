@@ -92,7 +92,7 @@ test("diagnostic request workflow with isolated MongoDB", { skip: !uri }, async 
   await t.test("input validation and field tampering fail before storage", async () => {
     const count = await DiagnosticRequest.countDocuments();
     for (const invalid of [{ tests: [] }, { tests: ["CBC", "CBC"] }, { tests: ["INVENTED_TEST"] }, { consent: false },
-      { preferredDate: "2026-02-30" }, { preferredDate: indiaDate() }, { patientName: { $ne: "" } },
+      { preferredDate: "2026-02-30" }, { preferredDate: indiaDate(new Date(Date.now() - 86400000)) }, { patientName: { $ne: "" } },
       { contactPhone: "abc" }, { notes: "x".repeat(1001) }, { status: "CONFIRMED" }, { user: String(system._id) }, { centreApprovalPending: false }]) {
       await submit({ ...body(), ...invalid }).expect(400);
     }

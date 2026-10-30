@@ -17,7 +17,7 @@ const onlyFields = fields => (req, res, next) => {
   next();
 };
 router.post("/", optionalAuth, limiter("publicSubmissionLimiter"), captureIdempotencyKey("diagnostic-request"),
-  onlyFields(["providerId", "tests", "patientName", "contactPhone", "contactEmail", "preferredDate", "preferredTime", "notes", "consent"]),
+  onlyFields(["providerId", "tests", "patientName", "contactPhone", "contactEmail", "preferredDate", "preferredTime", "notes", "consent", "urgency"]),
   body("providerId").isMongoId(),
   body("tests").isArray({ min: 1, max: 4 }).bail().custom(value => new Set(value).size === value.length).withMessage("Select between one and four different tests"),
   body("tests.*").isString().isIn(DIAGNOSTIC_TESTS).withMessage("Choose a test from the available request options"),
@@ -25,14 +25,17 @@ router.post("/", optionalAuth, limiter("publicSubmissionLimiter"), captureIdempo
   body("contactPhone").isString().bail().trim().matches(PHONE_PATTERN).withMessage("Enter a valid contact number, including country code if needed"),
   body("contactEmail").optional({ checkFalsy: true }).isString().bail().trim().toLowerCase().isEmail().isLength({ max: 150 }).withMessage("Enter a valid email address or leave it blank"),
   body("notes").optional().isString().bail().trim().isLength({ max: 1000 }).withMessage("Keep additional notes within 1,000 characters"),
-  body("preferredDate").custom(validPreferredDate).withMessage("Choose a date from tomorrow through the next 180 days"),
+  body("urgency").optional().isIn(["ROUTINE", "URGENT"]).withMessage("Select routine or urgent review"),
+  body("preferredDate").custom(value => validPreferredDate(value, { allowToday: true })).withMessage("Choose today or a future date within 180 days"),
   body("preferredTime").isIn(["MORNING", "AFTERNOON", "EVENING"]).withMessage("Select a preferred time"),
   body("consent").custom(value => value === true).withMessage("Consent to share request details with the centre is required"), validate,
   asyncHandler(async (req, res) => {
     const { record, token, replayed } = await createDiagnosticRequest(req);
     res.set("Cache-Control", "no-store").status(replayed ? 200 : 201).json({ ok: true, reference: record.reference,
       request: privateDiagnosticRequest(record), trackingToken: token, replayed,
-      message: "Request recorded. Test availability and your appointment must be confirmed by the diagnostic centre." });
+      message: record.capacityAllocation?.mode === "held"
+        ? "Capacity is temporarily held. The centre must confirm before the hold expires."
+        : "Request recorded for coordination. Capacity and your appointment must be confirmed by the centre." });
   }));
 router.get("/", requireAuth,
   query("limit").optional().isInt({ min: 1, max: 100 }), query("before").optional().isMongoId(),
@@ -57,7 +60,7 @@ router.get("/", requireAuth,
   }));
 router.patch("/:id/status", requireAuth, requireRole("system_admin", "provider_admin"),
   onlyFields(["expectedVersion", "status", "acceptedTests", "appointmentAt", "providerResponse"]),
-  param("id").isMongoId(), version, body("status").isIn(DIAGNOSTIC_STATES.filter(state => state !== "REQUESTED")),
+  param("id").isMongoId(), version, body("status").isIn(DIAGNOSTIC_STATES.filter(state => !["REQUESTED", "EXPIRED"].includes(state))),
   body("acceptedTests").optional().isArray({ min: 1, max: 4 }), body("acceptedTests.*").isIn(DIAGNOSTIC_TESTS),
   body("appointmentAt").optional().isISO8601({ strict: true }),
   body("providerResponse").optional().isString().bail().trim().isLength({ max: 500 }), validate,

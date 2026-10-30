@@ -28,6 +28,12 @@ limits to accommodate a shared test identity.
 
 On an isolated machine with MongoDB and backup tools available:
 
+Capacity allocation tests also require a separate replica set named
+`medreach-capacity-test` on port 27018 with the disposable database
+`medreach_capacity_test`. CI creates this test-only container explicitly; it does
+not change the existing standalone test database. See
+[capacity rollout and verification](../../backend/CAPACITY_RESERVATIONS.md).
+
 ```sh
 npm ci
 npm run backend:test:db

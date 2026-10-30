@@ -37,7 +37,7 @@ current availability, campaign dates, provider participation or live dispatch.
 | Find care | Coordinate and follow up | Manage the network |
 | --- | --- | --- |
 | Hospitals and provider profiles | Standard and emergency bed requests | Provider applications and approvals |
-| Blood banks and diagnostics | Normal/urgent blood requests and blood donation | Organisation-scoped Provider Admin workspace |
+| Blood banks and diagnostics | Normal/urgent blood requests, blood donation and dated diagnostic test requests | Organisation-scoped Provider Admin workspace |
 | Ambulance listings and map discovery | Ambulance requests and private request history | System Admin accounts and platform oversight |
 | Directory-grounded assistant | Healthcare Careers, applications and reference tracking | Eligible provider/user email notifications |
 
@@ -181,6 +181,8 @@ user-study/       Proposed protocols and draft questionnaires
 </details>
 
 ## Verification
+
+[Bed holds, diagnostic daily limits and controlled rollout →](backend/CAPACITY_RESERVATIONS.md)
 
 Recorded code baseline: [`2a2f24d`](https://github.com/kasim672/medreach/commit/2a2f24d587407da27742d7b93898d9116d470c28), verified on **23 October 2026**.
 [All 13 GitHub checks passed](https://github.com/kasim672/medreach/actions/runs/39940586762).
