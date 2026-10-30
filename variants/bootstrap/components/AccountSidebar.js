@@ -16,11 +16,12 @@ export default function AccountSidebar() {
 
   const roleItems = user ? [
     ...(["provider_admin", "hospital_admin"].includes(user.role) ? [{ href: "/provider", label: "Provider", icon: "hospital" }] : []),
-    ...(isAdmin && user.role === "system_admin" ? [{ href: "/admin", label: "Admin", icon: "shield" }] : []),
+    ...(isAdmin && user.role === "system_admin" ? [{ href: "/admin", label: "Admin", icon: "shield" }, { href: "/admin/system-admins", label: "System Admins", icon: "users" }] : []),
   ] : [];
 
   const renderItem = ({ href, label, icon }) => {
-    const active = pathname === href || (href !== "/" && pathname?.startsWith(`${href}/`));
+    const active = (pathname === href || (href !== "/" && pathname?.startsWith(`${href}/`)))
+      && !(href === "/admin" && pathname?.startsWith("/admin/system-admins"));
     return (
       <li key={href}>
         <Link

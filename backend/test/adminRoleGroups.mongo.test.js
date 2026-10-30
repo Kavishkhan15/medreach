@@ -24,6 +24,10 @@ test("admin role groups paginate accounts without disclosing credential material
     await user.setPassword("IsolatedFixturePassword123!"); await user.save(); records.push(user);
   }
   const app = createApp(), token = await signSessionToken(records[3]);
+  const ordinaryAccounts = await request(app).get("/api/admin/users?role=user").set("Authorization", `Bearer ${token}`);
+  assert.equal(ordinaryAccounts.status, 200);
+  assert.equal(ordinaryAccounts.body.data.length, 1);
+  assert.ok(ordinaryAccounts.body.data.every(user => user.role === "user"));
   for (const [group, roles] of [["user", ["user", "admin", "user_admin"]], ["provider_admin", ["provider_admin", "hospital_admin"]], ["system_admin", ["system_admin"]]]) {
     const response = await request(app).get(`/api/admin/users?roleGroup=${group}`).set("Authorization", `Bearer ${token}`);
     assert.equal(response.status, 200);

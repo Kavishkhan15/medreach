@@ -31,7 +31,7 @@ test("audit distinguishes loading, records, outage, malformed response, retry an
   });
   await page.goto("/admin/audit");
   await expect(page.getByText("Loading audit log…", { exact: true })).toBeVisible();
-  await expect(page.getByText(/Demo dataset|System Admin|Hospital Admin/)).toHaveCount(0);
+  await expect(page.locator(".admin-page-body").getByText(/Demo dataset|System Admin|Hospital Admin/)).toHaveCount(0);
   gate.resolve();
   await expect(page.getByRole("cell", { name: "Hospital", exact: true })).toBeVisible();
   state = "outage"; await page.reload();

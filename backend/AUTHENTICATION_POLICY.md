@@ -1,5 +1,12 @@
 # Current authentication policy
 
+Account administration is split into Users (`/admin/users`), Provider Accounts
+(`/admin/provider-accounts`) and System Admins (`/admin/system-admins`). The System
+Admins sidebar entry is visible only to System Admins. Password lists expose
+status only; existing passwords and their hashes cannot be retrieved through
+these pages. The existing restricted provider handover flow can reveal a newly
+generated password once, after an explicit generation/reset action.
+
 Bootstrap uses email and password to sign in. The login page has one registration
 link, “Need an account? Register here”, which opens `/register` and preserves the
 original destination. Authenticator and recovery-code controls are not shown on
