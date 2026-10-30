@@ -21,8 +21,15 @@ export default function DiagnosticRequestForm() {
   const errorMessage = useRef(null);
   useEffect(() => {
     const controller = new AbortController();
-    const id = new URLSearchParams(window.location.search).get("centre");
-    setUrgency(new URLSearchParams(window.location.search).get("urgency") === "URGENT" ? "URGENT" : "ROUTINE");
+    const query = new URLSearchParams(window.location.search);
+    const id = query.get("centre");
+    setUrgency(query.get("urgency") === "URGENT" ? "URGENT" : "ROUTINE");
+    const requestedDate = query.get("date");
+    if (requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
+      const parsed = new Date(`${requestedDate}T00:00:00Z`);
+      if (Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === requestedDate
+        && requestedDate >= diagnosticDate(new Date()) && requestedDate <= diagnosticDate(new Date(Date.now() + 180 * 86400000))) setPreferredDate(requestedDate);
+    }
     if (!id || !/^[a-f0-9]{24}$/i.test(id)) {
       setError("Choose a diagnostic centre from the directory to start your request.");
       setLoading(false);

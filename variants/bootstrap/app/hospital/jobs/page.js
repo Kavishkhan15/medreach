@@ -7,6 +7,7 @@ import AdminDataState from "../../../components/AdminDataState";
 import AdminActionFeedback from "../../../components/AdminActionFeedback";
 import { productApi, post } from "../../../lib/productApi";
 import EmergencyIcon from "../../../components/EmergencyIcons";
+import CareerVacancyEditor from "../../../components/CareerVacancyEditor";
 
 const initialForm = {
   hospital: "",
@@ -16,6 +17,10 @@ const initialForm = {
   employmentType: "full_time",
   location: "Mumbai",
   department: "",
+  vacancies: "",
+  requirements: "",
+  salaryText: "",
+  deadline: "",
 };
 
 function isSafeUrl(url) {
@@ -76,7 +81,9 @@ export default function HospitalJobs({ providerMode = false }) {
             className="surface vstack gap-2"
             onSubmit={(e) => {
               e.preventDefault();
-              act(() => post("/api/jobs", providerMode ? { ...form, hospital: hospitals.find((h) => h._id === form.hospital)?.kind === "hospital" ? form.hospital : undefined, provider: hospitals.find((h) => h._id === form.hospital)?.kind !== "hospital" ? form.hospital : undefined } : form), "Job draft created successfully.");
+              const payload = { ...form, vacancies: form.vacancies === "" ? null : Number(form.vacancies), deadline: form.deadline ? `${form.deadline}T23:59:59+05:30` : undefined };
+              const organization = hospitals.find((item) => item._id === form.hospital);
+              act(() => post("/api/jobs", providerMode ? { ...payload, hospital: organization?.kind === "hospital" ? form.hospital : undefined, provider: organization?.kind !== "hospital" ? form.hospital : undefined } : payload), "Job draft created successfully.");
             }}
           >
             <h2 className="h5 mb-2">Create Job Draft</h2>
@@ -107,12 +114,27 @@ export default function HospitalJobs({ providerMode = false }) {
                 id="jtitle"
                 className="form-control form-control-sm"
                 minLength={3}
+                maxLength={160}
                 required
                 placeholder="e.g. Senior Emergency Resident"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
             </div>
+
+            <div className="row g-3">
+              <div className="col-sm-6">
+                <label className="form-label" htmlFor="jdepartment">Department</label>
+                <input id="jdepartment" className="form-control" maxLength={100} value={form.department}
+                  onChange={(event) => setForm({ ...form, department: event.target.value })} placeholder="e.g. Emergency medicine" />
+              </div>
+              <div className="col-sm-6">
+                <label className="form-label" htmlFor="jvacancies">Total positions (optional)</label>
+                <input id="jvacancies" className="form-control" type="number" min="0" max="10000" step="1" value={form.vacancies}
+                  onChange={(event) => setForm({ ...form, vacancies: event.target.value })} placeholder="Not reported" />
+              </div>
+            </div>
+            <p className="text-secondary mb-2">Only report authorised positions. Leaving the count blank shows availability as unknown.</p>
 
             <div className="row g-2">
               <div className="col-sm-6">
@@ -167,18 +189,40 @@ export default function HospitalJobs({ providerMode = false }) {
 
             <div>
               <label className="form-label small fw-bold" htmlFor="jdescription">
-                Description & Requirements
+                Role description
               </label>
               <textarea
                 id="jdescription"
                 className="form-control form-control-sm"
                 rows={4}
                 minLength={10}
+                maxLength={4000}
                 required
                 placeholder="Outline clinical expectations, shift schedules, and ICU/ward responsibilities…"
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
               />
+            </div>
+
+            <div>
+              <label className="form-label" htmlFor="jrequirements">Qualifications and requirements</label>
+              <textarea id="jrequirements" className="form-control" rows={3} maxLength={2000} value={form.requirements}
+                onChange={(event) => setForm({ ...form, requirements: event.target.value })} placeholder="Required qualifications, experience and certifications" />
+            </div>
+            <div>
+              <label className="form-label" htmlFor="jlocation">Work location</label>
+              <input id="jlocation" className="form-control" maxLength={160} value={form.location}
+                onChange={(event) => setForm({ ...form, location: event.target.value })} />
+            </div>
+            <div>
+              <label className="form-label" htmlFor="jsalary">Salary or compensation (optional)</label>
+              <input id="jsalary" className="form-control" maxLength={100} value={form.salaryText}
+                onChange={(event) => setForm({ ...form, salaryText: event.target.value })} placeholder="e.g. ₹40,000–₹50,000 per month" />
+            </div>
+            <div>
+              <label className="form-label" htmlFor="jdeadline">Application deadline (optional)</label>
+              <input id="jdeadline" className="form-control" type="date" value={form.deadline}
+                onChange={(event) => setForm({ ...form, deadline: event.target.value })} />
             </div>
 
             <button className="btn btn-primary btn-sm mt-2 fw-bold" disabled={action.disabled || !form.hospital}>
@@ -206,6 +250,11 @@ export default function HospitalJobs({ providerMode = false }) {
                     </div>
                     <span className="status-pill tone-info text-capitalize">{job.status}</span>
                   </div>
+
+                  <CareerVacancyEditor job={job} disabled={action.disabled} onSave={(body) => act(
+                    () => productApi(`/api/jobs/${job._id}/availability`, { method: "PATCH", body }),
+                    "Position counts updated. A full listing no longer accepts new applications.",
+                  )} />
 
                   <div className="d-flex flex-wrap gap-2 mb-2">
                     {job.status === "draft" && (

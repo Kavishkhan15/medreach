@@ -48,6 +48,11 @@ const schema = new mongoose.Schema(
     location: { type: String, trim: true, maxlength: 160 },
     salaryText: { type: String, trim: true, maxlength: 100 },
     deadline: { type: Date },
+    // Unknown legacy vacancy counts stay unknown; applications are not hires.
+    vacancies: { type: Number, default: null, min: 0, max: 10000, validate: { validator: value => value === null || Number.isSafeInteger(value) } },
+    filledPositions: { type: Number, default: 0, min: 0, max: 10000, validate: Number.isSafeInteger },
+    availabilityReportedAt: { type: Date },
+    availabilityReportedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", select: false },
     status: {
       type: String,
       enum: ["draft", "pending", "published", "closed", "rejected"],
@@ -63,10 +68,13 @@ const schema = new mongoose.Schema(
     reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     demo: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true, optimisticConcurrency: true }
 );
 
 schema.pre("validate", function (next) {
+  if (this.vacancies !== null && this.vacancies !== undefined && this.filledPositions > this.vacancies) {
+    this.invalidate("filledPositions", "Filled positions cannot exceed total vacancies");
+  }
   if (this.hospital && !this.organizationType) {
     this.organizationType = "hospital";
   }

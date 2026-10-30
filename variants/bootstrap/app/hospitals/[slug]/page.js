@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useHospital, saveHospital, useAuth } from "@medreach/core";
 import { productApi } from "../../../lib/productApi";
 import { EmergencyIcon } from "../../../components/EmergencyIcons";
+import HospitalBedAvailability from "../../../components/HospitalBedAvailability";
 
 export default function HospitalPage() {
   const { slug } = useParams();
@@ -104,6 +105,7 @@ export default function HospitalPage() {
       <div className="row g-4">
         {/* Main factual information card */}
         <div className="col-12 col-lg-8">
+          <HospitalBedAvailability hospitalId={hospital.hospitalId || baseHospital?._id} />
           <div className="surface p-4 shadow-sm border rounded mb-4">
             <h2 className="h5 mb-3 fw-bold border-bottom pb-2">Hospital Information</h2>
 

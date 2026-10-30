@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@medreach/core";
 import { productApi, post } from "../../../lib/productApi";
 import EmergencyIcon from "../../../components/EmergencyIcons";
+import CareerAvailability from "../../../components/CareerAvailability";
 
 const QUALIFICATIONS = [
   "MBBS",
@@ -64,6 +65,7 @@ export default function JobDetailPage() {
   useEffect(() => {
     let active = true;
     setLoadingJob(true);
+    setJob(null);
     setStatus("");
     productApi(`/api/jobs/${id}`)
       .then((res) => {
@@ -133,6 +135,7 @@ export default function JobDetailPage() {
 
   const handleApply = async (e) => {
     e.preventDefault();
+    if (job?.availability?.acceptingApplications === false) { setStatus("Applications are closed for this role. Refresh to check for updates."); return; }
     setStatus("");
 
     if (!candidateName.trim()) {
@@ -283,11 +286,12 @@ export default function JobDetailPage() {
               </div>
 
               <h2 className="h5 fw-bold">Role description</h2>
+              <CareerAvailability job={job} />
               <p className="pre-line text-body mb-4">{job.description}</p>
 
               <h2 className="h5 fw-bold">Requirements &amp; qualifications</h2>
               <p className="pre-line text-body mb-4">
-                {job.requirements || "Standard clinical registration and medical council clearance required."}
+                {job.requirements || "Requirements have not been reported. Confirm qualifications with the employer."}
               </p>
 
               {job.salaryText && (
@@ -407,6 +411,7 @@ export default function JobDetailPage() {
               /* PROPER APPLICATION FORM */
               <form className="surface sticky-top" style={{ top: "1.5rem" }} onSubmit={handleApply} noValidate>
                 <h2 className="h5 mb-3">Apply for this Position</h2>
+                {job.availability?.acceptingApplications === false && <p className="alert alert-warning" role="status">Applications are closed for this role. <button type="button" className="btn btn-outline-secondary" onClick={() => setJobRevision(value => value + 1)}>Refresh role</button></p>}
 
                 {user && (
                   <div className="alert alert-info py-2 px-3 small mb-3">
@@ -652,7 +657,7 @@ export default function JobDetailPage() {
                 <button
                   type="submit"
                   className="btn btn-primary w-100 py-2 fw-bold"
-                  disabled={submitting}
+                  disabled={submitting || job.availability?.acceptingApplications === false}
                   aria-busy={submitting}
                 >
                   {submitting ? "Submitting Application…" : "Submit Application"}

@@ -6,6 +6,7 @@ export function notFound(req, res) {
 }
 
 export function errorHandler(err, req, res, _next) {
+  if (err.name === "VersionError") return res.status(409).json({ error: "This record changed. Refresh before saving.", code: "RECORD_VERSION_CONFLICT" });
   if (/^(?:CAPACITY_|INVALID_CAPACITY_|INVALID_DIAGNOSTIC_CAPACITY|HOLD_EXPIRED|URGENT_CAPACITY_FULL|VERIFIED_CAPACITY_REQUIRED|ACTIVE_RESERVATIONS|INVALID_RESERVATION_|DEMO_CAPACITY_ONLY)/.test(err.code || "") && [400, 403, 404, 409, 503].includes(err.status)) {
     return res.status(err.status).json({ error: err.message, code: err.code });
   }

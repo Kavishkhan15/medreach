@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { productApi, post } from "../../lib/productApi";
 import EmergencyIcon from "../../components/EmergencyIcons";
+import PublishedCareerRoles from "../../components/PublishedCareerRoles";
 
 // Badge color tone resolver for Bootstrap
 function getOrgTypeBadgeTone(orgType) {
@@ -336,10 +337,10 @@ export default function Careers() {
       {/* Portal Header */}
       <header className="page-head mb-4 pb-2 border-bottom">
         <h1 className="fw-bold text-dark mb-2">
-          Mumbai Healthcare Careers Portal — Opportunities Across Hospitals, Labs, Blood Banks & EMS
+          Healthcare careers
         </h1>
         <p className="lead text-secondary mb-3">
-          Explore and apply directly for clinical, diagnostic, and emergency services positions across discovered Mumbai healthcare organizations. Applications are tracked in real-time.
+          Explore published healthcare roles and employer-reported vacancies, or send an expression of interest to a healthcare organisation.
         </p>
 
         {/* Live Metrics Ribbon */}
@@ -365,6 +366,9 @@ export default function Careers() {
         </div>
       </header>
 
+      <PublishedCareerRoles />
+      <h2>General expressions of interest</h2>
+      <p className="text-secondary">These organisations accept general applications. A directory listing does not mean a role or position is available.</p>
       {/* Search & Filter Control Bar */}
       <section className="surface mb-4 shadow-sm" aria-label="Search and Filter Organizations">
         <div className="row g-3">

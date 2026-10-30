@@ -14,6 +14,7 @@ import { runEmailBatch } from "../services/emailBatch.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { IDEMPOTENCY_REPLAY_ERROR } from "../middleware/idempotency.js";
 import { careerSubmission, createCareerApplication } from "../utils/careerReference.js";
+import { careerAvailability, withCareerAvailability } from "../services/careerAvailability.js";
 
 const jobFields = [
   "hospital",
@@ -29,6 +30,7 @@ const jobFields = [
   "location",
   "salaryText",
   "deadline",
+  "vacancies",
 ];
 
 const patchFrom = (body) =>
@@ -45,6 +47,7 @@ export const listJobs = asyncHandler(async (req, res) => {
   const filter = { status: "published", hospital: { $nin: archived.hospitals }, provider: { $nin: archived.providers } };
   if (req.query.category) filter.category = req.query.category;
   if (req.query.organizationType) filter.organizationType = req.query.organizationType;
+  if (req.query.employmentType) filter.employmentType = req.query.employmentType;
 
   if (req.query.q) {
     const escaped = String(req.query.q)
@@ -60,17 +63,20 @@ export const listJobs = asyncHandler(async (req, res) => {
 
   const query = Job.find(filter);
   if (req.query.view === "summary") {
-    query.select("title department organizationName organizationType location employmentType createdAt");
+    query.select("title category department organizationName organizationType location employmentType salaryText createdAt status deadline vacancies filledPositions availabilityReportedAt demo");
   } else {
     query.populate("hospital", "name slug locality city address phone hospitalType verificationStatus")
       .populate("provider", "name kind locality city address phone providerType verificationStatus");
   }
+  const page = Math.max(1, Math.min(10000, Number(req.query.page) || 1));
+  const limit = Math.max(1, Math.min(150, Number(req.query.limit) || 150));
   const data = await query
-    .sort({ createdAt: -1 })
-    .limit(150)
+    .sort({ createdAt: -1, _id: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit + 1)
     .lean();
 
-  res.json({ data });
+  res.json({ data: data.slice(0, limit).map(withCareerAvailability), pagination: { page, limit, hasMore: data.length > limit } });
 });
 
 export const listOrganizationsWithJobs = asyncHandler(async (req, res) => {
@@ -150,11 +156,12 @@ export const listOrganizationsWithJobs = asyncHandler(async (req, res) => {
     }
 
     const entry = orgMap.get(orgKey);
-    entry.jobs.push(job);
+    entry.jobs.push(withCareerAvailability(job));
     entry.jobCount = entry.jobs.length;
   }
 
   const data = Array.from(orgMap.values());
+  res.set("Cache-Control", "no-store");
   res.json({ data, organizations: data, totalOrganizations: data.length, totalJobs: jobs.length });
 });
 
@@ -169,7 +176,8 @@ export const getJob = asyncHandler(async (req, res) => {
   }
 
   if ((job.hospital && await organizationIsArchived("hospital", job.hospital._id)) || (job.provider && await organizationIsArchived(job.provider.kind, job.provider._id))) return res.status(404).json({ error: "Job not found" });
-  res.json({ job });
+  res.set("Cache-Control", "no-store");
+  res.json({ job: withCareerAvailability(job) });
 });
 
 export const manageJobs = asyncHandler(async (req, res) => {
@@ -186,7 +194,7 @@ export const manageJobs = asyncHandler(async (req, res) => {
     .limit(100)
     .lean();
 
-  res.json({ data });
+  res.json({ data: data.map(withCareerAvailability) });
 });
 
 export const createJob = asyncHandler(async (req, res) => {
@@ -212,14 +220,15 @@ export const createJob = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Either hospital or provider ID is required" });
   }
 
-  const job = await Job.create({ ...payload, createdBy: req.user.id, status: "draft" });
+  const job = await Job.create({ ...payload, createdBy: req.user.id, status: "draft",
+    ...(payload.vacancies !== undefined && payload.vacancies !== null ? { availabilityReportedAt: new Date(), availabilityReportedBy: req.user.id } : {}) });
 
   await AuditLog.create({
     user: req.user.id,
     action: "create",
     entityType: "Job",
     entityId: job._id,
-    after: { hospital: payload.hospital, provider: payload.provider, status: job.status },
+    after: { hospital: payload.hospital, provider: payload.provider, status: job.status, vacancies: job.vacancies, filledPositions: job.filledPositions },
     requestId: req.id,
   });
 
@@ -241,6 +250,9 @@ export const updateJob = asyncHandler(async (req, res) => {
 
   const before = { title: job.title, status: job.status };
   const patch = patchFrom(req.body);
+  delete patch.vacancies; // Count changes use the version-checked availability endpoint.
+  delete patch.organizationType;
+  delete patch.organizationName;
   if (req.user.role !== "system_admin") { delete patch.status; delete patch.verificationStatus; }
   Object.assign(job, { ...patch, hospital: job.hospital, provider: job.provider });
 
@@ -317,6 +329,26 @@ export const setJobStatus = asyncHandler(async (req, res) => {
   res.json({ job });
 });
 
+export const updateJobAvailability = asyncHandler(async (req, res) => {
+  const job = await Job.findById(req.params.id);
+  if (!job) return res.status(404).json({ error: "Job not found" });
+  const allowed = job.hospital
+    ? canManageHospital(req.user, await Hospital.findById(job.hospital))
+    : canManageResource(req.user, await ResourceProvider.findById(job.provider));
+  if (!allowed) return res.status(403).json({ error: "Not assigned to this organisation" });
+  const { vacancies, filledPositions, expectedVersion } = req.body;
+  const versionFilter = expectedVersion === 0 ? { $or: [{ __v: 0 }, { __v: { $exists: false } }] } : { __v: expectedVersion };
+  const updated = await Job.findOneAndUpdate({ _id: job._id, ...versionFilter }, {
+    $set: { vacancies, filledPositions, availabilityReportedAt: new Date(), availabilityReportedBy: req.user.id },
+    $inc: { __v: 1 },
+  }, { new: true, runValidators: true });
+  if (!updated) return res.status(409).json({ error: "This role changed. Refresh before saving vacancy counts.", code: "JOB_VERSION_CONFLICT" });
+  await AuditLog.create({ user: req.user.id, action: "update", entityType: "Job", entityId: job._id,
+    before: { vacancies: job.vacancies ?? null, filledPositions: job.filledPositions ?? null, version: job.__v ?? 0 },
+    after: { vacancies, filledPositions, version: updated.__v }, requestId: req.id });
+  res.json({ job: withCareerAvailability(updated.toObject()) });
+});
+
 export const applyToJob = asyncHandler(async (req, res) => {
   if (req.idempotencyKeyHash) {
     const previous = await JobApplication.findOne({ idempotencyKeyHash: req.idempotencyKeyHash });
@@ -330,6 +362,7 @@ export const applyToJob = asyncHandler(async (req, res) => {
   if (job.deadline && job.deadline < new Date()) {
     return res.status(409).json({ error: "Applications closed" });
   }
+  if (!careerAvailability(job).acceptingApplications) return res.status(409).json({ error: "All advertised positions have been filled" });
 
   const user = await User.findById(req.user.id);
   const exists = await JobApplication.exists({ job: job._id, applicant: req.user.id });
@@ -468,6 +501,7 @@ export const reviewApplication = asyncHandler(async (req, res) => {
   if (!application) return res.status(404).json({ error: "Application not found" });
 
   const job = await Job.findById(application.job);
+  if (!job) return res.status(404).json({ error: "Job not found" });
   if (job.hospital) {
     const hospital = await Hospital.findById(job.hospital);
     if (!canManageHospital(req.user, hospital)) {

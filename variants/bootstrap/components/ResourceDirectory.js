@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { productApi } from "../lib/productApi";
 import AmbulanceBookingModal from "./AmbulanceBookingModal";
 import Link from "next/link";
+import DiagnosticAvailability from "./DiagnosticAvailability";
 
 export default function ResourceDirectory({ kind, title, intro, label, onSelectResource }) {
   const [items, setItems] = useState([]);
@@ -54,6 +55,7 @@ export default function ResourceDirectory({ kind, title, intro, label, onSelectR
         placeholder="Search name, service or locality"
       />
       </div>
+      {kind === "diagnostics" && !loading && !error && <DiagnosticAvailability centres={items} urgency={diagnosticUrgency} />}
       {loading && <p role="status">Loading providers…</p>}
       {error && (
         <div className="alert alert-danger d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
