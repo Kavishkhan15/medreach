@@ -151,6 +151,29 @@ test("bounded provider lists and public availability integrity", { skip: !isolat
     const icu = view.facilities.find(row => row.facility === "ICU");
     assert.equal(icu.count, 0); assert.equal(icu.capabilityProvenance.source.name, "Fixture source");
   });
+  await t.test("card summaries retain fresh availability while skipping provenance collections", async () => {
+    await Hospital.init();
+    const baseline = await request(app).get("/hospitals?q=Scale&limit=5");
+    const reads = [], client = mongoose.connection.getClient();
+    const listener = event => { if (["find", "aggregate", "getMore"].includes(event.commandName)) reads.push(event); };
+    client.on("commandStarted", listener);
+    let summary;
+    try { summary = await request(app).get("/hospitals?q=Scale&limit=5&view=summary"); }
+    finally { client.off("commandStarted", listener); }
+    assert.equal(summary.status, 200); assert.equal(summary.body.total, baseline.body.total);
+    assert.deepEqual(new Set(summary.body.data.map(row => row._id)), new Set(baseline.body.data.map(row => row._id)));
+    for (const row of summary.body.data) {
+      const full = baseline.body.data.find(value => value._id === row._id);
+      assert.equal(row.emergencyStatus, full.emergencyStatus);
+      assert.equal(row.bedsAvailable, null);
+      assert.deepEqual(row.facilities, full.facilities.map(({ capabilityProvenance, ...facility }) => facility));
+      for (const field of ["admins", "capacityReservationCount", "fieldProvenance", "fieldConflicts", "description"]) assert.equal(Object.hasOwn(row, field), false, field);
+    }
+    assert.equal(reads.length, 5);
+    assert.ok(reads.every(event => !["hospitalfieldclaims", "facilitysourceclaims", "hospitalfieldconflicts", "datasources"].includes(event.command.find || event.command.aggregate)));
+    assert.equal((await request(app).get("/hospitals?view=summary&status=available")).status, 400);
+    assert.equal((await request(app).get("/hospitals?view=summary&page=9007199254740991&limit=50")).status, 400);
+  });
   await t.test("cursor clients can explicitly avoid exact count queries without changing default totals", async () => {
     const client = mongoose.connection.getClient(), commands = [];
     const listener = event => { if (event.command.aggregate === "hospitals") commands.push(event); };

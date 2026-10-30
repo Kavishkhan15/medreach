@@ -42,6 +42,25 @@ const hospitalListing = (includeUnapproved) => asyncHandler(async (req, res) => 
     return res.json({ data: rows.slice(0, count), page: Number(page), perPage: count, nextPage: rows.length > count ? Number(page) + 1 : null });
   }
 
+  if (!includeUnapproved && req.query.view === "summary") {
+    if (status || req.query.cursor !== undefined || req.query.pagination || req.query.includeTotal === "false") {
+      return res.status(400).json({ error: "Summary view supports page-based directory search without an availability-status filter" });
+    }
+    const perPage = Math.min(Number(limit), 50);
+    const skip = (Number(page) - 1) * perPage;
+    if (!Number.isSafeInteger(skip) || skip < 0) return res.status(400).json({ error: "Invalid directory page" });
+    const start = performance.now();
+    const match = lat && lng ? { ...filter, location: { $near: { $geometry: { type: "Point", coordinates: [Number(lng), Number(lat)] } } } } : filter;
+    let query = Hospital.find(match).select("_id name slug hospitalType address locality city region pincode location specialties departments services operatingHours hours phone emergencyPhone website verificationStatus demo");
+    if (!(lat && lng)) query = query.sort(q ? { score: { $meta: "textScore" }, _id: 1 } : { name: 1, _id: 1 });
+    const [rows, total] = await Promise.all([query.skip(skip).limit(perPage).lean(), Hospital.countDocuments(filter)]);
+    res.locals.performance = { directoryQueryMs: +(performance.now() - start).toFixed(2) };
+    const evidenceStart = performance.now();
+    const data = await withHospitalAvailability(rows);
+    res.locals.performance.evidenceMs = +(performance.now() - evidenceStart).toFixed(2);
+    return res.json({ data, total, page: Number(page), perPage });
+  }
+
   const cursorMode = req.query.pagination === "cursor" || req.query.cursor !== undefined;
   if (req.query.includeTotal === "false" && !cursorMode) return res.status(400).json({ error: "Omitting totals requires cursor pagination" });
   if (cursorMode && (q || lat || lng || status || Number(page) !== 1)) return res.status(400).json({ error: "Cursor pagination supports directory filters without search, distance or derived status" });
@@ -79,7 +98,7 @@ const hospitalListing = (includeUnapproved) => asyncHandler(async (req, res) => 
       },
     }).select(projection);
   } else {
-    query = Hospital.find(filter).select(projection).sort(q ? { score: { $meta: "textScore" } } : { name: 1, _id: 1 });
+    query = Hospital.find(filter).select(projection).sort(q ? { score: { $meta: "textScore" }, _id: 1 } : { name: 1, _id: 1 });
   }
 
   // A status filter must use verified observations, never the legacy stored

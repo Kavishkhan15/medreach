@@ -60,7 +60,9 @@ export async function withHospitalAvailability(hospitals) {
     latestHospitalObservations(ids, now),
   ]);
   const facilitiesByHospital = byHospital(facilities), observationsByHospital = byHospital(observations);
-  return hospitals.map(hospital => composeHospitalDataView(hospital, facilitiesByHospital.get(String(hospital._id)) || [], observationsByHospital.get(String(hospital._id)) || [], now));
+  // A slow database read must not extend an observation beyond its expiry.
+  const readAt = new Date();
+  return hospitals.map(hospital => composeHospitalDataView(hospital, facilitiesByHospital.get(String(hospital._id)) || [], observationsByHospital.get(String(hospital._id)) || [], readAt));
 }
 
 // Batch-load the latest evidence for a page of hospitals. Two timestamp queries

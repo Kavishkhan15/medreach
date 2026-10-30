@@ -19,3 +19,23 @@ Hospital form selectors use `/api/hospitals?view=options`, selecting only `_id`,
 Regression coverage includes service isolation, two-page boundaries, summary projections, single-hospital selector reads without evidence joins, debounce behaviour, selected inventory reads, existing concurrent capacity tests, and shared credential limits. Retired MFA POST routes now apply authentication and shared credential limits before returning the disabled-feature response, preserving the shared password-attempt budget.
 
 Hosted timing is a network sample, not a service-level guarantee. Payload reduction and database work should be assessed separately from variable cross-region network latency.
+
+## Hospital card latency follow-up
+
+Bootstrap hospital directory cards use `view=summary`. This view selects card fields and composes current facilities/availability with the same 30-minute policy, without loading field provenance, conflict journals or source documents. The default/detail contracts retain full evidence. Availability is checked again after the database reads finish, so a slow query cannot extend a report's valid lifetime. Status-filtered requests continue through the full validated path; summary requests reject that unsupported combination. Text-score ties use a stable ID tiebreak for consistent pages.
+
+Reproduce the isolated synthetic benchmark with Node 24:
+
+```sh
+node scripts/benchmark-hospital-summary.mjs full
+node scripts/benchmark-hospital-summary.mjs summary
+```
+
+This command creates and drops only `medreach_latency_test` on loopback port 27017. It seeds 60 synthetic hospitals, two observations per hospital and eight provenance claims per hospital. Four requests warm each variant, followed by ten timed requests. It never connects to Atlas or sends notifications.
+
+| Variant | Median, first run | Database read commands | Response bytes |
+| --- | ---: | ---: | ---: |
+| Full text search | 12.77 ms | 9 | 235,639 |
+| Card summary | 5.47 ms | 5 | 12,583 |
+
+A repeated run measured 14.75 ms versus 5.42 ms. These are fixture measurements, not a hosted latency guarantee. An attempted all-in-one full-evidence text search measured 19.57 ms on the simpler fixture versus a 5.92 ms baseline and was rejected. No production relationships, indexes, regions or capacity values were changed.

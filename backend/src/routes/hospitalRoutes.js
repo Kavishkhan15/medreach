@@ -16,7 +16,7 @@ const router = Router();
 
 // Public
 router.get("/",
-  query("view").optional().isIn(["options"]),
+  query("view").optional().isIn(["options", "summary"]),
   query("id").optional().isString().matches(/^[a-zA-Z0-9-]{1,200}$/),
   query(["page", "limit"]).optional().isInt({ min: 1, max: Number.MAX_SAFE_INTEGER }),
   query("pagination").optional().isIn(["cursor"]),

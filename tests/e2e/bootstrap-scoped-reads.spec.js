@@ -44,3 +44,24 @@ test("selected bed request reads only its hospital identity before exact invento
   expect(options[0].searchParams.get("id")).toBe(id);
   expect(options[0].searchParams.get("view")).toBe("options");
 });
+
+test("hospital cards request the summary view and preserve care actions", async ({ page }) => {
+  const reads = [];
+  await page.route("**/api/**", async route => {
+    const url = new URL(route.request().url());
+    let json = { data: [], user: null };
+    if (url.pathname === "/api/hospitals") {
+      reads.push(url);
+      json = { data: [{ _id: "111111111111111111111111", slug: "summary-clinic", name: "Summary Clinic", address: "Recorded Mumbai address", specialties: ["Cardiology"], operatingHours: "24/7", facilities: [], bedsAvailable: null, emergencyStatus: "unknown" }], total: 1 };
+    }
+    await route.fulfill({ json });
+  });
+  await page.goto("/hospitals");
+  await expect(page.getByRole("heading", { name: "Summary Clinic", exact: true })).toBeVisible();
+  expect(reads[0].searchParams.get("view")).toBe("summary");
+  await expect(page.getByText("Recorded Mumbai address", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Request beds" })).toHaveAttribute("href", /hospital=111111111111111111111111/);
+  await page.getByLabel("Search hospitals").fill("cardiology");
+  await expect.poll(() => reads.at(-1).searchParams.get("q")).toBe("cardiology");
+  expect(reads.at(-1).searchParams.get("view")).toBe("summary");
+});

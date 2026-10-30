@@ -10,6 +10,7 @@ export default function HospitalsPage() {
 
   const filters = useMemo(() => ({
     limit: 50,
+    view: "summary",
     q: q || undefined,
   }), [q]);
 
