@@ -85,7 +85,7 @@ test("provider approvals prevent duplicate writes and keep confirmed success whe
 
 for (const [status, expected] of [[401, "Your session has expired"], [403, "You do not have permission"], [400, "The submitted information was not accepted"], [409, "The record has changed"]]) {
   test(`admin mutation handles ${status} without exposing server details`, async ({ page }) => {
-    await page.route("**/api/admin/users", (route) => json(route, { data: [user] }));
+    await page.route(/\/api\/admin\/users(?:\?.*)?$/, (route) => json(route, { data: [user] }));
     await page.route("**/api/admin/users/*/revoke-sessions", (route) => json(route, { error: "Secret connection string and stack trace" }, status));
     await page.goto("/admin/users");
     await page.getByRole("button", { name: "Revoke sessions" }).click();
@@ -96,7 +96,7 @@ for (const [status, expected] of [[401, "Your session has expired"], [403, "You 
 
 test("users has loading, unavailable and empty states and blocks unconfirmed mutation resubmission", async ({ page }) => {
   const gate = deferred(); let mode = "loading", writes = 0;
-  await page.route("**/api/admin/users", async (route) => {
+  await page.route(/\/api\/admin\/users(?:\?.*)?$/, async (route) => {
     if (mode === "loading") { await gate.promise; return json(route, { data: [user] }); }
     return json(route, mode === "error" ? {} : { data: [] }, mode === "error" ? 503 : 200);
   });
@@ -185,7 +185,7 @@ test("hospital careers applicant failures and rapid selection cannot show the wr
 test("unauthorized roles do not fetch protected admin resources", async ({ page }) => {
   let reads = 0;
   await page.route("**/api/auth/me", (route) => json(route, { user: { _id: "user", name: "User", role: "user", region: "Mumbai" } }));
-  await page.route("**/api/admin/users", (route) => { reads++; return json(route, { data: [] }); });
+  await page.route(/\/api\/admin\/users(?:\?.*)?$/, (route) => { reads++; return json(route, { data: [] }); });
   await page.goto("/admin/users");
   await expect(page.getByText(/Admin access required/)).toBeVisible();
   expect(reads).toBe(0);

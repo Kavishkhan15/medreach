@@ -17,12 +17,19 @@ const safeUser = (user) => ({ _id: user._id, email: user.email, name: user.name,
 const audit = (req, entry) => writeAudit({ ...entry, ipHash: hashIp(req.ip), requestId: req.id });
 
 export const listUsers = asyncHandler(async (req, res) => {
+  const page = req.query.page === undefined ? 1 : Number(req.query.page);
+  if (!Number.isSafeInteger(page) || page < 1 || page > 10000) return res.status(400).json({ error: "Invalid account page" });
   const limit = Math.min(Math.max(Number(req.query.limit) || 50, 1), 200);
   const filter = {};
   if (["active", "suspended", "pending"].includes(req.query.status)) filter.accountStatus = req.query.status;
   if (req.user.role === "system_admin" && [...SAFE_ROLES, "admin", "hospital_admin", "user_admin"].includes(req.query.role)) filter.role = req.query.role;
-  const users = await User.find(filter).select("+passwordHash").sort({ createdAt: -1 }).limit(limit);
-  res.json({ data: users.map(safeUser) });
+  if (req.query.roleGroup !== undefined) {
+    if (!SAFE_ROLES.includes(req.query.roleGroup)) return res.status(400).json({ error: "Invalid account role group" });
+    filter.role = req.query.roleGroup === "provider_admin" ? { $in: ["provider_admin", "hospital_admin"] }
+      : req.query.roleGroup === "user" ? { $in: ["user", "admin", "user_admin"] } : "system_admin";
+  }
+  const users = await User.find(filter).select("+passwordHash").sort({ createdAt: -1, _id: -1 }).skip((page - 1) * limit).limit(limit + 1);
+  res.json({ data: users.slice(0, limit).map(safeUser), pagination: { page, limit, hasMore: users.length > limit } });
 });
 
 export const getUser = asyncHandler(async (req, res) => {
