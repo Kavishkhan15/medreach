@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LogoutButton from "../../components/LogoutButton";
-import MfaSecurityPanel from "../../components/MfaSecurityPanel";
 import { authStatus, changePassword, me, requestVerification, revokeSession,
   safeReturnTo, updateProfile } from "@medreach/core";
 
@@ -179,7 +178,6 @@ export default function Profile() {
         </form>
       </div>
 
-      <div className="profile-grid-sessions"><MfaSecurityPanel /></div>
       {/* Active Sessions */}
       <div className="profile-grid-sessions">
         <section className="profile-card">

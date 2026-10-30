@@ -186,6 +186,8 @@ user-study/       Proposed protocols and draft questionnaires
 
 [Public availability transparency and provider-managed career positions →](backend/AVAILABILITY_TRANSPARENCY.md)
 
+[Current sign-in and authentication policy →](backend/AUTHENTICATION_POLICY.md)
+
 Recorded code baseline: [`2a2f24d`](https://github.com/kasim672/medreach/commit/2a2f24d587407da27742d7b93898d9116d470c28), verified on **23 October 2026**.
 [All 13 GitHub checks passed](https://github.com/kasim672/medreach/actions/runs/39940586762).
 

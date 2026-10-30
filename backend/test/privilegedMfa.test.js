@@ -1,3 +1,5 @@
+// Exercise the retained opt-in compatibility path, not the product default.
+process.env.MFA_ENABLED = "true";
 import { validateMfaConfiguration } from "../src/config/mfaPolicy.js";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -111,7 +113,7 @@ test("MFA configuration typos, inconsistent rollout and missing keys fail closed
     { MFA_ENFORCE_PROVIDERS: "true", MFA_ENFORCE_PRIVILEGED: "false" },
     { MFA_ENFORCE_PRIVILEGED: "true" },
     { MFA_ENFORCE_PRIVILEGED: "true", MFA_ENCRYPTION_KEY: "invalid" },
-  ]) assert.throws(() => validateMfaConfiguration(config), error => error.status === 503 && error.code === "MFA_CONFIGURATION_INVALID");
+  ]) assert.throws(() => validateMfaConfiguration({ ...config, MFA_ENABLED: "true" }), error => error.status === 503 && error.code === "MFA_CONFIGURATION_INVALID");
   assert.equal(validateMfaConfiguration({ MFA_ENFORCE_PRIVILEGED: "true", MFA_ENCRYPTION_KEY: "a".repeat(64) }), true);
   assert.equal(validateMfaConfiguration({}), true);
 });

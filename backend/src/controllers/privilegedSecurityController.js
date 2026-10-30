@@ -6,6 +6,7 @@ import { newMfaSecret, encryptMfaSecret, decryptMfaSecret, matchingTotpStep, new
 import { verifyAndConsumeMfa } from "../services/privilegedMfaService.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { writeAudit, hashIp } from "../utils/audit.js";
+import { mfaEnabled } from "../config/mfaPolicy.js";
 const audit = (req, operation) => writeAudit({ user: req.user.id, action: "update", entityType: "PrivilegedSecurity",
   entityId: req.user.id, after: { operation }, requestId: req.id, ipHash: hashIp(req.ip) });
 async function validPassword(req) {
@@ -13,6 +14,7 @@ async function validPassword(req) {
   return user?.passwordHash && typeof req.body.password === "string" && await user.comparePassword(req.body.password);
 }
 export const mfaStatus = asyncHandler(async (req, res) => {
+  if (!mfaEnabled()) return res.json({ enabled: false, required: false, eligible: false });
   const enrolled = await PrivilegedSecurity.exists({ user: req.user.id, enabledAt: { $exists: true } });
   res.json({ enabled: Boolean(enrolled), required: mfaEnforced(req.user.role), eligible: privilegedRoles.includes(req.user.role) });
 });

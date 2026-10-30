@@ -1,5 +1,12 @@
-// Strict parsing prevents an enforcement typo from quietly disabling MFA.
+// Legacy enrollment records are retained; MFA is off by default.
+export function mfaEnabled(source = process.env) {
+  if (source.MFA_ENABLED !== undefined && !["true", "false"].includes(source.MFA_ENABLED)) {
+    throw Object.assign(new Error("MFA_ENABLED must be exactly true or false"), { status: 503, code: "MFA_CONFIGURATION_INVALID" });
+  }
+  return source.MFA_ENABLED === "true";
+}
 export function validateMfaConfiguration(source = process.env) {
+  if (!mfaEnabled(source)) return true;
   for (const name of ["MFA_ENFORCE_PRIVILEGED", "MFA_ENFORCE_PROVIDERS"]) {
     if (source[name] !== undefined && !["true", "false"].includes(source[name])) {
       throw Object.assign(new Error(`${name} must be exactly true or false`), { status: 503, code: "MFA_CONFIGURATION_INVALID" });

@@ -1,13 +1,13 @@
-import { validateMfaConfiguration } from "../config/mfaPolicy.js";
+import { mfaEnabled, validateMfaConfiguration } from "../config/mfaPolicy.js";
 import { PrivilegedSecurity, PrivilegedReauthentication } from "../models/PrivilegedSecurity.js";
 export const privilegedRoles = ["system_admin", "provider_admin", "hospital_admin"];
 export function mfaEnforced(role) {
   validateMfaConfiguration();
-  return process.env.MFA_ENFORCE_PRIVILEGED === "true"
+  return mfaEnabled() && process.env.MFA_ENFORCE_PRIVILEGED === "true"
     && (role === "system_admin" || (process.env.MFA_ENFORCE_PROVIDERS === "true" && privilegedRoles.includes(role)));
 }
 export async function mfaRequiredForUser(user) {
-  if (!user) return false;
+  if (!mfaEnabled() || !user) return false;
   const enforced = mfaEnforced(user.role);
   return enforced || Boolean(await PrivilegedSecurity.exists({ user: user._id || user.id, enabledAt: { $type: "date" } }));
 }

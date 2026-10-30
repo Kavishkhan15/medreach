@@ -1,4 +1,5 @@
 import { requireRecentPrivilegedAuthentication } from "../middleware/privilegedSecurity.js";
+import { mfaEnabled } from "../config/mfaPolicy.js";
 import { mfaStatus, beginMfaEnrollment, confirmMfaEnrollment, reauthenticate, rotateRecoveryCodes } from "../controllers/privilegedSecurityController.js";
 import { activateProvider } from "../controllers/providerActivationController.js";
 import { verifyNotificationContact } from "../controllers/notificationContactController.js";
@@ -17,6 +18,10 @@ const limiter = (req, res, next) => (req.app.locals.authLimiter ?? ((_q, _s, n) 
 const namedLimiter = (name) => (req, res, next) => (req.app.locals[name] ?? limiter)(req, res, next);
 const strongPassword = (field = "password") => body(field).custom(validateNewPassword);
 const credentialLimiter = namedLimiter("credentialAccountLimiter");
+router.use(["/mfa", "/reauthenticate"], (req, res, next) => {
+  if (req.method === "GET" || mfaEnabled()) return next();
+  return res.status(410).json({ error: "Two-factor authentication is disabled" });
+});
 
 router.post(
   "/register",
