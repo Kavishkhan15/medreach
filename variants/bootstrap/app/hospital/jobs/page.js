@@ -8,6 +8,7 @@ import AdminActionFeedback from "../../../components/AdminActionFeedback";
 import { productApi, post } from "../../../lib/productApi";
 import EmergencyIcon from "../../../components/EmergencyIcons";
 import CareerVacancyEditor from "../../../components/CareerVacancyEditor";
+import ProviderNav from "../../../components/ProviderNav";
 
 const initialForm = {
   hospital: "",
@@ -42,13 +43,17 @@ const parseHospitals = adminList("hospital"), parseJobs = adminList("job"), pars
 
 export default function HospitalJobs({ providerMode = false }) {
   const { user, ready } = useAuth();
-  const enabled = ready && Boolean(user);
+  const enabled = ready && ["system_admin", "provider_admin", "hospital_admin"].includes(user?.role);
   const hospitalResource = useAdminResource(providerMode ? loadProviders : loadHospitals, providerMode ? parseProviders : parseHospitals, enabled);
   const jobsResource = useAdminResource(loadJobs, parseJobs, enabled);
   const hospitals = hospitalResource.status === "success" ? hospitalResource.data : [];
   const jobs = jobsResource.status === "success" ? jobsResource.data : [];
   const [form, setForm] = useState(initialForm);
   const [expandedJobId, setExpandedJobId] = useState("");
+  const [jobSearch, setJobSearch] = useState("");
+  const [jobStatus, setJobStatus] = useState("");
+  const visibleJobs = jobs.filter(job => (!jobStatus || job.status === jobStatus)
+    && `${job.title} ${job.hospital?.name || job.provider?.name || job.organizationName || ""}`.toLowerCase().includes(jobSearch.trim().toLowerCase()));
   const loadApplicants = useCallback((signal) => productApi(`/api/jobs/${expandedJobId}/applications`, { signal }), [expandedJobId]);
   const applicantResource = useAdminResource(loadApplicants, parseApplications, enabled && Boolean(expandedJobId));
   const applications = applicantResource.status === "success" ? applicantResource.data : [];
@@ -60,33 +65,40 @@ export default function HospitalJobs({ providerMode = false }) {
   const loadApplications = (jobId) => setExpandedJobId((previous) => previous === jobId ? "" : jobId);
   const handleUpdateStatus = (appId, newStatus) => action.run(() => productApi(`/api/applications/${appId}`, { method: "PATCH", body: { status: newStatus } }), { validate: adminEntity("application"), success: `Applicant update to ${newStatus.replaceAll("_", " ")} confirmed.`, refresh: applicantResource.reload, target: appId });
   if (!ready) return <><h1>Job Listings &amp; Applications</h1><p role="status">Loading hospital careers…</p></>;
-  if (!user) return <><h1>Job Listings &amp; Applications</h1><p>Sign in to manage hospital careers. <Link href="/login?returnTo=%2Fhospital%2Fjobs">Sign in</Link></p></>;
+  if (!enabled) return <><h1>Job Listings &amp; Applications</h1><p>Provider administrator access is required. <Link href={`/login?returnTo=${encodeURIComponent(providerMode ? "/provider/jobs" : "/hospital/jobs")}`}>Sign in</Link></p></>;
   return (
-    <>
-      <Link href={providerMode ? "/provider" : "/hospital"} className="small text-decoration-none">
+    <div className="provider-workspace provider-jobs">
+      <Link href={providerMode ? "/provider" : "/hospital"} className="text-decoration-none">
         ← Back to {providerMode ? "Provider" : "Hospital"} Workspace
       </Link>
 
       <div className="page-head my-3">
         <h1>Job Listings & Applications</h1>
-        <p>Review incoming clinical candidates, qualifications, and manage active departmental drafts.</p>
+        <p>Create a role, send it for review and manage the people who apply. Job applications are separate from general organisation applications.</p>
       </div>
+      {providerMode && <ProviderNav />}
+      <ol className="provider-job-steps" aria-label="How job publishing works"><li><strong>1. Save a draft</strong><span>Add the role, requirements and position count.</span></li><li><strong>2. Submit for review</strong><span>A System Admin reviews the listing before it appears in Careers.</span></li><li><strong>3. Review applicants</strong><span>Shortlist candidates and update filled positions after hiring.</span></li></ol>
+      <nav className="provider-jump-links" aria-label="On this jobs page"><a href="#provider-job-listings">Review your listings</a><a href="#provider-job-draft">Create a job draft</a></nav>
 
       <AdminActionFeedback action={action} refresh={action.target ? applicantResource.reload : jobsResource.reload} />
 
       <div className="row g-4">
         {/* Left Column: Create Job Draft */}
         <div className="col-lg-5">
-          <AdminDataState resource={hospitalResource} label="career hospital assignments" emptyMessage="No organisation assigned for job creation."><form
+          <AdminDataState resource={hospitalResource} label="career hospital assignments" emptyMessage="No organisation assigned for job creation. Contact your System Admin to request access."><form
+            id="provider-job-draft"
             className="surface vstack gap-2"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               const payload = { ...form, vacancies: form.vacancies === "" ? null : Number(form.vacancies), deadline: form.deadline ? `${form.deadline}T23:59:59+05:30` : undefined };
               const organization = hospitals.find((item) => item._id === form.hospital);
-              act(() => post("/api/jobs", providerMode ? { ...payload, hospital: organization?.kind === "hospital" ? form.hospital : undefined, provider: organization?.kind !== "hospital" ? form.hospital : undefined } : payload), "Job draft created successfully.");
+              const saved = await act(() => post("/api/jobs", providerMode ? { ...payload, hospital: organization?.kind === "hospital" ? form.hospital : undefined, provider: organization?.kind !== "hospital" ? form.hospital : undefined } : payload), "Job draft created successfully.");
+              if (saved) setForm(previous => ({ ...initialForm, hospital: previous.hospital }));
             }}
           >
-            <h2 className="h5 mb-2">Create Job Draft</h2>
+            <fieldset disabled={action.disabled} className="vstack gap-2">
+            <h2 className="h4 mb-2">Create a job draft</h2>
+            <p className="text-secondary">Saving a draft keeps it private. Submit it for review from your listings when it is ready.</p>
 
             <div>
               <label className="form-label small fw-bold" htmlFor="jhospital">
@@ -228,19 +240,22 @@ export default function HospitalJobs({ providerMode = false }) {
             <button className="btn btn-primary btn-sm mt-2 fw-bold" disabled={action.disabled || !form.hospital}>
               Save Job Draft
             </button>
+            </fieldset>
           </form></AdminDataState>
         </div>
 
         {/* Right Column: Listings & Review Applicants */}
         <div className="col-lg-7">
-          <div className="surface">
-            <h2 className="h5 mb-3">Facility Job Listings</h2>
+          <div className="surface" id="provider-job-listings">
+            <div className="d-flex flex-wrap justify-content-between gap-2 mb-3"><h2 className="h4 mb-0">Your job listings</h2><button type="button" className="btn btn-outline-primary" disabled={jobsResource.status === "loading" || action.disabled} onClick={jobsResource.reload}>Refresh listings</button></div>
+            <div className="row g-3 mb-3"><div className="col-sm-7"><label className="form-label" htmlFor="managed-job-search">Find a role or organisation</label><input id="managed-job-search" className="form-control" value={jobSearch} onChange={event => { setJobSearch(event.target.value); setExpandedJobId(""); }} placeholder="Search your listings" /></div><div className="col-sm-5"><label className="form-label" htmlFor="managed-job-status">Listing status</label><select id="managed-job-status" className="form-select" value={jobStatus} onChange={event => { setJobStatus(event.target.value); setExpandedJobId(""); }}><option value="">All statuses</option><option value="draft">Draft</option><option value="pending">Awaiting review</option><option value="published">Published</option><option value="closed">Closed</option><option value="rejected">Not approved</option></select></div></div>
             <AdminDataState resource={jobsResource} label="managed jobs" emptyMessage="No job listings found for your managed hospitals.">
 
-            {jobs.map((job) => {
+            {jobs.length > 0 && visibleJobs.length === 0 && <p role="status">No listings match your filters. <button type="button" className="btn btn-link" onClick={() => { setJobSearch(""); setJobStatus(""); }}>Clear job filters</button></p>}
+            {visibleJobs.map((job) => {
               const isExpanded = expandedJobId === job._id;
               return (
-                <div key={job._id} className="border-top py-3">
+                <article key={job._id} className="border-top py-3" aria-label={job.title}>
                   <div className="d-flex justify-content-between align-items-start gap-2">
                     <div>
                       <strong className="h6 d-block mb-1">{job.title}</strong>
@@ -248,8 +263,9 @@ export default function HospitalJobs({ providerMode = false }) {
                         {job.hospital?.name || job.provider?.name} · <span className="text-capitalize">{job.category}</span> · {job.employmentType?.replaceAll("_", " ")}
                       </p>
                     </div>
-                    <span className="status-pill tone-info text-capitalize">{job.status}</span>
+                    <span className={`status-pill ${job.status === "published" ? "tone-success" : job.status === "pending" ? "tone-warning" : job.status === "rejected" ? "tone-danger" : "tone-neutral"}`}>{job.status === "pending" ? "Awaiting review" : job.status === "rejected" ? "Not approved" : job.status.charAt(0).toUpperCase() + job.status.slice(1)}</span>
                   </div>
+                  <p className="text-secondary">{({ draft: "Private draft. Submit it when the details are ready.", pending: "Waiting for System Admin review. This role is not public yet.", published: "Visible in Careers. Applicants can apply while positions remain open and the deadline has not passed.", closed: "This listing is closed to new applications. Existing candidates remain available for review.", rejected: "This listing was not approved. Contact your System Admin before revising the role." })[job.status]}</p>
 
                   <CareerVacancyEditor job={job} disabled={action.disabled} onSave={(body) => act(
                     () => productApi(`/api/jobs/${job._id}/availability`, { method: "PATCH", body }),
@@ -262,7 +278,7 @@ export default function HospitalJobs({ providerMode = false }) {
                         className="btn btn-sm btn-outline-primary"
                         onClick={() => act(() => post(`/api/jobs/${job._id}/status`, { status: "published" }), "Listing submission confirmed. Check its status for publication or pending review.")}
                       >
-                        Publish Listing
+                        {user.role === "system_admin" ? "Publish listing" : "Submit for review"}
                       </button>
                     )}
                     {job.status === "published" && (
@@ -285,7 +301,7 @@ export default function HospitalJobs({ providerMode = false }) {
 
                   {/* Collapsible Applicants Panel */}
                   {isExpanded && (
-                    <div id={`apps-${job._id}`} className="mt-3 ps-2 border-start border-3 border-primary bg-light p-3 rounded">
+                    <div id={`apps-${job._id}`} className="mt-3 bg-light p-3 rounded">
                       <div className="d-flex justify-content-between align-items-center mb-3">
                         <h3 className="h6 fw-bold mb-0">Candidate Applications{applicantResource.status === "success" ? ` (${applications.length})` : ""}</h3>
                       </div>
@@ -425,13 +441,13 @@ export default function HospitalJobs({ providerMode = false }) {
                       </AdminDataState>
                     </div>
                   )}
-                </div>
+                </article>
               );
             })}
             </AdminDataState>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

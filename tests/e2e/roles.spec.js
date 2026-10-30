@@ -49,9 +49,10 @@ test("Regular users cannot access administrative dashboards and retired support 
 test("Provider Admin can use assigned hospital and blood workflows and provider Careers", async ({ page }, info) => {
   await signIn(page, `${info.project.name}.provider.e2e@medreach.test`);
   await page.goto("/provider"); await expect(page.getByRole("heading", { name: "Provider workspace", exact: true })).toBeVisible();
-  await expect(page.getByLabel("Organisation", { exact: true })).toHaveCount(1);
+  await expect(page.getByLabel(info.project.name === "bootstrap" ? "Assigned organisation" : "Organisation", { exact: true })).toHaveCount(1);
   await expect(page.getByRole("button", { name: "Save contact information" })).toBeVisible();
-  await page.getByRole("link", { name: "Manage provider jobs and applicants" }).click();
+  if (info.project.name === "bootstrap") await page.getByRole("navigation", { name: "Provider sections" }).getByRole("link", { name: "Jobs & applicants", exact: true }).click();
+  else await page.getByRole("link", { name: "Manage provider jobs and applicants" }).click();
   await expect(page.getByRole("heading", { name: "Job Listings & Applications" })).toBeVisible();
   await expect(page.getByRole("combobox", { name: "Assigned organisation", exact: true }).locator("option")).toHaveCount(2);
   await page.goto("/admin"); await expect(page.getByText(/Admin access required/)).toBeVisible();

@@ -16,41 +16,29 @@ async function mock(page, handler = () => null) {
     return route.fulfill({ json });
   });
 }
-test("Bootstrap login sends MFA proof and clears credentials on failed sign-in", async ({ page }) => {
+test("Bootstrap password sign-in clears failed credentials without a second-factor field", async ({ page }) => {
   let submitted;
   await mock(page, async (path, request) => {
-    if (path === "/api/auth/login") { submitted = request.postDataJSON(); return { status: 401, json: { error: "Invalid MFA code" } }; }
+    if (path === "/api/auth/login") { submitted = request.postDataJSON(); return { status: 401, json: { error: "Invalid email or password" } }; }
   });
   await page.goto("/login");
   await page.getByLabel("Email", { exact: true }).fill("fixture@example.test");
   await page.getByLabel("Password", { exact: true }).fill("ControlledFixturePass_123!");
-  await page.getByLabel("Authenticator code", { exact: true }).fill("123456");
+  await expect(page.getByLabel("Authenticator code", { exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page.getByText("Invalid MFA code")).toBeVisible();
-  expect(submitted.code).toBe("123456");
+  await expect(page.getByText("Invalid email or password")).toBeVisible();
+  expect(submitted.code).toBeUndefined();
   await expect(page.getByLabel("Password", { exact: true })).toHaveValue("");
-  await expect(page.getByLabel("Authenticator code", { exact: true })).toHaveValue("");
   expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain("ControlledFixture");
 });
-test("Bootstrap MFA enrollment reveals recovery codes after revocation and requires explicit sign-in", async ({ page }) => {
-  await mock(page, (path) => {
-    if (path === "/api/auth/mfa/enroll") return { json: { secret: "FIXTURESETUPKEY", expiresInSeconds: 600 } };
-    if (path === "/api/auth/mfa/confirm") return { json: { enabled: true, signedOut: true, recoveryCodes: ["fixture-recovery-one", "fixture-recovery-two"] } };
-  });
+test("Bootstrap profile keeps password and session controls without MFA enrollment", async ({ page }) => {
+  let mfaReads = 0;
+  await mock(page, path => { if (path.startsWith("/api/auth/mfa")) { mfaReads++; return { json: { enabled: false, required: false, eligible: false } }; } });
   await page.goto("/profile");
-  const panel = page.locator("#multi-factor-authentication");
-  await panel.getByLabel("Current password", { exact: true }).fill("ControlledFixturePass_123!");
-  await panel.getByRole("button", { name: "Set up authenticator", exact: true }).click();
-  await expect(panel.getByText("FIXTURESETUPKEY")).toBeVisible();
-  await expect(panel.getByLabel("Current password", { exact: true })).toHaveValue("");
-  await panel.getByLabel("Current password", { exact: true }).fill("ControlledFixturePass_123!");
-  await panel.getByLabel("Authenticator code", { exact: true }).fill("123456");
-  await panel.getByRole("button", { name: "Confirm authenticator", exact: true }).click();
-  await expect(panel.getByText("fixture-recovery-one", { exact: false })).toBeVisible();
-  await expect(panel.getByText("FIXTURESETUPKEY")).toHaveCount(0);
-  expect(await page.evaluate(() => JSON.stringify({ local: localStorage, session: sessionStorage }))).not.toContain("fixture-recovery-one");
-  await panel.getByRole("button", { name: "I saved the codes — sign in again" }).click();
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page.getByRole("heading", { name: "Profile & security", exact: true })).toBeVisible();
+  await expect(page.locator("#multi-factor-authentication")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Active sessions", exact: true })).toBeVisible();
+  expect(mfaReads).toBe(0);
 });
 test("Bootstrap inventory preserves unknowns and conflicted edits; CSV needs reviewed attestation", async ({ page }) => {
   let input, confirmation;

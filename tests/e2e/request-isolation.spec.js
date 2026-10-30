@@ -84,9 +84,9 @@ test("Provider Admin switches assigned organisations and cannot read reports or 
   const assigned = (await (await page.request.get(`${API}/api/providers/mine`)).json()).data;
   expect(assigned.map(row => row.kind).sort()).toEqual(["blood_bank", "hospital"]);
   const bank = assigned.find(row => row.kind === "blood_bank"), hospital = assigned.find(row => row.kind === "hospital");
-  await page.getByLabel("Organisation", { exact: true }).selectOption(hospital._id);
+  await page.getByLabel(info.project.name === "bootstrap" ? "Assigned organisation" : "Organisation", { exact: true }).selectOption(hospital._id);
   await expect(page.getByRole("heading", { name: "Bed requests", exact: true })).toBeVisible();
-  await page.getByLabel("Organisation", { exact: true }).selectOption(bank._id);
+  await page.getByLabel(info.project.name === "bootstrap" ? "Assigned organisation" : "Organisation", { exact: true }).selectOption(bank._id);
   await expect(page.getByRole("heading", { name: "Blood requests and donation pledges", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Bed requests", exact: true })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: `Reports · ${bank.name}`, exact: true })).toBeVisible();

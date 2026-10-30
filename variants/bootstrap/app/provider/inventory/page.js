@@ -1,2 +1,3 @@
 import ProviderInventoryWorkspace from "../../../components/ProviderInventoryWorkspace";
-export default function ProviderInventoryPage() { return <ProviderInventoryWorkspace />; }
+import ProviderNav from "../../../components/ProviderNav";
+export default function ProviderInventoryPage() { return <><ProviderNav /><ProviderInventoryWorkspace /></>; }

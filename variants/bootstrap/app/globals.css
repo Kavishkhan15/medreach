@@ -585,3 +585,39 @@ table { font-size: var(--type-small); line-height: 1.5; font-variant-numeric: ta
 @media (max-width: 767px) {
   #main :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="hidden"], [type="button"], [type="submit"]) { font-size: var(--type-body); }
 }
+
+/* Provider workspaces: task navigation and readable operational forms. */
+.provider-workspace { min-width: 0; }
+.provider-page-head { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.provider-page-head p, .provider-section-heading p { color: var(--color-muted); max-width: 65ch; margin-bottom: 0; }
+.provider-nav { display: flex; flex-wrap: wrap; gap: .5rem; padding: .65rem; margin-bottom: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+.provider-nav a { display: inline-flex; align-items: center; gap: .6rem; padding: .75rem 1rem; border-radius: .75rem; color: var(--color-text); text-decoration: none; font-weight: 600; }
+.provider-nav a:hover, .provider-nav a[aria-current="page"] { background: var(--color-brand-soft); color: var(--color-brand-dark); }
+.provider-nav a:focus-visible, .provider-jump-links a:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 3px; }
+.provider-organisation { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 1.5rem; }
+.provider-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 1.25rem 0; margin-bottom: 1rem; border-bottom: 1px solid var(--color-border); gap: 1.5rem; }
+.provider-summary dt { font-weight: 500; color: var(--color-muted); margin-bottom: .4rem; }
+.provider-summary dd { font-size: 1.5rem; line-height: 1.35; font-weight: 650; margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.provider-jump-links { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; margin-bottom: 1.75rem; }
+.provider-content-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+.provider-main-content, .provider-support-content { min-width: 0; }
+.provider-content-grid section { scroll-margin-top: 7rem; }
+.provider-section-heading { margin-bottom: 1rem; }
+.provider-request-row { padding: 1.25rem 0; border-top: 1px solid var(--color-border); overflow-wrap: anywhere; }
+.provider-report-list { padding: 0; list-style: none; }
+.provider-report-list li { display: flex; justify-content: space-between; gap: 1rem; padding: .6rem 0; border-bottom: 1px solid var(--color-border); }
+.provider-job-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; list-style: none; padding: 0 0 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); }
+.provider-job-steps strong, .provider-job-steps span { display: block; }
+.provider-job-steps span { color: var(--color-muted); margin-top: .4rem; }
+.provider-jobs .form-control, .provider-jobs .form-select { min-height: 2.75rem; font-size: 1rem; }
+.provider-jobs .form-label { font-size: 1rem; font-weight: 600; }
+.provider-jobs .surface { overflow-wrap: anywhere; }
+.provider-jobs #provider-job-draft, .provider-jobs #provider-job-listings { scroll-margin-top: 7rem; }
+@media (max-width: 1100px) { .provider-content-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 700px) {
+  .provider-organisation, .provider-job-steps { grid-template-columns: minmax(0, 1fr); }
+  .provider-summary { gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+  .provider-summary div { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .provider-summary dd { font-size: 1.15rem; text-align: right; }
+  .provider-nav a { padding: .65rem .75rem; }
+}
