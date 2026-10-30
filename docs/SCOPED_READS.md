@@ -39,3 +39,9 @@ This command creates and drops only `medreach_latency_test` on loopback port 270
 | Card summary | 5.47 ms | 5 | 12,583 |
 
 A repeated run measured 14.75 ms versus 5.42 ms. These are fixture measurements, not a hosted latency guarantee. An attempted all-in-one full-evidence text search measured 19.57 ms on the simpler fixture versus a 5.92 ms baseline and was rejected. No production relationships, indexes, regions or capacity values were changed.
+
+### Keep the one-trip path for ordinary directory pages
+
+A hosted check found that using the batch strategy for an unfiltered directory added round trips: 221.45 ms versus 202.30 ms median across eight alternating warm-connection requests. Therefore, unfiltered summaries retain a single joined query, with provenance lookups disabled. Text and geo searches use the smaller batch path. Full evidence remains the default for detail and legacy clients.
+
+The same synthetic fixture measured unfiltered directory medians of 29.77 ms (full) versus 10.63 ms (summary), both using one database command. Reproduce this shape by adding `directory` to each benchmark command, for example `node scripts/benchmark-hospital-summary.mjs summary directory`. Network-dominated single-hospital requests showed no meaningful hosted median improvement (200.85 ms versus 199.90 ms); no end-to-end speed guarantee is implied.

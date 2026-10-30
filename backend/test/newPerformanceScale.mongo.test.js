@@ -174,6 +174,27 @@ test("bounded provider lists and public availability integrity", { skip: !isolat
     assert.equal((await request(app).get("/hospitals?view=summary&status=available")).status, 400);
     assert.equal((await request(app).get("/hospitals?view=summary&page=9007199254740991&limit=50")).status, 400);
   });
+  await t.test("unfiltered card pages retain one database trip without provenance lookups", async () => {
+    const full = await request(app).get("/hospitals?limit=5");
+    const reads = [], client = mongoose.connection.getClient();
+    const listener = event => { if (["find", "aggregate", "getMore"].includes(event.commandName)) reads.push(event); };
+    client.on("commandStarted", listener);
+    let response;
+    try { response = await request(app).get("/hospitals?view=summary&limit=5"); }
+    finally { client.off("commandStarted", listener); }
+    assert.equal(response.status, 200); assert.equal(response.body.total, full.body.total);
+    assert.equal(reads.length, 1); assert.equal(reads[0].commandName, "aggregate");
+    assert.deepEqual(response.body.data.map(row => row._id), full.body.data.map(row => row._id));
+    for (const row of response.body.data) {
+      const baseline = full.body.data.find(item => item._id === row._id);
+      assert.equal(row.emergencyStatus, baseline.emergencyStatus);
+      assert.deepEqual(row.facilities, baseline.facilities.map(({ capabilityProvenance, ...facility }) => facility));
+      assert.equal(row.bedsAvailable, null);
+      assert.equal(Object.hasOwn(row, "fieldProvenance"), false);
+      assert.equal(Object.hasOwn(row, "capacityReservationCount"), false);
+    }
+    assert.ok(!/hospitalfieldclaims|facilitysourceclaims|hospitalfieldconflicts|datasources/.test(JSON.stringify(reads[0].command)));
+  });
   await t.test("cursor clients can explicitly avoid exact count queries without changing default totals", async () => {
     const client = mongoose.connection.getClient(), commands = [];
     const listener = event => { if (event.command.aggregate === "hospitals") commands.push(event); };

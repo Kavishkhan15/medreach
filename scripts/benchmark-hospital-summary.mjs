@@ -11,6 +11,8 @@ import { DataSource } from "../backend/src/models/DataSource.js";
 import { listHospitals } from "../backend/src/controllers/hospitalController.js";
 
 const variant = process.argv[2];
+const shape = process.argv[3] || "search";
+if (!["search", "directory"].includes(shape)) throw Error("Choose search or directory");
 if (!["full", "summary"].includes(variant)) throw Error("Choose full or summary; this benchmark uses only an isolated local fixture");
 await mongoose.connect("mongodb://127.0.0.1:27017/medreach_latency_test", { monitorCommands: true });
 try {
@@ -42,16 +44,16 @@ try {
     let response, elapsed;
     try {
       const start = performance.now();
-      response = await request(app).get(`/hospitals?q=Latency&limit=12${variant === "summary" ? "&view=summary" : ""}`);
+      response = await request(app).get(`/hospitals?limit=12${shape === "search" ? "&q=Latency" : ""}${variant === "summary" ? "&view=summary" : ""}`);
       elapsed = performance.now() - start;
     } finally { client.off("commandStarted", listener); }
     if (response.status !== 200 || response.body.data.length !== 12 || response.body.total !== 60) throw Error("Benchmark correctness gate failed");
     if (index >= 4) samples.push({ ms: +elapsed.toFixed(2), commands, bytes: Buffer.byteLength(response.text) });
   }
   const sorted = samples.map(sample => sample.ms).sort((left, right) => left - right);
-  const result = { variant, medianMs: (sorted[4] + sorted[5]) / 2, p95Ms: sorted[9], commands: samples[0].commands, samples };
+  const result = { variant, shape, medianMs: (sorted[4] + sorted[5]) / 2, p95Ms: sorted[9], commands: samples[0].commands, samples };
   console.log(JSON.stringify(result));
-  await writeFile(`/tmp/medreach-search-${variant}.json`, JSON.stringify(result));
+  await writeFile(`/tmp/medreach-search-${variant}-${shape}.json`, JSON.stringify(result));
 } finally {
   await mongoose.connection.dropDatabase();
   await mongoose.disconnect();

@@ -22,7 +22,7 @@ const sourceJoin = [
 const lookup = (Model, as, pipeline) => ({ $lookup: { from: Model.collection.name,
   localField: "_id", foreignField: "hospital", pipeline, as } });
 
-export function hospitalEvidenceStages(now) {
+export function hospitalEvidenceStages(now, { includeProvenance = true } = {}) {
   const observations = (field, filter, as) => lookup(AvailabilityObservation, as, [
     { $match: filter }, { $sort: { facility: 1, [field]: -1, _id: -1 } },
     { $group: { _id: "$facility", item: { $first: "$$ROOT" } } },
@@ -32,16 +32,18 @@ export function hospitalEvidenceStages(now) {
     lookup(HospitalFacility, "__facilities", [{ $project: project("hospital facility capability capabilityConflict confidence lastUpdated source") }]),
     observations("observedAt", { observedAt: { $gt: new Date(0), $lte: now } }, "__observed"),
     observations("retrievedAt", { observedAt: null, retrievedAt: { $gt: new Date(0), $lte: now } }, "__retrieved"),
-    lookup(HospitalFieldConflict, "__conflicts", [{ $project: { hospital: 1, field: 1, status: 1, sourceCount: { $size: { $ifNull: ["$claims", []] } } } }]),
-    lookup(HospitalFieldClaim, "__claims", [{ $project: claimFields }, ...sourceJoin]),
-    lookup(FacilitySourceClaim, "__facilityClaims", [{ $project: facilityClaimFields }, ...sourceJoin]),
+    ...(includeProvenance ? [
+      lookup(HospitalFieldConflict, "__conflicts", [{ $project: { hospital: 1, field: 1, status: 1, sourceCount: { $size: { $ifNull: ["$claims", []] } } } }]),
+      lookup(HospitalFieldClaim, "__claims", [{ $project: claimFields }, ...sourceJoin]),
+      lookup(FacilitySourceClaim, "__facilityClaims", [{ $project: facilityClaimFields }, ...sourceJoin]),
+    ] : []),
   ];
 }
 
 function composeRows(rows) {
   const hospitals = [], evidence = { facilities: [], observations: [], fieldConflicts: [], fieldClaims: [], facilityClaims: [] };
   for (const row of rows) {
-    const { __facilities, __observed, __retrieved, __conflicts, __claims, __facilityClaims, ...hospital } = row;
+    const { __facilities = [], __observed = [], __retrieved = [], __conflicts = [], __claims = [], __facilityClaims = [], ...hospital } = row;
     hospitals.push(hospital);
     evidence.facilities.push(...__facilities);
     evidence.fieldConflicts.push(...__conflicts);
@@ -61,9 +63,9 @@ function composeRows(rows) {
   return composeHospitalEvidence(hospitals, evidence, new Date());
 }
 
-export function hospitalPagePipeline({ filter, countFilter = filter, skip = 0, limit = 12, projection, includeTotal = true, now = new Date() }) {
+export function hospitalPagePipeline({ filter, countFilter = filter, skip = 0, limit = 12, projection, includeTotal = true, includeProvenance = true, now = new Date() }) {
   const stages = [{ $match: filter }, { $sort: { name: 1, _id: 1 } }, { $skip: skip }, { $limit: limit },
-    { $project: excludedReadFields(Hospital, projection) }, ...hospitalEvidenceStages(now),
+    { $project: typeof projection === "object" ? projection : excludedReadFields(Hospital, projection) }, ...hospitalEvidenceStages(now, { includeProvenance }),
     { $replaceWith: { row: "$$ROOT" } }];
   if (includeTotal) stages.push({ $unionWith: { coll: Hospital.collection.name, pipeline: [{ $match: countFilter }, { $count: "total" }] } });
   // unionWith makes no order guarantee. Sort only the bounded page plus count,
@@ -74,6 +76,10 @@ export function hospitalPagePipeline({ filter, countFilter = filter, skip = 0, l
 
 export async function readHospitalPage(options) {
   const result = await Hospital.aggregate(hospitalPagePipeline(options));
-  return { data: composeRows(result.filter(item => item.row).map(item => item.row)),
+  let data = composeRows(result.filter(item => item.row).map(item => item.row));
+  if (options.includeProvenance === false) data = data.map(({ fieldProvenance, fieldConflicts, ...hospital }) => ({
+    ...hospital, facilities: hospital.facilities.map(({ capabilityProvenance, ...facility }) => facility),
+  }));
+  return { data,
     total: options.includeTotal === false ? null : result.find(item => Object.hasOwn(item, "total"))?.total || 0 };
 }

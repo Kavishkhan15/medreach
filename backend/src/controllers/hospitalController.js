@@ -50,8 +50,15 @@ const hospitalListing = (includeUnapproved) => asyncHandler(async (req, res) => 
     const skip = (Number(page) - 1) * perPage;
     if (!Number.isSafeInteger(skip) || skip < 0) return res.status(400).json({ error: "Invalid directory page" });
     const start = performance.now();
+    const fields = "_id name slug hospitalType address locality city region pincode location specialties departments services operatingHours hours phone emergencyPhone website verificationStatus demo";
+    if (!q && !lat && !lng) {
+      const { data, total } = await readHospitalPage({ filter, skip, limit: perPage, includeProvenance: false,
+        projection: Object.fromEntries(fields.split(" ").map(field => [field, 1])) });
+      res.locals.performance = { joinedReadMs: +(performance.now() - start).toFixed(2) };
+      return res.json({ data, total, page: Number(page), perPage });
+    }
     const match = lat && lng ? { ...filter, location: { $near: { $geometry: { type: "Point", coordinates: [Number(lng), Number(lat)] } } } } : filter;
-    let query = Hospital.find(match).select("_id name slug hospitalType address locality city region pincode location specialties departments services operatingHours hours phone emergencyPhone website verificationStatus demo");
+    let query = Hospital.find(match).select(fields);
     if (!(lat && lng)) query = query.sort(q ? { score: { $meta: "textScore" }, _id: 1 } : { name: 1, _id: 1 });
     const [rows, total] = await Promise.all([query.skip(skip).limit(perPage).lean(), Hospital.countDocuments(filter)]);
     res.locals.performance = { directoryQueryMs: +(performance.now() - start).toFixed(2) };
